@@ -26,7 +26,8 @@ export default function NewReel() {
         try {
             const response = await createReel(data, isDraft);
             if (response.success) {
-                router.push('/');
+                // Redirigir a la página del reel recién creado
+                router.push(`/reels/${response.data.id}`);
             } else {
                 setError('Error al crear el reel');
             }
