@@ -1,41 +1,40 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import "./lib/initCache";
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title:  process.env.NODE_ENV === "development" ? "[L] Art0xDev Link Shortener" : "Art0xDev Link Shortener",
-  description: "Acortador de url's para facilitar el uso de enlaces",
-  icons: {
-    icon: process.env.NODE_ENV === "development" ? "/favicon-local.ico" : "/favicon.ico",
-  },
+  title: '0xReplyer Dashboard',
+  description: 'Panel de administración para gestionar respuestas automáticas de Instagram',
 };
-
-
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+    <html lang="es">
+      <body className={inter.className}>
+        <div className="min-h-screen bg-gray-100">
+          <nav className="bg-white shadow-sm">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between h-16">
+                <div className="flex">
+                  <div className="flex-shrink-0 flex items-center">
+                    <h1 className="text-xl font-bold text-gray-900">0xReplyer</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </nav>
+          <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            {children}
+          </main>
+        </div>
         <SpeedInsights />
         <Analytics />
       </body>
