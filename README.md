@@ -1,6 +1,12 @@
-# Coding wordle- Acortador de URLs
+# 0xDashboard - Panel de Control para Gestión de Reels
 
 ## Características
+
+- Gestión completa de reels y contenido multimedia
+- Monitoreo de comentarios y respuestas automáticas
+- Configuración de palabras clave para respuestas personalizadas
+- Interfaz intuitiva para administrar múltiples cuentas
+- Estadísticas y análisis de rendimiento
 
 ## Tecnologías Utilizadas
 
@@ -17,12 +23,3 @@
 - [Git](https://git-scm.com/)
 
 ### Clonar el repositorio
-
-```bash
-git clone https://github.com/<TU_USUARIO>/<REPO>.git
-cd <REPO>
-# 0xDashboard
-# 0xDashboard
-# 0xDashboard
-# 0xDashboard
-# 0xDashboard
