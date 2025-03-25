@@ -22,9 +22,11 @@ export default function NewReel() {
             is_active: formData.get('is_active') === 'true',
             is_draft: isDraft
         };
-
         try {
-            const response = await createReel(data, isDraft);
+            const response = await createReel({
+                ...data,
+                url: isDraft ? '' : (data.url || '')
+            }, isDraft);
             if (response.success) {
                 // Redirigir a la página del reel recién creado
                 router.push(`/reels/${response.data.id}`);

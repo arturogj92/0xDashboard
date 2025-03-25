@@ -11,6 +11,7 @@ export interface Reel {
 }
 
 export interface Keyword {
+    id: number;
     reel_id: number;
     keyword: string;
     is_active: boolean;

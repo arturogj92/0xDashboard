@@ -26,6 +26,7 @@ export default function KeywordsSection({ reelId, keywords, onKeywordsChange }: 
                 reel_id: reelId,
                 keyword: newKeyword.trim(),
                 is_active: true,
+                id: 0
             });
 
             if (response.success) {

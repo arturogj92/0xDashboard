@@ -26,6 +26,7 @@ export default function PublicCommentsSection({ reelId, comments, onCommentsChan
             const response = await createPublicComment({
                 reel_id: reelId,
                 comment_message: newComment.trim(),
+                id: 0
             });
 
             if (response.success) {
