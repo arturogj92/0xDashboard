@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --background: #181622;
+  --background: #030008;
   --foreground: #fffffe;
   --primary: #7f5af0;
   --secondary: #2cb67d;
@@ -27,7 +27,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-dm-sans, Arial, Helvetica, sans-serif);
 }
 
 /* Clases de utilidad para colores */

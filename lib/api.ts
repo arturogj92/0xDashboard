@@ -1,4 +1,4 @@
-import { Reel, Keyword, PublicComment, Response, ApiResponse } from './types';
+import { Reel, Keyword, PublicComment, Response, ApiResponse, DmLog } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
@@ -11,6 +11,15 @@ export const createReel = async (data: Omit<Reel, 'id' | 'shortcode' | 'media_id
     });
     return response.json();
 };
+export const getReelDmLogs = async (reelId: number): Promise<ApiResponse<{
+  total: number;
+  logs: DmLog[]
+}>> => {
+  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-logs`);
+  return response.json();
+};
+
+
 
 export const getReel = async (id: number): Promise<ApiResponse<Reel>> => {
     const response = await fetch(`${API_URL}/api/reels/${id}`);

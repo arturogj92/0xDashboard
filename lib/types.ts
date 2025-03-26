@@ -11,6 +11,13 @@ export interface Reel {
     thumbnailUrl?: string;
 }
 
+export interface DmLog {
+    id: number;
+    reel_id: number;
+    instagram_user_name: string;
+    sent_at: string;
+}
+
 export interface Keyword {
     id: number;
     reel_id: number;
