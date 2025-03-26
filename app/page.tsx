@@ -4,12 +4,45 @@ import { useEffect, useState } from 'react';
 import { Reel } from '@/lib/types';
 import { getReels, toggleReelStatus, deleteReel } from '@/lib/api';
 import Link from 'next/link';
+import Image from 'next/image';
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardFooter, 
+  CardHeader, 
+  CardTitle 
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Toggle } from '@/components/ui/toggle';
+import { PencilIcon, EyeIcon, EyeSlashIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 export default function Home() {
   const [reels, setReels] = useState<Reel[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleteLoading, setDeleteLoading] = useState<number | null>(null);
+
+  // Función para extraer el ID del reel de Instagram desde la URL
+  const extractInstagramReelId = (url: string) => {
+    if (!url) return null;
+    
+    // Intentar extraer el ID del reel de diferentes formatos de URL de Instagram
+    const regex = /(?:reel|p)\/([A-Za-z0-9_-]+)/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  };
+
+  // Función para generar la URL de la miniatura
+  const getThumbnailUrl = (url: string) => {
+    if (!url) return null;
+    
+    const reelId = extractInstagramReelId(url);
+    if (reelId) {
+      return `https://www.instagram.com/p/${reelId}/media/?size=t`;
+    }
+    return null;
+  };
 
   useEffect(() => {
     const fetchReels = async () => {
@@ -19,7 +52,9 @@ export default function Home() {
           // Mapear is_active a active para mantener compatibilidad
           const formattedReels = response.data.map((reel: any) => ({
             ...reel,
-            active: reel.is_active
+            active: reel.is_active,
+            url: reel.url || '',
+            thumbnailUrl: reel.url ? getThumbnailUrl(reel.url) : null
           }));
           setReels(formattedReels);
         } else {
@@ -82,14 +117,14 @@ export default function Home() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-300"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
+      <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded relative" role="alert">
         <strong className="font-bold">Error!</strong>
         <span className="block sm:inline"> {error}</span>
       </div>
@@ -98,90 +133,118 @@ export default function Home() {
 
   return (
     <div>
-      <div className="sm:flex sm:items-center">
+      <div className="sm:flex sm:items-center mb-6">
         <div className="sm:flex-auto">
-          <h1 className="text-2xl font-semibold text-gray-900">Reels</h1>
-          <p className="mt-2 text-sm text-gray-700">
+          <h1 className="text-2xl font-semibold text-foreground">Reels</h1>
+          <p className="mt-2 text-sm text-gray-400">
             Lista de reels configurados para respuestas automáticas
           </p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <Link
-            href="/reels/new"
-            className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
-          >
-            Añadir Reel
-          </Link>
+          <Button asChild>
+            <Link href="/reels/new">
+              Añadir Reel
+            </Link>
+          </Button>
         </div>
       </div>
-      <div className="mt-8 flex flex-col">
-        <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
-                      URL
-                    </th>
-                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Descripción
-                    </th>
-                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Estado
-                    </th>
-                    <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                      <span className="sr-only">Acciones</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
-                  {reels.map((reel) => (
-                    <tr key={reel.id} className={!reel.is_active ? "bg-gray-50" : ""}>
-                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                        <a href={reel.url} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-900">
+      
+      <div className="grid gap-4">
+        {reels.map((reel) => (
+          <Card key={reel.id} className={`overflow-hidden border border-dashed border-gray-700 ${!reel.is_active ? "bg-gray-900/50" : ""}`}>
+            <div className="flex flex-col sm:flex-row">
+              {/* Imagen del Reel */}
+              <div className="w-full sm:w-32 h-32 bg-gray-800 flex-shrink-0">
+                {reel.thumbnailUrl ? (
+                  <div className="w-full h-full relative">
+                    <Image 
+                      src={reel.thumbnailUrl} 
+                      alt={`Miniatura de ${reel.description}`}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-xs text-gray-400">Sin miniatura</span>
+                  </div>
+                )}
+              </div>
+              
+              {/* Contenido del Reel */}
+              <div className="flex-1 p-4">
+                <div className="flex flex-col sm:flex-row justify-between">
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-200 truncate">
+                      {reel.description || <span className="italic text-gray-500">Sin descripción</span>}
+                    </h3>
+                    <div className="mt-1">
+                      {reel.url ? (
+                        <a 
+                          href={reel.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-sm text-indigo-400 hover:text-indigo-300 truncate block"
+                        >
                           {reel.url}
                         </a>
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {reel.description}
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm">
-                        <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${reel.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                          {reel.is_active ? 'Activo' : 'Inactivo'}
-                        </span>
-                      </td>
-                      <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                        <div className="flex space-x-3 justify-end">
-                          <Link
-                            href={`/reels/${reel.id}`}
-                            className="text-indigo-600 hover:text-indigo-900"
-                          >
-                            Editar
-                          </Link>
-                          <button
-                            onClick={() => handleToggleActive(reel.id, reel.is_active || false)}
-                            disabled={deleteLoading === reel.id}
-                            className="text-indigo-600 hover:text-indigo-900"
-                          >
-                            {deleteLoading === reel.id ? 'Procesando...' : (reel.is_active ? 'Desactivar' : 'Activar')}
-                          </button>
-                          <button
-                            onClick={() => handleDelete(reel.id)}
-                            disabled={deleteLoading === reel.id}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            {deleteLoading === reel.id ? 'Eliminando...' : 'Eliminar'}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      ) : (
+                        <span className="text-sm text-gray-500 italic">Sin URL</span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="mt-2 sm:mt-0">
+                    <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${reel.is_active ? 'bg-green-900/50 text-green-400' : 'bg-gray-800 text-gray-400'}`}>
+                      {reel.is_active ? 'Activo' : 'Inactivo'}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="mt-4 flex space-x-3 justify-end">
+                  <Toggle
+                    asChild
+                    className="w-10 h-6 flex items-center justify-center hover:bg-purple-900"
+                    variant="outline"
+                  >
+                    <Link href={`/reels/${reel.id}`}>
+                      <PencilIcon className="h-4 w-4" />
+                    </Link>
+                  </Toggle>
+                  
+                  <Toggle
+                    pressed={!reel.is_active}
+                    onPressedChange={() => handleToggleActive(reel.id, reel.is_active || false)}
+                    disabled={deleteLoading === reel.id}
+                    className="w-10 h-6 flex items-center justify-center hover:bg-purple-900"
+                    variant="outline"
+                  >
+                    {deleteLoading === reel.id ? (
+                      <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-gray-300"></div>
+                    ) : reel.is_active ? (
+                      <EyeIcon className="h-4 w-4" />
+                    ) : (
+                      <EyeSlashIcon className="h-4 w-4" />
+                    )}
+                  </Toggle>
+                  
+                  <Toggle
+                    onClick={() => handleDelete(reel.id)}
+                    disabled={deleteLoading === reel.id}
+                    className="w-10 h-6 flex items-center justify-center hover:bg-red-900 text-red-400"
+                    variant="outline"
+                  >
+                    {deleteLoading === reel.id ? (
+                      <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-gray-300"></div>
+                    ) : (
+                      <TrashIcon className="h-4 w-4" />
+                    )}
+                  </Toggle>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </Card>
+        ))}
       </div>
     </div>
   );

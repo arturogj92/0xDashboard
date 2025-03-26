@@ -14,5 +14,8 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require("@tailwindcss/container-queries"), // <= plugin oficial (opcional en 3.3+)
+  ],
 } satisfies Config;

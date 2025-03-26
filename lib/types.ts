@@ -8,6 +8,7 @@ export interface Reel {
     keywords?: Keyword[];
     responses?: Response[];
     publicComments?: PublicComment[];
+    thumbnailUrl?: string;
 }
 
 export interface Keyword {
