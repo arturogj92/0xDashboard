@@ -9,6 +9,8 @@ export interface Reel {
     responses?: Response[];
     publicComments?: PublicComment[];
     thumbnailUrl?: string;
+    totalVisits?: number;
+    visits24?: number;
 }
 
 export interface DmLog {
