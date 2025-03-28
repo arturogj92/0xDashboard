@@ -3,16 +3,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Toggle } from '@/components/ui/toggle';
 import { 
-  PencilIcon, 
   EyeIcon, 
   EyeSlashIcon, 
   TrashIcon, 
-  ChartBarIcon, 
-  ClockIcon, 
+  ChartBarIcon,  
   DocumentTextIcon, 
   LinkIcon,
-  CalendarIcon
 } from '@heroicons/react/24/outline';
+import { Calendar, CalendarDays, CalendarClock } from 'lucide-react';
 import { Card } from '../ui/card';
 
 interface ReelCardProps {
@@ -41,16 +39,16 @@ export function ReelCard({
           {reel.is_active ? 'Activo' : 'Inactivo'}
         </span>
         <span className="inline-flex items-center rounded-full px-2 text-xs font-semibold leading-5 bg-indigo-900/50 text-indigo-400">
-          <EyeIcon className="h-3 w-3 mr-1" />
-          TOTAL: {reel.totalVisits}
+          <Calendar className="h-3 w-3 mr-1" />
+          {reel.totalVisits}
         </span>
         <span className="inline-flex items-center rounded-full px-2 text-xs font-semibold leading-5 bg-purple-900/50 text-purple-400">
-          <CalendarIcon className="h-3 w-3 mr-1" />
-          7d: {reel.visits7d}
+          <CalendarDays className="h-3 w-3 mr-1" />
+          {reel.visits7d}
         </span>
         <span className="inline-flex items-center rounded-full px-2 text-xs font-semibold leading-5 bg-yellow-900/50 text-yellow-400">
-          <ClockIcon className="h-3 w-3 mr-1" />
-          24h: {reel.visits24}
+          <CalendarClock className="h-3 w-3 mr-1" />
+          {reel.visits24}
         </span>
       </div>
       
