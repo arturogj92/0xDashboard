@@ -151,21 +151,30 @@ export function ReelCard({
           <ChartBarIcon className="h-4 w-4" />
         </Toggle>
         
-        <Toggle
-          pressed={!reel.is_active}
-          onPressedChange={() => onToggleActive(reel.id, reel.is_active || false)}
-          disabled={deleteLoading === reel.id}
-          className="w-10 h-6 flex items-center justify-center hover:bg-purple-900"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {deleteLoading === reel.id ? (
-            <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-gray-300"></div>
-          ) : reel.is_active ? (
-            <Pause className="h-4 w-4" />
-          ) : (
-            <Play className="h-4 w-4" />
-          )}
-        </Toggle>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Toggle
+                pressed={!reel.is_active}
+                onPressedChange={() => onToggleActive(reel.id, reel.is_active || false)}
+                disabled={deleteLoading === reel.id}
+                className="w-10 h-6 flex items-center justify-center hover:bg-purple-900"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {deleteLoading === reel.id ? (
+                  <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-gray-300"></div>
+                ) : reel.is_active ? (
+                  <Pause className="h-4 w-4" />
+                ) : (
+                  <Play className="h-4 w-4" />
+                )}
+              </Toggle>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{reel.is_active ? 'Desactivar reel' : 'Activar reel'}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         
         <Toggle
           onClick={(e) => {
