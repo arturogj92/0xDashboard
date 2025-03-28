@@ -89,7 +89,7 @@ export function StatsDialog({
                       });
 
                       last24Hours.push({
-                        hour: `${hour.getHours()}h`,
+                        hour: hour.getHours(),
                         count: existingData ? existingData.count : 0,
                         isYesterday: hour.getDate() !== now.getDate()
                       });
@@ -98,11 +98,10 @@ export function StatsDialog({
                   })()}>
                     <CartesianGrid stroke="none" />
                     <XAxis 
-                      dataKey="hour" 
-                      tickFormatter={(val) => {
-                        const hour = parseInt(val.replace('h', ''));
-                        return `${hour.toString().padStart(2, '0')}h`;
-                      }}
+                      dataKey="hour"
+                      interval={0}
+                      tickFormatter={(val) => val.toString().padStart(2, '0')}
+                      fontSize={11}
                     />
                     <YAxis />
                     <RechartsTooltip 
@@ -111,12 +110,12 @@ export function StatsDialog({
                           const isYesterday = payload[0].payload.isYesterday;
                           return (
                             <div className="bg-card p-2 border border-border rounded-md shadow-md">
-                              <p className="text-sm">{`${label} ${isYesterday ? '(ayer)' : '(hoy)'}: ${payload[0].value} mensajes`}</p>
+                              <p className="text-sm">{`${label.toString().padStart(2, '0')}h ${isYesterday ? '(ayer)' : '(hoy)'}: ${payload[0].value} mensajes`}</p>
                             </div>
                           );
                         }
                         return null;
-                      }} 
+                      }}
                       cursor={{fill: "gray", fillOpacity: 0.5}} 
                     />
                     <Bar dataKey="count" fill="var(--primary)" />
