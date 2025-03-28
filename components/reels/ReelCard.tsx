@@ -3,14 +3,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Toggle } from '@/components/ui/toggle';
 import { 
-  EyeIcon, 
-  EyeSlashIcon, 
   TrashIcon, 
   ChartBarIcon,  
   DocumentTextIcon, 
   LinkIcon,
 } from '@heroicons/react/24/outline';
-import { Calendar, CalendarDays, CalendarClock } from 'lucide-react';
+import { Calendar, CalendarDays, CalendarClock, Play, Pause, Power, PowerOff } from 'lucide-react';
 import { Card } from '../ui/card';
 import {
   Tooltip,
@@ -41,10 +39,18 @@ export function ReelCard({
     >
       {/* Indicadores en la esquina superior derecha */}
       <div className="absolute top-2 right-2 z-10 flex items-center space-x-1">
-        <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${reel.is_active ? 'bg-green-900/50 text-green-400' : 'bg-gray-800 text-gray-400'}`}>
-          {reel.is_active ? 'Activo' : 'Inactivo'}
-        </span>
         <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className={`inline-flex items-center rounded-full px-2 text-xs font-semibold leading-5 ${reel.is_active ? 'bg-green-900/50 text-green-400' : 'bg-gray-800 text-gray-400'}`}>
+                {reel.is_active ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{reel.is_active ? 'Activo' : 'Inactivo'}</p>
+            </TooltipContent>
+          </Tooltip>
+
           <Tooltip>
             <TooltipTrigger asChild>
               <span className="inline-flex items-center rounded-full px-2 text-xs font-semibold leading-5 bg-indigo-900/50 text-indigo-400">
@@ -155,9 +161,9 @@ export function ReelCard({
           {deleteLoading === reel.id ? (
             <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-gray-300"></div>
           ) : reel.is_active ? (
-            <EyeIcon className="h-4 w-4" />
+            <Pause className="h-4 w-4" />
           ) : (
-            <EyeSlashIcon className="h-4 w-4" />
+            <Play className="h-4 w-4" />
           )}
         </Toggle>
         
