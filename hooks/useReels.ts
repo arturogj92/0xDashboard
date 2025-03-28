@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Reel, DmLog } from '@/lib/types';
+import { Reel } from '@/lib/types';
 import { 
   getReels, 
   toggleReelStatus, 
   deleteReel, 
-  getReelDmLogs, 
   getReelDmTotalCountToday, 
   getReelDmTotalCount, 
   getReelDmDailyCountLastWeek, 
@@ -21,12 +20,10 @@ export function useReels() {
   const [reelToDelete, setReelToDelete] = useState<number | null>(null);
   const [statsDialogOpen, setStatsDialogOpen] = useState(false);
   const [selectedReelId, setSelectedReelId] = useState<number | null>(null);
-  const [dmLogs, setDmLogs] = useState<DmLog[]>([]);
   const [totalDms, setTotalDms] = useState(0);
   const [loadingStats, setLoadingStats] = useState(false);
   const [statsError, setStatsError] = useState<string | null>(null);
   const [hourlyData, setHourlyData] = useState<any[]>([]);
-  const [dailyData, setDailyData] = useState<any[]>([]);
   const [weeklyStats, setWeeklyStats] = useState<Array<{ day: string; count: number }>>([]);
 
   const extractInstagramReelId = (url: string) => {
@@ -70,14 +67,8 @@ export function useReels() {
               if (weekCountResponse.success) {
                 visits7d = weekCountResponse.data.total_count_7d;
               }
-
-              // Obtenemos los logs solo para las estadísticas
-              const logsResponse = await getReelDmLogs(reel.id);
-              if (logsResponse.success) {
-                processStatsData(logsResponse.data.logs);
-              }
             } catch (error) {
-              // Si ocurre un error al obtener los logs, se mantienen los valores en 0
+              // Si ocurre un error al obtener los contadores, se mantienen los valores en 0
             }
             return {
               ...reel,
@@ -156,15 +147,14 @@ export function useReels() {
     setStatsError(null);
     
     try {
-      const [logsResponse, weeklyResponse, hourlyResponse] = await Promise.all([
-        getReelDmLogs(id),
+      const [weeklyResponse, hourlyResponse, totalResponse] = await Promise.all([
         getReelDmDailyCountLastWeek(id),
-        getReelDmHourlyCountCurrentDay(id)
+        getReelDmHourlyCountCurrentDay(id),
+        getReelDmTotalCount(id)
       ]);
 
-      if (logsResponse.success) {
-        setDmLogs(logsResponse.data.logs);
-        setTotalDms(logsResponse.data.total);
+      if (totalResponse.success) {
+        setTotalDms(totalResponse.data.total_count);
       }
 
       if (weeklyResponse.success) {
@@ -189,32 +179,6 @@ export function useReels() {
     }
   };
 
-  const processStatsData = (logs: DmLog[]) => {
-    const today = new Date();
-    const last7Days: { [key: string]: number } = {};
-    
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(today.getDate() - i);
-      const dateStr = date.toISOString().split('T')[0];
-      last7Days[dateStr] = 0;
-    }
-    
-    logs.forEach(log => {
-      const dateStr = new Date(log.sent_at).toISOString().split('T')[0];
-      if (last7Days.hasOwnProperty(dateStr)) {
-        last7Days[dateStr] = (last7Days[dateStr] || 0) + 1;
-      }
-    });
-    
-    const dailyData = Object.keys(last7Days).map(date => ({
-      date,
-      count: last7Days[date]
-    }));
-    
-    setDailyData(dailyData);
-  };
-
   return {
     reels,
     loading,
@@ -228,7 +192,6 @@ export function useReels() {
     statsError,
     totalDms,
     hourlyData,
-    dailyData,
     weeklyStats,
     openDeleteDialog,
     handleDelete,

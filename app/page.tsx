@@ -22,7 +22,6 @@ export default function Home() {
     statsError,
     totalDms,
     hourlyData,
-    dailyData,
     weeklyStats,
     openDeleteDialog,
     handleDelete,
@@ -62,7 +61,6 @@ export default function Home() {
         error={statsError}
         totalDms={totalDms}
         hourlyData={hourlyData}
-        dailyData={dailyData}
         weeklyStats={weeklyStats}
       />
 

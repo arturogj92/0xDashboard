@@ -17,7 +17,6 @@ interface StatsDialogProps {
   error: string | null;
   totalDms: number;
   hourlyData: any[];
-  dailyData: any[];
   weeklyStats: Array<{ day: string; count: number }>;
 }
 
@@ -28,7 +27,6 @@ export function StatsDialog({
   error,
   totalDms,
   hourlyData,
-  dailyData,
   weeklyStats
 }: StatsDialogProps) {
   const CustomTooltip = ({ active, payload, label }: any) => {
