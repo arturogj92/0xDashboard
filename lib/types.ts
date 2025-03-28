@@ -11,6 +11,7 @@ export interface Reel {
     thumbnailUrl?: string;
     totalVisits?: number;
     visits24?: number;
+    visits7d?: number;
 }
 
 export interface DmLog {

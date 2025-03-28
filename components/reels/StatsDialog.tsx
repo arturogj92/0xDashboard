@@ -18,6 +18,7 @@ interface StatsDialogProps {
   totalDms: number;
   hourlyData: any[];
   dailyData: any[];
+  weeklyStats: Array<{ day: string; count: number }>;
 }
 
 export function StatsDialog({
@@ -27,7 +28,8 @@ export function StatsDialog({
   error,
   totalDms,
   hourlyData,
-  dailyData
+  dailyData,
+  weeklyStats
 }: StatsDialogProps) {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -65,24 +67,33 @@ export function StatsDialog({
                 <p className="flex items-center gap-1">
                   📊 <strong>Total mensajes enviados:</strong> {totalDms}
                 </p>
+                <p className="flex items-center gap-1">
+                  📈 <strong>Total última semana:</strong> {weeklyStats.reduce((acc, curr) => acc + curr.count, 0)}
+                </p>
               </div>
               
               <h3 className="text-lg font-medium mb-2">Mensajes por hora</h3>
               <div className="w-full mb-6">
                 <ResponsiveContainer width="100%" height={200}>
                   <BarChart data={(() => {
-                    const currentHour = new Date().getHours();
+                    const now = new Date();
+                    const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
                     const last24Hours = [];
-                    for (let i = 23; i >= 0; i--) {
-                      const hourToShow = (currentHour - i + 24) % 24;
-                      const isYesterday = i > currentHour;
-                      const existingData = hourlyData.find(item => 
-                        parseInt(item.hour.replace('h', '')) === hourToShow
-                      );
+
+                    // Crear array con las últimas 24 horas
+                    for (let i = 0; i < 24; i++) {
+                      const hour = new Date(twentyFourHoursAgo.getTime() + i * 60 * 60 * 1000);
+                      const existingData = hourlyData.find(item => {
+                        const itemDate = new Date(item.timestamp);
+                        return itemDate.getHours() === hour.getHours() &&
+                               itemDate.getDate() === hour.getDate() &&
+                               itemDate.getMonth() === hour.getMonth();
+                      });
+
                       last24Hours.push({
-                        hour: `${hourToShow}h`,
+                        hour: `${hour.getHours()}h`,
                         count: existingData ? existingData.count : 0,
-                        isYesterday
+                        isYesterday: hour.getDate() !== now.getDate()
                       });
                     }
                     return last24Hours;
@@ -110,14 +121,7 @@ export function StatsDialog({
                       }} 
                       cursor={{fill: "gray", fillOpacity: 0.5}} 
                     />
-                    <Bar dataKey="count">
-                      {hourlyData.map((entry, index) => (
-                        <Cell 
-                          key={`cell-hour-${index}`} 
-                          fill="var(--primary)"
-                        />
-                      ))}
-                    </Bar>
+                    <Bar dataKey="count" fill="var(--primary)" />
                   </BarChart>
                 </ResponsiveContainer>
                 <p className="text-xs text-gray-500 text-right">* Mostrando las últimas 24 horas</p>
@@ -126,10 +130,10 @@ export function StatsDialog({
               <h3 className="text-lg font-medium mb-2">Mensajes últimos 7 días</h3>
               <div className="w-full mb-4">
                 <ResponsiveContainer width="100%" height={200}>
-                  <BarChart data={dailyData}>
+                  <BarChart data={weeklyStats}>
                     <CartesianGrid stroke="none" />
                     <XAxis 
-                      dataKey="date" 
+                      dataKey="day" 
                       tickFormatter={(val) => {
                         const d = new Date(val);
                         return d.toLocaleDateString("es-ES", {
@@ -141,7 +145,7 @@ export function StatsDialog({
                     <YAxis />
                     <RechartsTooltip content={<CustomTooltip />} cursor={{fill: "gray", fillOpacity: 0.5}} />
                     <Bar dataKey="count">
-                      {dailyData.map((entry, index) => (
+                      {weeklyStats.map((entry, index) => (
                         <Cell 
                           key={`cell-day-${index}`} 
                           fill="var(--accent)"

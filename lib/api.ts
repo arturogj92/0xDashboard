@@ -21,6 +21,27 @@ export const getReelDmLogs = async (reelId: number): Promise<ApiResponse<{
 
 
 
+export const getReelDmTotalCountToday = async (reelId: number): Promise<ApiResponse<{
+  total_count_today: number;
+}>> => {
+  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-total-count-today`);
+  return response.json();
+};
+
+export const getReelDmTotalCount = async (reelId: number): Promise<ApiResponse<{
+  total_count: number;
+}>> => {
+  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-total-count`);
+  return response.json();
+};
+
+export const getReelDmTotalCount7d = async (reelId: number): Promise<ApiResponse<{
+  total_count_7d: number;
+}>> => {
+  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-total-count-7d`);
+  return response.json();
+};
+
 export const getReel = async (id: number): Promise<ApiResponse<Reel>> => {
     const response = await fetch(`${API_URL}/api/reels/${id}`);
     return response.json();
@@ -146,4 +167,24 @@ export const deleteResponse = async (reelId: number, responseId: number): Promis
         method: 'DELETE',
     });
     return response.json();
+};
+
+export const getReelDmDailyCountLastWeek = async (reelId: number): Promise<ApiResponse<{
+  daily_stats: Array<{
+    day: string;
+    count: number;
+  }>;
+}>> => {
+  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-daily-count-last-week`);
+  return response.json();
+};
+
+export const getReelDmHourlyCountCurrentDay = async (reelId: number): Promise<ApiResponse<{
+  hourly_stats: Array<{
+    hour: string;
+    count: number;
+  }>;
+}>> => {
+  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-hourly-count-current-day`);
+  return response.json();
 }; 

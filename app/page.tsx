@@ -23,6 +23,7 @@ export default function Home() {
     totalDms,
     hourlyData,
     dailyData,
+    weeklyStats,
     openDeleteDialog,
     handleDelete,
     handleToggleActive,
@@ -62,6 +63,7 @@ export default function Home() {
         totalDms={totalDms}
         hourlyData={hourlyData}
         dailyData={dailyData}
+        weeklyStats={weeklyStats}
       />
 
       <div className="text-center mb-8">

@@ -10,7 +10,8 @@ import {
   ChartBarIcon, 
   ClockIcon, 
   DocumentTextIcon, 
-  LinkIcon 
+  LinkIcon,
+  CalendarIcon
 } from '@heroicons/react/24/outline';
 import { Card } from '../ui/card';
 
@@ -42,6 +43,10 @@ export function ReelCard({
         <span className="inline-flex items-center rounded-full px-2 text-xs font-semibold leading-5 bg-indigo-900/50 text-indigo-400">
           <EyeIcon className="h-3 w-3 mr-1" />
           TOTAL: {reel.totalVisits}
+        </span>
+        <span className="inline-flex items-center rounded-full px-2 text-xs font-semibold leading-5 bg-purple-900/50 text-purple-400">
+          <CalendarIcon className="h-3 w-3 mr-1" />
+          7d: {reel.visits7d}
         </span>
         <span className="inline-flex items-center rounded-full px-2 text-xs font-semibold leading-5 bg-yellow-900/50 text-yellow-400">
           <ClockIcon className="h-3 w-3 mr-1" />

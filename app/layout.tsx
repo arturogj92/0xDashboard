@@ -38,9 +38,9 @@ export default function RootLayout({
                       alt="0xReplyer Logo" 
                       width={32} 
                       height={32} 
-                      className="mr-1 mb-1" 
+                      className="mr-1 mb" 
                     />
-                    <h1 className="text-xl font-bold bg-gradient-to-tr from-blue-300 to-purple-400 bg-clip-text text-transparent">> Replyer</h1>
+                    <h1 className="text-xl font-bold bg-gradient-to-tr from-blue-300 to-purple-400 bg-clip-text text-transparent">{">"} Replyer</h1>
                   </div>
                 </div>
               </div>

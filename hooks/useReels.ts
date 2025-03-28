@@ -1,6 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Reel, DmLog } from '@/lib/types';
-import { getReels, toggleReelStatus, deleteReel, getReelDmLogs } from '@/lib/api';
+import { 
+  getReels, 
+  toggleReelStatus, 
+  deleteReel, 
+  getReelDmLogs, 
+  getReelDmTotalCountToday, 
+  getReelDmTotalCount, 
+  getReelDmDailyCountLastWeek, 
+  getReelDmTotalCount7d,
+  getReelDmHourlyCountCurrentDay 
+} from '@/lib/api';
 
 export function useReels() {
   const [reels, setReels] = useState<Reel[]>([]);
@@ -17,6 +27,7 @@ export function useReels() {
   const [statsError, setStatsError] = useState<string | null>(null);
   const [hourlyData, setHourlyData] = useState<any[]>([]);
   const [dailyData, setDailyData] = useState<any[]>([]);
+  const [weeklyStats, setWeeklyStats] = useState<Array<{ day: string; count: number }>>([]);
 
   const extractInstagramReelId = (url: string) => {
     if (!url) return null;
@@ -29,7 +40,7 @@ export function useReels() {
     if (!url) return null;
     const reelId = extractInstagramReelId(url);
     if (reelId) {
-      return `https://www.instagram.com/p/${reelId}/media/?size=t`;
+      return `https://www.instagram.com/p/${reelId}/media/?size=l`;
     }
     return null;
   };
@@ -42,16 +53,28 @@ export function useReels() {
           const reelsWithStats = await Promise.all(response.data.map(async (reel: any) => {
             let totalVisits = 0;
             let visits24 = 0;
+            let visits7d = 0;
+
             try {
+              const totalCountResponse = await getReelDmTotalCount(reel.id);
+              if (totalCountResponse.success) {
+                totalVisits = totalCountResponse.data.total_count;
+              }
+
+              const todayCountResponse = await getReelDmTotalCountToday(reel.id);
+              if (todayCountResponse.success) {
+                visits24 = todayCountResponse.data.total_count_today;
+              }
+
+              const weekCountResponse = await getReelDmTotalCount7d(reel.id);
+              if (weekCountResponse.success) {
+                visits7d = weekCountResponse.data.total_count_7d;
+              }
+
+              // Obtenemos los logs solo para las estadísticas
               const logsResponse = await getReelDmLogs(reel.id);
               if (logsResponse.success) {
-                const logs: DmLog[] = logsResponse.data.logs;
-                totalVisits = logs.length;
-                const now = new Date();
-                visits24 = logs.filter(log => {
-                  const sentAt = new Date(log.sent_at);
-                  return now.getTime() - sentAt.getTime() <= 24 * 60 * 60 * 1000;
-                }).length;
+                processStatsData(logsResponse.data.logs);
               }
             } catch (error) {
               // Si ocurre un error al obtener los logs, se mantienen los valores en 0
@@ -62,7 +85,8 @@ export function useReels() {
               url: reel.url || '',
               thumbnailUrl: reel.url ? getThumbnailUrl(reel.url) : null,
               totalVisits,
-              visits24
+              visits24,
+              visits7d
             };
           }));
           setReels(reelsWithStats);
@@ -132,13 +156,31 @@ export function useReels() {
     setStatsError(null);
     
     try {
-      const response = await getReelDmLogs(id);
-      if (response.success) {
-        setDmLogs(response.data.logs);
-        setTotalDms(response.data.total);
-        processStatsData(response.data.logs);
-      } else {
-        setStatsError('Error al cargar las estadísticas');
+      const [logsResponse, weeklyResponse, hourlyResponse] = await Promise.all([
+        getReelDmLogs(id),
+        getReelDmDailyCountLastWeek(id),
+        getReelDmHourlyCountCurrentDay(id)
+      ]);
+
+      if (logsResponse.success) {
+        setDmLogs(logsResponse.data.logs);
+        setTotalDms(logsResponse.data.total);
+      }
+
+      if (weeklyResponse.success) {
+        setWeeklyStats(weeklyResponse.data.daily_stats);
+      }
+
+      if (hourlyResponse.success) {
+        const formattedHourlyData = hourlyResponse.data.hourly_stats.map(stat => {
+          const date = new Date(stat.hour);
+          return {
+            hour: `${date.getHours()}h`,
+            count: stat.count,
+            timestamp: date.getTime()
+          };
+        });
+        setHourlyData(formattedHourlyData);
       }
     } catch (err) {
       setStatsError('Error al cargar las estadísticas');
@@ -148,11 +190,6 @@ export function useReels() {
   };
 
   const processStatsData = (logs: DmLog[]) => {
-    const hourCounts: { [key: number]: number } = {};
-    for (let i = 0; i < 24; i++) {
-      hourCounts[i] = 0;
-    }
-    
     const today = new Date();
     const last7Days: { [key: string]: number } = {};
     
@@ -164,27 +201,17 @@ export function useReels() {
     }
     
     logs.forEach(log => {
-      const sentDate = new Date(log.sent_at);
-      const hour = sentDate.getHours();
-      hourCounts[hour] = (hourCounts[hour] || 0) + 1;
-      
-      const dateStr = sentDate.toISOString().split('T')[0];
+      const dateStr = new Date(log.sent_at).toISOString().split('T')[0];
       if (last7Days.hasOwnProperty(dateStr)) {
         last7Days[dateStr] = (last7Days[dateStr] || 0) + 1;
       }
     });
-    
-    const hourlyData = Object.keys(hourCounts).map(hour => ({
-      hour: `${hour}h`,
-      count: hourCounts[parseInt(hour)]
-    }));
     
     const dailyData = Object.keys(last7Days).map(date => ({
       date,
       count: last7Days[date]
     }));
     
-    setHourlyData(hourlyData);
     setDailyData(dailyData);
   };
 
@@ -202,6 +229,7 @@ export function useReels() {
     totalDms,
     hourlyData,
     dailyData,
+    weeklyStats,
     openDeleteDialog,
     handleDelete,
     handleToggleActive,
