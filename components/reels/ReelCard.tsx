@@ -12,6 +12,12 @@ import {
 } from '@heroicons/react/24/outline';
 import { Calendar, CalendarDays, CalendarClock } from 'lucide-react';
 import { Card } from '../ui/card';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ReelCardProps {
   reel: Reel;
@@ -38,18 +44,43 @@ export function ReelCard({
         <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${reel.is_active ? 'bg-green-900/50 text-green-400' : 'bg-gray-800 text-gray-400'}`}>
           {reel.is_active ? 'Activo' : 'Inactivo'}
         </span>
-        <span className="inline-flex items-center rounded-full px-2 text-xs font-semibold leading-5 bg-indigo-900/50 text-indigo-400">
-          <Calendar className="h-3 w-3 mr-1" />
-          {reel.totalVisits}
-        </span>
-        <span className="inline-flex items-center rounded-full px-2 text-xs font-semibold leading-5 bg-purple-900/50 text-purple-400">
-          <CalendarDays className="h-3 w-3 mr-1" />
-          {reel.visits7d}
-        </span>
-        <span className="inline-flex items-center rounded-full px-2 text-xs font-semibold leading-5 bg-yellow-900/50 text-yellow-400">
-          <CalendarClock className="h-3 w-3 mr-1" />
-          {reel.visits24}
-        </span>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="inline-flex items-center rounded-full px-2 text-xs font-semibold leading-5 bg-indigo-900/50 text-indigo-400">
+                <Calendar className="h-3 w-3 mr-1" />
+                {reel.totalVisits}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Total de visitas</p>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="inline-flex items-center rounded-full px-2 text-xs font-semibold leading-5 bg-purple-900/50 text-purple-400">
+                <CalendarDays className="h-3 w-3 mr-1" />
+                {reel.visits7d}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Visitas en los últimos 7 días</p>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="inline-flex items-center rounded-full px-2 text-xs font-semibold leading-5 bg-yellow-900/50 text-yellow-400">
+                <CalendarClock className="h-3 w-3 mr-1" />
+                {reel.visits24}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Visitas en las últimas 24 horas</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       
       <div className="flex flex-col sm:flex-row">
