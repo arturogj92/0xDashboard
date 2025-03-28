@@ -107,16 +107,6 @@ export function ReelCard({
       {/* Botones de acción */}
       <div className="absolute bottom-2 right-2 flex space-x-3">
         <Toggle
-          asChild
-          className="w-10 h-6 flex items-center justify-center hover:bg-purple-900"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <Link href={`/reels/${reel.id}`}>
-            <PencilIcon className="h-4 w-4" />
-          </Link>
-        </Toggle>
-
-        <Toggle
           onClick={(e) => {
             e.stopPropagation();
             onStatsClick(reel.id);
