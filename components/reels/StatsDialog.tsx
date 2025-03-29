@@ -75,12 +75,12 @@ export function StatsDialog({
                 <ResponsiveContainer width="100%" height={200}>
                   <BarChart data={(() => {
                     const now = new Date();
-                    const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+                    const twentyThreeHoursAgo = new Date(now.getTime() - 23 * 60 * 60 * 1000);
                     const last24Hours = [];
 
                     // Crear array con las últimas 24 horas
                     for (let i = 0; i < 24; i++) {
-                      const hour = new Date(twentyFourHoursAgo.getTime() + i * 60 * 60 * 1000);
+                      const hour = new Date(twentyThreeHoursAgo.getTime() + i * 60 * 60 * 1000);
                       const existingData = hourlyData.find(item => {
                         const itemDate = new Date(item.timestamp);
                         return itemDate.getHours() === hour.getHours() &&
@@ -94,6 +94,7 @@ export function StatsDialog({
                         isYesterday: hour.getDate() !== now.getDate()
                       });
                     }
+
                     return last24Hours;
                   })()}>
                     <CartesianGrid stroke="none" />
