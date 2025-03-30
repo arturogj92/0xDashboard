@@ -35,6 +35,8 @@ export interface Keyword {
     reel_id: number;
     keyword: string;
     is_active: boolean;
+    created_at?: string;
+    updated_at?: string;
 }
 
 export interface PublicComment {
@@ -44,11 +46,15 @@ export interface PublicComment {
 }
 
 export interface Response {
+    id: number;
     reel_id: number;
     name: string;
     dm_message: string;
-    button_text: string;
-    button_url: string;
+    button_text?: string;
+    button_url?: string;
+    is_active: boolean;
+    created_at?: string;
+    updated_at?: string;
 }
 
 export interface ApiResponse<T> {

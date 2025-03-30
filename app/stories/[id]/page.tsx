@@ -1,185 +1,223 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { Story, Keyword, Response } from '@/lib/types';
-import { getStory, updateStoryDescription } from '@/lib/api';
-import KeywordsSection from '../../reels/[id]/components/KeywordsSection';
-import ResponsesSection from '../../reels/[id]/components/ResponsesSection';
-import { use } from 'react';
-import { ArrowLeftIcon } from '@heroicons/react/24/solid';
+import { getStory, updateStoryDescription, getStoryKeywords, getStoryResponses } from '@/lib/api';
+import { MediaSection } from '@/components/media/MediaSection';
+import { 
+    PencilIcon, 
+    DocumentTextIcon, 
+    ArrowLeftIcon, 
+    PhotoIcon 
+} from '@heroicons/react/24/outline';
 
-export default function EditStory({ params }: { params: Promise<{ id: string }> }) {
-    const resolvedParams = use(params);
+export default function EditStory() {
+    const { id } = useParams();
     const router = useRouter();
+    const storyId = parseInt(id as string);
     const [story, setStory] = useState<Story | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [keywords, setKeywords] = useState<Keyword[]>([]);
+    const [responses, setResponses] = useState<Response[]>([]);
     const [isEditing, setIsEditing] = useState(false);
     const [description, setDescription] = useState('');
-    const [url, setUrl] = useState('');
-    const [isSaving, setIsSaving] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchStory = async () => {
-            try {
-                const response = await getStory(parseInt(resolvedParams.id));
-                if (response.success) {
-                    setStory(response.data);
-                    setDescription(response.data.description);
-                    setUrl(response.data.url);
-                } else {
-                    setError('Error al cargar la historia');
-                }
-            } catch (err) {
-                setError('Error al cargar la historia');
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchStory();
-    }, [resolvedParams.id]);
+        fetchKeywords();
+        fetchResponses();
+    }, []);
+
+    const fetchStory = async () => {
+        try {
+            const response = await getStory(storyId);
+            if (response.success) {
+                setStory(response.data);
+                setDescription(response.data.description || '');
+            } else {
+                setError('Error al cargar la story');
+            }
+        } catch (err) {
+            setError('Error al cargar la story');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchKeywords = async () => {
+        try {
+            const response = await getStoryKeywords(storyId);
+            if (response.success) {
+                setKeywords(response.data);
+            }
+        } catch (err) {
+            console.error('Error al cargar las palabras clave:', err);
+        }
+    };
+
+    const fetchResponses = async () => {
+        try {
+            const response = await getStoryResponses(storyId);
+            console.log('Respuestas cargadas:', response);
+            if (response.success) {
+                setResponses(response.data);
+            }
+        } catch (err) {
+            console.error('Error al cargar las respuestas:', err);
+        }
+    };
+
+    const handleSaveDescription = async () => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await updateStoryDescription(storyId, description);
+            if (response.success) {
+                setStory(response.data);
+                setIsEditing(false);
+            } else {
+                setError('Error al guardar la descripción');
+            }
+        } catch (err) {
+            setError('Error al guardar la descripción');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleGoBack = () => {
         router.back();
     };
 
-    const handleSaveDescription = async () => {
-        if (!story) return;
-
-        setIsSaving(true);
-        try {
-            const response = await updateStoryDescription(story.id, description);
-            if (response.success) {
-                setStory({ ...story, description });
-                setIsEditing(false);
-            } else {
-                setError('Error al actualizar la descripción');
-            }
-        } catch (err) {
-            setError('Error al actualizar la descripción');
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
-    const handleCancelEdit = () => {
-        setDescription(story?.description || '');
-        setUrl(story?.url || '');
-        setIsEditing(false);
-    };
-
     if (loading) {
         return (
-            <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+            <div className="flex justify-center items-center min-h-screen bg-black">
+                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-indigo-500"></div>
             </div>
         );
     }
 
     if (error || !story) {
         return (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
-                <strong className="font-bold">Error!</strong>
-                <span className="block sm:inline"> {error || 'Historia no encontrada'}</span>
+            <div className="min-h-screen bg-black py-6 flex flex-col justify-center sm:py-12">
+                <div className="relative py-3 sm:max-w-xl sm:mx-auto">
+                    <div className="relative px-4 py-10 bg-[#111827] shadow-lg sm:rounded-3xl sm:p-20">
+                        <div className="max-w-md mx-auto">
+                            <div className="divide-y divide-gray-700">
+                                <div className="py-8 text-base leading-6 space-y-4 text-red-400 sm:text-lg sm:leading-7">
+                                    <p>{error || 'Story no encontrada'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
 
     return (
-        <div>
-            <div className="sm:flex sm:items-center">
-                <div className="sm:flex-auto flex items-center">
-                    <button
-                        type="button"
-                        onClick={handleGoBack}
-                        className="mr-3 inline-flex items-center p-2 border border-transparent rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        <ArrowLeftIcon className="h-5 w-5" aria-hidden="true" />
-                    </button>
-                    <div>
-                        <h1 className="text-2xl font-semibold text-gray-900">Editar Historia</h1>
-                        <p className="mt-2 text-sm text-gray-700">
-                            Configura las respuestas automáticas para esta historia
-                        </p>
+        <div className="min-h-screen bg-black py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Header y botón de volver */}
+                <div className="mb-8">
+                    <div className="flex items-center justify-between">
+                        <button
+                            onClick={handleGoBack}
+                            className="p-2 rounded-full bg-[#111827] text-gray-400 hover:text-white focus:outline-none"
+                            aria-label="Volver atrás"
+                        >
+                            <ArrowLeftIcon className="h-6 w-6" />
+                        </button>
+                        <h1 className="text-2xl font-bold text-white">Editar Historia</h1>
+                        <div className="w-10"></div> {/* Espacio para mantener el header centrado */}
                     </div>
+                    <p className="mt-2 text-center text-gray-400">
+                        Configura tu historia con palabras clave y respuestas automáticas
+                    </p>
                 </div>
-            </div>
 
-            <div className="mt-8 space-y-6">
-                {/* Descripción y URL */}
-                <div className="bg-white shadow sm:rounded-lg">
-                    <div className="px-4 py-5 sm:p-6">
-                        <h3 className="text-lg font-medium leading-6 text-gray-900">Información básica</h3>
-                        <div className="mt-5">
+                <div className="space-y-8">
+                    {/* Sección de Descripción con espacio para imagen */}
+                    <div className="bg-[#111827] rounded-lg overflow-hidden">
+                        <div className="p-6">
+                            <h3 className="text-xl font-semibold text-white mb-2 flex items-center">
+                                <DocumentTextIcon className="h-5 w-5 mr-2" />
+                                Descripción
+                            </h3>
+                            <p className="text-sm text-gray-400">
+                                Edita la descripción de tu story.
+                            </p>
+                        </div>
+                        <div className="px-6 pb-6">
+                            {/* Espacio para la imagen (pendiente de implementación en backend) */}
+                            <div className="mb-6 flex items-center justify-center bg-[#1f2937] rounded-lg p-4 h-64">
+                                <div className="text-center">
+                                    <PhotoIcon className="h-16 w-16 mx-auto text-gray-500" />
+                                    <p className="mt-2 text-sm text-gray-400">
+                                        Imagen de la historia (próximamente)
+                                    </p>
+                                </div>
+                            </div>
+
                             {isEditing ? (
                                 <div className="space-y-4">
-                                    <div>
-                                        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                                            Descripción
-                                        </label>
-                                        <div className="mt-1">
-                                            <textarea
-                                                id="description"
-                                                name="description"
-                                                rows={3}
-                                                value={description}
-                                                onChange={(e) => setDescription(e.target.value)}
-                                                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                            />
-                                        </div>
-                                    </div>
+                                    <textarea
+                                        rows={4}
+                                        value={description}
+                                        onChange={(e) => setDescription(e.target.value)}
+                                        className="w-full bg-[#1f2937] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                        placeholder="Describe tu story"
+                                    />
                                     <div className="flex justify-end space-x-3">
                                         <button
                                             type="button"
-                                            onClick={handleCancelEdit}
-                                            className="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                            onClick={() => {
+                                                setDescription(story.description || '');
+                                                setIsEditing(false);
+                                            }}
+                                            className="inline-flex items-center px-4 py-2 border border-gray-600 rounded-md text-sm font-medium text-gray-300 bg-transparent hover:bg-gray-800 focus:outline-none"
                                         >
                                             Cancelar
                                         </button>
                                         <button
                                             type="button"
                                             onClick={handleSaveDescription}
-                                            disabled={isSaving}
-                                            className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
+                                            disabled={loading}
+                                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none disabled:opacity-50"
                                         >
-                                            {isSaving ? 'Guardando...' : 'Guardar'}
+                                            {loading ? 'Guardando...' : 'Guardar'}
                                         </button>
                                     </div>
                                 </div>
                             ) : (
                                 <div className="space-y-4">
-                                    <div>
-                                        <h4 className="text-sm font-medium text-gray-500">Descripción</h4>
-                                        <p className="mt-1 text-sm text-gray-900">{story.description}</p>
-                                    </div>
+                                    <p className="text-white">{story.description || 'Sin descripción'}</p>
                                     <button
                                         type="button"
                                         onClick={() => setIsEditing(true)}
-                                        className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                        className="inline-flex items-center justify-center p-2 border border-transparent rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
+                                        aria-label="Editar descripción"
                                     >
-                                        Editar
+                                        <PencilIcon className="h-5 w-5" />
                                     </button>
                                 </div>
                             )}
                         </div>
                     </div>
+
+                    {/* Sección de Keywords y Responses */}
+                    <MediaSection
+                        mediaId={storyId}
+                        mediaType="story"
+                        keywords={keywords}
+                        responses={responses}
+                        onKeywordsChange={setKeywords}
+                        onResponsesChange={setResponses}
+                    />
                 </div>
-
-                {/* Palabras clave */}
-                <KeywordsSection
-                    reelId={story.id}
-                    keywords={story.keywords || []}
-                    onKeywordsChange={(keywords) => setStory({ ...story, keywords })}
-                />
-
-                {/* Respuestas DM */}
-                <ResponsesSection
-                    reelId={story.id}
-                    responses={story.responses || []}
-                    onResponsesChange={(responses) => setStory({ ...story, responses })}
-                />
             </div>
         </div>
     );

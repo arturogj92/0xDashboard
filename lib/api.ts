@@ -298,4 +298,52 @@ export const toggleStoryStatus = async (id: number, isActive: boolean): Promise<
         body: JSON.stringify({ is_active: isActive }),
     });
     return response.json();
-}; 
+};
+
+// Story Keywords
+export async function getStoryKeywords(storyId: number): Promise<ApiResponse<Keyword[]>> {
+    const response = await fetch(`${API_URL}/api/stories/${storyId}/keywords`);
+    return response.json();
+}
+
+export async function createOrUpdateStoryKeyword(keyword: Omit<Keyword, 'id'>): Promise<ApiResponse<Keyword>> {
+    const response = await fetch(`${API_URL}/api/stories/${keyword.reel_id}/keywords`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(keyword),
+    });
+    return response.json();
+}
+
+export async function deleteStoryKeyword(storyId: number, keywordId: number): Promise<ApiResponse<void>> {
+    const response = await fetch(`${API_URL}/api/stories/${storyId}/keywords/${keywordId}`, {
+        method: 'DELETE',
+    });
+    return response.json();
+}
+
+// Story Responses
+export async function getStoryResponses(storyId: number): Promise<ApiResponse<Response[]>> {
+    const response = await fetch(`${API_URL}/api/stories/${storyId}/responses`);
+    return response.json();
+}
+
+export async function createOrUpdateStoryResponse(responseData: Omit<Response, 'id'>): Promise<ApiResponse<Response>> {
+    const response = await fetch(`${API_URL}/api/stories/${responseData.reel_id}/responses`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(responseData),
+    });
+    return response.json();
+}
+
+export async function deleteStoryResponse(storyId: number, responseId: number): Promise<ApiResponse<void>> {
+    const response = await fetch(`${API_URL}/api/stories/${storyId}/responses/${responseId}`, {
+        method: 'DELETE',
+    });
+    return response.json();
+} 
