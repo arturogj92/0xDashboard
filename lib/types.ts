@@ -1,17 +1,26 @@
-export interface Reel {
+export interface Media {
     id: number;
-    shortcode: string;
     media_id: string;
     url: string;
     description: string;
     is_active: boolean;
+    media_type: 'reel' | 'story';
     keywords?: Keyword[];
     responses?: Response[];
-    publicComments?: PublicComment[];
     thumbnailUrl?: string;
     totalVisits?: number;
     visits24?: number;
     visits7d?: number;
+}
+
+export interface Reel extends Media {
+    media_type: 'reel';
+    shortcode: string;
+    publicComments?: PublicComment[];
+}
+
+export interface Story extends Media {
+    media_type: 'story';
 }
 
 export interface DmLog {
@@ -27,7 +36,6 @@ export interface Keyword {
     keyword: string;
     is_active: boolean;
 }
-
 
 export interface PublicComment {
     id: number;

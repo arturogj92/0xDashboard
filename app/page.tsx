@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { ReelCard } from '@/components/reels/ReelCard';
+import { MediaCard } from '@/components/reels/ReelCard';
 import { DeleteDialog } from '@/components/reels/DeleteDialog';
 import { StatsDialog } from '@/components/reels/StatsDialog';
 import { useReels } from '@/hooks/useReels';
@@ -11,6 +11,7 @@ import { useReels } from '@/hooks/useReels';
 export default function Home() {
   const {
     reels,
+    stories,
     loading,
     error,
     deleteLoading,
@@ -77,11 +78,37 @@ export default function Home() {
         </Button>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
         {reels.map((reel) => (
-          <ReelCard
+          <MediaCard
             key={reel.id}
-            reel={reel}
+            media={reel}
+            onDelete={openDeleteDialog}
+            onToggleActive={handleToggleActive}
+            onStatsClick={openStatsDialog}
+            deleteLoading={deleteLoading}
+          />
+        ))}
+      </div>
+
+      <div className="text-center mb-8">
+        <h1 className="text-2xl font-semibold text-foreground mb-2">Historias</h1>
+        <p className="text-sm text-gray-400 mb-6">
+          Lista de historias configuradas para respuestas automáticas
+        </p>
+        <Button asChild variant="outline" className="mx-auto hover:bg-purple-900/30 transition-colors duration-200">
+          <Link href="/stories/new" className="flex items-center gap-2">
+            <PlusIcon className="h-4 w-4" />
+            Añadir Historia
+          </Link>
+        </Button>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {stories.map((story) => (
+          <MediaCard
+            key={story.id}
+            media={story}
             onDelete={openDeleteDialog}
             onToggleActive={handleToggleActive}
             onStatsClick={openStatsDialog}

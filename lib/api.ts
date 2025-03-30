@@ -1,9 +1,9 @@
-import { Reel, Keyword, PublicComment, Response, ApiResponse, DmLog } from './types';
+import { Reel, Keyword, PublicComment, Response, ApiResponse, DmLog, Media, Story } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 // Reels
-export const createReel = async (data: Omit<Reel, 'id' | 'shortcode' | 'media_id' | 'created_at' | 'updated_at'>, is_draft?: boolean): Promise<ApiResponse<Reel>> => {
+export const createReel = async (data: Omit<Media, 'id' | 'media_id' | 'created_at' | 'updated_at'>, is_draft?: boolean): Promise<ApiResponse<Media>> => {
     const response = await fetch(`${API_URL}/api/reels`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -42,17 +42,47 @@ export const getReelDmTotalCount7d = async (reelId: number): Promise<ApiResponse
   return response.json();
 };
 
-export const getReel = async (id: number): Promise<ApiResponse<Reel>> => {
+export const getReel = async (id: number): Promise<ApiResponse<Media>> => {
     const response = await fetch(`${API_URL}/api/reels/${id}`);
-    return response.json();
+    const data = await response.json();
+    if (data.success) {
+        // Convertir el tipo según media_type
+        if (data.data.media_type === 'story') {
+            return {
+                ...data,
+                data: data.data as Story
+            };
+        } else {
+            return {
+                ...data,
+                data: data.data as Reel
+            };
+        }
+    }
+    return data;
 };
-export const updateReelDescription = async (id: number, description: string, publish_draft?: boolean, url?: string): Promise<ApiResponse<Reel>> => {
+export const updateReelDescription = async (id: number, description: string, publish_draft?: boolean, url?: string): Promise<ApiResponse<Media>> => {
     const response = await fetch(`${API_URL}/api/reels/${id}/description`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ description, publish_draft, url }),
     });
-    return response.json();
+    const data = await response.json();
+    if (data.success) {
+        // Convertir el tipo según media_type
+        if (data.data.media_type === 'story') {
+            return {
+                ...data,
+                data: data.data as Story
+            };
+        } else {
+            return {
+                ...data,
+                data: data.data as Reel
+            };
+        }
+    }
+    return data;
 };
 
 export const deleteReel = async (id: number): Promise<ApiResponse<void>> => {
@@ -62,18 +92,47 @@ export const deleteReel = async (id: number): Promise<ApiResponse<void>> => {
     return response.json();
 };
 
-export const getReels = async (): Promise<ApiResponse<Reel[]>> => {
+export const getReels = async (): Promise<ApiResponse<Media[]>> => {
     const response = await fetch(`${API_URL}/api/reels`);
-    return response.json();
+    const data = await response.json();
+    if (data.success) {
+        // Convertir el tipo según media_type
+        return {
+            ...data,
+            data: data.data.map((item: any) => {
+                if (item.media_type === 'story') {
+                    return item as Story;
+                } else {
+                    return item as Reel;
+                }
+            })
+        };
+    }
+    return data;
 };
 
-export const toggleReelStatus = async (id: number, isActive: boolean): Promise<ApiResponse<Reel>> => {
+export const toggleReelStatus = async (id: number, isActive: boolean): Promise<ApiResponse<Media>> => {
     const response = await fetch(`${API_URL}/api/reels/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_active: isActive }),
     });
-    return response.json();
+    const data = await response.json();
+    if (data.success) {
+        // Convertir el tipo según media_type
+        if (data.data.media_type === 'story') {
+            return {
+                ...data,
+                data: data.data as Story
+            };
+        } else {
+            return {
+                ...data,
+                data: data.data as Reel
+            };
+        }
+    }
+    return data;
 };
 
 // Keywords
@@ -187,4 +246,56 @@ export const getReelDmHourlyCountCurrentDay = async (reelId: number): Promise<Ap
 }>> => {
   const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-hourly-count-current-day`);
   return response.json();
+};
+
+// Stories
+export const createStory = async (data: Omit<Story, 'id' | 'media_id' | 'created_at' | 'updated_at'>): Promise<ApiResponse<Story>> => {
+    const response = await fetch(`${API_URL}/api/stories`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+    return response.json();
+};
+
+export const getStories = async (): Promise<ApiResponse<Story[]>> => {
+    const response = await fetch(`${API_URL}/api/stories`);
+    const data = await response.json();
+    if (data.success) {
+        return {
+            ...data,
+            data: data.data.map((item: any) => item as Story)
+        };
+    }
+    return data;
+};
+
+export const getStory = async (id: number): Promise<ApiResponse<Story>> => {
+    const response = await fetch(`${API_URL}/api/stories/${id}`);
+    return response.json();
+};
+
+export const updateStoryDescription = async (id: number, description: string): Promise<ApiResponse<Story>> => {
+    const response = await fetch(`${API_URL}/api/stories/${id}/description`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ description }),
+    });
+    return response.json();
+};
+
+export const deleteStory = async (id: number): Promise<ApiResponse<void>> => {
+    const response = await fetch(`${API_URL}/api/stories/${id}`, {
+        method: 'DELETE',
+    });
+    return response.json();
+};
+
+export const toggleStoryStatus = async (id: number, isActive: boolean): Promise<ApiResponse<Story>> => {
+    const response = await fetch(`${API_URL}/api/stories/${id}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: isActive }),
+    });
+    return response.json();
 }; 
