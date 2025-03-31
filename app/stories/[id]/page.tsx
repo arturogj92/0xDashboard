@@ -74,6 +74,11 @@ export default function EditStory() {
     };
 
     const handleSaveDescription = async () => {
+        if (!storyId) {
+            setError('ID de historia no válido');
+            return;
+        }
+
         setLoading(true);
         setError(null);
 
@@ -83,7 +88,7 @@ export default function EditStory() {
                 setStory(response.data);
                 setIsEditing(false);
             } else {
-                setError('Error al guardar la descripción');
+                setError(response.message || 'Error al guardar la descripción');
             }
         } catch (err) {
             setError('Error al guardar la descripción');
@@ -123,7 +128,7 @@ export default function EditStory() {
     }
 
     return (
-        <div className="min-h-screen bg-black py-8">
+        <div className="min-h-screen py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header sin fondo con título a la izquierda e imagen a la derecha */}
                 <div className="mb-8">
@@ -137,7 +142,16 @@ export default function EditStory() {
                                 <ArrowLeftIcon className="h-6 w-6" />
                             </button>
                             <div className="ml-2">
-                                <h1 className="text-2xl font-bold text-white">Editar respuesta a Historia</h1>
+                                <h1 className="text-2xl font-bold text-white flex items-center">
+                                    <Image
+                                        src="/images/icons/story-icon.png"
+                                        alt="Story Icon"
+                                        width={84}
+                                        height={84}
+                                        className="mr-2"
+                                    />
+                                    Editar Historia
+                                </h1>
                                 <p className="text-gray-400">
                                     Configura tu historia con palabras clave y respuestas automáticas
                                 </p>
@@ -161,15 +175,15 @@ export default function EditStory() {
                 </div>
 
                 <div className="space-y-8">
-                    {/* Descripción y Palabras Clave en dos columnas */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Sección de Descripción */}
-                        <div className="bg-[#120724] rounded-lg overflow-hidden">
+                    {/* Descripción y Palabras Clave en dos columnas con proporción 30/70 */}
+                    <div className="grid grid-cols-1 md:grid-cols-10 gap-6">
+                        {/* Sección de Descripción (30%) */}
+                        <div className="md:col-span-4 bg-[#120724] rounded-lg overflow-hidden">
                             <div className="p-6 relative">
                                 <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-xl font-semibold text-white flex items-center">
-                                        <DocumentTextIcon className="h-5 w-5 mr-2" />
-                                        Descripción
+                                    <h3 className="text-xl font-semibold flex items-center">
+                                        <DocumentTextIcon className="h-5 w-5 mr-2 text-[#ff9805]" />
+                                        Descripción de la automatización
                                     </h3>
                                     {!isEditing && (
                                         <button
@@ -184,18 +198,31 @@ export default function EditStory() {
                                 </div>
 
                                 <p className="text-sm text-gray-400 mb-4">
-                                    Edita la descripción de tu story.
+                                    Explica brevemente en qué consiste la automatización.
                                 </p>
 
-                                {/* Placeholder para imagen futura */}
-                                <div className="mb-4 bg-[#1c1033] rounded-lg p-3 flex items-center justify-center aspect-[9/16] max-w-[200px] mx-auto">
-                                    <div className="text-center">
-                                        <PhotoIcon className="h-8 w-8 mx-auto text-gray-500" />
-                                        <p className="mt-1 text-xs text-gray-500">
-                                            Imagen (próximamente)
-                                        </p>
+                                {/* Imagen de la historia */}
+                                {story.story_url_image ? (
+                                    <div className="mb-4 bg-[#1c1033] rounded-lg p-3 flex items-center justify-center aspect-[9/16] max-w-[100px] mx-auto">
+                                        <div className="relative w-full h-full">
+                                            <Image
+                                                src={story.story_url_image}
+                                                alt="Imagen de la historia"
+                                                fill
+                                                className="object-contain rounded-lg"
+                                            />
+                                        </div>
                                     </div>
-                                </div>
+                                ) : (
+                                    <div className="mb-4 bg-[#1c1033] rounded-lg p-3 flex items-center justify-center aspect-[9/16] max-w-[100px] mx-auto">
+                                        <div className="text-center">
+                                            <PhotoIcon className="h-8 w-8 mx-auto text-gray-500" />
+                                            <p className="mt-1 text-xs text-gray-500">
+                                                Sin imagen
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
 
                                 {isEditing ? (
                                     <div className="space-y-4">
@@ -235,8 +262,8 @@ export default function EditStory() {
                             </div>
                         </div>
 
-                        {/* Sección de Palabras Clave */}
-                        <div className="bg-[#120724] rounded-lg overflow-hidden">
+                        {/* Sección de Palabras Clave (70%) */}
+                        <div className="md:col-span-6 bg-[#120724] rounded-lg overflow-hidden">
                             {/* Pasamos solo la parte de keywords de MediaSection */}
                             <MediaSection
                                 mediaId={storyId}

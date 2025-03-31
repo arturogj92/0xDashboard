@@ -275,12 +275,21 @@ export const getStory = async (id: number): Promise<ApiResponse<Story>> => {
 };
 
 export const updateStoryDescription = async (id: number, description: string): Promise<ApiResponse<Story>> => {
-    const response = await fetch(`${API_URL}/api/stories/${id}/description`, {
+    const response = await fetch(`${API_URL}/api/stories/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ description }),
     });
-    return response.json();
+    const data = await response.json();
+    if (data.success) {
+        return {
+            ...data,
+            data: data.data as Story
+        };
+    }
+    return data;
 };
 
 export const deleteStory = async (id: number): Promise<ApiResponse<void>> => {

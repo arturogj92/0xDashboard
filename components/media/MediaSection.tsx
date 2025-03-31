@@ -21,6 +21,7 @@ import {
   KeyIcon,
   ChatBubbleLeftEllipsisIcon
 } from '@heroicons/react/24/outline';
+import Image from 'next/image';
 
 interface MediaSectionProps {
     mediaId: number;
@@ -167,8 +168,8 @@ export function MediaSection({
             {!showResponsesOnly && (
                 <div className="bg-[#120724] rounded-lg overflow-hidden">
                     <div className="p-6">
-                        <h3 className="text-xl font-semibold text-white mb-2 flex items-center">
-                            <KeyIcon className="h-5 w-5 mr-2" />
+                        <h3 className="text-xl font-semibold text-white flex items-center mb-2">
+                            <KeyIcon className="h-5 w-5 mr-2 text-[#ff9805]" />
                             Palabras Clave
                         </h3>
                         <p className="text-sm text-gray-400">
@@ -200,7 +201,7 @@ export function MediaSection({
                         )}
 
                         {/* Formulario para agregar palabra clave */}
-                        <form onSubmit={handleAddKeyword} className="flex">
+                        <form onSubmit={handleAddKeyword} className="flex mb-6">
                             <input
                                 type="text"
                                 value={newKeyword}
@@ -227,7 +228,7 @@ export function MediaSection({
                     <div className="p-6 flex justify-between items-center">
                         <div>
                             <h3 className="text-xl font-semibold text-white mb-2 flex items-center">
-                                <ChatBubbleLeftEllipsisIcon className="h-5 w-5 mr-2" />
+                                <ChatBubbleLeftEllipsisIcon className="h-5 w-5 mr-2 text-[#ff9805]" />
                                 Respuesta
                             </h3>
                             <p className="text-sm text-gray-400">

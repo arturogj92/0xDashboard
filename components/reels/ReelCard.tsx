@@ -1,4 +1,4 @@
-import { Media } from '@/lib/types';
+import { Media, Story } from '@/lib/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Toggle } from '@/components/ui/toggle';
@@ -102,7 +102,16 @@ export function MediaCard({
       <div className="flex flex-col sm:flex-row">
         {/* Imagen del Media */}
         <div className="w-full sm:w-32 h-32 bg-gray-800 flex-shrink-0">
-          {media.thumbnailUrl ? (
+          {media.media_type === 'story' && (media as Story).story_url_image && (media as Story).story_url_image !== '' ? (
+            <div className="w-full h-full relative">
+              <Image 
+                src={(media as Story).story_url_image as string} 
+                alt={`Imagen de ${media.description}`}
+                fill
+                className="object-cover"
+              />
+            </div>
+          ) : media.thumbnailUrl ? (
             <div className="w-full h-full relative">
               <Image 
                 src={media.thumbnailUrl} 
