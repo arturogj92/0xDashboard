@@ -145,8 +145,8 @@ export const createOrUpdateKeyword = async (data: Keyword): Promise<ApiResponse<
     return response.json();
 };
 
-export const getReelKeywords = async (reelId: number): Promise<ApiResponse<Keyword[]>> => {
-    const response = await fetch(`${API_URL}/api/reels/${reelId}/keywords`);
+export const getReelKeywords = async (mediaId: number): Promise<ApiResponse<Keyword[]>> => {
+    const response = await fetch(`${API_URL}/api/media/${mediaId}/keywords`);
     return response.json();
 };
 
@@ -207,7 +207,7 @@ export const deletePublicComment = async (reelId: number, commentId: number): Pr
 
 // Responses
 export const createOrUpdateResponse = async (data: Response): Promise<ApiResponse<Response>> => {
-    const response = await fetch(`${API_URL}/api/reels/${data.reel_id}/responses`, {
+    const response = await fetch(`${API_URL}/api/media/${data.media_id}/responses`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -215,14 +215,13 @@ export const createOrUpdateResponse = async (data: Response): Promise<ApiRespons
     return response.json();
 };
 
-export const getReelResponses = async (reelId: number): Promise<ApiResponse<Response[]>> => {
-    const response = await fetch(`${API_URL}/api/reels/${reelId}/responses`);
+export const getReelResponses = async (mediaId: number): Promise<ApiResponse<Response[]>> => {
+    const response = await fetch(`${API_URL}/api/media/${mediaId}/responses`);
     return response.json();
 };
 
-
-export const deleteResponse = async (reelId: number, responseId: number): Promise<ApiResponse<void>> => {
-    const response = await fetch(`${API_URL}/api/reels/${reelId}/responses/${responseId}`, {
+export const deleteResponse = async (mediaId: number, responseId: number): Promise<ApiResponse<void>> => {
+    const response = await fetch(`${API_URL}/api/media/${mediaId}/responses/${responseId}`, {
         method: 'DELETE',
     });
     return response.json();
@@ -331,7 +330,7 @@ export async function getStoryResponses(storyId: number): Promise<ApiResponse<Re
 }
 
 export async function createOrUpdateStoryResponse(responseData: Omit<Response, 'id'>): Promise<ApiResponse<Response>> {
-    const response = await fetch(`${API_URL}/api/stories/${responseData.reel_id}/responses`, {
+    const response = await fetch(`${API_URL}/api/media/${responseData.media_id}/responses`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

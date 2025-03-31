@@ -32,7 +32,7 @@ export interface DmLog {
 
 export interface Keyword {
     id: number;
-    reel_id: number;
+    media_id: number;
     keyword: string;
     is_active: boolean;
     created_at?: string;
@@ -47,7 +47,7 @@ export interface PublicComment {
 
 export interface Response {
     id: number;
-    reel_id: number;
+    media_id: number;
     name: string;
     dm_message: string;
     button_text?: string;
