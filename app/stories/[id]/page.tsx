@@ -27,6 +27,8 @@ export default function EditStory() {
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
         fetchStory();
@@ -79,7 +81,7 @@ export default function EditStory() {
             return;
         }
 
-        setLoading(true);
+        setIsSaving(true);
         setError(null);
 
         try {
@@ -93,9 +95,53 @@ export default function EditStory() {
         } catch (err) {
             setError('Error al guardar la descripción');
         } finally {
-            setLoading(false);
+            setIsSaving(false);
         }
     };
+
+    // Manejar el autoguardado
+    const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value;
+        setDescription(newValue);
+        
+        // Limpiar el timeout anterior si existe
+        if (saveTimeout) {
+            clearTimeout(saveTimeout);
+        }
+        
+        // Establecer un nuevo timeout para guardar después de 1 segundo
+        // Capturamos el valor actual de newValue para asegurar que la última letra se guarde
+        const timeout = setTimeout(() => {
+            // Usamos el valor capturado de newValue en lugar del estado que podría no estar actualizado
+            updateStoryDescription(storyId, newValue)
+                .then((response) => {
+                    if (response.success) {
+                        setStory(response.data);
+                        setIsSaving(false);
+                    } else {
+                        setError(response.message || 'Error al guardar la descripción');
+                        setIsSaving(false);
+                    }
+                })
+                .catch(() => {
+                    setError('Error al guardar la descripción');
+                    setIsSaving(false);
+                });
+            
+            setIsSaving(true);
+        }, 1000);
+        
+        setSaveTimeout(timeout);
+    };
+
+    // Limpiar el timeout cuando el componente se desmonta
+    useEffect(() => {
+        return () => {
+            if (saveTimeout) {
+                clearTimeout(saveTimeout);
+            }
+        };
+    }, [saveTimeout]);
 
     const handleGoBack = () => {
         router.back();
@@ -177,88 +223,64 @@ export default function EditStory() {
                 <div className="space-y-8">
                     {/* Descripción y Palabras Clave en dos columnas con proporción 30/70 */}
                     <div className="grid grid-cols-1 md:grid-cols-10 gap-6">
-                        {/* Sección de Descripción (30%) */}
+                        {/* Sección de Descripción (30%) - Nuevo diseño como en la imagen de referencia */}
                         <div className="md:col-span-4 bg-[#120724] rounded-lg overflow-hidden">
                             <div className="p-6 relative">
-                                <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-xl font-semibold flex items-center">
-                                        <DocumentTextIcon className="h-5 w-5 mr-2 text-[#ff9805]" />
-                                        Descripción de la automatización
-                                    </h3>
-                                    {!isEditing && (
-                                        <button
-                                            type="button"
-                                            onClick={() => setIsEditing(true)}
-                                            className="inline-flex items-center justify-center p-2 border border-transparent rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
-                                            aria-label="Editar descripción"
-                                        >
-                                            <PencilIcon className="h-5 w-5" />
-                                        </button>
+                                {/* Título directamente editable y centrado */}
+                                <div className="text-center mb-4 relative">
+                                    <input
+                                        type="text"
+                                        value={description}
+                                        onChange={handleDescriptionChange}
+                                        placeholder="Título de tu historia"
+                                        className="w-full text-center text-xl font-semibold text-white bg-transparent hover:bg-[#1c1033] focus:bg-[#1c1033] rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-text border-b border-gray-600"
+                                    />
+                                    {isSaving && (
+                                        <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-gray-400">
+                                            Guardando...
+                                        </span>
                                     )}
                                 </div>
 
-                                <p className="text-sm text-gray-400 mb-4">
-                                    Explica brevemente en qué consiste la automatización.
-                                </p>
-
-                                {/* Imagen de la historia */}
-                                {story.story_url_image ? (
-                                    <div className="mb-4 bg-[#1c1033] rounded-lg p-3 flex items-center justify-center aspect-[9/16] max-w-[100px] mx-auto">
-                                        <div className="relative w-full h-full">
-                                            <Image
-                                                src={story.story_url_image}
-                                                alt="Imagen de la historia"
-                                                fill
-                                                className="object-contain rounded-lg"
-                                            />
-                                        </div>
+                                {/* Imagen de la historia dentro de un iPhone más pequeño */}
+                                <div className="relative w-[200px] h-[398px] mx-auto">
+                                    {/* Marco del iPhone */}
+                                    <img
+                                        src="/images/iphone16-frame.png"
+                                        alt="iPhone frame"
+                                        className="absolute w-full h-full z-20 pointer-events-none"
+                                    />
+                                    
+                                    {/* Contenido del iPhone (imagen de la historia) - ahora con Dynamic Island visible */}
+                                    <div className="absolute top-0 left-0 right-0 bottom-0 z-10 flex items-center justify-center">
+                                        {story.story_url_image ? (
+                                            <div className="relative w-full h-full overflow-hidden rounded-[36px]">
+                                                <Image
+                                                    src={story.story_url_image}
+                                                    alt="Imagen de la historia"
+                                                    fill
+                                                    className="object-cover"
+                                                    priority
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div className="relative w-full h-full overflow-hidden rounded-[36px] bg-[#0a0a0a] flex items-center justify-center">
+                                                <div className="absolute top-0 left-0 right-0 h-[25px] bg-black rounded-t-[36px] z-10">
+                                                    <div className="absolute top-[6px] left-0 right-0 mx-auto w-[65px] h-[15px] bg-black rounded-full"></div>
+                                                </div>
+                                                <div className="text-center p-3 mt-[25px]">
+                                                    <PhotoIcon className="h-5 w-5 mx-auto text-gray-500" />
+                                                    <p className="mt-1 text-[10px] text-gray-400 px-1">
+                                                        ¡No te preocupes! La imagen de tu historiaaparecerá automáticamente cuando alguien escriba una de tus palabras clave.
+                                                    </p>
+                                                    <p className="mt-1 text-[10px] text-gray-400 px-1">
+                                                        No necesitas hacer nada más 👍
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
-                                ) : (
-                                    <div className="mb-4 bg-[#1c1033] rounded-lg p-3 flex items-center justify-center aspect-[9/16] max-w-[100px] mx-auto">
-                                        <div className="text-center">
-                                            <PhotoIcon className="h-8 w-8 mx-auto text-gray-500" />
-                                            <p className="mt-1 text-xs text-gray-500">
-                                                Sin imagen
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {isEditing ? (
-                                    <div className="space-y-4">
-                                        <textarea
-                                            rows={4}
-                                            value={description}
-                                            onChange={(e) => setDescription(e.target.value)}
-                                            className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                                            placeholder="Describe tu story"
-                                        />
-                                        <div className="flex justify-end space-x-3">
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setDescription(story.description || '');
-                                                    setIsEditing(false);
-                                                }}
-                                                className="inline-flex items-center px-4 py-2 border border-gray-600 rounded-md text-sm font-medium text-gray-300 bg-transparent hover:bg-gray-800 focus:outline-none"
-                                            >
-                                                Cancelar
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={handleSaveDescription}
-                                                disabled={loading}
-                                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none disabled:opacity-50"
-                                            >
-                                                {loading ? 'Guardando...' : 'Guardar'}
-                                            </button>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div>
-                                        <p className="text-white">{story.description || 'Sin descripción'}</p>
-                                    </div>
-                                )}
+                                </div>
                             </div>
                         </div>
 

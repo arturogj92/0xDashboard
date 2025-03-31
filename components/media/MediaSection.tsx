@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Keyword, Response, Media } from '@/lib/types';
 import { 
   createOrUpdateKeyword, 
@@ -22,6 +22,14 @@ import {
   ChatBubbleLeftEllipsisIcon
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import data from '@emoji-mart/data';
+import Picker from '@emoji-mart/react';
 
 interface MediaSectionProps {
     mediaId: number;
@@ -54,6 +62,10 @@ export function MediaSection({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState(false);
+    const [showEmojiPickerKeyword, setShowEmojiPickerKeyword] = useState(false);
+    const [showEmojiPickerMessage, setShowEmojiPickerMessage] = useState(false);
+    const keywordInputRef = useRef<HTMLInputElement>(null);
+    const messageTextareaRef = useRef<HTMLTextAreaElement>(null);
 
     const hasExistingResponse = responses.length > 0;
     const currentResponse = hasExistingResponse ? responses[0] : null;
@@ -74,6 +86,12 @@ export function MediaSection({
     const handleAddKeyword = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newKeyword.trim()) return;
+        
+        // Comprobar el límite de 5 palabras clave
+        if (keywords.length >= 5) {
+            setError('Límite alcanzado: máximo 5 palabras clave por historia');
+            return;
+        }
 
         setLoading(true);
         setError(null);
@@ -162,6 +180,48 @@ export function MediaSection({
         setIsEditing(true);
     };
 
+    // Función para manejar la selección de emoji para el campo de palabra clave
+    const handleEmojiSelectKeyword = (emoji: any) => {
+        if (keywordInputRef.current) {
+            const start = keywordInputRef.current.selectionStart || 0;
+            const end = keywordInputRef.current.selectionEnd || 0;
+            const text = newKeyword;
+            const newText = text.substring(0, start) + emoji.native + text.substring(end);
+            setNewKeyword(newText);
+
+            // Establecer el cursor después del emoji insertado
+            setTimeout(() => {
+                if (keywordInputRef.current) {
+                    keywordInputRef.current.focus();
+                    keywordInputRef.current.selectionStart = start + emoji.native.length;
+                    keywordInputRef.current.selectionEnd = start + emoji.native.length;
+                }
+            }, 10);
+        }
+        setShowEmojiPickerKeyword(false);
+    };
+
+    // Función para manejar la selección de emoji para el campo de mensaje DM
+    const handleEmojiSelectMessage = (emoji: any) => {
+        if (messageTextareaRef.current) {
+            const start = messageTextareaRef.current.selectionStart || 0;
+            const end = messageTextareaRef.current.selectionEnd || 0;
+            const text = responseData.dm_message;
+            const newText = text.substring(0, start) + emoji.native + text.substring(end);
+            setResponseData({ ...responseData, dm_message: newText });
+
+            // Establecer el cursor después del emoji insertado
+            setTimeout(() => {
+                if (messageTextareaRef.current) {
+                    messageTextareaRef.current.focus();
+                    messageTextareaRef.current.selectionStart = start + emoji.native.length;
+                    messageTextareaRef.current.selectionEnd = start + emoji.native.length;
+                }
+            }, 10);
+        }
+        setShowEmojiPickerMessage(false);
+    };
+
     return (
         <div className="space-y-8">
             {/* Sección de Palabras Clave */}
@@ -177,10 +237,10 @@ export function MediaSection({
                         </p>
                     </div>
 
-                    <div className="px-6 pb-6">
+                    <div className="px-6 pb-3">
                         {/* Lista de palabras clave */}
                         {keywords.length > 0 ? (
-                            <div className="space-y-2 mb-6">
+                            <div className="space-y-2 mb-3">
                                 {keywords.map((keyword) => (
                                     <div key={keyword.id} className="flex items-center justify-between bg-[#1c1033] px-4 py-3 rounded-md">
                                         <span className="text-gray-200">{keyword.keyword}</span>
@@ -193,31 +253,70 @@ export function MediaSection({
                                         </button>
                                     </div>
                                 ))}
+                                <div className="text-right text-xs text-gray-400">
+                                    {keywords.length}/5 palabras clave
+                                </div>
                             </div>
                         ) : (
-                            <div className="text-center py-4 text-gray-500 mb-6">
+                            <div className="text-center py-3 text-gray-500 mb-3">
                                 No hay palabras clave configuradas. Añade una para activar respuestas automáticas.
                             </div>
                         )}
 
-                        {/* Formulario para agregar palabra clave */}
-                        <form onSubmit={handleAddKeyword} className="flex mb-6">
-                            <input
-                                type="text"
-                                value={newKeyword}
-                                onChange={(e) => setNewKeyword(e.target.value)}
-                                placeholder="Nueva palabra clave"
-                                className="flex-1 bg-[#1c1033] text-white rounded-l-md border-0 px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                            />
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="inline-flex items-center justify-center rounded-r-md bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none disabled:opacity-50"
-                            >
-                                <PlusIcon className="h-5 w-5 mr-1" />
-                                Agregar
-                            </button>
-                        </form>
+                        {/* Mostrar error si existe */}
+                        {error && (
+                            <div className="mb-3 text-sm text-red-400 bg-red-900/20 px-3 py-2 rounded-md">
+                                {error}
+                            </div>
+                        )}
+
+                        {/* Formulario para agregar palabra clave - solo mostrar si hay menos de 5 keywords */}
+                        {keywords.length < 5 ? (
+                            <form onSubmit={handleAddKeyword} className="flex mb-0">
+                                <div className="flex-1 relative">
+                                    <input
+                                        ref={keywordInputRef}
+                                        type="text"
+                                        value={newKeyword}
+                                        onChange={(e) => setNewKeyword(e.target.value)}
+                                        placeholder="Nueva palabra clave"
+                                        className="w-full bg-[#1c1033] text-white rounded-l-md border-0 px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowEmojiPickerKeyword(!showEmojiPickerKeyword)}
+                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
+                                    >
+                                        😊
+                                    </button>
+                                    {showEmojiPickerKeyword && (
+                                        <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center" onClick={() => setShowEmojiPickerKeyword(false)}>
+                                            <div className="relative" onClick={(e) => e.stopPropagation()}>
+                                                <Picker
+                                                    data={data}
+                                                    onEmojiSelect={handleEmojiSelectKeyword}
+                                                    theme="dark"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                                <button
+                                    type="submit"
+                                    disabled={loading || !newKeyword.trim()}
+                                    className="inline-flex items-center justify-center rounded-r-md bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none disabled:opacity-50"
+                                >
+                                    <PlusIcon className="h-5 w-5 mr-1" />
+                                    Agregar
+                                </button>
+                            </form>
+                        ) : (
+                            <div className="text-center mb-0 py-2 px-3 bg-indigo-900/30 border border-indigo-800/50 rounded-md">
+                                <p className="text-sm text-indigo-300">
+                                    Has alcanzado el máximo de 5 palabras clave. Elimina alguna para añadir nuevas.
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
@@ -236,14 +335,23 @@ export function MediaSection({
                             </p>
                         </div>
                         {!isEditing && hasExistingResponse && currentResponse && (
-                            <button
-                                type="button"
-                                onClick={handleEditClick}
-                                className="inline-flex items-center justify-center p-2 border border-transparent rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
-                                aria-label="Editar"
-                            >
-                                <PencilIcon className="h-5 w-5" />
-                            </button>
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <button
+                                            type="button"
+                                            onClick={handleEditClick}
+                                            className="inline-flex items-center justify-center p-2 border border-transparent rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
+                                            aria-label="Editar"
+                                        >
+                                            <PencilIcon className="h-5 w-5" />
+                                        </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Editar respuesta</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
                         )}
                     </div>
 
@@ -271,20 +379,29 @@ export function MediaSection({
                                             <LinkIcon className="h-4 w-4 mr-1" />
                                             Botón
                                         </h4>
-                                        <div className="mt-2 flex flex-wrap items-center gap-3">
-                                            <span className="inline-block px-4 py-2 bg-indigo-900 text-white rounded-md">
-                                                {currentResponse.button_text}
-                                            </span>
-                                            {currentResponse.button_url && (
-                                                <a 
-                                                    href={currentResponse.button_url} 
-                                                    target="_blank" 
-                                                    rel="noopener noreferrer" 
-                                                    className="text-indigo-400 hover:text-indigo-300 truncate"
-                                                >
-                                                    {currentResponse.button_url}
-                                                </a>
-                                            )}
+                                        <div className="mt-2 border border-dashed border-gray-700 p-3 rounded-md bg-[#1c1033]">
+                                            <div className="flex flex-col space-y-2">
+                                                <div className="flex items-center">
+                                                    <span className="text-gray-400 text-xs min-w-20">Texto:</span>
+                                                    <span className="text-white ml-2">{currentResponse.button_text}</span>
+                                                </div>
+                                                {currentResponse.button_url && (
+                                                    <div className="flex items-center">
+                                                        <span className="text-gray-400 text-xs min-w-20">URL:</span>
+                                                        <a 
+                                                            href={currentResponse.button_url} 
+                                                            target="_blank" 
+                                                            rel="noopener noreferrer" 
+                                                            className="text-indigo-400 hover:text-indigo-300 truncate ml-2"
+                                                        >
+                                                            {currentResponse.button_url}
+                                                        </a>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="text-xs text-gray-500 mt-2 italic">
+                                                Este botón aparecerá en el mensaje que recibirá el usuario
+                                            </div>
                                         </div>
                                     </div>
                                 )}
@@ -315,14 +432,35 @@ export function MediaSection({
                                         <ChatBubbleLeftRightIcon className="h-4 w-4 mr-1" />
                                         Mensaje DM
                                     </label>
-                                    <textarea
-                                        id="dm_message"
-                                        rows={4}
-                                        value={responseData.dm_message}
-                                        onChange={(e) => setResponseData({ ...responseData, dm_message: e.target.value })}
-                                        className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                                        placeholder="Mensaje que se enviará por DM"
-                                    />
+                                    <div className="relative">
+                                        <textarea
+                                            ref={messageTextareaRef}
+                                            id="dm_message"
+                                            rows={4}
+                                            value={responseData.dm_message}
+                                            onChange={(e) => setResponseData({ ...responseData, dm_message: e.target.value })}
+                                            className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                            placeholder="Mensaje que se enviará por DM"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowEmojiPickerMessage(!showEmojiPickerMessage)}
+                                            className="absolute right-2 top-2 text-gray-400 hover:text-gray-200"
+                                        >
+                                            😊
+                                        </button>
+                                        {showEmojiPickerMessage && (
+                                            <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center" onClick={() => setShowEmojiPickerMessage(false)}>
+                                                <div className="relative" onClick={(e) => e.stopPropagation()}>
+                                                    <Picker
+                                                        data={data}
+                                                        onEmojiSelect={handleEmojiSelectMessage}
+                                                        theme="dark"
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
                                     <p className="mt-1 text-xs text-gray-500">
                                         Este texto se enviará como mensaje directo cuando se detecte una palabra clave
                                     </p>
