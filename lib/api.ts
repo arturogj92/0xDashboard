@@ -354,4 +354,24 @@ export async function deleteStoryResponse(storyId: number, responseId: number): 
         method: 'DELETE',
     });
     return response.json();
+}
+
+// AI Response Generation
+export interface AIResponseGenerationParams {
+    prompt: string;
+    includeButton: boolean;
+    buttonUrl?: string;
+    responseName: string;
+    save: boolean;
+}
+
+export async function generateAIResponse(mediaId: number, params: AIResponseGenerationParams): Promise<ApiResponse<Response>> {
+    const response = await fetch(`${API_URL}/api/media/${mediaId}/generate-complete-response`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(params),
+    });
+    return response.json();
 } 

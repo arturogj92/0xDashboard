@@ -9,6 +9,9 @@ import {
   deleteStoryKeyword,
   createOrUpdateResponse,
   createOrUpdateStoryResponse,
+  generateAIResponse,
+  getReelResponses,
+  getStoryResponses
 } from '@/lib/api';
 import { 
   PlusIcon,
@@ -19,7 +22,8 @@ import {
   LinkIcon,
   ExclamationTriangleIcon,
   KeyIcon,
-  ChatBubbleLeftEllipsisIcon
+  ChatBubbleLeftEllipsisIcon,
+  SparklesIcon
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { 
@@ -64,6 +68,14 @@ export function MediaSection({
     const [isEditing, setIsEditing] = useState(false);
     const [showEmojiPickerKeyword, setShowEmojiPickerKeyword] = useState(false);
     const [showEmojiPickerMessage, setShowEmojiPickerMessage] = useState(false);
+    const [showAIModal, setShowAIModal] = useState(false);
+    const [aiLoading, setAiLoading] = useState(false);
+    const [aiPrompt, setAiPrompt] = useState('');
+    const [includeButton, setIncludeButton] = useState(false);
+    const [aiButtonUrl, setAiButtonUrl] = useState('');
+    const [aiResponseName, setAiResponseName] = useState('');
+    const [generatedResponse, setGeneratedResponse] = useState<Response | null>(null);
+    const [showGeneratedResponse, setShowGeneratedResponse] = useState(false);
     const keywordInputRef = useRef<HTMLInputElement>(null);
     const messageTextareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -222,6 +234,80 @@ export function MediaSection({
         setShowEmojiPickerMessage(false);
     };
 
+    // Función para generar respuesta con IA
+    const handleGenerateAIResponse = async () => {
+        if (!aiPrompt.trim() || !aiResponseName.trim()) return;
+        
+        setAiLoading(true);
+        setError(null);
+        
+        try {
+            const response = await generateAIResponse(mediaId, {
+                prompt: aiPrompt,
+                includeButton: includeButton,
+                buttonUrl: includeButton ? aiButtonUrl : '',
+                responseName: aiResponseName,
+                save: true
+            });
+            
+            if (response.success) {
+                // Cerrar el modal inmediatamente
+                setShowAIModal(false);
+                
+                // Limpiar el formulario
+                setAiPrompt('');
+                setIncludeButton(false);
+                setAiButtonUrl('');
+                setAiResponseName('');
+                setGeneratedResponse(null);
+                setShowGeneratedResponse(false);
+                
+                // Actualizar las respuestas directamente
+                if (mediaType === 'reel') {
+                    // Para reels, obtener las respuestas actualizadas del servidor
+                    const updatedResponsesResult = await getReelResponses(mediaId);
+                    if (updatedResponsesResult.success) {
+                        onResponsesChange(updatedResponsesResult.data);
+                    }
+                } else {
+                    // Para stories, obtener las respuestas actualizadas del servidor
+                    const updatedResponsesResult = await getStoryResponses(mediaId);
+                    if (updatedResponsesResult.success) {
+                        onResponsesChange(updatedResponsesResult.data);
+                    }
+                }
+                
+                // Si existe una respuesta, actualizar inmediatamente los datos mostrados
+                if (hasExistingResponse) {
+                    setResponseData({
+                        name: response.data.name,
+                        dm_message: response.data.dm_message,
+                        button_text: response.data.button_text || '',
+                        button_url: response.data.button_url || ''
+                    });
+                    setIsEditing(false);
+                }
+            } else {
+                setError(response.message || 'Error al generar la respuesta con IA');
+            }
+        } catch (err) {
+            setError('Error al comunicarse con el servicio de IA');
+        } finally {
+            setAiLoading(false);
+        }
+    };
+
+    // Función para cerrar el modal y limpiar el formulario
+    const handleCloseAIModal = () => {
+        setShowAIModal(false);
+        setAiPrompt('');
+        setIncludeButton(false);
+        setAiButtonUrl('');
+        setAiResponseName('');
+        setGeneratedResponse(null);
+        setShowGeneratedResponse(false);
+    };
+
     return (
         <div className="space-y-8">
             {/* Sección de Palabras Clave */}
@@ -334,25 +420,45 @@ export function MediaSection({
                                 Configura la respuesta automática que se enviará como mensaje directo cuando se detecten las palabras clave.
                             </p>
                         </div>
-                        {!isEditing && hasExistingResponse && currentResponse && (
+                        <div className="flex space-x-2">
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <button
                                             type="button"
-                                            onClick={handleEditClick}
-                                            className="inline-flex items-center justify-center p-2 border border-transparent rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
-                                            aria-label="Editar"
+                                            onClick={() => setShowAIModal(true)}
+                                            className="inline-flex items-center justify-center p-2 border border-transparent rounded-md text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none"
+                                            aria-label="Generar con IA"
                                         >
-                                            <PencilIcon className="h-5 w-5" />
+                                            <SparklesIcon className="h-5 w-5" />
                                         </button>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>Editar respuesta</p>
+                                        <p>Generar respuesta con IA</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
-                        )}
+                            
+                            {!isEditing && hasExistingResponse && currentResponse && (
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <button
+                                                type="button"
+                                                onClick={handleEditClick}
+                                                className="inline-flex items-center justify-center p-2 border border-transparent rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
+                                                aria-label="Editar"
+                                            >
+                                                <PencilIcon className="h-5 w-5" />
+                                            </button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Editar respuesta</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            )}
+                        </div>
                     </div>
 
                     <div className="px-6 pb-6">
@@ -532,6 +638,193 @@ export function MediaSection({
                                 </div>
                             </form>
                         )}
+                    </div>
+                </div>
+            )}
+
+            {/* Modal para generar respuesta con IA */}
+            {showAIModal && (
+                <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+                    <div className="bg-[#1a0e35] rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                        <div className="p-6">
+                            <div className="flex justify-between items-start">
+                                <h3 className="text-xl font-semibold text-white flex items-center">
+                                    <SparklesIcon className="h-5 w-5 mr-2 text-[#ff9805]" />
+                                    Generar respuesta con IA
+                                </h3>
+                                <button
+                                    type="button"
+                                    onClick={handleCloseAIModal}
+                                    className="text-gray-400 hover:text-white"
+                                >
+                                    <XMarkIcon className="h-6 w-6" />
+                                </button>
+                            </div>
+                            
+                            {/* Mostrar la respuesta generada si existe */}
+                            {generatedResponse ? (
+                                <div className={`mt-6 transition-all duration-500 ease-in-out transform ${showGeneratedResponse ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                                    <div className="bg-green-900/20 border border-green-800/30 p-3 rounded-md text-sm text-green-300 mb-4">
+                                        <p className="flex items-center">
+                                            <SparklesIcon className="h-4 w-4 mr-2" />
+                                            ¡Respuesta generada con éxito!
+                                        </p>
+                                    </div>
+                                    
+                                    <div className="bg-[#120724] p-4 rounded-lg shadow-inner">
+                                        <h4 className="text-lg font-medium text-white mb-2">{generatedResponse.name}</h4>
+                                        
+                                        <div className="space-y-4 mt-4">
+                                            <div>
+                                                <h5 className="text-sm font-medium text-gray-400 flex items-center">
+                                                    <ChatBubbleLeftRightIcon className="h-4 w-4 mr-1" />
+                                                    Mensaje DM
+                                                </h5>
+                                                <p className="mt-1 text-white bg-[#1c1033] p-3 rounded-md whitespace-pre-line">
+                                                    {generatedResponse.dm_message}
+                                                </p>
+                                            </div>
+                                            
+                                            {generatedResponse.button_text && (
+                                                <div>
+                                                    <h5 className="text-sm font-medium text-gray-400 flex items-center">
+                                                        <LinkIcon className="h-4 w-4 mr-1" />
+                                                        Botón
+                                                    </h5>
+                                                    <div className="mt-1 border border-dashed border-indigo-800 p-3 rounded-md bg-[#1c1033]">
+                                                        <div className="flex flex-col space-y-2">
+                                                            <div className="flex items-center">
+                                                                <span className="text-gray-400 text-xs min-w-20">Texto:</span>
+                                                                <span className="text-white ml-2">{generatedResponse.button_text}</span>
+                                                            </div>
+                                                            {generatedResponse.button_url && (
+                                                                <div className="flex items-center">
+                                                                    <span className="text-gray-400 text-xs min-w-20">URL:</span>
+                                                                    <a 
+                                                                        href={generatedResponse.button_url} 
+                                                                        target="_blank" 
+                                                                        rel="noopener noreferrer" 
+                                                                        className="text-indigo-400 hover:text-indigo-300 truncate ml-2"
+                                                                    >
+                                                                        {generatedResponse.button_url}
+                                                                    </a>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex justify-end mt-6">
+                                        <button
+                                            type="button"
+                                            onClick={handleCloseAIModal}
+                                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
+                                        >
+                                            Cerrar
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="mt-4 bg-indigo-900/20 border border-indigo-800/30 p-3 rounded-md text-sm text-indigo-300">
+                                        <p>Esta herramienta utiliza inteligencia artificial para generar una respuesta automática basada en tus instrucciones.</p>
+                                        <p className="mt-2">La respuesta generada <span className="font-bold text-yellow-400">reemplazará la respuesta actual</span> si ya existe una.</p>
+                                    </div>
+                                    
+                                    <form onSubmit={(e) => { e.preventDefault(); handleGenerateAIResponse(); }} className="mt-6 space-y-5">
+                                        <div>
+                                            <label htmlFor="ai-response-name" className="block text-sm font-medium text-gray-300 mb-1">
+                                                Nombre de la respuesta
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="ai-response-name"
+                                                value={aiResponseName}
+                                                onChange={(e) => setAiResponseName(e.target.value)}
+                                                placeholder="Ej: Respuesta curso logica"
+                                                className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                required
+                                            />
+                                        </div>
+                                        
+                                        <div>
+                                            <label htmlFor="ai-prompt" className="block text-sm font-medium text-gray-300 mb-1">
+                                                Instrucciones para la IA
+                                            </label>
+                                            <textarea
+                                                id="ai-prompt"
+                                                rows={4}
+                                                value={aiPrompt}
+                                                onChange={(e) => setAiPrompt(e.target.value)}
+                                                placeholder="Ej: Genera una respuesta para dar acceso a mi curso de lógica de programación desde 0 donde aprenderán a programar sin lenguaje de programación específico."
+                                                className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                required
+                                            />
+                                        </div>
+                                        
+                                        <div className="flex items-center space-x-2">
+                                            <input
+                                                type="checkbox"
+                                                id="include-button"
+                                                checked={includeButton}
+                                                onChange={(e) => setIncludeButton(e.target.checked)}
+                                                className="rounded border-gray-600 text-indigo-600 focus:ring-indigo-500 bg-[#1c1033]"
+                                            />
+                                            <label htmlFor="include-button" className="text-sm font-medium text-gray-300">
+                                                Incluir botón en la respuesta
+                                            </label>
+                                        </div>
+                                        
+                                        {includeButton && (
+                                            <div>
+                                                <label htmlFor="ai-button-url" className="block text-sm font-medium text-gray-300 mb-1">
+                                                    URL del botón
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="ai-button-url"
+                                                    value={aiButtonUrl}
+                                                    onChange={(e) => setAiButtonUrl(e.target.value)}
+                                                    placeholder="Ej: art0x.link/curso-logica"
+                                                    className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                    required={includeButton}
+                                                />
+                                            </div>
+                                        )}
+                                        
+                                        <div className="flex justify-end space-x-3 pt-2">
+                                            <button
+                                                type="button"
+                                                onClick={handleCloseAIModal}
+                                                className="inline-flex items-center px-4 py-2 border border-gray-600 rounded-md text-sm font-medium text-gray-300 bg-transparent hover:bg-gray-800 focus:outline-none"
+                                            >
+                                                Cancelar
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                disabled={aiLoading || !aiPrompt.trim() || !aiResponseName.trim() || (includeButton && !aiButtonUrl.trim())}
+                                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none disabled:opacity-50"
+                                            >
+                                                {aiLoading ? (
+                                                    <>
+                                                        <div className="h-4 w-4 mr-2 animate-spin rounded-full border-2 border-gray-300 border-t-white"></div>
+                                                        Generando...
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <SparklesIcon className="h-4 w-4 mr-2" />
+                                                        Generar respuesta
+                                                    </>
+                                                )}
+                                            </button>
+                                        </div>
+                                    </form>
+                                </>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
