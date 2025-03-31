@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import Image from 'next/image';
 import { MediaCard } from '@/components/reels/ReelCard';
 import { DeleteDialog } from '@/components/reels/DeleteDialog';
 import { StatsDialog } from '@/components/reels/StatsDialog';
@@ -66,7 +67,16 @@ export default function Home() {
       />
 
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-semibold text-foreground mb-2">Reels</h1>
+        <h1 className="text-2xl font-semibold text-foreground mb-2 flex items-center justify-center">
+          <Image
+            src="/images/icons/reel-icon.png"
+            alt="Reel Icon"
+            width={40}
+            height={40}
+            className="mr-2"
+          />
+          Reels
+        </h1>
         <p className="text-sm text-gray-400 mb-6">
           Lista de reels configurados para respuestas automáticas
         </p>
@@ -92,7 +102,16 @@ export default function Home() {
       </div>
 
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-semibold text-foreground mb-2">Historias</h1>
+        <h1 className="text-2xl font-semibold text-foreground mb-2 flex items-center justify-center">
+          <Image
+            src="/images/icons/story-icon.png"
+            alt="Story Icon"
+            width={40}
+            height={40}
+            className="mr-2"
+          />
+          Historias
+        </h1>
         <p className="text-sm text-gray-400 mb-6">
           Lista de historias configuradas para respuestas automáticas
         </p>
