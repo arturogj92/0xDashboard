@@ -8,7 +8,6 @@ import {
   createOrUpdateStoryKeyword,
   deleteStoryKeyword,
   createOrUpdateResponse,
-  createOrUpdateStoryResponse,
   generateAIResponse,
   getMediaResponses,
   getStoryResponses
@@ -183,8 +182,7 @@ export function MediaSection({
         setError(null);
 
         try {
-            const createFn = mediaType === 'story' ? createOrUpdateStoryResponse : createOrUpdateResponse;
-            const response = await createFn({
+            const response = await createOrUpdateResponse({
                 id: hasExistingResponse && currentResponse ? currentResponse.id : 0,
                 media_id: mediaId,
                 ...responseData,

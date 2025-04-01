@@ -343,16 +343,6 @@ export async function getStoryResponses(storyId: number): Promise<ApiResponse<Re
     return response.json();
 }
 
-export async function createOrUpdateStoryResponse(responseData: Omit<Response, 'id'>): Promise<ApiResponse<Response>> {
-    const response = await fetch(`${API_URL}/api/stories/${responseData.media_id}/responses`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(responseData),
-    });
-    return response.json();
-}
 
 export async function deleteStoryResponse(storyId: number, responseId: number): Promise<ApiResponse<void>> {
     const response = await fetch(`${API_URL}/api/stories/${storyId}/responses/${responseId}`, {
