@@ -392,4 +392,25 @@ export const publishReel = async (reelId: number, url: string, description: stri
         console.error('Error publishing reel:', error);
         return { success: false, message: 'Error al publicar el reel' };
     }
+};
+
+export const updateReelUrl = async (reelId: number, url: string): Promise<ApiResponse<Media>> => {
+    try {
+        const response = await fetch(`${API_URL}/api/reels/${reelId}/url`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            return {
+                ...data,
+                data: data.data as Reel
+            };
+        }
+        return data;
+    } catch (error) {
+        return { success: false, message: 'Error al actualizar la URL del reel' };
+    }
 }; 

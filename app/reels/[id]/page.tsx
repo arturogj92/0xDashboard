@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Reel, Keyword, PublicComment, Response } from '@/lib/types';
-import { getReel, updateReelDescription, getMediaResponses, publishReel } from '@/lib/api';
+import { getReel, updateReelDescription, getMediaResponses, publishReel, updateReelUrl } from '@/lib/api';
 import { MediaSection } from '@/components/media/MediaSection';
 import PublicCommentsSection from './components/PublicCommentsSection';
 import {
@@ -31,8 +31,12 @@ export default function EditReel() {
     const [description, setDescription] = useState('');
     const [url, setUrl] = useState('');
     const [isSaving, setIsSaving] = useState(false);
+    const [isUrlSaving, setIsUrlSaving] = useState(false);
     const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
+    const [saveTimeoutUrl, setSaveTimeoutUrl] = useState<NodeJS.Timeout | null>(null);
     const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
+    const [urlError, setUrlError] = useState<string | null>(null);
+    const [urlSaveTimeout, setUrlSaveTimeout] = useState<NodeJS.Timeout | null>(null);
 
     const extractInstagramReelId = (url: string) => {
         if (!url) return null;
@@ -140,21 +144,42 @@ export default function EditReel() {
         setSaveTimeout(timeoutId);
     };
 
+    const handleAutoSaveUrl = async (newUrl: string) => {
+        if (!reel) return;
+        
+        try {
+            setIsUrlSaving(true);
+            const response = await updateReelUrl(reel.id, newUrl);
+            if (response.success) {
+                setReel({ ...reel, url: newUrl });
+                setUrlError(null);
+            } else {
+                setUrlError('URL inválida');
+            }
+        } catch (err) {
+            setUrlError('Error al actualizar la URL');
+        } finally {
+            setIsUrlSaving(false);
+        }
+    };
+
     const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
         setUrl(newValue);
+        setUrlError(null);
         
-        // Solo auto-guardar si el reel ya está publicado (tiene URL)
+        // Solo auto-guardar si el reel ya está publicado
         if (reel?.url) {
-            if (saveTimeout) {
-                clearTimeout(saveTimeout);
+            setIsUrlSaving(true);
+            if (urlSaveTimeout) {
+                clearTimeout(urlSaveTimeout);
             }
             
             const timeoutId = setTimeout(() => {
-                handleAutoSave(description, newValue);
-            }, 1000);
+                handleAutoSaveUrl(newValue);
+            }, 2000); // 2 segundos
 
-            setSaveTimeout(timeoutId);
+            setUrlSaveTimeout(timeoutId);
         }
     };
 
@@ -180,11 +205,10 @@ export default function EditReel() {
 
     useEffect(() => {
         return () => {
-            if (saveTimeout) {
-                clearTimeout(saveTimeout);
-            }
+            if (saveTimeout) clearTimeout(saveTimeout);
+            if (urlSaveTimeout) clearTimeout(urlSaveTimeout);
         };
-    }, [saveTimeout]);
+    }, [saveTimeout, urlSaveTimeout]);
 
     if (loading) {
         return (
@@ -279,17 +303,26 @@ export default function EditReel() {
                                     <label className="block text-sm font-medium text-gray-400 mb-1">
                                         URL del Reel
                                     </label>
-                                    <input
-                                        type="url"
-                                        value={url}
-                                        onChange={handleUrlChange}
-                                        placeholder="https://www.instagram.com/reel/..."
-                                        className="w-full text-white bg-transparent hover:bg-[#1c1033] focus:bg-[#1c1033] rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-text border-b border-gray-600"
-                                    />
-                                    {isSaving && reel?.url && (
-                                        <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-gray-400">
-                                            Guardando...
-                                        </span>
+                                    <div className="relative">
+                                        <input
+                                            type="url"
+                                            value={url}
+                                            onChange={handleUrlChange}
+                                            placeholder="https://www.instagram.com/reel/..."
+                                            className={`w-full text-white bg-transparent hover:bg-[#1c1033] focus:bg-[#1c1033] rounded-md px-4 py-2 focus:outline-none focus:ring-1 ${
+                                                urlError ? 'focus:ring-red-500 border-red-500' : 'focus:ring-indigo-500 border-b border-gray-600'
+                                            }`}
+                                        />
+                                        {isUrlSaving && reel?.url && !urlError && (
+                                            <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                                                <div className="animate-spin rounded-full h-5 w-5 border-2 border-indigo-500 border-r-transparent"></div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {urlError && (
+                                        <p className="mt-1 text-xs text-red-500">
+                                            {urlError}
+                                        </p>
                                     )}
                                 </div>
                                 
