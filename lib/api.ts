@@ -320,7 +320,7 @@ export async function getStoryKeywords(storyId: number): Promise<ApiResponse<Key
 }
 
 export async function createOrUpdateStoryKeyword(keyword: Omit<Keyword, 'id'>): Promise<ApiResponse<Keyword>> {
-    const response = await fetch(`${API_URL}/api/stories/${keyword.media_id}/keywords`, {
+    const response = await fetch(`${API_URL}/api/media/${keyword.media_id}/keywords`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
