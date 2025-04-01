@@ -10,7 +10,7 @@ import {
   createOrUpdateResponse,
   createOrUpdateStoryResponse,
   generateAIResponse,
-  getReelResponses,
+  getMediaResponses,
   getStoryResponses
 } from '@/lib/api';
 import { 
@@ -23,7 +23,8 @@ import {
   ExclamationTriangleIcon,
   KeyIcon,
   ChatBubbleLeftEllipsisIcon,
-  SparklesIcon
+  SparklesIcon,
+  ChatBubbleLeftIcon
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import { 
@@ -265,7 +266,7 @@ export function MediaSection({
                 // Actualizar las respuestas directamente
                 if (mediaType === 'reel') {
                     // Para reels, obtener las respuestas actualizadas del servidor
-                    const updatedResponsesResult = await getReelResponses(mediaId);
+                    const updatedResponsesResult = await getMediaResponses(mediaId);
                     if (updatedResponsesResult.success) {
                         onResponsesChange(updatedResponsesResult.data);
                     }
@@ -309,7 +310,30 @@ export function MediaSection({
     };
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-4">
+            {showResponsesOnly && (
+                <div>
+                    <div className="flex items-center mb-1">
+                        <ChatBubbleLeftIcon className="h-6 w-6 text-amber-400 mr-2" />
+                        <h2 className="text-xl font-bold text-white">Respuesta por DM</h2>
+                    </div>
+                    <p className="text-sm text-gray-400 mb-2">
+                        Configura la respuesta automática que se enviará como mensaje directo cuando se detecten las palabras clave.
+                    </p>
+                </div>
+            )}
+            {showKeywordsOnly && (
+                <div className="flex items-center mb-4">
+                    <KeyIcon className="h-6 w-6 text-amber-400 mr-2" />
+                    <h2 className="text-xl font-bold text-white">Palabras Clave</h2>
+                </div>
+            )}
+            {!showResponsesOnly && !showKeywordsOnly && (
+                <div className="flex items-center mb-4">
+                    <ChatBubbleLeftRightIcon className="h-6 w-6 text-amber-400 mr-2" />
+                    <h2 className="text-xl font-bold text-white">Respuestas y Palabras Clave</h2>
+                </div>
+            )}
             {/* Sección de Palabras Clave */}
             {!showResponsesOnly && (
                 <div className="bg-[#120724] rounded-lg overflow-hidden">
@@ -410,234 +434,225 @@ export function MediaSection({
             {/* Sección de Respuesta */}
             {!showKeywordsOnly && (
                 <div className="bg-[#120724] rounded-lg overflow-hidden">
-                    <div className="p-6 flex justify-between items-center">
-                        <div>
-                            <h3 className="text-xl font-semibold text-white mb-2 flex items-center">
-                                <ChatBubbleLeftEllipsisIcon className="h-5 w-5 mr-2 text-[#ff9805]" />
-                                Respuesta
-                            </h3>
-                            <p className="text-sm text-gray-400">
-                                Configura la respuesta automática que se enviará como mensaje directo cuando se detecten las palabras clave.
-                            </p>
-                        </div>
-                        <div className="flex space-x-2">
-                            <TooltipProvider>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
+                    <div className="p-4">
+                        <div className="flex justify-between items-start">
+                            {(hasExistingResponse && currentResponse && !isEditing) ? (
+                                // Vista de lectura
+                                <div className="space-y-6 text-gray-300 flex-1">
+                                    <div>
+                                        <h4 className="text-sm font-medium text-gray-400 flex items-center">
+                                            <DocumentTextIcon className="h-4 w-4 mr-1" />
+                                            Nombre
+                                        </h4>
+                                        <p className="mt-1 text-white">{currentResponse.name}</p>
+                                    </div>
+                                    <div>
+                                        <h4 className="text-sm font-medium text-gray-400 flex items-center">
+                                            <ChatBubbleLeftRightIcon className="h-4 w-4 mr-1" />
+                                            Mensaje DM
+                                        </h4>
+                                        <p className="mt-1 text-white whitespace-pre-line">{currentResponse.dm_message}</p>
+                                    </div>
+                                    {currentResponse.button_text && (
+                                        <div>
+                                            <h4 className="text-sm font-medium text-gray-400 flex items-center">
+                                                <LinkIcon className="h-4 w-4 mr-1" />
+                                                Botón
+                                            </h4>
+                                            <div className="mt-2 border border-dashed border-gray-700 p-3 rounded-md bg-[#1c1033]">
+                                                <div className="flex flex-col space-y-2">
+                                                    <div className="flex items-center">
+                                                        <span className="text-gray-400 text-xs min-w-20">Texto:</span>
+                                                        <span className="text-white ml-2">{currentResponse.button_text}</span>
+                                                    </div>
+                                                    {currentResponse.button_url && (
+                                                        <div className="flex items-center">
+                                                            <span className="text-gray-400 text-xs min-w-20">URL:</span>
+                                                            <a 
+                                                                href={currentResponse.button_url} 
+                                                                target="_blank" 
+                                                                rel="noopener noreferrer" 
+                                                                className="text-indigo-400 hover:text-indigo-300 truncate ml-2"
+                                                            >
+                                                                {currentResponse.button_url}
+                                                            </a>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="text-xs text-gray-500 mt-2 italic">
+                                                    Este botón aparecerá en el mensaje que recibirá el usuario
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                // Formulario de edición
+                                <form onSubmit={handleSaveResponse} className="space-y-6 flex-1">
+                                    <div>
+                                        <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
+                                            <DocumentTextIcon className="h-4 w-4 mr-1" />
+                                            Nombre
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="name"
+                                            value={responseData.name}
+                                            onChange={(e) => setResponseData({ ...responseData, name: e.target.value })}
+                                            className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                            placeholder="Nombre de la respuesta"
+                                        />
+                                        <p className="mt-1 text-xs text-gray-500">
+                                            Identificador interno para esta respuesta
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="dm_message" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
+                                            <ChatBubbleLeftRightIcon className="h-4 w-4 mr-1" />
+                                            Mensaje DM
+                                        </label>
+                                        <div className="relative">
+                                            <textarea
+                                                ref={messageTextareaRef}
+                                                id="dm_message"
+                                                rows={4}
+                                                value={responseData.dm_message}
+                                                onChange={(e) => setResponseData({ ...responseData, dm_message: e.target.value })}
+                                                className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                placeholder="Mensaje que se enviará por DM"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowEmojiPickerMessage(!showEmojiPickerMessage)}
+                                                className="absolute right-2 top-2 text-gray-400 hover:text-gray-200"
+                                            >
+                                                😊
+                                            </button>
+                                            {showEmojiPickerMessage && (
+                                                <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center" onClick={() => setShowEmojiPickerMessage(false)}>
+                                                    <div className="relative" onClick={(e) => e.stopPropagation()}>
+                                                        <Picker
+                                                            data={data}
+                                                            onEmojiSelect={handleEmojiSelectMessage}
+                                                            theme="dark"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <p className="mt-1 text-xs text-gray-500">
+                                            Este texto se enviará como mensaje directo cuando se detecte una palabra clave
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="button_text" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
+                                            <LinkIcon className="h-4 w-4 mr-1" />
+                                            Texto del Botón (opcional)
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="button_text"
+                                            value={responseData.button_text}
+                                            onChange={(e) => setResponseData({ ...responseData, button_text: e.target.value })}
+                                            className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                            placeholder="Texto que se mostrará en el botón"
+                                        />
+                                        <p className="mt-1 text-xs text-gray-500">
+                                            Texto que aparecerá en el botón del mensaje
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="button_url" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
+                                            <LinkIcon className="h-4 w-4 mr-1" />
+                                            URL del Botón (opcional)
+                                        </label>
+                                        <input
+                                            type="url"
+                                            id="button_url"
+                                            value={responseData.button_url}
+                                            onChange={(e) => setResponseData({ ...responseData, button_url: e.target.value })}
+                                            className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                            placeholder="URL a la que apuntará el botón"
+                                        />
+                                        <p className="mt-1 text-xs text-gray-500">
+                                            Enlace al que redirigirá el botón cuando sea pulsado
+                                        </p>
+                                    </div>
+
+                                    <div className="flex justify-end space-x-3 pt-4">
+                                        {isEditing && (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    if (currentResponse) {
+                                                        setResponseData({
+                                                            name: currentResponse.name,
+                                                            dm_message: currentResponse.dm_message,
+                                                            button_text: currentResponse.button_text || '',
+                                                            button_url: currentResponse.button_url || ''
+                                                        });
+                                                    }
+                                                    setIsEditing(false);
+                                                }}
+                                                className="inline-flex items-center px-4 py-2 border border-gray-600 rounded-md text-sm font-medium text-gray-300 bg-transparent hover:bg-gray-800 focus:outline-none"
+                                            >
+                                                Cancelar
+                                            </button>
+                                        )}
                                         <button
-                                            type="button"
-                                            onClick={() => setShowAIModal(true)}
-                                            className="inline-flex items-center justify-center p-2 border border-transparent rounded-md text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none"
-                                            aria-label="Generar con IA"
+                                            type="submit"
+                                            disabled={loading}
+                                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none disabled:opacity-50"
                                         >
-                                            <SparklesIcon className="h-5 w-5" />
+                                            {loading ? 'Guardando...' : hasExistingResponse ? 'Guardar Cambios' : 'Crear Respuesta'}
                                         </button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>Generar respuesta con IA</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
-                            
-                            {!isEditing && hasExistingResponse && currentResponse && (
+                                    </div>
+                                </form>
+                            )}
+
+                            <div className="flex space-x-2 ml-4">
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <button
                                                 type="button"
-                                                onClick={handleEditClick}
-                                                className="inline-flex items-center justify-center p-2 border border-transparent rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
-                                                aria-label="Editar"
+                                                onClick={() => setShowAIModal(true)}
+                                                className="inline-flex items-center justify-center p-2 border border-transparent rounded-md text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none"
+                                                aria-label="Generar con IA"
                                             >
-                                                <PencilIcon className="h-5 w-5" />
+                                                <SparklesIcon className="h-5 w-5" />
                                             </button>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                            <p>Editar respuesta</p>
+                                            <p>Generar respuesta con IA</p>
                                         </TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="px-6 pb-6">
-                        {(hasExistingResponse && currentResponse && !isEditing) ? (
-                            // Vista de lectura
-                            <div className="space-y-6 text-gray-300">
-                                <div>
-                                    <h4 className="text-sm font-medium text-gray-400 flex items-center">
-                                        <DocumentTextIcon className="h-4 w-4 mr-1" />
-                                        Nombre
-                                    </h4>
-                                    <p className="mt-1 text-white">{currentResponse.name}</p>
-                                </div>
-                                <div>
-                                    <h4 className="text-sm font-medium text-gray-400 flex items-center">
-                                        <ChatBubbleLeftRightIcon className="h-4 w-4 mr-1" />
-                                        Mensaje DM
-                                    </h4>
-                                    <p className="mt-1 text-white whitespace-pre-line">{currentResponse.dm_message}</p>
-                                </div>
-                                {currentResponse.button_text && (
-                                    <div>
-                                        <h4 className="text-sm font-medium text-gray-400 flex items-center">
-                                            <LinkIcon className="h-4 w-4 mr-1" />
-                                            Botón
-                                        </h4>
-                                        <div className="mt-2 border border-dashed border-gray-700 p-3 rounded-md bg-[#1c1033]">
-                                            <div className="flex flex-col space-y-2">
-                                                <div className="flex items-center">
-                                                    <span className="text-gray-400 text-xs min-w-20">Texto:</span>
-                                                    <span className="text-white ml-2">{currentResponse.button_text}</span>
-                                                </div>
-                                                {currentResponse.button_url && (
-                                                    <div className="flex items-center">
-                                                        <span className="text-gray-400 text-xs min-w-20">URL:</span>
-                                                        <a 
-                                                            href={currentResponse.button_url} 
-                                                            target="_blank" 
-                                                            rel="noopener noreferrer" 
-                                                            className="text-indigo-400 hover:text-indigo-300 truncate ml-2"
-                                                        >
-                                                            {currentResponse.button_url}
-                                                        </a>
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="text-xs text-gray-500 mt-2 italic">
-                                                Este botón aparecerá en el mensaje que recibirá el usuario
-                                            </div>
-                                        </div>
-                                    </div>
+                                
+                                {!isEditing && hasExistingResponse && currentResponse && (
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <button
+                                                    type="button"
+                                                    onClick={handleEditClick}
+                                                    className="inline-flex items-center justify-center p-2 border border-transparent rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
+                                                    aria-label="Editar"
+                                                >
+                                                    <PencilIcon className="h-5 w-5" />
+                                                </button>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Editar respuesta</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
                                 )}
                             </div>
-                        ) : (
-                            // Formulario de edición
-                            <form onSubmit={handleSaveResponse} className="space-y-6">
-                                <div>
-                                    <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
-                                        <DocumentTextIcon className="h-4 w-4 mr-1" />
-                                        Nombre
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="name"
-                                        value={responseData.name}
-                                        onChange={(e) => setResponseData({ ...responseData, name: e.target.value })}
-                                        className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                                        placeholder="Nombre de la respuesta"
-                                    />
-                                    <p className="mt-1 text-xs text-gray-500">
-                                        Identificador interno para esta respuesta
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <label htmlFor="dm_message" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
-                                        <ChatBubbleLeftRightIcon className="h-4 w-4 mr-1" />
-                                        Mensaje DM
-                                    </label>
-                                    <div className="relative">
-                                        <textarea
-                                            ref={messageTextareaRef}
-                                            id="dm_message"
-                                            rows={4}
-                                            value={responseData.dm_message}
-                                            onChange={(e) => setResponseData({ ...responseData, dm_message: e.target.value })}
-                                            className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                                            placeholder="Mensaje que se enviará por DM"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowEmojiPickerMessage(!showEmojiPickerMessage)}
-                                            className="absolute right-2 top-2 text-gray-400 hover:text-gray-200"
-                                        >
-                                            😊
-                                        </button>
-                                        {showEmojiPickerMessage && (
-                                            <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center" onClick={() => setShowEmojiPickerMessage(false)}>
-                                                <div className="relative" onClick={(e) => e.stopPropagation()}>
-                                                    <Picker
-                                                        data={data}
-                                                        onEmojiSelect={handleEmojiSelectMessage}
-                                                        theme="dark"
-                                                    />
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <p className="mt-1 text-xs text-gray-500">
-                                        Este texto se enviará como mensaje directo cuando se detecte una palabra clave
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <label htmlFor="button_text" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
-                                        <LinkIcon className="h-4 w-4 mr-1" />
-                                        Texto del Botón (opcional)
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="button_text"
-                                        value={responseData.button_text}
-                                        onChange={(e) => setResponseData({ ...responseData, button_text: e.target.value })}
-                                        className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                                        placeholder="Texto que se mostrará en el botón"
-                                    />
-                                    <p className="mt-1 text-xs text-gray-500">
-                                        Texto que aparecerá en el botón del mensaje
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <label htmlFor="button_url" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
-                                        <LinkIcon className="h-4 w-4 mr-1" />
-                                        URL del Botón (opcional)
-                                    </label>
-                                    <input
-                                        type="url"
-                                        id="button_url"
-                                        value={responseData.button_url}
-                                        onChange={(e) => setResponseData({ ...responseData, button_url: e.target.value })}
-                                        className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                                        placeholder="URL a la que apuntará el botón"
-                                    />
-                                    <p className="mt-1 text-xs text-gray-500">
-                                        Enlace al que redirigirá el botón cuando sea pulsado
-                                    </p>
-                                </div>
-
-                                <div className="flex justify-end space-x-3 pt-4">
-                                    {isEditing && (
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                if (currentResponse) {
-                                                    setResponseData({
-                                                        name: currentResponse.name,
-                                                        dm_message: currentResponse.dm_message,
-                                                        button_text: currentResponse.button_text || '',
-                                                        button_url: currentResponse.button_url || ''
-                                                    });
-                                                }
-                                                setIsEditing(false);
-                                            }}
-                                            className="inline-flex items-center px-4 py-2 border border-gray-600 rounded-md text-sm font-medium text-gray-300 bg-transparent hover:bg-gray-800 focus:outline-none"
-                                        >
-                                            Cancelar
-                                        </button>
-                                    )}
-                                    <button
-                                        type="submit"
-                                        disabled={loading}
-                                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none disabled:opacity-50"
-                                    >
-                                        {loading ? 'Guardando...' : hasExistingResponse ? 'Guardar Cambios' : 'Crear Respuesta'}
-                                    </button>
-                                </div>
-                            </form>
-                        )}
+                        </div>
                     </div>
                 </div>
             )}

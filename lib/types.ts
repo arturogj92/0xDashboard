@@ -34,6 +34,7 @@ export interface DmLog {
 export interface Keyword {
     id: number;
     media_id: number;
+    reel_id?: number;
     keyword: string;
     is_active: boolean;
     created_at?: string;

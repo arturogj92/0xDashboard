@@ -146,7 +146,7 @@ export const createOrUpdateKeyword = async (data: Keyword): Promise<ApiResponse<
 };
 
 export const getReelKeywords = async (mediaId: number): Promise<ApiResponse<Keyword[]>> => {
-    const response = await fetch(`${API_URL}/api/media/${mediaId}/keywords`);
+    const response = await fetch(`${API_URL}/api/reels/${mediaId}/keywords`);
     return response.json();
 };
 
@@ -207,7 +207,7 @@ export const deletePublicComment = async (reelId: number, commentId: number): Pr
 
 // Responses
 export const createOrUpdateResponse = async (data: Response): Promise<ApiResponse<Response>> => {
-    const response = await fetch(`${API_URL}/api/media/${data.media_id}/responses`, {
+    const response = await fetch(`${API_URL}/api/reels/${data.media_id}/responses`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -215,13 +215,13 @@ export const createOrUpdateResponse = async (data: Response): Promise<ApiRespons
     return response.json();
 };
 
-export const getReelResponses = async (mediaId: number): Promise<ApiResponse<Response[]>> => {
+export const getMediaResponses = async (mediaId: number): Promise<ApiResponse<Response[]>> => {
     const response = await fetch(`${API_URL}/api/media/${mediaId}/responses`);
     return response.json();
 };
 
 export const deleteResponse = async (mediaId: number, responseId: number): Promise<ApiResponse<void>> => {
-    const response = await fetch(`${API_URL}/api/media/${mediaId}/responses/${responseId}`, {
+    const response = await fetch(`${API_URL}/api/reels/${mediaId}/responses/${responseId}`, {
         method: 'DELETE',
     });
     return response.json();
@@ -315,7 +315,7 @@ export async function getStoryKeywords(storyId: number): Promise<ApiResponse<Key
 }
 
 export async function createOrUpdateStoryKeyword(keyword: Omit<Keyword, 'id'>): Promise<ApiResponse<Keyword>> {
-    const response = await fetch(`${API_URL}/api/stories/${keyword.reel_id}/keywords`, {
+    const response = await fetch(`${API_URL}/api/stories/${keyword.media_id}/keywords`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -339,7 +339,7 @@ export async function getStoryResponses(storyId: number): Promise<ApiResponse<Re
 }
 
 export async function createOrUpdateStoryResponse(responseData: Omit<Response, 'id'>): Promise<ApiResponse<Response>> {
-    const response = await fetch(`${API_URL}/api/media/${responseData.media_id}/responses`, {
+    const response = await fetch(`${API_URL}/api/stories/${responseData.media_id}/responses`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -374,4 +374,22 @@ export async function generateAIResponse(mediaId: number, params: AIResponseGene
         body: JSON.stringify(params),
     });
     return response.json();
-} 
+}
+
+export const publishReel = async (reelId: number, url: string, description: string) => {
+    try {
+        const response = await fetch(`${API_URL}/api/reels/${reelId}/publish`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url, description }),
+        });
+
+        const data = await response.json();
+        return { success: true, data };
+    } catch (error) {
+        console.error('Error publishing reel:', error);
+        return { success: false, message: 'Error al publicar el reel' };
+    }
+}; 

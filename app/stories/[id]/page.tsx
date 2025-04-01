@@ -10,7 +10,9 @@ import {
     PencilIcon,
     DocumentTextIcon,
     ArrowLeftIcon,
-    PhotoIcon
+    PhotoIcon,
+    KeyIcon,
+    ChatBubbleLeftIcon
 } from '@heroicons/react/24/outline';
 
 // Importar la imagen
@@ -286,31 +288,48 @@ export default function EditStory() {
 
                         {/* Sección de Palabras Clave (70%) */}
                         <div className="md:col-span-6 bg-[#120724] rounded-lg overflow-hidden">
-                            {/* Pasamos solo la parte de keywords de MediaSection */}
-                            <MediaSection
-                                mediaId={storyId}
-                                mediaType="story"
-                                keywords={keywords}
-                                responses={[]}
-                                onKeywordsChange={setKeywords}
-                                onResponsesChange={() => { }}
-                                showKeywordsOnly={true}
-                            />
+                            <div className="p-6 relative">
+                                <div className="flex items-center mb-4">
+                                    <KeyIcon className="h-6 w-6 text-amber-400 mr-2" />
+                                    <h2 className="text-xl font-bold text-white">Palabras Clave</h2>
+                                </div>
+                                <p className="text-sm text-gray-400 mb-4">
+                                    Configura hasta 5 palabras clave que cuando aparezcan en un comentario, activarán la respuesta automática.
+                                </p>
+                                <MediaSection
+                                    mediaId={storyId}
+                                    mediaType="story"
+                                    keywords={keywords}
+                                    responses={[]}
+                                    onKeywordsChange={setKeywords}
+                                    onResponsesChange={() => {}}
+                                    showKeywordsOnly={true}
+                                />
+                            </div>
                         </div>
                     </div>
 
                     {/* Sección de Respuesta en la segunda fila */}
                     <div className="bg-[#120724] rounded-lg overflow-hidden">
-                        {/* Pasamos solo la parte de responses de MediaSection */}
-                        <MediaSection
-                            mediaId={storyId}
-                            mediaType="story"
-                            keywords={[]}
-                            responses={responses}
-                            onKeywordsChange={() => { }}
-                            onResponsesChange={setResponses}
-                            showResponsesOnly={true}
-                        />
+                        <div className="p-6 relative">
+                            <div className="flex items-center mb-4">
+                                <ChatBubbleLeftIcon className="h-6 w-6 text-amber-400 mr-2" />
+                                <h2 className="text-xl font-bold text-white">Respuesta</h2>
+                            </div>
+                            <p className="text-sm text-gray-400 mb-4">
+                                Configura la respuesta automática que se enviará como mensaje directo cuando se detecten las palabras clave.
+                            </p>
+                            {/* Pasamos solo la parte de responses de MediaSection */}
+                            <MediaSection
+                                mediaId={storyId}
+                                mediaType="story"
+                                keywords={[]}
+                                responses={responses}
+                                onKeywordsChange={() => { }}
+                                onResponsesChange={setResponses}
+                                showResponsesOnly={true}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
