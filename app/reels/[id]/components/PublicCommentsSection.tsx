@@ -138,15 +138,17 @@ export default function PublicCommentsSection({ reelId, comments, onCommentsChan
                             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
                         >
-                            <FaceSmileIcon className="h-5 w-5" />
+                            😊
                         </button>
                         {showEmojiPicker && (
-                            <div className="absolute right-0 mt-2 z-10">
-                                <Picker 
-                                    data={data} 
-                                    onEmojiSelect={handleEmojiSelect} 
-                                    theme="dark"
-                                />
+                            <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center" onClick={() => setShowEmojiPicker(false)}>
+                                <div className="relative" onClick={(e) => e.stopPropagation()}>
+                                    <Picker 
+                                        data={data} 
+                                        onEmojiSelect={handleEmojiSelect} 
+                                        theme="dark"
+                                    />
+                                </div>
                             </div>
                         )}
                     </div>
