@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { PlusIcon, KeyIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
@@ -8,8 +9,14 @@ import { MediaCard } from '@/components/reels/ReelCard';
 import { DeleteDialog } from '@/components/reels/DeleteDialog';
 import { StatsDialog } from '@/components/reels/StatsDialog';
 import { useReels } from '@/hooks/useReels';
+import { CreateMediaModal } from '@/components/media/CreateMediaModal';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
+  const [reelModalOpen, setReelModalOpen] = useState(false);
+  const [storyModalOpen, setStoryModalOpen] = useState(false);
+  
   const {
     reels,
     stories,
@@ -30,6 +37,14 @@ export default function Home() {
     handleToggleActive,
     openStatsDialog
   } = useReels();
+
+  const handleReelSuccess = (id: number) => {
+    router.push(`/reels/${id}`);
+  };
+
+  const handleStorySuccess = (id: number) => {
+    router.push(`/stories/${id}`);
+  };
 
   if (loading) {
     return (
@@ -75,6 +90,20 @@ export default function Home() {
         totalDms={totalDms}
         hourlyData={hourlyData}
         weeklyStats={weeklyStats}
+      />
+      
+      <CreateMediaModal 
+        open={reelModalOpen}
+        onOpenChange={setReelModalOpen}
+        mediaType="reel"
+        onSuccess={handleReelSuccess}
+      />
+      
+      <CreateMediaModal 
+        open={storyModalOpen}
+        onOpenChange={setStoryModalOpen}
+        mediaType="story"
+        onSuccess={handleStorySuccess}
       />
 
       {/* Header con ilustración */}
@@ -127,11 +156,13 @@ export default function Home() {
         </p>
 
         <div className="flex justify-start mb-8">
-          <Button asChild variant="outline" className="rounded-full px-6 py-5 hover:bg-indigo-600/50 border-indigo-600/50">
-            <Link href="/reels/new" className="flex items-center gap-2">
-              <PlusIcon className="h-4 w-4" />
-              Añadir Reel
-            </Link>
+          <Button 
+            variant="outline" 
+            className="rounded-full px-6 py-5 hover:bg-indigo-600/50 border-indigo-600/50"
+            onClick={() => setReelModalOpen(true)}
+          >
+            <PlusIcon className="h-4 w-4 mr-2" />
+            Añadir Reel
           </Button>
         </div>
         
@@ -158,11 +189,13 @@ export default function Home() {
                   className="opacity-50 mb-4"
                 />
                 <p className="text-gray-400 mb-4">No tienes reels configurados</p>
-                <Button asChild variant="outline" className="rounded-full px-6 py-2 hover:bg-indigo-600/50 border-indigo-600/50">
-                  <Link href="/reels/new" className="flex items-center gap-2">
-                    <PlusIcon className="h-4 w-4" />
-                    Añadir tu primer Reel
-                  </Link>
+                <Button 
+                  variant="outline" 
+                  className="rounded-full px-6 py-2 hover:bg-indigo-600/50 border-indigo-600/50"
+                  onClick={() => setReelModalOpen(true)}
+                >
+                  <PlusIcon className="h-4 w-4 mr-2" />
+                  Añadir tu primer Reel
                 </Button>
               </div>
             </div>
@@ -188,11 +221,13 @@ export default function Home() {
         </p>
 
         <div className="flex justify-start mb-8">
-          <Button asChild variant="outline" className="rounded-full px-6 py-5 hover:bg-indigo-600/50 border-indigo-600/50">
-            <Link href="/stories/new" className="flex items-center gap-2">
-              <PlusIcon className="h-4 w-4" />
-              Añadir Historia
-            </Link>
+          <Button 
+            variant="outline" 
+            className="rounded-full px-6 py-5 hover:bg-indigo-600/50 border-indigo-600/50"
+            onClick={() => setStoryModalOpen(true)}
+          >
+            <PlusIcon className="h-4 w-4 mr-2" />
+            Añadir Historia
           </Button>
         </div>
         
@@ -219,11 +254,13 @@ export default function Home() {
                   className="opacity-50 mb-4"
                 />
                 <p className="text-gray-400 mb-4">No tienes historias configuradas</p>
-                <Button asChild variant="outline" className="rounded-full px-6 py-2 hover:bg-indigo-600/50 border-indigo-600/50">
-                  <Link href="/stories/new" className="flex items-center gap-2">
-                    <PlusIcon className="h-4 w-4" />
-                    Añadir tu primera Historia
-                  </Link>
+                <Button 
+                  variant="outline" 
+                  className="rounded-full px-6 py-2 hover:bg-indigo-600/50 border-indigo-600/50"
+                  onClick={() => setStoryModalOpen(true)}
+                >
+                  <PlusIcon className="h-4 w-4 mr-2" />
+                  Añadir tu primera Historia
                 </Button>
               </div>
             </div>

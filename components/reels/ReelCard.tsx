@@ -36,6 +36,8 @@ export function MediaCard({
   deleteLoading 
 }: MediaCardProps) {
   const router = useRouter();
+  const isDraft = !media.url || media.url === '';
+  
   const getMediaPath = (media: Media) => {
     return media.media_type === 'story' ? 'stories' : 'reels';
   };
@@ -47,7 +49,13 @@ export function MediaCard({
   return (
     <div className="relative">
       <Card 
-        className={`relative border-2 border-b-dashed border-l-dashed border-r-dashed ${media.is_active ? 'border-indigo-900/50 border-t-[#268529] bg-[#12072f]' : 'border-gray-800/50 border-t-red-500 bg-[#170e23]'} hover:bg-[#1a0e35] rounded-xl transition-all duration-200 cursor-pointer shadow-lg`}
+        className={`relative border-2 border-b-dashed border-l-dashed border-r-dashed ${
+          isDraft 
+            ? 'border-indigo-900/50 border-t-amber-500 bg-[#12072f]' 
+            : media.is_active 
+              ? 'border-indigo-900/50 border-t-[#268529] bg-[#12072f]' 
+              : 'border-gray-800/50 border-t-red-500 bg-[#170e23]'
+        } hover:bg-[#1a0e35] rounded-xl transition-all duration-200 cursor-pointer shadow-lg`}
         onClick={handleCardClick}
       >
         
@@ -75,7 +83,11 @@ export function MediaCard({
             )}
             
             {/* Controles de reproducción y pausa superpuestos en la miniatura */}
-            {media.is_active ? (
+            {isDraft ? (
+              <div className="absolute top-2 right-2 bg-amber-500/20 rounded-full p-1">
+                <DocumentTextIcon className="h-3 w-3 text-amber-400" />
+              </div>
+            ) : media.is_active ? (
               <div className="absolute top-2 right-2 bg-[#faa011]/20 rounded-full p-1">
                 <Play className="h-3 w-3 text-[#faa011]" />
               </div>
@@ -95,9 +107,19 @@ export function MediaCard({
                 </h3>
                 
                 {/* Badge de estado junto al título */}
-                <span className={`inline-flex items-center rounded-full h-5 px-2 text-xs font-medium shadow-sm border ${media.is_active ? 'bg-green-500 text-white border-green-600' : 'bg-red-500 text-white border-red-600'}`}>
-                  {media.is_active ? 'Activo' : 'Inactivo'}
-                </span>
+                {isDraft ? (
+                  <span className="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium text-amber-400 bg-[#120724] border border-amber-500/70">
+                    DRAFT
+                  </span>
+                ) : (
+                  <span className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium bg-[#120724] border ${
+                    media.is_active 
+                      ? 'text-green-400 border-green-500/70' 
+                      : 'text-red-400 border-red-500/70'
+                  }`}>
+                    {media.is_active ? 'ACTIVO' : 'INACTIVO'}
+                  </span>
+                )}
               </div>
               
               <div className="text-sm text-gray-400 mb-4 line-clamp-1">

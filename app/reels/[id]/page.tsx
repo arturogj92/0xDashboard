@@ -374,8 +374,8 @@ export default function EditReel() {
                                 {/* Estado del reel */}
                                 {!reel.url && (
                                     <div className="mb-4 text-center">
-                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                            Borrador
+                                        <span className="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium text-amber-400 bg-[#120724] border border-amber-500/70">
+                                            DRAFT
                                         </span>
                                     </div>
                                 )}
