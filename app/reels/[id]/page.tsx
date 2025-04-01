@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Reel, Keyword, PublicComment, Response } from '@/lib/types';
-import { getReel, updateReelDescription, getMediaResponses, publishReel, updateReelUrl, getReelKeywords, getReelPublicComments } from '@/lib/api';
+import { getReel, updateReelDescription, getMediaResponses, publishReel, updateReelUrl, getMediaKeywords, getReelPublicComments } from '@/lib/api';
 import { MediaSection } from '@/components/media/MediaSection';
 import PublicCommentsSection from './components/PublicCommentsSection';
 import {
@@ -122,7 +122,7 @@ export default function EditReel() {
     const fetchKeywords = async (currentReel: Reel) => {
         try {
             console.log('Cargando keywords...');
-            const keywordsResponse = await getReelKeywords(reelId);
+            const keywordsResponse = await getMediaKeywords(reelId);
             console.log('Keywords recibidas:', keywordsResponse);
             
             if (keywordsResponse.success) {
@@ -380,9 +380,28 @@ export default function EditReel() {
                                     </div>
                                 )}
                                 
+                                {/* Título/Descripción */}
+                                <div className="text-center mb-4 relative">
+                                    <label className="block text-sm font-medium text-gray-400 mb-1">
+                                        Descripción
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={description}
+                                        onChange={handleDescriptionChange}
+                                        placeholder="Descripción de tu reel"
+                                        className="w-full text-center text-xl font-semibold text-white bg-transparent hover:bg-[#1c1033] focus:bg-[#1c1033] rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-text border-b border-gray-600"
+                                    />
+                                    {isSaving && (
+                                        <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-gray-400">
+                                            Guardando...
+                                        </span>
+                                    )}
+                                </div>
+                                
                                 {/* URL del Reel */}
                                 <div className="mb-4 relative">
-                                    <label className="block text-sm font-medium text-gray-400 mb-1">
+                                    <label className="block text-sm font-medium text-gray-400 mb-1 text-center">
                                         URL del Reel
                                     </label>
                                     <div className="relative">
@@ -402,28 +421,9 @@ export default function EditReel() {
                                         )}
                                     </div>
                                     {urlError && (
-                                        <p className="mt-1 text-xs text-red-500">
+                                        <p className="mt-1 text-xs text-red-500 text-center">
                                             {urlError}
                                         </p>
-                                    )}
-                                </div>
-                                
-                                {/* Título/Descripción */}
-                                <div className="text-center mb-4 relative">
-                                    <label className="block text-sm font-medium text-gray-400 mb-1">
-                                        Descripción
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={description}
-                                        onChange={handleDescriptionChange}
-                                        placeholder="Descripción de tu reel"
-                                        className="w-full text-center text-xl font-semibold text-white bg-transparent hover:bg-[#1c1033] focus:bg-[#1c1033] rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-text border-b border-gray-600"
-                                    />
-                                    {isSaving && (
-                                        <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-gray-400">
-                                            Guardando...
-                                        </span>
                                     )}
                                 </div>
 

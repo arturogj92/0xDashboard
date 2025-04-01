@@ -66,6 +66,24 @@ export default function Home() {
         weeklyStats={weeklyStats}
       />
 
+      <div className="mb-8">
+        <div className="flex items-center">
+          <Image 
+            src="/images/icons/automation-icon.png" 
+            alt="Automatizaciones" 
+            width={42} 
+            height={42} 
+            className="mr-3" 
+          />
+          <div>
+            <h1 className="text-2xl font-bold text-white">Tus automatizaciones</h1>
+            <p className="text-sm text-gray-400">
+              Gestiona tus respuestas automáticas para reels e historias
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div className="text-center mb-8">
         <h1 className="text-2xl font-semibold text-foreground mb-2 flex items-center justify-center">
           <Image

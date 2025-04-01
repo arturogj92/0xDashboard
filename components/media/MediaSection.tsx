@@ -4,13 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 import { Keyword, Response, Media } from '@/lib/types';
 import { 
   createOrUpdateKeyword, 
-  deleteReelKeyword,
-  createOrUpdateStoryKeyword,
-  deleteStoryKeyword,
   createOrUpdateResponse,
+  deleteKeyword,
   generateAIResponse,
   getMediaResponses,
-  getStoryResponses
 } from '@/lib/api';
 import { 
   PlusIcon,
@@ -118,8 +115,7 @@ export function MediaSection({
         setError(null);
 
         try {
-            const createFn = mediaType === 'story' ? createOrUpdateStoryKeyword : createOrUpdateKeyword;
-            const response = await createFn({
+            const response = await createOrUpdateKeyword({
                 id: 0,
                 media_id: mediaId,
                 keyword: newKeyword,
@@ -154,8 +150,7 @@ export function MediaSection({
         setError(null);
 
         try {
-            const deleteFn = mediaType === 'story' ? deleteStoryKeyword : deleteReelKeyword;
-            const response = await deleteFn(mediaId, keywordId);
+            const response = await deleteKeyword(mediaId, keywordId);
 
             console.log('Respuesta al eliminar keyword:', response);
 
@@ -286,18 +281,9 @@ export function MediaSection({
                 setShowGeneratedResponse(false);
                 
                 // Actualizar las respuestas directamente
-                if (mediaType === 'reel') {
-                    // Para reels, obtener las respuestas actualizadas del servidor
-                    const updatedResponsesResult = await getMediaResponses(mediaId);
-                    if (updatedResponsesResult.success) {
-                        onResponsesChange(updatedResponsesResult.data);
-                    }
-                } else {
-                    // Para stories, obtener las respuestas actualizadas del servidor
-                    const updatedResponsesResult = await getStoryResponses(mediaId);
-                    if (updatedResponsesResult.success) {
-                        onResponsesChange(updatedResponsesResult.data);
-                    }
+                const updatedResponsesResult = await getMediaResponses(mediaId);
+                if (updatedResponsesResult.success) {
+                    onResponsesChange(updatedResponsesResult.data);
                 }
                 
                 // Si existe una respuesta, actualizar inmediatamente los datos mostrados

@@ -2,8 +2,8 @@
 
 import { useState, useRef } from 'react';
 import { PublicComment } from '@/lib/types';
-import { createPublicComment, updatePublicComment, deletePublicComment } from '@/lib/api';
-import { XMarkIcon, FaceSmileIcon } from '@heroicons/react/24/outline';
+import { createPublicComment, deletePublicComment } from '@/lib/api';
+import { XMarkIcon, PlusIcon } from '@heroicons/react/24/outline';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 
@@ -67,27 +67,6 @@ export default function PublicCommentsSection({ reelId, comments, onCommentsChan
         }
     };
 
-    const handleToggleActive = async (comment: PublicComment) => {
-        setLoading(true);
-        setError(null);
-
-        try {
-            const response = await updatePublicComment(comment.id, {});
-
-            if (response.success) {
-                onCommentsChange(
-                    comments.map((c) => (c.id === comment.id ? response.data : c))
-                );
-            } else {
-                setError('Error al actualizar el comentario');
-            }
-        } catch (err) {
-            setError('Error al actualizar el comentario');
-        } finally {
-            setLoading(false);
-        }
-    };
-
     const handleDelete = async (commentId: number) => {
         setLoading(true);
         setError(null);
@@ -109,9 +88,6 @@ export default function PublicCommentsSection({ reelId, comments, onCommentsChan
 
     return (
         <div className="text-white">
-            <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-white">Comentarios Públicos</h3>
-            </div>
             {error && (
                 <div className="mb-4 bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded" role="alert">
                     <span>{error}</span>
@@ -123,20 +99,20 @@ export default function PublicCommentsSection({ reelId, comments, onCommentsChan
                 </p>
             </div>
             <form onSubmit={handleSubmit} className="mb-6">
-                <div className="flex gap-2 relative">
-                    <div className="relative flex-grow">
+                <div className="flex mb-0">
+                    <div className="flex-1 relative">
                         <input
                             type="text"
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
                             placeholder="Nuevo comentario público"
-                            className="block w-full rounded-md bg-transparent border-gray-600 text-white px-4 py-2 pr-10 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            className="w-full bg-[#1c1033] text-white rounded-l-md border-0 px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                             ref={inputRef}
                         />
                         <button
                             type="button"
                             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
                         >
                             😊
                         </button>
@@ -155,9 +131,10 @@ export default function PublicCommentsSection({ reelId, comments, onCommentsChan
                     <button
                         type="submit"
                         disabled={loading || !newComment.trim()}
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                        className="inline-flex items-center justify-center rounded-r-md bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none disabled:opacity-50"
                     >
-                        Añadir
+                        <PlusIcon className="h-5 w-5 mr-1" />
+                        Agregar
                     </button>
                 </div>
             </form>

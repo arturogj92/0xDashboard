@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Story, Keyword, Response } from '@/lib/types';
-import { getStory, updateStoryDescription, getStoryKeywords, getStoryResponses } from '@/lib/api';
+import { getStory, updateStoryDescription, getMediaResponses, getMediaKeywords } from '@/lib/api';
 import { MediaSection } from '@/components/media/MediaSection';
 import {
     PencilIcon,
@@ -56,7 +56,7 @@ export default function EditStory() {
 
     const fetchKeywords = async () => {
         try {
-            const response = await getStoryKeywords(storyId);
+            const response = await getMediaKeywords(storyId);
             if (response.success) {
                 setKeywords(response.data);
             }
@@ -67,7 +67,7 @@ export default function EditStory() {
 
     const fetchResponses = async () => {
         try {
-            const response = await getStoryResponses(storyId);
+            const response = await getMediaResponses(storyId);
             console.log('Respuestas cargadas:', response);
             if (response.success) {
                 setResponses(response.data);

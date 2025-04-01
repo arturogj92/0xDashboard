@@ -416,4 +416,18 @@ export const updateReelUrl = async (reelId: number, url: string): Promise<ApiRes
             data: {} as Media
         };
     }
+};
+
+// Generic Media Keyword delete
+export const deleteKeyword = async (mediaId: number, keywordId: number): Promise<ApiResponse<void>> => {
+    const response = await fetch(`${API_URL}/api/media/${mediaId}/keywords/${keywordId}`, {
+        method: 'DELETE',
+    });
+    return response.json();
+};
+
+// Generic Media Keywords
+export const getMediaKeywords = async (mediaId: number): Promise<ApiResponse<Keyword[]>> => {
+    const response = await fetch(`${API_URL}/api/media/${mediaId}/keywords`);
+    return response.json();
 }; 
