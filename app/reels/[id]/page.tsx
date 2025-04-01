@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Reel, Keyword, PublicComment, Response } from '@/lib/types';
-import { getReel, updateReelDescription, getMediaResponses, publishReel, updateReelUrl, getReelKeywords } from '@/lib/api';
+import { getReel, updateReelDescription, getMediaResponses, publishReel, updateReelUrl, getReelKeywords, getReelPublicComments } from '@/lib/api';
 import { MediaSection } from '@/components/media/MediaSection';
 import PublicCommentsSection from './components/PublicCommentsSection';
 import {
@@ -76,22 +76,24 @@ export default function EditReel() {
                 }
                 
                 // Asegurarnos de que el objeto cumple con la interfaz Reel
-                const reelData: Reel = {
+                const reelData = {
                     ...reelResponse.data,
-                    media_type: 'reel', // Forzar a que sea de tipo 'reel'
+                    media_type: 'reel' as const, // Forzar a que sea de tipo 'reel'
                     shortcode: (reelResponse.data as any).shortcode || '',
-                    keywords: reelResponse.data.keywords || []
-                };
+                    keywords: reelResponse.data.keywords || [],
+                    publicComments: (reelResponse.data as any).publicComments || []
+                } as Reel; // Conversión explícita a Reel
                 
                 setReel(reelData);
                 setDescription(reelResponse.data.description || '');
                 setUrl(reelResponse.data.url || '');
                 setThumbnailUrl(getThumbnailUrl(reelResponse.data.url || ''));
 
-                // Cargar las respuestas y keywords después de tener el reel
+                // Cargar las respuestas, keywords y comentarios públicos después de tener el reel
                 await Promise.all([
                     fetchResponses(reelData),
-                    fetchKeywords(reelData)
+                    fetchKeywords(reelData),
+                    fetchPublicComments(reelData)
                 ]);
             } else {
                 setError('Error al cargar los datos del reel');
@@ -142,6 +144,31 @@ export default function EditReel() {
         }
     };
 
+    const fetchPublicComments = async (currentReel: Reel) => {
+        try {
+            console.log('Cargando comentarios públicos...');
+            const commentsResponse = await getReelPublicComments(reelId);
+            console.log('Comentarios públicos recibidos:', commentsResponse);
+            
+            if (commentsResponse.success) {
+                // Asegurarnos de que los comentarios públicos no son nulos ni indefinidos
+                const safeComments = commentsResponse.data || [];
+                console.log('Comentarios públicos que se van a establecer:', safeComments);
+                
+                // Actualizar el estado con los comentarios públicos recibidos
+                setReel(prevReel => {
+                    if (!prevReel) return currentReel;
+                    return {
+                        ...prevReel,
+                        publicComments: safeComments
+                    };
+                });
+            }
+        } catch (err) {
+            console.error('Error al cargar los comentarios públicos:', err);
+        }
+    };
+
     // Asegurarnos de que las keywords se actualicen cuando cambian
     useEffect(() => {
         if (reel?.id) {
@@ -149,10 +176,22 @@ export default function EditReel() {
         }
     }, [reel?.id]);
 
-    // Si hay keywords en la respuesta inicial pero no se muestran, forzar una actualización
+    // Asegurarnos de que los comentarios públicos se carguen cuando cambia el reel
     useEffect(() => {
-        if (reel && reel.keywords && Array.isArray(reel.keywords) && reel.keywords.length > 0) {
-            console.log('Keywords disponibles en reel:', reel.keywords);
+        if (reel?.id) {
+            fetchPublicComments(reel);
+        }
+    }, [reel?.id]);
+
+    // Si hay keywords o comentarios públicos en la respuesta inicial pero no se muestran, forzar una actualización
+    useEffect(() => {
+        if (reel) {
+            if (reel.keywords && Array.isArray(reel.keywords) && reel.keywords.length > 0) {
+                console.log('Keywords disponibles en reel:', reel.keywords);
+            }
+            if (reel.publicComments && Array.isArray(reel.publicComments) && reel.publicComments.length > 0) {
+                console.log('Comentarios públicos disponibles en reel:', reel.publicComments);
+            }
         }
     }, [reel]);
 
