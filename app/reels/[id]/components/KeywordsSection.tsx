@@ -93,7 +93,7 @@ export default function KeywordsSection({ reelId, keywords, onKeywordsChange }: 
     return (
         <div className="text-white">
             <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-white">Palabras Clave</h3>
+                <h3 className="text-xl font-bold text-white">Palabras Clavexddd</h3>
                 <div className="text-sm text-gray-400">{wordCount}/5 palabras clave</div>
             </div>
             {error && (

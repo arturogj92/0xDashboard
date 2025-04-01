@@ -43,8 +43,7 @@ interface MediaSectionProps {
     responses: Response[];
     onKeywordsChange: (keywords: Keyword[]) => void;
     onResponsesChange: (responses: Response[]) => void;
-    showKeywordsOnly?: boolean;
-    showResponsesOnly?: boolean;
+    showSection?: 'keywords' | 'responses';
 }
 
 export function MediaSection({
@@ -54,8 +53,7 @@ export function MediaSection({
     responses,
     onKeywordsChange,
     onResponsesChange,
-    showKeywordsOnly = false,
-    showResponsesOnly = false
+    showSection
 }: MediaSectionProps) {
     const [newKeyword, setNewKeyword] = useState('');
     const [responseData, setResponseData] = useState({
@@ -96,12 +94,23 @@ export function MediaSection({
         }
     }, [responses]);
 
+    // Log para depurar el problema con las keywords
+    useEffect(() => {
+        console.log('MediaSection recibió keywords:', keywords);
+    }, [keywords]);
+
     const handleAddKeyword = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newKeyword.trim()) return;
         
+        console.log('Intento de agregar keyword:', newKeyword);
+        console.log('keywords actuales:', keywords);
+        
+        // Asegurarnos de que keywords sea un array
+        const safeKeywords = Array.isArray(keywords) ? keywords : [];
+        
         // Comprobar el límite de 5 palabras clave
-        if (keywords.length >= 5) {
+        if (safeKeywords.length >= 5) {
             setError('Límite alcanzado: máximo 5 palabras clave por historia');
             return;
         }
@@ -113,18 +122,22 @@ export function MediaSection({
             const createFn = mediaType === 'story' ? createOrUpdateStoryKeyword : createOrUpdateKeyword;
             const response = await createFn({
                 id: 0,
-                reel_id: mediaId,
+                media_id: mediaId,
                 keyword: newKeyword,
                 is_active: true
             });
 
+            console.log('Respuesta al crear keyword:', response);
+
             if (response.success) {
-                onKeywordsChange([...keywords, response.data]);
+                console.log('Nueva lista de keywords:', [...safeKeywords, response.data]);
+                onKeywordsChange([...safeKeywords, response.data]);
                 setNewKeyword('');
             } else {
                 setError('Error al agregar la palabra clave');
             }
         } catch (err) {
+            console.error('Error al agregar palabra clave:', err);
             setError('Error al agregar la palabra clave');
         } finally {
             setLoading(false);
@@ -132,6 +145,12 @@ export function MediaSection({
     };
 
     const handleDeleteKeyword = async (keywordId: number) => {
+        console.log('Intento de eliminar keyword con ID:', keywordId);
+        console.log('keywords actuales:', keywords);
+        
+        // Asegurarnos de que keywords sea un array
+        const safeKeywords = Array.isArray(keywords) ? keywords : [];
+        
         setLoading(true);
         setError(null);
 
@@ -139,12 +158,17 @@ export function MediaSection({
             const deleteFn = mediaType === 'story' ? deleteStoryKeyword : deleteReelKeyword;
             const response = await deleteFn(mediaId, keywordId);
 
+            console.log('Respuesta al eliminar keyword:', response);
+
             if (response.success) {
-                onKeywordsChange(keywords.filter(k => k.id !== keywordId));
+                const updatedKeywords = safeKeywords.filter(k => k.id !== keywordId);
+                console.log('Nueva lista de keywords después de eliminar:', updatedKeywords);
+                onKeywordsChange(updatedKeywords);
             } else {
                 setError('Error al eliminar la palabra clave');
             }
         } catch (err) {
+            console.error('Error al eliminar palabra clave:', err);
             setError('Error al eliminar la palabra clave');
         } finally {
             setLoading(false);
@@ -311,350 +335,327 @@ export function MediaSection({
 
     return (
         <div className="space-y-4">
-            {showResponsesOnly && (
-                <div>
-                    <div className="flex items-center mb-1">
-                        <ChatBubbleLeftIcon className="h-6 w-6 text-amber-400 mr-2" />
-                        <h2 className="text-xl font-bold text-white">Respuesta por DM</h2>
-                    </div>
-                    <p className="text-sm text-gray-400 mb-2">
-                        Configura la respuesta automática que se enviará como mensaje directo cuando se detecten las palabras clave.
-                    </p>
-                </div>
-            )}
-            {showKeywordsOnly && (
-                <div className="flex items-center mb-4">
-                    <KeyIcon className="h-6 w-6 text-amber-400 mr-2" />
-                    <h2 className="text-xl font-bold text-white">Palabras Clave</h2>
-                </div>
-            )}
-            {!showResponsesOnly && !showKeywordsOnly && (
-                <div className="flex items-center mb-4">
-                    <ChatBubbleLeftRightIcon className="h-6 w-6 text-amber-400 mr-2" />
-                    <h2 className="text-xl font-bold text-white">Respuestas y Palabras Clave</h2>
-                </div>
-            )}
-            {/* Sección de Palabras Clave */}
-            {!showResponsesOnly && (
-                <div className="bg-[#120724] rounded-lg overflow-hidden">
-                    <div className="p-6">
-                        <h3 className="text-xl font-semibold text-white flex items-center mb-2">
-                            <KeyIcon className="h-5 w-5 mr-2 text-[#ff9805]" />
-                            Palabras Clave
-                        </h3>
-                        <p className="text-sm text-gray-400">
-                            Define las palabras clave que activarán respuestas automáticas cuando sean mencionadas. Las respuestas se enviarán como mensaje directo.
-                        </p>
-                    </div>
+            {/* Sección de Palabras Clave - mostrar solo cuando showSection="keywords" */}
+            {showSection === 'keywords' && (
+                <>
+                    <div className="bg-[#120724] rounded-lg overflow-hidden">
+                        <div className="p-6">
+                            <p className="text-sm text-gray-400">
+                                Define las palabras clave que activarán respuestas automáticas cuando sean mencionadas. Las respuestas se enviarán como mensaje directo.
+                            </p>
+                        </div>
 
-                    <div className="px-6 pb-3">
-                        {/* Lista de palabras clave */}
-                        {keywords.length > 0 ? (
-                            <div className="space-y-2 mb-3">
-                                {keywords.map((keyword) => (
-                                    <div key={keyword.id} className="flex items-center justify-between bg-[#1c1033] px-4 py-3 rounded-md">
-                                        <span className="text-gray-200">{keyword.keyword}</span>
-                                        <button
-                                            type="button"
-                                            onClick={() => handleDeleteKeyword(keyword.id)}
-                                            className="text-red-400 hover:text-red-300 focus:outline-none"
-                                        >
-                                            <XMarkIcon className="h-5 w-5" />
-                                        </button>
-                                    </div>
-                                ))}
-                                <div className="text-right text-xs text-gray-400">
-                                    {keywords.length}/5 palabras clave
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="text-center py-3 text-gray-500 mb-3">
-                                No hay palabras clave configuradas. Añade una para activar respuestas automáticas.
-                            </div>
-                        )}
-
-                        {/* Mostrar error si existe */}
-                        {error && (
-                            <div className="mb-3 text-sm text-red-400 bg-red-900/20 px-3 py-2 rounded-md">
-                                {error}
-                            </div>
-                        )}
-
-                        {/* Formulario para agregar palabra clave - solo mostrar si hay menos de 5 keywords */}
-                        {keywords.length < 5 ? (
-                            <form onSubmit={handleAddKeyword} className="flex mb-0">
-                                <div className="flex-1 relative">
-                                    <input
-                                        ref={keywordInputRef}
-                                        type="text"
-                                        value={newKeyword}
-                                        onChange={(e) => setNewKeyword(e.target.value)}
-                                        placeholder="Nueva palabra clave"
-                                        className="w-full bg-[#1c1033] text-white rounded-l-md border-0 px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowEmojiPickerKeyword(!showEmojiPickerKeyword)}
-                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
-                                    >
-                                        😊
-                                    </button>
-                                    {showEmojiPickerKeyword && (
-                                        <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center" onClick={() => setShowEmojiPickerKeyword(false)}>
-                                            <div className="relative" onClick={(e) => e.stopPropagation()}>
-                                                <Picker
-                                                    data={data}
-                                                    onEmojiSelect={handleEmojiSelectKeyword}
-                                                    theme="dark"
-                                                />
-                                            </div>
+                        <div className="px-6 pb-3">
+                            {/* Lista de palabras clave */}
+                            {keywords && Array.isArray(keywords) && keywords.length > 0 ? (
+                                <div className="space-y-2 mb-3">
+                                    {keywords.map((keyword) => (
+                                        <div key={keyword.id} className="flex items-center justify-between bg-[#1c1033] px-4 py-3 rounded-md">
+                                            <span className="text-gray-200">{keyword.keyword}</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleDeleteKeyword(keyword.id)}
+                                                className="text-red-400 hover:text-red-300 focus:outline-none"
+                                            >
+                                                <XMarkIcon className="h-5 w-5" />
+                                            </button>
                                         </div>
-                                    )}
-                                </div>
-                                <button
-                                    type="submit"
-                                    disabled={loading || !newKeyword.trim()}
-                                    className="inline-flex items-center justify-center rounded-r-md bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none disabled:opacity-50"
-                                >
-                                    <PlusIcon className="h-5 w-5 mr-1" />
-                                    Agregar
-                                </button>
-                            </form>
-                        ) : (
-                            <div className="text-center mb-0 py-2 px-3 bg-indigo-900/30 border border-indigo-800/50 rounded-md">
-                                <p className="text-sm text-indigo-300">
-                                    Has alcanzado el máximo de 5 palabras clave. Elimina alguna para añadir nuevas.
-                                </p>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
-
-            {/* Sección de Respuesta */}
-            {!showKeywordsOnly && (
-                <div className="bg-[#120724] rounded-lg overflow-hidden">
-                    <div className="p-4">
-                        <div className="flex justify-between items-start">
-                            {(hasExistingResponse && currentResponse && !isEditing) ? (
-                                // Vista de lectura
-                                <div className="space-y-6 text-gray-300 flex-1">
-                                    <div>
-                                        <h4 className="text-sm font-medium text-gray-400 flex items-center">
-                                            <DocumentTextIcon className="h-4 w-4 mr-1" />
-                                            Nombre
-                                        </h4>
-                                        <p className="mt-1 text-white">{currentResponse.name}</p>
+                                    ))}
+                                    <div className="text-right text-xs text-gray-400">
+                                        {keywords.length}/5 palabras clave
                                     </div>
-                                    <div>
-                                        <h4 className="text-sm font-medium text-gray-400 flex items-center">
-                                            <ChatBubbleLeftRightIcon className="h-4 w-4 mr-1" />
-                                            Mensaje DM
-                                        </h4>
-                                        <p className="mt-1 text-white whitespace-pre-line">{currentResponse.dm_message}</p>
-                                    </div>
-                                    {currentResponse.button_text && (
-                                        <div>
-                                            <h4 className="text-sm font-medium text-gray-400 flex items-center">
-                                                <LinkIcon className="h-4 w-4 mr-1" />
-                                                Botón
-                                            </h4>
-                                            <div className="mt-2 border border-dashed border-gray-700 p-3 rounded-md bg-[#1c1033]">
-                                                <div className="flex flex-col space-y-2">
-                                                    <div className="flex items-center">
-                                                        <span className="text-gray-400 text-xs min-w-20">Texto:</span>
-                                                        <span className="text-white ml-2">{currentResponse.button_text}</span>
-                                                    </div>
-                                                    {currentResponse.button_url && (
-                                                        <div className="flex items-center">
-                                                            <span className="text-gray-400 text-xs min-w-20">URL:</span>
-                                                            <a 
-                                                                href={currentResponse.button_url} 
-                                                                target="_blank" 
-                                                                rel="noopener noreferrer" 
-                                                                className="text-indigo-400 hover:text-indigo-300 truncate ml-2"
-                                                            >
-                                                                {currentResponse.button_url}
-                                                            </a>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <div className="text-xs text-gray-500 mt-2 italic">
-                                                    Este botón aparecerá en el mensaje que recibirá el usuario
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
                                 </div>
                             ) : (
-                                // Formulario de edición
-                                <form onSubmit={handleSaveResponse} className="space-y-6 flex-1">
-                                    <div>
-                                        <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
-                                            <DocumentTextIcon className="h-4 w-4 mr-1" />
-                                            Nombre
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="name"
-                                            value={responseData.name}
-                                            onChange={(e) => setResponseData({ ...responseData, name: e.target.value })}
-                                            className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                                            placeholder="Nombre de la respuesta"
-                                        />
-                                        <p className="mt-1 text-xs text-gray-500">
-                                            Identificador interno para esta respuesta
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="dm_message" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
-                                            <ChatBubbleLeftRightIcon className="h-4 w-4 mr-1" />
-                                            Mensaje DM
-                                        </label>
-                                        <div className="relative">
-                                            <textarea
-                                                ref={messageTextareaRef}
-                                                id="dm_message"
-                                                rows={4}
-                                                value={responseData.dm_message}
-                                                onChange={(e) => setResponseData({ ...responseData, dm_message: e.target.value })}
-                                                className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                                                placeholder="Mensaje que se enviará por DM"
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowEmojiPickerMessage(!showEmojiPickerMessage)}
-                                                className="absolute right-2 top-2 text-gray-400 hover:text-gray-200"
-                                            >
-                                                😊
-                                            </button>
-                                            {showEmojiPickerMessage && (
-                                                <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center" onClick={() => setShowEmojiPickerMessage(false)}>
-                                                    <div className="relative" onClick={(e) => e.stopPropagation()}>
-                                                        <Picker
-                                                            data={data}
-                                                            onEmojiSelect={handleEmojiSelectMessage}
-                                                            theme="dark"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                        <p className="mt-1 text-xs text-gray-500">
-                                            Este texto se enviará como mensaje directo cuando se detecte una palabra clave
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="button_text" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
-                                            <LinkIcon className="h-4 w-4 mr-1" />
-                                            Texto del Botón (opcional)
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="button_text"
-                                            value={responseData.button_text}
-                                            onChange={(e) => setResponseData({ ...responseData, button_text: e.target.value })}
-                                            className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                                            placeholder="Texto que se mostrará en el botón"
-                                        />
-                                        <p className="mt-1 text-xs text-gray-500">
-                                            Texto que aparecerá en el botón del mensaje
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="button_url" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
-                                            <LinkIcon className="h-4 w-4 mr-1" />
-                                            URL del Botón (opcional)
-                                        </label>
-                                        <input
-                                            type="url"
-                                            id="button_url"
-                                            value={responseData.button_url}
-                                            onChange={(e) => setResponseData({ ...responseData, button_url: e.target.value })}
-                                            className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                                            placeholder="URL a la que apuntará el botón"
-                                        />
-                                        <p className="mt-1 text-xs text-gray-500">
-                                            Enlace al que redirigirá el botón cuando sea pulsado
-                                        </p>
-                                    </div>
-
-                                    <div className="flex justify-end space-x-3 pt-4">
-                                        {isEditing && (
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    if (currentResponse) {
-                                                        setResponseData({
-                                                            name: currentResponse.name,
-                                                            dm_message: currentResponse.dm_message,
-                                                            button_text: currentResponse.button_text || '',
-                                                            button_url: currentResponse.button_url || ''
-                                                        });
-                                                    }
-                                                    setIsEditing(false);
-                                                }}
-                                                className="inline-flex items-center px-4 py-2 border border-gray-600 rounded-md text-sm font-medium text-gray-300 bg-transparent hover:bg-gray-800 focus:outline-none"
-                                            >
-                                                Cancelar
-                                            </button>
-                                        )}
-                                        <button
-                                            type="submit"
-                                            disabled={loading}
-                                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none disabled:opacity-50"
-                                        >
-                                            {loading ? 'Guardando...' : hasExistingResponse ? 'Guardar Cambios' : 'Crear Respuesta'}
-                                        </button>
-                                    </div>
-                                </form>
+                                <div className="text-center py-3 text-gray-500 mb-3">
+                                    No hay palabras clave configuradas. Añade una para activar respuestas automáticas.
+                                </div>
                             )}
 
-                            <div className="flex space-x-2 ml-4">
-                                <TooltipProvider>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
+                            {/* Mostrar error si existe */}
+                            {error && (
+                                <div className="mb-3 text-sm text-red-400 bg-red-900/20 px-3 py-2 rounded-md">
+                                    {error}
+                                </div>
+                            )}
+
+                            {/* Formulario para agregar palabra clave - solo mostrar si hay menos de 5 keywords */}
+                            {!keywords || !Array.isArray(keywords) || keywords.length < 5 ? (
+                                <form onSubmit={handleAddKeyword} className="flex mb-0">
+                                    <div className="flex-1 relative">
+                                        <input
+                                            ref={keywordInputRef}
+                                            type="text"
+                                            value={newKeyword}
+                                            onChange={(e) => setNewKeyword(e.target.value)}
+                                            placeholder="Nueva palabra clave"
+                                            className="w-full bg-[#1c1033] text-white rounded-l-md border-0 px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowEmojiPickerKeyword(!showEmojiPickerKeyword)}
+                                            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
+                                        >
+                                            😊
+                                        </button>
+                                        {showEmojiPickerKeyword && (
+                                            <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center" onClick={() => setShowEmojiPickerKeyword(false)}>
+                                                <div className="relative" onClick={(e) => e.stopPropagation()}>
+                                                    <Picker
+                                                        data={data}
+                                                        onEmojiSelect={handleEmojiSelectKeyword}
+                                                        theme="dark"
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <button
+                                        type="submit"
+                                        disabled={loading || !newKeyword.trim()}
+                                        className="inline-flex items-center justify-center rounded-r-md bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none disabled:opacity-50"
+                                    >
+                                        <PlusIcon className="h-5 w-5 mr-1" />
+                                        Agregar
+                                    </button>
+                                </form>
+                            ) : (
+                                <div className="text-center mb-0 py-2 px-3 bg-indigo-900/30 border border-indigo-800/50 rounded-md">
+                                    <p className="text-sm text-indigo-300">
+                                        Has alcanzado el máximo de 5 palabras clave. Elimina alguna para añadir nuevas.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </>
+            )}
+
+            {/* Sección de Respuesta - mostrar solo cuando showSection="responses" */}
+            {showSection === 'responses' && (
+                <>
+                    <div className="bg-[#120724] rounded-lg overflow-hidden">
+                        <div className="p-4">
+                            <div className="flex justify-between items-start">
+                                {(hasExistingResponse && currentResponse && !isEditing) ? (
+                                    // Vista de lectura
+                                    <div className="space-y-6 text-gray-300 flex-1">
+                                        <div>
+                                            <h4 className="text-sm font-medium text-gray-400 flex items-center">
+                                                <DocumentTextIcon className="h-4 w-4 mr-1" />
+                                                Nombre
+                                            </h4>
+                                            <p className="mt-1 text-white">{currentResponse.name}</p>
+                                        </div>
+                                        <div>
+                                            <h4 className="text-sm font-medium text-gray-400 flex items-center">
+                                                <ChatBubbleLeftRightIcon className="h-4 w-4 mr-1" />
+                                                Mensaje DM
+                                            </h4>
+                                            <p className="mt-1 text-white whitespace-pre-line">{currentResponse.dm_message}</p>
+                                        </div>
+                                        {currentResponse.button_text && (
+                                            <div>
+                                                <h4 className="text-sm font-medium text-gray-400 flex items-center">
+                                                    <LinkIcon className="h-4 w-4 mr-1" />
+                                                    Botón
+                                                </h4>
+                                                <div className="mt-2 border border-dashed border-gray-700 p-3 rounded-md bg-[#1c1033]">
+                                                    <div className="flex flex-col space-y-2">
+                                                        <div className="flex items-center">
+                                                            <span className="text-gray-400 text-xs min-w-20">Texto:</span>
+                                                            <span className="text-white ml-2">{currentResponse.button_text}</span>
+                                                        </div>
+                                                        {currentResponse.button_url && (
+                                                            <div className="flex items-center">
+                                                                <span className="text-gray-400 text-xs min-w-20">URL:</span>
+                                                                <a 
+                                                                    href={currentResponse.button_url} 
+                                                                    target="_blank" 
+                                                                    rel="noopener noreferrer" 
+                                                                    className="text-indigo-400 hover:text-indigo-300 truncate ml-2"
+                                                                >
+                                                                    {currentResponse.button_url}
+                                                                </a>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                    <div className="text-xs text-gray-500 mt-2 italic">
+                                                        Este botón aparecerá en el mensaje que recibirá el usuario
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    // Formulario de edición
+                                    <form onSubmit={handleSaveResponse} className="space-y-6 flex-1">
+                                        <div>
+                                            <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
+                                                <DocumentTextIcon className="h-4 w-4 mr-1" />
+                                                Nombre
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="name"
+                                                value={responseData.name}
+                                                onChange={(e) => setResponseData({ ...responseData, name: e.target.value })}
+                                                className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                placeholder="Nombre de la respuesta"
+                                            />
+                                            <p className="mt-1 text-xs text-gray-500">
+                                                Identificador interno para esta respuesta
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <label htmlFor="dm_message" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
+                                                <ChatBubbleLeftRightIcon className="h-4 w-4 mr-1" />
+                                                Mensaje DM
+                                            </label>
+                                            <div className="relative">
+                                                <textarea
+                                                    ref={messageTextareaRef}
+                                                    id="dm_message"
+                                                    rows={4}
+                                                    value={responseData.dm_message}
+                                                    onChange={(e) => setResponseData({ ...responseData, dm_message: e.target.value })}
+                                                    className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                    placeholder="Mensaje que se enviará por DM"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowEmojiPickerMessage(!showEmojiPickerMessage)}
+                                                    className="absolute right-2 top-2 text-gray-400 hover:text-gray-200"
+                                                >
+                                                    😊
+                                                </button>
+                                                {showEmojiPickerMessage && (
+                                                    <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center" onClick={() => setShowEmojiPickerMessage(false)}>
+                                                        <div className="relative" onClick={(e) => e.stopPropagation()}>
+                                                            <Picker
+                                                                data={data}
+                                                                onEmojiSelect={handleEmojiSelectMessage}
+                                                                theme="dark"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <p className="mt-1 text-xs text-gray-500">
+                                                Este texto se enviará como mensaje directo cuando se detecte una palabra clave
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <label htmlFor="button_text" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
+                                                <LinkIcon className="h-4 w-4 mr-1" />
+                                                Texto del Botón (opcional)
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="button_text"
+                                                value={responseData.button_text}
+                                                onChange={(e) => setResponseData({ ...responseData, button_text: e.target.value })}
+                                                className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                placeholder="Texto que se mostrará en el botón"
+                                            />
+                                            <p className="mt-1 text-xs text-gray-500">
+                                                Texto que aparecerá en el botón del mensaje
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <label htmlFor="button_url" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
+                                                <LinkIcon className="h-4 w-4 mr-1" />
+                                                URL del Botón (opcional)
+                                            </label>
+                                            <input
+                                                type="url"
+                                                id="button_url"
+                                                value={responseData.button_url}
+                                                onChange={(e) => setResponseData({ ...responseData, button_url: e.target.value })}
+                                                className="w-full bg-[#1c1033] text-white border-0 rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                                placeholder="URL a la que apuntará el botón"
+                                            />
+                                            <p className="mt-1 text-xs text-gray-500">
+                                                Enlace al que redirigirá el botón cuando sea pulsado
+                                            </p>
+                                        </div>
+
+                                        <div className="flex justify-end space-x-3 pt-4">
+                                            {isEditing && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        if (currentResponse) {
+                                                            setResponseData({
+                                                                name: currentResponse.name,
+                                                                dm_message: currentResponse.dm_message,
+                                                                button_text: currentResponse.button_text || '',
+                                                                button_url: currentResponse.button_url || ''
+                                                            });
+                                                        }
+                                                        setIsEditing(false);
+                                                    }}
+                                                    className="inline-flex items-center px-4 py-2 border border-gray-600 rounded-md text-sm font-medium text-gray-300 bg-transparent hover:bg-gray-800 focus:outline-none"
+                                                >
+                                                    Cancelar
+                                                </button>
+                                            )}
                                             <button
-                                                type="button"
-                                                onClick={() => setShowAIModal(true)}
-                                                className="inline-flex items-center justify-center p-2 border border-transparent rounded-md text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none"
-                                                aria-label="Generar con IA"
+                                                type="submit"
+                                                disabled={loading}
+                                                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none disabled:opacity-50"
                                             >
-                                                <SparklesIcon className="h-5 w-5" />
+                                                {loading ? 'Guardando...' : hasExistingResponse ? 'Guardar Cambios' : 'Crear Respuesta'}
                                             </button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p>Generar respuesta con IA</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                                
-                                {!isEditing && hasExistingResponse && currentResponse && (
+                                        </div>
+                                    </form>
+                                )}
+
+                                <div className="flex space-x-2 ml-4">
                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <button
                                                     type="button"
-                                                    onClick={handleEditClick}
-                                                    className="inline-flex items-center justify-center p-2 border border-transparent rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
-                                                    aria-label="Editar"
+                                                    onClick={() => setShowAIModal(true)}
+                                                    className="inline-flex items-center justify-center p-2 border border-transparent rounded-md text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none"
+                                                    aria-label="Generar con IA"
                                                 >
-                                                    <PencilIcon className="h-5 w-5" />
+                                                    <SparklesIcon className="h-5 w-5" />
                                                 </button>
                                             </TooltipTrigger>
                                             <TooltipContent>
-                                                <p>Editar respuesta</p>
+                                                <p>Generar respuesta con IA</p>
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
-                                )}
+                                    
+                                    {!isEditing && hasExistingResponse && currentResponse && (
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <button
+                                                        type="button"
+                                                        onClick={handleEditClick}
+                                                        className="inline-flex items-center justify-center p-2 border border-transparent rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
+                                                        aria-label="Editar"
+                                                    >
+                                                        <PencilIcon className="h-5 w-5" />
+                                                    </button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>Editar respuesta</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </>
             )}
 
             {/* Modal para generar respuesta con IA */}

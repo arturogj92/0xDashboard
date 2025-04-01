@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Reel, Keyword, PublicComment, Response } from '@/lib/types';
-import { getReel, updateReelDescription, getMediaResponses, publishReel, updateReelUrl } from '@/lib/api';
+import { getReel, updateReelDescription, getMediaResponses, publishReel, updateReelUrl, getReelKeywords } from '@/lib/api';
 import { MediaSection } from '@/components/media/MediaSection';
 import PublicCommentsSection from './components/PublicCommentsSection';
 import {
@@ -79,7 +79,8 @@ export default function EditReel() {
                 const reelData: Reel = {
                     ...reelResponse.data,
                     media_type: 'reel', // Forzar a que sea de tipo 'reel'
-                    shortcode: (reelResponse.data as any).shortcode || ''
+                    shortcode: (reelResponse.data as any).shortcode || '',
+                    keywords: reelResponse.data.keywords || []
                 };
                 
                 setReel(reelData);
@@ -87,8 +88,11 @@ export default function EditReel() {
                 setUrl(reelResponse.data.url || '');
                 setThumbnailUrl(getThumbnailUrl(reelResponse.data.url || ''));
 
-                // Cargar las respuestas después de tener el reel
-                await fetchResponses(reelData);
+                // Cargar las respuestas y keywords después de tener el reel
+                await Promise.all([
+                    fetchResponses(reelData),
+                    fetchKeywords(reelData)
+                ]);
             } else {
                 setError('Error al cargar los datos del reel');
             }
@@ -112,6 +116,45 @@ export default function EditReel() {
             console.error('Error al cargar las respuestas:', err);
         }
     };
+
+    const fetchKeywords = async (currentReel: Reel) => {
+        try {
+            console.log('Cargando keywords...');
+            const keywordsResponse = await getReelKeywords(reelId);
+            console.log('Keywords recibidas:', keywordsResponse);
+            
+            if (keywordsResponse.success) {
+                // Asegurarnos de que las keywords no son nulas ni indefinidas
+                const safeKeywords = keywordsResponse.data || [];
+                console.log('Keywords que se van a establecer:', safeKeywords);
+                
+                // Actualizar el estado con las keywords recibidas
+                setReel(prevReel => {
+                    if (!prevReel) return currentReel;
+                    return {
+                        ...prevReel,
+                        keywords: safeKeywords
+                    };
+                });
+            }
+        } catch (err) {
+            console.error('Error al cargar las keywords:', err);
+        }
+    };
+
+    // Asegurarnos de que las keywords se actualicen cuando cambian
+    useEffect(() => {
+        if (reel?.id) {
+            fetchKeywords(reel);
+        }
+    }, [reel?.id]);
+
+    // Si hay keywords en la respuesta inicial pero no se muestran, forzar una actualización
+    useEffect(() => {
+        if (reel && reel.keywords && Array.isArray(reel.keywords) && reel.keywords.length > 0) {
+            console.log('Keywords disponibles en reel:', reel.keywords);
+        }
+    }, [reel]);
 
     const handleGoBack = () => {
         router.back();
@@ -412,14 +455,23 @@ export default function EditReel() {
                                 <KeyIcon className="h-6 w-6 text-amber-400 mr-2" />
                                 <h2 className="text-xl font-bold text-white">Palabras Clave</h2>
                             </div>
+                            <p className="text-sm text-gray-400 mb-4">
+                                Configura hasta 5 palabras clave que cuando aparezcan en un comentario, activarán la respuesta automática.
+                            </p>
                             <MediaSection
                                 mediaId={reel.id}
                                 mediaType="reel"
                                 keywords={reel.keywords || []}
                                 responses={[]}
-                                onKeywordsChange={(keywords) => setReel({ ...reel, keywords })}
+                                onKeywordsChange={(keywords) => {
+                                    console.log('Actualizando keywords:', keywords);
+                                    setReel((prevReel) => {
+                                        if (!prevReel) return reel;
+                                        return { ...prevReel, keywords };
+                                    });
+                                }}
                                 onResponsesChange={() => {}}
-                                showKeywordsOnly={true}
+                                showSection="keywords"
                             />
                         </div>
                     </div>
@@ -439,6 +491,13 @@ export default function EditReel() {
 
                     {/* Tercera fila: Respuesta por DM (todo el ancho) */}
                     <div className="bg-[#120724] rounded-lg overflow-hidden p-6">
+                        <div className="flex items-center mb-1">
+                            <ChatBubbleLeftIcon className="h-6 w-6 text-amber-400 mr-2" />
+                            <h2 className="text-xl font-bold text-white">Respuesta por DM</h2>
+                        </div>
+                        <p className="text-sm text-gray-400 mb-2">
+                            Configura la respuesta automática que se enviará como mensaje directo cuando se detecten las palabras clave.
+                        </p>
                         <MediaSection
                             mediaId={reel.id}
                             mediaType="reel"
@@ -446,7 +505,7 @@ export default function EditReel() {
                             responses={reel.responses || []}
                             onKeywordsChange={() => {}}
                             onResponsesChange={(responses) => setReel({ ...reel, responses })}
-                            showResponsesOnly={true}
+                            showSection="responses"
                         />
                     </div>
                 </div>

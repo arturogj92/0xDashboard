@@ -137,16 +137,21 @@ export const toggleReelStatus = async (id: number, isActive: boolean): Promise<A
 
 // Keywords
 export const createOrUpdateKeyword = async (data: Keyword): Promise<ApiResponse<Keyword>> => {
-    const response = await fetch(`${API_URL}/api/reels/${data.reel_id}/keywords`, {
+    const response = await fetch(`${API_URL}/api/media/${data.media_id}/keywords`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+            id: data.id || 0,
+            media_id: data.media_id,
+            keyword: data.keyword,
+            is_active: data.is_active
+        }),
     });
     return response.json();
 };
 
 export const getReelKeywords = async (mediaId: number): Promise<ApiResponse<Keyword[]>> => {
-    const response = await fetch(`${API_URL}/api/reels/${mediaId}/keywords`);
+    const response = await fetch(`${API_URL}/api/media/${mediaId}/keywords`);
     return response.json();
 };
 
@@ -207,7 +212,7 @@ export const deletePublicComment = async (reelId: number, commentId: number): Pr
 
 // Responses
 export const createOrUpdateResponse = async (data: Response): Promise<ApiResponse<Response>> => {
-    const response = await fetch(`${API_URL}/api/reels/${data.media_id}/responses`, {
+    const response = await fetch(`${API_URL}/api/media/${data.media_id}/responses`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -221,7 +226,7 @@ export const getMediaResponses = async (mediaId: number): Promise<ApiResponse<Re
 };
 
 export const deleteResponse = async (mediaId: number, responseId: number): Promise<ApiResponse<void>> => {
-    const response = await fetch(`${API_URL}/api/reels/${mediaId}/responses/${responseId}`, {
+    const response = await fetch(`${API_URL}/api/media/${mediaId}/responses/${responseId}`, {
         method: 'DELETE',
     });
     return response.json();
@@ -409,8 +414,16 @@ export const updateReelUrl = async (reelId: number, url: string): Promise<ApiRes
                 data: data.data as Reel
             };
         }
-        return data;
+        return {
+            success: false,
+            message: data.message || 'Error al actualizar la URL del reel',
+            data: {} as Media
+        };
     } catch (error) {
-        return { success: false, message: 'Error al actualizar la URL del reel' };
+        return { 
+            success: false, 
+            message: 'Error al actualizar la URL del reel',
+            data: {} as Media
+        };
     }
 }; 

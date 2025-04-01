@@ -303,7 +303,7 @@ export default function EditStory() {
                                     responses={[]}
                                     onKeywordsChange={setKeywords}
                                     onResponsesChange={() => {}}
-                                    showKeywordsOnly={true}
+                                    showSection="keywords"
                                 />
                             </div>
                         </div>
@@ -316,18 +316,14 @@ export default function EditStory() {
                                 <ChatBubbleLeftIcon className="h-6 w-6 text-amber-400 mr-2" />
                                 <h2 className="text-xl font-bold text-white">Respuesta</h2>
                             </div>
-                            <p className="text-sm text-gray-400 mb-4">
-                                Configura la respuesta automática que se enviará como mensaje directo cuando se detecten las palabras clave.
-                            </p>
-                            {/* Pasamos solo la parte de responses de MediaSection */}
                             <MediaSection
                                 mediaId={storyId}
                                 mediaType="story"
                                 keywords={[]}
                                 responses={responses}
-                                onKeywordsChange={() => { }}
+                                onKeywordsChange={() => {}}
                                 onResponsesChange={setResponses}
-                                showResponsesOnly={true}
+                                showSection="responses"
                             />
                         </div>
                     </div>
