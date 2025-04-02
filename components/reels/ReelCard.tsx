@@ -102,15 +102,24 @@ export function MediaCard({
                 
                 {/* Badge de estado junto al título */}
                 {isDraft ? (
-                  <span className="inline-flex items-center rounded-md px-1.5 md:px-2.5 py-0.5 md:py-1 text-[10px] md:text-xs font-medium text-amber-400 bg-[#120724] border border-amber-500/70 whitespace-nowrap">
+                  <span 
+                    className="inline-flex items-center rounded-md px-1.5 md:px-2.5 py-0.5 md:py-1 text-[10px] md:text-xs font-medium text-amber-400 bg-[#120724] border border-amber-500/70 whitespace-nowrap"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     DRAFT
                   </span>
                 ) : (
-                  <span className={`inline-flex items-center rounded-md px-1.5 md:px-2.5 py-0.5 md:py-1 text-[10px] md:text-xs font-medium bg-[#120724] border whitespace-nowrap ${
-                    media.is_active 
-                      ? 'text-green-400 border-green-500/70' 
-                      : 'text-red-400 border-red-500/70'
-                  }`}>
+                  <span 
+                    className={`inline-flex items-center rounded-md px-1.5 md:px-2.5 py-0.5 md:py-1 text-[10px] md:text-xs font-medium bg-[#120724] border whitespace-nowrap ${
+                      media.is_active 
+                        ? 'text-green-400 border-green-500/70' 
+                        : 'text-red-400 border-red-500/70'
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onToggleActive(media.id, media.is_active || false);
+                    }}
+                  >
                     {media.is_active ? 'ACTIVO' : 'INACTIVO'}
                   </span>
                 )}
@@ -140,7 +149,10 @@ export function MediaCard({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="flex items-center bg-indigo-900/40 rounded-full px-1.5 md:px-2.5 py-0.5 md:py-1 border border-indigo-800/30">
+                    <div 
+                      className="flex items-center bg-indigo-900/40 rounded-full px-1.5 md:px-2.5 py-0.5 md:py-1 border border-indigo-800/30"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <PlayIcon className="h-3 w-3 md:h-4 md:w-4 text-indigo-400 mr-0.5 md:mr-1.5" />
                       <span className="text-indigo-300 text-[10px] md:text-xs font-medium">{media.totalVisits || 0}</span>
                     </div>
@@ -154,7 +166,10 @@ export function MediaCard({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="flex items-center bg-purple-900/40 rounded-full px-1.5 md:px-2.5 py-0.5 md:py-1 border border-purple-800/30">
+                    <div 
+                      className="flex items-center bg-purple-900/40 rounded-full px-1.5 md:px-2.5 py-0.5 md:py-1 border border-purple-800/30"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <CalendarDays className="h-3 w-3 md:h-4 md:w-4 text-purple-400 mr-0.5 md:mr-1.5" />
                       <span className="text-purple-300 text-[10px] md:text-xs font-medium">{media.visits7d || 0}</span>
                     </div>
@@ -168,7 +183,10 @@ export function MediaCard({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="flex items-center bg-amber-900/40 rounded-full px-1.5 md:px-2.5 py-0.5 md:py-1 border border-amber-800/30">
+                    <div 
+                      className="flex items-center bg-amber-900/40 rounded-full px-1.5 md:px-2.5 py-0.5 md:py-1 border border-amber-800/30"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <CalendarClock className="h-3 w-3 md:h-4 md:w-4 text-amber-400 mr-0.5 md:mr-1.5" />
                       <span className="text-amber-300 text-[10px] md:text-xs font-medium">{media.visits24 || 0}</span>
                     </div>
