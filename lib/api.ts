@@ -190,6 +190,15 @@ export const createPublicComment = async (data: PublicComment): Promise<ApiRespo
     return response.json();
 };
 
+export const generateAIPublicComments = async (reelId: number, count: number): Promise<ApiResponse<PublicComment[]>> => {
+    const response = await fetch(`${API_URL}/api/reels/${reelId}/generate-multiple-public-comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ count }),
+    });
+    return response.json();
+};
+
 export const getReelPublicComments = async (reelId: number): Promise<ApiResponse<PublicComment[]>> => {
     const response = await fetch(`${API_URL}/api/reels/${reelId}/public-comments`);
     return response.json();

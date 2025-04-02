@@ -5,7 +5,7 @@ import { Response } from '@/lib/types';
 import { createOrUpdateResponse, deleteResponse } from '@/lib/api';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
-import { XMarkIcon, FaceSmileIcon, ArrowUpRightIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, FaceSmileIcon, ArrowUpRightIcon, SparklesIcon, PlusIcon } from '@heroicons/react/24/outline';
 
 interface ResponsesSectionProps {
     reelId: number;
@@ -163,8 +163,9 @@ export default function ResponsesSection({ reelId, responses, onResponsesChange 
                     </div>
                     <button
                         onClick={() => setShowForm(true)}
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="flex items-center gap-1 px-3 py-1 rounded-md text-sm bg-gradient-to-r from-indigo-600/20 to-indigo-600/10 text-white hover:from-indigo-600/30 hover:to-indigo-600/20 border border-indigo-500/50"
                     >
+                        <PlusIcon className="h-4 w-4 text-indigo-400" />
                         {isEditing ? 'Editar Respuesta' : 'Nueva Respuesta'}
                     </button>
                 </div>
@@ -201,9 +202,9 @@ export default function ResponsesSection({ reelId, responses, onResponsesChange 
                                     type="button"
                                     onClick={handleGenerateAIResponse}
                                     disabled={isGeneratingAI}
-                                    className="inline-flex items-center text-sm text-amber-400 hover:text-amber-300"
+                                    className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm bg-gradient-to-r from-indigo-600/20 to-indigo-600/10 text-white hover:from-indigo-600/30 hover:to-indigo-600/20 border border-indigo-500/50"
                                 >
-                                    <SparklesIcon className="h-4 w-4 mr-1" />
+                                    <SparklesIcon className="h-4 w-4 text-indigo-400" />
                                     {isGeneratingAI ? 'Generando...' : 'Generar con IA'}
                                 </button>
                             </div>

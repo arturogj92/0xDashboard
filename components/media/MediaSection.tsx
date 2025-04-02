@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { Keyword, Response, Media } from '@/lib/types';
 import { 
   createOrUpdateKeyword, 
@@ -32,25 +32,27 @@ import {
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 
-interface MediaSectionProps {
+export interface MediaSectionProps {
     mediaId: number;
-    mediaType: 'reel' | 'story';
+    mediaType: 'story' | 'reel';
     keywords: Keyword[];
     responses: Response[];
     onKeywordsChange: (keywords: Keyword[]) => void;
     onResponsesChange: (responses: Response[]) => void;
     showSection?: 'keywords' | 'responses';
+    hideAIButton?: boolean;
 }
 
-export function MediaSection({
+export const MediaSection = forwardRef<{openAIModal: () => void}, MediaSectionProps>(({
     mediaId,
     mediaType,
     keywords,
     responses,
     onKeywordsChange,
     onResponsesChange,
-    showSection
-}: MediaSectionProps) {
+    showSection,
+    hideAIButton = false
+}, ref) => {
     const [newKeyword, setNewKeyword] = useState('');
     const [responseData, setResponseData] = useState({
         name: '',
@@ -316,6 +318,11 @@ export function MediaSection({
         setGeneratedResponse(null);
         setShowGeneratedResponse(false);
     };
+
+    // Exponer la función openAIModal al componente padre
+    useImperativeHandle(ref, () => ({
+        openAIModal: () => setShowAIModal(true)
+    }));
 
     return (
         <div className="space-y-4">
@@ -598,6 +605,7 @@ export function MediaSection({
                                 )}
 
                                 <div className="flex space-x-2 ml-4">
+                                    {!hideAIButton && (
                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
@@ -615,6 +623,7 @@ export function MediaSection({
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
+                                    )}
                                     
                                     {!isEditing && hasExistingResponse && currentResponse && (
                                         <TooltipProvider>
@@ -840,4 +849,7 @@ export function MediaSection({
             )}
         </div>
     );
-} 
+});
+
+// Asignar un displayName al componente
+MediaSection.displayName = 'MediaSection'; 

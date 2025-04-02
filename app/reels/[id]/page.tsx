@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Reel, Keyword, PublicComment, Response } from '@/lib/types';
@@ -14,8 +14,10 @@ import {
     PhotoIcon,
     ChatBubbleLeftIcon,
     KeyIcon,
-    ChatBubbleLeftRightIcon
+    ChatBubbleLeftRightIcon,
+    SparklesIcon
 } from '@heroicons/react/24/outline';
+import { Button } from '@/components/ui/button';
 
 // Importar la imagen
 import DescriptionImage from '@/public/images/descriptions/description-story.png';
@@ -37,6 +39,7 @@ export default function EditReel() {
     const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
     const [urlError, setUrlError] = useState<string | null>(null);
     const [urlSaveTimeout, setUrlSaveTimeout] = useState<NodeJS.Timeout | null>(null);
+    const responsesSectionRef = useRef<any>(null);
 
     const extractInstagramReelId = (url: string) => {
         if (!url) return null;
@@ -534,10 +537,26 @@ export default function EditReel() {
                             <ChatBubbleLeftIcon className="h-6 w-6 text-amber-400 mr-2" />
                             <h2 className="text-xl font-bold text-white">Respuesta por DM</h2>
                         </div>
-                        <p className="text-sm text-gray-400 mb-2">
-                            Configura la respuesta automática que se enviará como mensaje directo cuando se detecten las palabras clave.
-                        </p>
+                        <div className="flex items-center justify-between mb-2">
+                            <p className="text-sm text-gray-400">
+                                Configura la respuesta automática que se enviará como mensaje directo cuando se detecten las palabras clave.
+                            </p>
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={() => {
+                                    if (responsesSectionRef.current && responsesSectionRef.current.openAIModal) {
+                                        responsesSectionRef.current.openAIModal();
+                                    }
+                                }}
+                                className="flex items-center gap-1 bg-gradient-to-r from-indigo-600/20 to-indigo-600/10 text-white hover:from-indigo-600/30 hover:to-indigo-600/20 border-indigo-500/50"
+                            >
+                                <SparklesIcon className="h-4 w-4 text-indigo-400" />
+                                <span>Generar con IA</span>
+                            </Button>
+                        </div>
                         <MediaSection
+                            ref={responsesSectionRef}
                             mediaId={reel.id}
                             mediaType="reel"
                             keywords={[]}
@@ -545,6 +564,7 @@ export default function EditReel() {
                             onKeywordsChange={() => {}}
                             onResponsesChange={(responses) => setReel({ ...reel, responses })}
                             showSection="responses"
+                            hideAIButton={true}
                         />
                     </div>
                 </div>
