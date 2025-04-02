@@ -96,21 +96,6 @@ export function MediaCard({
                 <DocumentTextIcon className="h-8 w-8 text-gray-600" />
               </div>
             )}
-            
-            {/* Controles de reproducción y pausa superpuestos en la miniatura */}
-            {isDraft ? (
-              <div className="absolute top-2 right-2 bg-amber-500/20 rounded-full p-1">
-                <DocumentTextIcon className="h-3 w-3 text-amber-400" />
-              </div>
-            ) : media.is_active ? (
-              <div className="absolute top-2 right-2 bg-[#faa011]/20 rounded-full p-1">
-                <Play className="h-3 w-3 text-[#faa011]" />
-              </div>
-            ) : (
-              <div className="absolute top-2 right-2 bg-red-600/30 rounded-full p-1">
-                <Pause className="h-3 w-3 text-red-400" />
-              </div>
-            )}
           </div>
 
           {/* Contenido principal */}
