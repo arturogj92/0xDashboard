@@ -2,15 +2,45 @@ import { Reel, Keyword, PublicComment, Response, ApiResponse, DmLog, Media, Stor
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+// Función auxiliar para obtener el token
+const getAuthToken = () => {
+  if (typeof window === 'undefined') {
+    // Estamos en SSR, no hay localStorage
+    return null;
+  }
+  
+  try {
+    return localStorage.getItem('token');
+  } catch (error) {
+    console.error('Error al acceder a localStorage:', error);
+    return null;
+  }
+};
+
+// Función para crear headers con autenticación
+const createAuthHeaders = () => {
+  const token = getAuthToken();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json'
+  };
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  return headers;
+};
+
 // Reels
-export const createReel = async (data: Omit<Media, 'id' | 'media_id' | 'created_at' | 'updated_at'>, is_draft?: boolean): Promise<ApiResponse<Media>> => {
+export const createReel = async (data: { url: string, description: string, is_active: boolean, media_type: string }, isDraft: boolean = false): Promise<ApiResponse<Media>> => {
     const response = await fetch(`${API_URL}/api/reels`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, is_draft }),
+        headers: createAuthHeaders(),
+        body: JSON.stringify({ ...data, is_draft: isDraft }),
     });
     return response.json();
 };
+
 export const getReelDmLogs = async (reelId: number): Promise<ApiResponse<{
   total: number;
   logs: DmLog[]
@@ -18,8 +48,6 @@ export const getReelDmLogs = async (reelId: number): Promise<ApiResponse<{
   const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-logs`);
   return response.json();
 };
-
-
 
 export const getReelDmTotalCountToday = async (reelId: number): Promise<ApiResponse<{
   total_count_today: number;
@@ -43,7 +71,9 @@ export const getReelDmTotalCount7d = async (reelId: number): Promise<ApiResponse
 };
 
 export const getReel = async (id: number): Promise<ApiResponse<Media>> => {
-    const response = await fetch(`${API_URL}/api/reels/${id}`);
+    const response = await fetch(`${API_URL}/api/reels/${id}`, {
+        headers: createAuthHeaders()
+    });
     const data = await response.json();
     if (data.success) {
         // Convertir el tipo según media_type
@@ -61,10 +91,11 @@ export const getReel = async (id: number): Promise<ApiResponse<Media>> => {
     }
     return data;
 };
+
 export const updateReelDescription = async (id: number, description: string, publish_draft?: boolean, url?: string): Promise<ApiResponse<Media>> => {
     const response = await fetch(`${API_URL}/api/reels/${id}/description`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: createAuthHeaders(),
         body: JSON.stringify({ description, publish_draft, url }),
     });
     const data = await response.json();
@@ -85,15 +116,18 @@ export const updateReelDescription = async (id: number, description: string, pub
     return data;
 };
 
-export const deleteReel = async (id: number): Promise<ApiResponse<void>> => {
+export const deleteReel = async (id: number): Promise<ApiResponse<{ success: boolean }>> => {
     const response = await fetch(`${API_URL}/api/reels/${id}`, {
         method: 'DELETE',
+        headers: createAuthHeaders(),
     });
     return response.json();
 };
 
 export const getReels = async (): Promise<ApiResponse<Media[]>> => {
-    const response = await fetch(`${API_URL}/api/reels`);
+    const response = await fetch(`${API_URL}/api/reels`, {
+        headers: createAuthHeaders()
+    });
     const data = await response.json();
     if (data.success) {
         // Convertir el tipo según media_type
@@ -114,7 +148,7 @@ export const getReels = async (): Promise<ApiResponse<Media[]>> => {
 export const toggleReelStatus = async (id: number, isActive: boolean): Promise<ApiResponse<Media>> => {
     const response = await fetch(`${API_URL}/api/reels/${id}/status`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: createAuthHeaders(),
         body: JSON.stringify({ is_active: isActive }),
     });
     const data = await response.json();
@@ -163,6 +197,7 @@ export const updateKeyword = async (id: number, data: Partial<Keyword>): Promise
     });
     return response.json();
 };
+
 // Función para eliminar una palabra clave específica de un reel
 export const deleteReelKeyword = async (reelId: number, keywordId: number): Promise<ApiResponse<void>> => {
     const response = await fetch(`${API_URL}/api/reels/${reelId}/keywords/${keywordId}`, {
@@ -180,6 +215,7 @@ export const createKeyword = async (data: Keyword): Promise<ApiResponse<Keyword>
     });
     return response.json();
 };
+
 // Public Comments
 export const createPublicComment = async (data: PublicComment): Promise<ApiResponse<PublicComment>> => {
     const response = await fetch(`${API_URL}/api/reels/${data.reel_id}/public-comments`, {
@@ -212,6 +248,7 @@ export const updatePublicComment = async (id: number, data: Partial<PublicCommen
     });
     return response.json();
 };
+
 export const deletePublicComment = async (reelId: number, commentId: number): Promise<ApiResponse<void>> => {
     const response = await fetch(`${API_URL}/api/reels/${reelId}/public-comments/${commentId}`, {
         method: 'DELETE',
@@ -230,7 +267,9 @@ export const createOrUpdateResponse = async (data: Response): Promise<ApiRespons
 };
 
 export const getMediaResponses = async (mediaId: number): Promise<ApiResponse<Response[]>> => {
-    const response = await fetch(`${API_URL}/api/media/${mediaId}/responses`);
+    const response = await fetch(`${API_URL}/api/media/${mediaId}/responses`, {
+        headers: createAuthHeaders()
+    });
     return response.json();
 };
 
@@ -262,53 +301,42 @@ export const getReelDmHourlyCountCurrentDay = async (reelId: number): Promise<Ap
 };
 
 // Stories
-export const createStory = async (data: Omit<Story, 'id' | 'media_id' | 'created_at' | 'updated_at'>): Promise<ApiResponse<Story>> => {
+export const createStory = async (data: { url: string, description: string, is_active: boolean, media_type: string }): Promise<ApiResponse<Story>> => {
     const response = await fetch(`${API_URL}/api/stories`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: createAuthHeaders(),
         body: JSON.stringify(data),
     });
     return response.json();
 };
 
 export const getStories = async (): Promise<ApiResponse<Story[]>> => {
-    const response = await fetch(`${API_URL}/api/stories`);
-    const data = await response.json();
-    if (data.success) {
-        return {
-            ...data,
-            data: data.data.map((item: any) => item as Story)
-        };
-    }
-    return data;
+    const response = await fetch(`${API_URL}/api/stories`, {
+        headers: createAuthHeaders()
+    });
+    return response.json();
 };
 
 export const getStory = async (id: number): Promise<ApiResponse<Story>> => {
-    const response = await fetch(`${API_URL}/api/stories/${id}`);
+    const response = await fetch(`${API_URL}/api/stories/${id}`, {
+        headers: createAuthHeaders()
+    });
     return response.json();
 };
 
 export const updateStoryDescription = async (id: number, description: string): Promise<ApiResponse<Story>> => {
-    const response = await fetch(`${API_URL}/api/stories/${id}`, {
+    const response = await fetch(`${API_URL}/api/stories/${id}/description`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: createAuthHeaders(),
         body: JSON.stringify({ description }),
     });
-    const data = await response.json();
-    if (data.success) {
-        return {
-            ...data,
-            data: data.data as Story
-        };
-    }
-    return data;
+    return response.json();
 };
 
-export const deleteStory = async (id: number): Promise<ApiResponse<void>> => {
+export const deleteStory = async (id: number): Promise<ApiResponse<{ success: boolean }>> => {
     const response = await fetch(`${API_URL}/api/stories/${id}`, {
         method: 'DELETE',
+        headers: createAuthHeaders(),
     });
     return response.json();
 };
@@ -316,7 +344,7 @@ export const deleteStory = async (id: number): Promise<ApiResponse<void>> => {
 export const toggleStoryStatus = async (id: number, isActive: boolean): Promise<ApiResponse<Story>> => {
     const response = await fetch(`${API_URL}/api/stories/${id}/status`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: createAuthHeaders(),
         body: JSON.stringify({ is_active: isActive }),
     });
     return response.json();
@@ -352,7 +380,6 @@ export async function getStoryResponses(storyId: number): Promise<ApiResponse<Re
     return response.json();
 }
 
-
 export async function deleteStoryResponse(storyId: number, responseId: number): Promise<ApiResponse<void>> {
     const response = await fetch(`${API_URL}/api/stories/${storyId}/responses/${responseId}`, {
         method: 'DELETE',
@@ -384,7 +411,7 @@ export const publishReel = async (id: number, url: string, description: string):
     console.log(`Publicando reel ${id} con URL: ${url}`); // Debug
     const response = await fetch(`${API_URL}/api/reels/${id}/publish`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: createAuthHeaders(),
         body: JSON.stringify({ url, description }),
     });
     const data = await response.json();
@@ -392,33 +419,13 @@ export const publishReel = async (id: number, url: string, description: string):
     return data;
 };
 
-export const updateReelUrl = async (reelId: number, url: string): Promise<ApiResponse<Media>> => {
-    try {
-        const response = await fetch(`${API_URL}/api/reels/${reelId}/url`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url }),
-        });
-
-        const data = await response.json();
-        if (data.success) {
-            return {
-                ...data,
-                data: data.data as Reel
-            };
-        }
-        return {
-            success: false,
-            message: data.message || 'Error al actualizar la URL del reel',
-            data: {} as Media
-        };
-    } catch (error) {
-        return { 
-            success: false, 
-            message: 'Error al actualizar la URL del reel',
-            data: {} as Media
-        };
-    }
+export const updateReelUrl = async (id: number, url: string): Promise<ApiResponse<Reel>> => {
+    const response = await fetch(`${API_URL}/api/reels/${id}/url`, {
+        method: 'PUT',
+        headers: createAuthHeaders(),
+        body: JSON.stringify({ url }),
+    });
+    return response.json();
 };
 
 // Generic Media Keyword delete
@@ -431,62 +438,115 @@ export const deleteKeyword = async (mediaId: number, keywordId: number): Promise
 
 // Generic Media Keywords
 export const getMediaKeywords = async (mediaId: number): Promise<ApiResponse<Keyword[]>> => {
-    const response = await fetch(`${API_URL}/api/media/${mediaId}/keywords`);
+    const response = await fetch(`${API_URL}/api/media/${mediaId}/keywords`, {
+        headers: createAuthHeaders()
+    });
     return response.json();
 };
 
 // Funciones de autenticación
 export const registerUser = async (credentials: RegisterCredentials): Promise<AuthResponse> => {
     console.log('Registrando usuario:', credentials);
-    const response = await fetch(`${API_URL}/api/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials),
-    });
-    const data = await response.json();
-    console.log('Respuesta del servidor al registrar:', data);
+    try {
+        const response = await fetch(`${API_URL}/api/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials),
+        });
 
-    if (data.success && data.data?.token) {
-        // Guardar el token en localStorage
-        localStorage.setItem('token', data.data.token);
+        const data = await response.json();
+        console.log('Respuesta del servidor al registrar:', data);
+
+        if (!response.ok) {
+            console.error(`Error ${response.status}: ${response.statusText}`);
+            return { 
+                success: false, 
+                data: { token: '', user: {} as User },
+                message: data.message || `Error ${response.status}: ${response.statusText}`
+            };
+        }
+
+        if (data.success && data.data?.token) {
+            // Guardar el token en localStorage
+            localStorage.setItem('token', data.data.token);
+            console.log('Token guardado:', data.data.token);
+        }
+
+        return data;
+    } catch (error) {
+        console.error('Error en la petición de registro:', error);
+        return { 
+            success: false, 
+            data: { token: '', user: {} as User },
+            message: 'Error de red al intentar registrar' 
+        };
     }
-
-    return data;
 };
 
 export const loginUser = async (credentials: LoginCredentials): Promise<AuthResponse> => {
     console.log('Iniciando sesión:', credentials);
-    const response = await fetch(`${API_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials),
-    });
-    const data = await response.json();
-    console.log('Respuesta del servidor al iniciar sesión:', data);
+    try {
+        const response = await fetch(`${API_URL}/api/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials),
+        });
 
-    if (data.success && data.data?.token) {
-        // Guardar el token en localStorage
-        localStorage.setItem('token', data.data.token);
+        const data = await response.json();
+        console.log('Respuesta del servidor al iniciar sesión:', data);
+
+        if (!response.ok) {
+            console.error(`Error ${response.status}: ${response.statusText}`);
+            return { 
+                success: false, 
+                data: { token: '', user: {} as User },
+                message: data.message || `Error ${response.status}: ${response.statusText}`
+            };
+        }
+
+        if (data.success && data.data?.token) {
+            // Guardar el token en localStorage
+            localStorage.setItem('token', data.data.token);
+            console.log('Token guardado:', data.data.token);
+        }
+
+        return data;
+    } catch (error) {
+        console.error('Error en la petición de login:', error);
+        return { 
+            success: false, 
+            data: { token: '', user: {} as User },
+            message: 'Error de red al intentar iniciar sesión' 
+        };
     }
-
-    return data;
 };
 
 export const getUserProfile = async (): Promise<ApiResponse<User>> => {
-    const token = localStorage.getItem('token');
+    const token = getAuthToken();
     if (!token) {
         return { success: false, data: null as any, message: 'No hay token disponible' };
     }
 
-    const response = await fetch(`${API_URL}/api/auth/profile`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-    });
-    const data = await response.json();
-    return data;
+    try {
+        const response = await fetch(`${API_URL}/api/auth/profile`, {
+            method: 'GET',
+            headers: createAuthHeaders(),
+        });
+        
+        if (!response.ok) {
+            // Si la respuesta no es exitosa (ej. 401), borrar el token
+            if (response.status === 401) {
+                localStorage.removeItem('token');
+            }
+            return { success: false, data: null as any, message: `Error ${response.status}: ${response.statusText}` };
+        }
+        
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error al obtener perfil:', error);
+        return { success: false, data: null as any, message: 'Error de red al obtener el perfil' };
+    }
 };
 
 export const verifyToken = async (token: string): Promise<ApiResponse<{ valid: boolean }>> => {

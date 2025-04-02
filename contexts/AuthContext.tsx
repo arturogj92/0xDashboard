@@ -2,7 +2,7 @@
 
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { User, LoginCredentials, RegisterCredentials } from '@/lib/types';
-import { loginUser, registerUser, getUserProfile, logout, verifyToken } from '@/lib/api';
+import { loginUser, registerUser, getUserProfile, logout as apiLogout, verifyToken } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
@@ -13,6 +13,7 @@ interface AuthContextType {
   register: (credentials: RegisterCredentials) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
   error: string | null;
+  refreshUserProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,32 +24,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  // Función para obtener el perfil del usuario
+  const refreshUserProfile = async () => {
+    try {
+      const response = await getUserProfile();
+      if (response.success) {
+        setUser(response.data);
+        return;
+      } else {
+        // Si el perfil no se puede obtener, limpiar el usuario
+        setUser(null);
+        localStorage.removeItem('token');
+      }
+    } catch (err) {
+      console.error('Error al obtener perfil:', err);
+      setUser(null);
+      localStorage.removeItem('token');
+    }
+  };
+
+  // Efecto para inicializar la autenticación al cargar la aplicación
   useEffect(() => {
     const initAuth = async () => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          // Verificar token
-          const verifyResponse = await verifyToken(token);
-          if (!verifyResponse.success || !verifyResponse.data.valid) {
-            localStorage.removeItem('token');
-            setIsLoading(false);
-            return;
-          }
-
-          // Obtener perfil de usuario
-          const profileResponse = await getUserProfile();
-          if (profileResponse.success) {
-            setUser(profileResponse.data);
-          } else {
-            localStorage.removeItem('token');
-          }
-        } catch (err) {
-          console.error('Error al inicializar auth:', err);
-          localStorage.removeItem('token');
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+          setIsLoading(false);
+          return;
         }
+        
+        console.log('Token encontrado en localStorage, verificando...');
+        
+        // Refrescar el perfil del usuario
+        await refreshUserProfile();
+        
+      } catch (err) {
+        console.error('Error al inicializar auth:', err);
+        setUser(null);
+        localStorage.removeItem('token');
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     initAuth();
@@ -59,6 +77,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setError(null);
     try {
       const response = await loginUser(credentials);
+      console.log('Respuesta de login:', response);
+      
       if (response.success) {
         setUser(response.data.user);
         router.push('/');
@@ -68,6 +88,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { success: false, message: response.message };
       }
     } catch (err: any) {
+      console.error('Error en login:', err);
       const errorMsg = err.message || 'Error al iniciar sesión';
       setError(errorMsg);
       return { success: false, message: errorMsg };
@@ -99,8 +120,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const handleLogout = () => {
-    logout();
+    localStorage.removeItem('token');
     setUser(null);
+    router.push('/login');
   };
 
   const value = {
@@ -110,7 +132,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     login,
     register,
     logout: handleLogout,
-    error
+    error,
+    refreshUserProfile
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
