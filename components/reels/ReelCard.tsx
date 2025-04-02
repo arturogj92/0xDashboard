@@ -75,7 +75,7 @@ export function MediaCard({
         
         <div className="flex p-5">
           {/* Miniatura a la izquierda */}
-          <div className="w-28 h-28 mr-5 relative flex-shrink-0 rounded-lg overflow-hidden border border-indigo-900/50 shadow-md">
+          <div className="w-20 h-20 md:w-28 md:h-28 mr-2 md:mr-5 relative flex-shrink-0 rounded-lg overflow-hidden border border-indigo-900/50 shadow-md">
             {media.media_type === 'story' && (media as Story).story_url_image && (media as Story).story_url_image !== '' ? (
               <Image 
                 src={(media as Story).story_url_image as string} 
@@ -113,20 +113,20 @@ export function MediaCard({
           </div>
 
           {/* Contenido principal */}
-          <div className="flex-1 flex flex-col justify-between">
+          <div className="flex-1 min-w-0 flex flex-col justify-between">
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <h3 className="text-lg font-semibold text-white line-clamp-1">
+              <div className="flex items-center gap-1 md:gap-2 mb-1.5">
+                <h3 className="text-base md:text-lg font-semibold text-white line-clamp-1">
                   {media.description || <span className="italic text-gray-500">Sin descripción</span>}
                 </h3>
                 
                 {/* Badge de estado junto al título */}
                 {isDraft ? (
-                  <span className="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium text-amber-400 bg-[#120724] border border-amber-500/70">
+                  <span className="inline-flex items-center rounded-md px-1.5 md:px-2.5 py-0.5 md:py-1 text-[10px] md:text-xs font-medium text-amber-400 bg-[#120724] border border-amber-500/70 whitespace-nowrap">
                     DRAFT
                   </span>
                 ) : (
-                  <span className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium bg-[#120724] border ${
+                  <span className={`inline-flex items-center rounded-md px-1.5 md:px-2.5 py-0.5 md:py-1 text-[10px] md:text-xs font-medium bg-[#120724] border whitespace-nowrap ${
                     media.is_active 
                       ? 'text-green-400 border-green-500/70' 
                       : 'text-red-400 border-red-500/70'
@@ -136,7 +136,7 @@ export function MediaCard({
                 )}
               </div>
               
-              <div className="text-sm text-gray-400 mb-4 line-clamp-1">
+              <div className="text-xs md:text-sm text-gray-400 mb-2 md:mb-4 line-clamp-1">
                 {media.url ? (
                   <Link 
                     href={media.url} 
@@ -156,13 +156,13 @@ export function MediaCard({
             </div>
 
             {/* Indicadores de estadísticas en fila */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-2 md:space-x-3 flex-wrap">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="flex items-center bg-indigo-900/40 rounded-full px-2.5 py-1 border border-indigo-800/30">
-                      <PlayIcon className="h-4 w-4 text-indigo-400 mr-1.5" />
-                      <span className="text-indigo-300 text-xs font-medium">{media.totalVisits || 0}</span>
+                    <div className="flex items-center bg-indigo-900/40 rounded-full px-1.5 md:px-2.5 py-0.5 md:py-1 border border-indigo-800/30">
+                      <PlayIcon className="h-3 w-3 md:h-4 md:w-4 text-indigo-400 mr-0.5 md:mr-1.5" />
+                      <span className="text-indigo-300 text-[10px] md:text-xs font-medium">{media.totalVisits || 0}</span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -174,9 +174,9 @@ export function MediaCard({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="flex items-center bg-purple-900/40 rounded-full px-2.5 py-1 border border-purple-800/30">
-                      <CalendarDays className="h-4 w-4 text-purple-400 mr-1.5" />
-                      <span className="text-purple-300 text-xs font-medium">{media.visits7d || 0}</span>
+                    <div className="flex items-center bg-purple-900/40 rounded-full px-1.5 md:px-2.5 py-0.5 md:py-1 border border-purple-800/30">
+                      <CalendarDays className="h-3 w-3 md:h-4 md:w-4 text-purple-400 mr-0.5 md:mr-1.5" />
+                      <span className="text-purple-300 text-[10px] md:text-xs font-medium">{media.visits7d || 0}</span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -188,9 +188,9 @@ export function MediaCard({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="flex items-center bg-amber-900/40 rounded-full px-2.5 py-1 border border-amber-800/30">
-                      <CalendarClock className="h-4 w-4 text-amber-400 mr-1.5" />
-                      <span className="text-amber-300 text-xs font-medium">{media.visits24 || 0}</span>
+                    <div className="flex items-center bg-amber-900/40 rounded-full px-1.5 md:px-2.5 py-0.5 md:py-1 border border-amber-800/30">
+                      <CalendarClock className="h-3 w-3 md:h-4 md:w-4 text-amber-400 mr-0.5 md:mr-1.5" />
+                      <span className="text-amber-300 text-[10px] md:text-xs font-medium">{media.visits24 || 0}</span>
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -202,7 +202,7 @@ export function MediaCard({
           </div>
 
           {/* Controles de acción a la derecha */}
-          <div className="ml-2 flex flex-col space-y-2.5 justify-center">
+          <div className="ml-1 md:ml-2 flex flex-col space-y-1.5 md:space-y-2.5 justify-center">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -211,9 +211,9 @@ export function MediaCard({
                       e.stopPropagation();
                       onStatsClick(media.id);
                     }}
-                    className="w-8 h-8 flex items-center justify-center hover:bg-blue-900/40 text-blue-400 rounded-full border border-blue-900/30"
+                    className="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center hover:bg-blue-900/40 text-blue-400 rounded-full border border-blue-900/30"
                   >
-                    <ChartBarIcon className="h-4 w-4" />
+                    <ChartBarIcon className="h-3 w-3 md:h-4 md:w-4" />
                   </Toggle>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -229,15 +229,15 @@ export function MediaCard({
                     pressed={!media.is_active}
                     onPressedChange={() => onToggleActive(media.id, media.is_active || false)}
                     disabled={deleteLoading === media.id}
-                    className={`w-8 h-8 flex items-center justify-center rounded-full ${media.is_active ? 'text-[#faa011] hover:bg-[#faa011]/30' : 'text-red-400 hover:bg-red-900/30'}`}
+                    className={`w-6 h-6 md:w-8 md:h-8 flex items-center justify-center rounded-full ${media.is_active ? 'text-[#faa011] hover:bg-[#faa011]/30' : 'text-red-400 hover:bg-red-900/30'}`}
                     onClick={(e) => e.stopPropagation()}
                   >
                     {deleteLoading === media.id ? (
-                      <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-gray-300"></div>
+                      <div className="h-3 w-3 md:h-4 md:w-4 animate-spin rounded-full border-b-2 border-gray-300"></div>
                     ) : media.is_active ? (
-                      <Pause className="h-4 w-4" />
+                      <Pause className="h-3 w-3 md:h-4 md:w-4" />
                     ) : (
-                      <Play className="h-4 w-4" />
+                      <Play className="h-3 w-3 md:h-4 md:w-4" />
                     )}
                   </Toggle>
                 </TooltipTrigger>
@@ -256,12 +256,12 @@ export function MediaCard({
                       onDelete(media.id);
                     }}
                     disabled={deleteLoading === media.id}
-                    className="w-8 h-8 flex items-center justify-center hover:bg-red-900/40 text-red-400 rounded-full border border-red-900/30"
+                    className="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center hover:bg-red-900/40 text-red-400 rounded-full border border-red-900/30"
                   >
                     {deleteLoading === media.id ? (
-                      <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-gray-300"></div>
+                      <div className="h-3 w-3 md:h-4 md:w-4 animate-spin rounded-full border-b-2 border-gray-300"></div>
                     ) : (
-                      <TrashIcon className="h-4 w-4" />
+                      <TrashIcon className="h-3 w-3 md:h-4 md:w-4" />
                     )}
                   </Toggle>
                 </TooltipTrigger>
