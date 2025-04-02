@@ -380,22 +380,16 @@ export async function generateAIResponse(mediaId: number, params: AIResponseGene
     return response.json();
 }
 
-export const publishReel = async (reelId: number, url: string, description: string) => {
-    try {
-        const response = await fetch(`${API_URL}/api/reels/${reelId}/publish`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ url, description }),
-        });
-
-        const data = await response.json();
-        return { success: true, data };
-    } catch (error) {
-        console.error('Error publishing reel:', error);
-        return { success: false, message: 'Error al publicar el reel' };
-    }
+export const publishReel = async (id: number, url: string, description: string): Promise<ApiResponse<any>> => {
+    console.log(`Publicando reel ${id} con URL: ${url}`); // Debug
+    const response = await fetch(`${API_URL}/api/reels/${id}/publish`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, description }),
+    });
+    const data = await response.json();
+    console.log('Respuesta del servidor al publicar:', data); // Debug
+    return data;
 };
 
 export const updateReelUrl = async (reelId: number, url: string): Promise<ApiResponse<Media>> => {

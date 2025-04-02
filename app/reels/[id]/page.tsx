@@ -271,12 +271,30 @@ export default function EditReel() {
         setError(null);
         try {
             const response = await publishReel(reel.id, url, description);
+            console.log("Respuesta de publicar reel:", response); // Para debug
+            
             if (response.success) {
-                setReel({ ...reel, description, url });
+                // Creamos un nuevo objeto con todos los datos actualizados
+                const updatedReel = {
+                    ...reel,
+                    description,
+                    url,
+                    thumbnail_url: response.data.thumbnail_url
+                };
+                console.log("Nuevo estado del reel:", updatedReel); // Para debug
+                
+                // Actualizamos el estado completo
+                setReel(updatedReel);
+                
+                // Forzar una re-renderización si es necesario
+                setTimeout(() => {
+                    setReel({...updatedReel});
+                }, 100);
             } else {
                 setError('Error al publicar el reel');
             }
         } catch (err) {
+            console.error("Error al publicar:", err); // Para debug
             setError('Error al publicar el reel');
         } finally {
             setIsSaving(false);
@@ -450,19 +468,20 @@ export default function EditReel() {
                                     <div className="absolute top-0 left-0 right-0 bottom-0 z-10 flex items-center justify-center">
                                         {url ? (
                                             <div className="relative w-full h-full overflow-hidden rounded-[36px]">
-                                                {reel.thumbnail_url && reel.thumbnail_url !== '' && reel.thumbnail_url.startsWith('http') ? (
-                                                    <div className="w-full h-full relative">
+                                                {reel && reel.thumbnail_url && reel.thumbnail_url !== '' && reel.thumbnail_url.startsWith('http') ? (
+                                                    <div className="w-full h-full relative" key={reel.thumbnail_url || 'placeholder'}>
                                                         <Image 
                                                             src={reel.thumbnail_url} 
                                                             alt="Miniatura del reel"
                                                             fill
                                                             className="object-cover"
                                                             unoptimized
+                                                            loader={({ src }) => src}
                                                         />
                                                     </div>
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center bg-gray-800">
-                                                        <span className="text-xs text-gray-400">Cargando miniatura...</span>
+                                                        <span className="text-xs text-gray-400">Sin miniatura disponible</span>
                                                     </div>
                                                 )}
                                             </div>
