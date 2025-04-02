@@ -38,6 +38,7 @@ export default function EditReel() {
     const [saveTimeoutUrl, setSaveTimeoutUrl] = useState<NodeJS.Timeout | null>(null);
     const [urlError, setUrlError] = useState<string | null>(null);
     const [urlSaveTimeout, setUrlSaveTimeout] = useState<NodeJS.Timeout | null>(null);
+    const [isChangingUrl, setIsChangingUrl] = useState(false);
     const responsesSectionRef = useRef<any>(null);
 
     const extractInstagramReelId = (url: string) => {
@@ -224,27 +225,15 @@ export default function EditReel() {
         setSaveTimeout(timeoutId);
     };
 
-    const handleAutoSaveUrl = async (newUrl: string) => {
-        if (!reel) return;
-        
-        try {
-            setIsUrlSaving(true);
-            const response = await updateReelUrl(reel.id, newUrl);
-            if (response.success) {
-                setReel({ ...reel, url: newUrl });
-                setUrlError(null);
-            } else {
-                setUrlError('URL inválida');
-            }
-        } catch (err) {
-            setUrlError('Error al actualizar la URL');
-        } finally {
-            setIsUrlSaving(false);
-        }
-    };
-
     const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
+        const oldValue = url;
+        
+        // Si está borrando la URL o cambiándola significativamente
+        if ((oldValue && !newValue) || (oldValue && newValue && oldValue.length > 5 && !newValue.includes(oldValue.substring(0, 5)))) {
+            setIsChangingUrl(true);
+        }
+        
         setUrl(newValue);
         setUrlError(null);
         
@@ -260,6 +249,30 @@ export default function EditReel() {
             }, 2000); // 2 segundos
 
             setUrlSaveTimeout(timeoutId);
+        }
+    };
+
+    const handleAutoSaveUrl = async (newUrl: string) => {
+        if (!reel) return;
+        
+        try {
+            setIsUrlSaving(true);
+            const response = await updateReelUrl(reel.id, newUrl);
+            if (response.success) {
+                setReel({ ...reel, url: newUrl });
+                setUrlError(null);
+                
+                // Resetear la bandera de cambio de URL solo cuando tenemos una respuesta exitosa
+                if (response.data.thumbnail_url) {
+                    setIsChangingUrl(false);
+                }
+            } else {
+                setUrlError('URL inválida');
+            }
+        } catch (err) {
+            setUrlError('Error al actualizar la URL');
+        } finally {
+            setIsUrlSaving(false);
         }
     };
 
@@ -285,6 +298,9 @@ export default function EditReel() {
                 
                 // Actualizamos el estado completo
                 setReel(updatedReel);
+                
+                // Resetear la bandera de cambio de URL
+                setIsChangingUrl(false);
                 
                 // Forzar una re-renderización si es necesario
                 setTimeout(() => {
@@ -466,7 +482,7 @@ export default function EditReel() {
                                     
                                     {/* Contenido del iPhone (miniatura del reel) */}
                                     <div className="absolute top-0 left-0 right-0 bottom-0 z-10 flex items-center justify-center">
-                                        {url ? (
+                                        {url && !isChangingUrl ? (
                                             <div className="relative w-full h-full overflow-hidden rounded-[36px]">
                                                 {reel && reel.thumbnail_url && reel.thumbnail_url !== '' && reel.thumbnail_url.startsWith('http') ? (
                                                     <div className="w-full h-full relative" key={reel.thumbnail_url || 'placeholder'}>
@@ -493,7 +509,9 @@ export default function EditReel() {
                                                 <div className="text-center p-3 mt-[25px]">
                                                     <PhotoIcon className="h-5 w-5 mx-auto text-gray-500" />
                                                     <p className="mt-1 text-[10px] text-gray-400 px-1">
-                                                        La miniatura de tu reel aparecerá aquí cuando agregues una URL válida.
+                                                        {isChangingUrl 
+                                                            ? "Actualizando URL, la miniatura aparecerá pronto..." 
+                                                            : "La miniatura de tu reel aparecerá aquí cuando agregues una URL válida."}
                                                     </p>
                                                     <p className="mt-1 text-[10px] text-gray-400 px-1">
                                                         Cuando alguien escriba una de tus palabras clave, recibirá tu respuesta por DM 👍
