@@ -7,6 +7,7 @@ import { Reel, Keyword, PublicComment, Response } from '@/lib/types';
 import { getReel, updateReelDescription, getMediaResponses, publishReel, updateReelUrl, getMediaKeywords, getReelPublicComments } from '@/lib/api';
 import { MediaSection } from '@/components/media/MediaSection';
 import PublicCommentsSection from './components/PublicCommentsSection';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import {
     PencilIcon,
     DocumentTextIcon,
@@ -351,257 +352,259 @@ export default function EditReel() {
     }
 
     return (
-        <div className="min-h-screen py-8">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Header sin fondo con título a la izquierda e imagen a la derecha */}
-                <div className="mb-8">
-                    <div className="md:flex md:items-center md:justify-between w-full">
-                        <div className="flex items-center">
-                            <button
-                                onClick={handleGoBack}
-                                className="p-2 rounded-full text-gray-400 hover:text-white focus:outline-none"
-                                aria-label="Volver atrás"
-                            >
-                                <ArrowLeftIcon className="h-6 w-6" />
-                            </button>
-                            <div className="ml-2">
-                                <h1 className="text-2xl font-bold text-white flex items-center">
+        <ProtectedRoute>
+            <div className="min-h-screen py-8">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {/* Header sin fondo con título a la izquierda e imagen a la derecha */}
+                    <div className="mb-8">
+                        <div className="md:flex md:items-center md:justify-between w-full">
+                            <div className="flex items-center">
+                                <button
+                                    onClick={handleGoBack}
+                                    className="p-2 rounded-full text-gray-400 hover:text-white focus:outline-none"
+                                    aria-label="Volver atrás"
+                                >
+                                    <ArrowLeftIcon className="h-6 w-6" />
+                                </button>
+                                <div className="ml-2">
+                                    <h1 className="text-2xl font-bold text-white flex items-center">
+                                        <Image
+                                            src="/images/icons/reel-icon.png"
+                                            alt="Reel Icon"
+                                            width={84}
+                                            height={84}
+                                            className="mr-2"
+                                        />
+                                        Editar Reel
+                                    </h1>
+                                    <p className="text-gray-400">
+                                        Configura tu reel con palabras clave y respuestas automáticas
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Imagen de descripción sin fondo */}
+                            <div className="mt-6 md:mt-0 md:w-1/3">
+                                <div className="relative w-full h-48 md:h-32 lg:h-48">
                                     <Image
-                                        src="/images/icons/reel-icon.png"
-                                        alt="Reel Icon"
-                                        width={84}
-                                        height={84}
-                                        className="mr-2"
+                                        src={DescriptionImage}
+                                        alt="Descripción del reel"
+                                        fill
+                                        className="object-contain"
+                                        priority
+                                        sizes="(max-width: 768px) 100vw, 400px"
                                     />
-                                    Editar Reel
-                                </h1>
-                                <p className="text-gray-400">
-                                    Configura tu reel con palabras clave y respuestas automáticas
-                                </p>
+                                </div>
                             </div>
                         </div>
+                    </div>
 
-                        {/* Imagen de descripción sin fondo */}
-                        <div className="mt-6 md:mt-0 md:w-1/3">
-                            <div className="relative w-full h-48 md:h-32 lg:h-48">
-                                <Image
-                                    src={DescriptionImage}
-                                    alt="Descripción del reel"
-                                    fill
-                                    className="object-contain"
-                                    priority
-                                    sizes="(max-width: 768px) 100vw, 400px"
+                    <div className="space-y-8">
+                        {/* Primera fila: Información del Reel y Palabras Clave */}
+                        <div className="grid grid-cols-1 md:grid-cols-10 gap-6">
+                            {/* Columna izquierda - URL y Descripción del Reel (40%) */}
+                            <div className="md:col-span-4 bg-[#120724] rounded-lg overflow-hidden">
+                                <div className="p-6 relative">
+                                    {/* Estado del reel */}
+                                    {!reel.url && (
+                                        <div className="mb-4 text-center">
+                                            <span className="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium text-amber-400 bg-[#120724] border border-amber-500/70">
+                                                DRAFT
+                                            </span>
+                                        </div>
+                                    )}
+                                    
+                                    {/* Título/Descripción */}
+                                    <div className="text-center mb-4 relative">
+                                        <label className="block text-sm font-medium text-gray-400 mb-1">
+                                            Descripción
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={description}
+                                            onChange={handleDescriptionChange}
+                                            placeholder="Descripción de tu reel"
+                                            className="w-full text-center text-xl font-semibold text-white bg-transparent hover:bg-[#1c1033] focus:bg-[#1c1033] rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-text border-b border-gray-600"
+                                        />
+                                        {isSaving && (
+                                            <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-gray-400">
+                                                Guardando...
+                                            </span>
+                                        )}
+                                    </div>
+                                    
+                                    {/* URL del Reel */}
+                                    <div className="mb-4 relative">
+                                        <label className="block text-sm font-medium text-gray-400 mb-1 text-center">
+                                            URL del Reel
+                                        </label>
+                                        <div className="relative">
+                                            <input
+                                                type="url"
+                                                value={url}
+                                                onChange={handleUrlChange}
+                                                placeholder="https://www.instagram.com/reel/..."
+                                                className={`w-full text-white bg-transparent hover:bg-[#1c1033] focus:bg-[#1c1033] rounded-md px-4 py-2 focus:outline-none focus:ring-1 ${
+                                                    urlError ? 'focus:ring-red-500 border-red-500' : 'focus:ring-indigo-500 border-b border-gray-600'
+                                                }`}
+                                            />
+                                            {isUrlSaving && reel?.url && !urlError && (
+                                                <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                                                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-indigo-500 border-r-transparent"></div>
+                                                </div>
+                                            )}
+                                        </div>
+                                        {urlError && (
+                                            <p className="mt-1 text-xs text-red-500 text-center">
+                                                {urlError}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    {/* Botón para guardar */}
+                                    {!reel.url && url.trim() !== '' && (
+                                        <div className="flex justify-center mt-4">
+                                            <button
+                                                onClick={handlePublishReel}
+                                                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            >
+                                                {isSaving ? 'Publicando...' : 'Publicar Reel'}
+                                            </button>
+                                        </div>
+                                    )}
+                                    
+                                    {/* iPhone con previsualización del reel */}
+                                    <div className="relative w-[200px] h-[398px] mx-auto mt-6">
+                                        {/* Marco del iPhone */}
+                                        <img
+                                            src="/images/iphone16-frame.png"
+                                            alt="iPhone frame"
+                                            className="absolute w-full h-full z-20 pointer-events-none"
+                                        />
+                                        
+                                        {/* Contenido del iPhone (miniatura del reel) */}
+                                        <div className="absolute top-0 left-0 right-0 bottom-0 z-10 flex items-center justify-center">
+                                            {url && !isChangingUrl ? (
+                                                <div className="relative w-full h-full overflow-hidden rounded-[36px]">
+                                                    {reel && reel.thumbnail_url && reel.thumbnail_url !== '' && reel.thumbnail_url.startsWith('http') ? (
+                                                        <div className="w-full h-full relative" key={reel.thumbnail_url || 'placeholder'}>
+                                                            <Image 
+                                                                src={reel.thumbnail_url} 
+                                                                alt="Miniatura del reel"
+                                                                fill
+                                                                className="object-cover"
+                                                                unoptimized
+                                                                loader={({ src }) => src}
+                                                            />
+                                                        </div>
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center bg-gray-800">
+                                                            <span className="text-xs text-gray-400">Sin miniatura disponible</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div className="relative w-full h-full overflow-hidden rounded-[36px] bg-[#0a0a0a] flex items-center justify-center">
+                                                    <div className="absolute top-0 left-0 right-0 h-[25px] bg-black rounded-t-[36px] z-10">
+                                                        <div className="absolute top-[6px] left-0 right-0 mx-auto w-[65px] h-[15px] bg-black rounded-full"></div>
+                                                    </div>
+                                                    <div className="text-center p-3 mt-[25px]">
+                                                        <PhotoIcon className="h-5 w-5 mx-auto text-gray-500" />
+                                                        <p className="mt-1 text-[10px] text-gray-400 px-1">
+                                                            {isChangingUrl 
+                                                                ? "Actualizando URL, la miniatura aparecerá pronto..." 
+                                                                : "La miniatura de tu reel aparecerá aquí cuando agregues una URL válida."}
+                                                        </p>
+                                                        <p className="mt-1 text-[10px] text-gray-400 px-1">
+                                                            Cuando alguien escriba una de tus palabras clave, recibirá tu respuesta por DM 👍
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Columna derecha - Palabras Clave (60%) */}
+                            <div className="md:col-span-6 bg-[#120724] rounded-lg overflow-hidden p-6">
+                                <div className="flex items-center mb-4">
+                                    <KeyIcon className="h-6 w-6 text-amber-400 mr-2" />
+                                    <h2 className="text-xl font-bold text-white">Palabras Clave</h2>
+                                </div>
+                                <p className="text-sm text-gray-400 mb-4">
+                                    Configura hasta 5 palabras clave que cuando aparezcan en un comentario, activarán la respuesta automática.
+                                </p>
+                                <MediaSection
+                                    mediaId={reel.id}
+                                    mediaType="reel"
+                                    keywords={reel.keywords || []}
+                                    responses={[]}
+                                    onKeywordsChange={(keywords) => {
+                                        console.log('Actualizando keywords:', keywords);
+                                        setReel((prevReel) => {
+                                            if (!prevReel) return reel;
+                                            return { ...prevReel, keywords };
+                                        });
+                                    }}
+                                    onResponsesChange={() => {}}
+                                    showSection="keywords"
                                 />
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div className="space-y-8">
-                    {/* Primera fila: Información del Reel y Palabras Clave */}
-                    <div className="grid grid-cols-1 md:grid-cols-10 gap-6">
-                        {/* Columna izquierda - URL y Descripción del Reel (40%) */}
-                        <div className="md:col-span-4 bg-[#120724] rounded-lg overflow-hidden">
-                            <div className="p-6 relative">
-                                {/* Estado del reel */}
-                                {!reel.url && (
-                                    <div className="mb-4 text-center">
-                                        <span className="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-medium text-amber-400 bg-[#120724] border border-amber-500/70">
-                                            DRAFT
-                                        </span>
-                                    </div>
-                                )}
-                                
-                                {/* Título/Descripción */}
-                                <div className="text-center mb-4 relative">
-                                    <label className="block text-sm font-medium text-gray-400 mb-1">
-                                        Descripción
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={description}
-                                        onChange={handleDescriptionChange}
-                                        placeholder="Descripción de tu reel"
-                                        className="w-full text-center text-xl font-semibold text-white bg-transparent hover:bg-[#1c1033] focus:bg-[#1c1033] rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-text border-b border-gray-600"
-                                    />
-                                    {isSaving && (
-                                        <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-gray-400">
-                                            Guardando...
-                                        </span>
-                                    )}
-                                </div>
-                                
-                                {/* URL del Reel */}
-                                <div className="mb-4 relative">
-                                    <label className="block text-sm font-medium text-gray-400 mb-1 text-center">
-                                        URL del Reel
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            type="url"
-                                            value={url}
-                                            onChange={handleUrlChange}
-                                            placeholder="https://www.instagram.com/reel/..."
-                                            className={`w-full text-white bg-transparent hover:bg-[#1c1033] focus:bg-[#1c1033] rounded-md px-4 py-2 focus:outline-none focus:ring-1 ${
-                                                urlError ? 'focus:ring-red-500 border-red-500' : 'focus:ring-indigo-500 border-b border-gray-600'
-                                            }`}
-                                        />
-                                        {isUrlSaving && reel?.url && !urlError && (
-                                            <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-                                                <div className="animate-spin rounded-full h-5 w-5 border-2 border-indigo-500 border-r-transparent"></div>
-                                            </div>
-                                        )}
-                                    </div>
-                                    {urlError && (
-                                        <p className="mt-1 text-xs text-red-500 text-center">
-                                            {urlError}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* Botón para guardar */}
-                                {!reel.url && url.trim() !== '' && (
-                                    <div className="flex justify-center mt-4">
-                                        <button
-                                            onClick={handlePublishReel}
-                                            className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                        >
-                                            {isSaving ? 'Publicando...' : 'Publicar Reel'}
-                                        </button>
-                                    </div>
-                                )}
-                                
-                                {/* iPhone con previsualización del reel */}
-                                <div className="relative w-[200px] h-[398px] mx-auto mt-6">
-                                    {/* Marco del iPhone */}
-                                    <img
-                                        src="/images/iphone16-frame.png"
-                                        alt="iPhone frame"
-                                        className="absolute w-full h-full z-20 pointer-events-none"
-                                    />
-                                    
-                                    {/* Contenido del iPhone (miniatura del reel) */}
-                                    <div className="absolute top-0 left-0 right-0 bottom-0 z-10 flex items-center justify-center">
-                                        {url && !isChangingUrl ? (
-                                            <div className="relative w-full h-full overflow-hidden rounded-[36px]">
-                                                {reel && reel.thumbnail_url && reel.thumbnail_url !== '' && reel.thumbnail_url.startsWith('http') ? (
-                                                    <div className="w-full h-full relative" key={reel.thumbnail_url || 'placeholder'}>
-                                                        <Image 
-                                                            src={reel.thumbnail_url} 
-                                                            alt="Miniatura del reel"
-                                                            fill
-                                                            className="object-cover"
-                                                            unoptimized
-                                                            loader={({ src }) => src}
-                                                        />
-                                                    </div>
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center bg-gray-800">
-                                                        <span className="text-xs text-gray-400">Sin miniatura disponible</span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ) : (
-                                            <div className="relative w-full h-full overflow-hidden rounded-[36px] bg-[#0a0a0a] flex items-center justify-center">
-                                                <div className="absolute top-0 left-0 right-0 h-[25px] bg-black rounded-t-[36px] z-10">
-                                                    <div className="absolute top-[6px] left-0 right-0 mx-auto w-[65px] h-[15px] bg-black rounded-full"></div>
-                                                </div>
-                                                <div className="text-center p-3 mt-[25px]">
-                                                    <PhotoIcon className="h-5 w-5 mx-auto text-gray-500" />
-                                                    <p className="mt-1 text-[10px] text-gray-400 px-1">
-                                                        {isChangingUrl 
-                                                            ? "Actualizando URL, la miniatura aparecerá pronto..." 
-                                                            : "La miniatura de tu reel aparecerá aquí cuando agregues una URL válida."}
-                                                    </p>
-                                                    <p className="mt-1 text-[10px] text-gray-400 px-1">
-                                                        Cuando alguien escriba una de tus palabras clave, recibirá tu respuesta por DM 👍
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
+                        {/* Segunda fila: Comentarios Públicos (todo el ancho) */}
+                        <div className="bg-[#120724] rounded-lg overflow-hidden p-6">
+                            <div className="flex items-center mb-4">
+                                <ChatBubbleLeftRightIcon className="h-6 w-6 text-amber-400 mr-2" />
+                                <h2 className="text-xl font-bold text-white">Comentarios Públicos</h2>
                             </div>
+                            <PublicCommentsSection
+                                reelId={reel.id}
+                                comments={reel.publicComments || []}
+                                onCommentsChange={(comments) => setReel({ ...reel, publicComments: comments })}
+                            />
                         </div>
 
-                        {/* Columna derecha - Palabras Clave (60%) */}
-                        <div className="md:col-span-6 bg-[#120724] rounded-lg overflow-hidden p-6">
-                            <div className="flex items-center mb-4">
-                                <KeyIcon className="h-6 w-6 text-amber-400 mr-2" />
-                                <h2 className="text-xl font-bold text-white">Palabras Clave</h2>
+                        {/* Tercera fila: Respuesta por DM (todo el ancho) */}
+                        <div className="bg-[#120724] rounded-lg overflow-hidden p-6">
+                            <div className="flex items-center mb-1">
+                                <ChatBubbleLeftIcon className="h-6 w-6 text-amber-400 mr-2" />
+                                <h2 className="text-xl font-bold text-white">Respuesta por DM</h2>
                             </div>
-                            <p className="text-sm text-gray-400 mb-4">
-                                Configura hasta 5 palabras clave que cuando aparezcan en un comentario, activarán la respuesta automática.
-                            </p>
+                            <div className="flex items-center justify-between mb-2">
+                                <p className="text-sm text-gray-400">
+                                    Configura la respuesta automática que se enviará como mensaje directo cuando se detecten las palabras clave.
+                                </p>
+                                <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    onClick={() => {
+                                        if (responsesSectionRef.current && responsesSectionRef.current.openAIModal) {
+                                            responsesSectionRef.current.openAIModal();
+                                        }
+                                    }}
+                                    className="flex items-center gap-1 bg-gradient-to-r from-indigo-600/20 to-indigo-600/10 text-white hover:from-indigo-600/30 hover:to-indigo-600/20 border-indigo-500/50"
+                                >
+                                    <SparklesIcon className="h-4 w-4 text-indigo-400" />
+                                    <span>Generar con IA</span>
+                                </Button>
+                            </div>
                             <MediaSection
+                                ref={responsesSectionRef}
                                 mediaId={reel.id}
                                 mediaType="reel"
-                                keywords={reel.keywords || []}
-                                responses={[]}
-                                onKeywordsChange={(keywords) => {
-                                    console.log('Actualizando keywords:', keywords);
-                                    setReel((prevReel) => {
-                                        if (!prevReel) return reel;
-                                        return { ...prevReel, keywords };
-                                    });
-                                }}
-                                onResponsesChange={() => {}}
-                                showSection="keywords"
+                                keywords={[]}
+                                responses={reel.responses || []}
+                                onKeywordsChange={() => {}}
+                                onResponsesChange={(responses) => setReel({ ...reel, responses })}
+                                showSection="responses"
+                                hideAIButton={true}
                             />
                         </div>
                     </div>
-
-                    {/* Segunda fila: Comentarios Públicos (todo el ancho) */}
-                    <div className="bg-[#120724] rounded-lg overflow-hidden p-6">
-                        <div className="flex items-center mb-4">
-                            <ChatBubbleLeftRightIcon className="h-6 w-6 text-amber-400 mr-2" />
-                            <h2 className="text-xl font-bold text-white">Comentarios Públicos</h2>
-                        </div>
-                        <PublicCommentsSection
-                            reelId={reel.id}
-                            comments={reel.publicComments || []}
-                            onCommentsChange={(comments) => setReel({ ...reel, publicComments: comments })}
-                        />
-                    </div>
-
-                    {/* Tercera fila: Respuesta por DM (todo el ancho) */}
-                    <div className="bg-[#120724] rounded-lg overflow-hidden p-6">
-                        <div className="flex items-center mb-1">
-                            <ChatBubbleLeftIcon className="h-6 w-6 text-amber-400 mr-2" />
-                            <h2 className="text-xl font-bold text-white">Respuesta por DM</h2>
-                        </div>
-                        <div className="flex items-center justify-between mb-2">
-                            <p className="text-sm text-gray-400">
-                                Configura la respuesta automática que se enviará como mensaje directo cuando se detecten las palabras clave.
-                            </p>
-                            <Button 
-                                variant="outline" 
-                                size="sm" 
-                                onClick={() => {
-                                    if (responsesSectionRef.current && responsesSectionRef.current.openAIModal) {
-                                        responsesSectionRef.current.openAIModal();
-                                    }
-                                }}
-                                className="flex items-center gap-1 bg-gradient-to-r from-indigo-600/20 to-indigo-600/10 text-white hover:from-indigo-600/30 hover:to-indigo-600/20 border-indigo-500/50"
-                            >
-                                <SparklesIcon className="h-4 w-4 text-indigo-400" />
-                                <span>Generar con IA</span>
-                            </Button>
-                        </div>
-                        <MediaSection
-                            ref={responsesSectionRef}
-                            mediaId={reel.id}
-                            mediaType="reel"
-                            keywords={[]}
-                            responses={reel.responses || []}
-                            onKeywordsChange={() => {}}
-                            onResponsesChange={(responses) => setReel({ ...reel, responses })}
-                            showSection="responses"
-                            hideAIButton={true}
-                        />
-                    </div>
                 </div>
             </div>
-        </div>
+        </ProtectedRoute>
     );
 } 

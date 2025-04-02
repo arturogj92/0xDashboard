@@ -1,4 +1,4 @@
-import { Reel, Keyword, PublicComment, Response, ApiResponse, DmLog, Media, Story } from './types';
+import { Reel, Keyword, PublicComment, Response, ApiResponse, DmLog, Media, Story, LoginCredentials, RegisterCredentials, AuthResponse, User } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
@@ -433,4 +433,75 @@ export const deleteKeyword = async (mediaId: number, keywordId: number): Promise
 export const getMediaKeywords = async (mediaId: number): Promise<ApiResponse<Keyword[]>> => {
     const response = await fetch(`${API_URL}/api/media/${mediaId}/keywords`);
     return response.json();
+};
+
+// Funciones de autenticación
+export const registerUser = async (credentials: RegisterCredentials): Promise<AuthResponse> => {
+    console.log('Registrando usuario:', credentials);
+    const response = await fetch(`${API_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials),
+    });
+    const data = await response.json();
+    console.log('Respuesta del servidor al registrar:', data);
+
+    if (data.success && data.data?.token) {
+        // Guardar el token en localStorage
+        localStorage.setItem('token', data.data.token);
+    }
+
+    return data;
+};
+
+export const loginUser = async (credentials: LoginCredentials): Promise<AuthResponse> => {
+    console.log('Iniciando sesión:', credentials);
+    const response = await fetch(`${API_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials),
+    });
+    const data = await response.json();
+    console.log('Respuesta del servidor al iniciar sesión:', data);
+
+    if (data.success && data.data?.token) {
+        // Guardar el token en localStorage
+        localStorage.setItem('token', data.data.token);
+    }
+
+    return data;
+};
+
+export const getUserProfile = async (): Promise<ApiResponse<User>> => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        return { success: false, data: null as any, message: 'No hay token disponible' };
+    }
+
+    const response = await fetch(`${API_URL}/api/auth/profile`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    });
+    const data = await response.json();
+    return data;
+};
+
+export const verifyToken = async (token: string): Promise<ApiResponse<{ valid: boolean }>> => {
+    const response = await fetch(`${API_URL}/api/auth/verify`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    });
+    const data = await response.json();
+    return data;
+};
+
+export const logout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
 }; 

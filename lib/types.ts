@@ -62,4 +62,33 @@ export interface ApiResponse<T> {
     success: boolean;
     data: T;
     message?: string;
+}
+
+export interface User {
+    id: number;
+    username: string;
+    email: string;
+    name?: string;
+    avatar_url?: string;
+}
+
+export interface AuthResponse {
+    success: boolean;
+    data: {
+        token: string;
+        user: User;
+    };
+    message?: string;
+}
+
+export interface LoginCredentials {
+    email: string;
+    password: string;
+}
+
+export interface RegisterCredentials {
+    username: string;
+    email: string;
+    password: string;
+    name?: string;
 } 
