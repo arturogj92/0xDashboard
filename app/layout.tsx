@@ -34,17 +34,17 @@ export default function RootLayout({
           <div className="min-h-screen bg-background">
             <nav className="bg-[#120724] shadow-sm">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-16">
+                <div className="flex justify-between h-12">
                   <div className="flex">
                     <Link href="/" className="flex-shrink-0 flex items-center">
                       <Image 
                         src="/images/logo.png" 
                         alt="0xReplyer Logo" 
-                        width={32} 
-                        height={32} 
-                        className="mr-1 mb" 
+                        width={26} 
+                        height={26} 
+                        className="mr-1" 
                       />
-                      <h1 className="text-xl font-bold bg-gradient-to-tr from-blue-300 to-purple-400 bg-clip-text text-transparent">{">"} Replyer</h1>
+                      <h1 className="text-lg font-bold bg-gradient-to-tr from-blue-300 to-purple-400 bg-clip-text text-transparent">{">"} Replyer</h1>
                     </Link>
                   </div>
                   <div className="flex items-center">
