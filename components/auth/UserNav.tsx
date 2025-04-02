@@ -34,6 +34,20 @@ export function UserNav() {
 
   return (
     <div className="flex items-center gap-4">
+      <Link 
+        href="/" 
+        className="inline-flex items-center px-4 py-1.5 text-sm font-medium text-white hover:text-purple-300 transition-colors bg-indigo-600/50 hover:bg-indigo-700/60 rounded-full"
+      >
+        <Image 
+          src="/images/icons/automation-icon.png" 
+          alt="Automatizaciones" 
+          width={16} 
+          height={16} 
+          className="mr-1.5" 
+        />
+        Tus automatizaciones
+      </Link>
+      
       <Button 
         variant="ghost" 
         size="sm"
