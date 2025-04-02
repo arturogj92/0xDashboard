@@ -95,7 +95,7 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className={`max-w-md bg-[#120724] ${isDraft 
+        className={`max-w-md bg-[#120724] ${isReelType && isDraft 
           ? 'border-2 border-amber-500/70' 
           : 'border border-indigo-900/30'
         } rounded-xl shadow-xl`}
@@ -111,7 +111,7 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
             />
             <DialogTitle className="text-xl font-semibold text-white">
               {isReelType ? 'Nuevo Reel' : 'Nueva Historia'}
-              {isDraft && (
+              {isReelType && isDraft && (
                 <span className="inline-flex items-center rounded-md px-2.5 py-1 ml-2 text-xs font-medium text-amber-400 bg-[#120724] border border-amber-500/70">
                   DRAFT
                 </span>
@@ -176,53 +176,36 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
           {/* Controles */}
           <div className="flex justify-end space-x-3 pt-2">
             <div className="flex items-center space-x-3">
-              {isReelType ? (
-                <>
-                  <Toggle
-                    id="is_active"
-                    pressed={isActive}
-                    onPressedChange={handleActiveChange}
-                    className="flex items-center space-x-2 bg-[#1c1033] hover:bg-[#2c1b4d] border border-gray-700 rounded-md px-3 py-1.5"
-                  >
-                    {isActive ? (
-                      <Play className="h-4 w-4 mr-1.5 text-green-500" />
-                    ) : (
-                      <Pause className="h-4 w-4 mr-1.5 text-amber-500" />
-                    )}
-                    <span className="text-sm text-gray-200">
-                      {isActive ? 'Activo' : 'Inactivo'}
-                    </span>
-                  </Toggle>
-                  
-                  <Toggle
-                    id="is_draft"
-                    pressed={isDraft}
-                    onPressedChange={handleDraftChange}
-                    className={`flex items-center space-x-2 bg-[#1c1033] hover:bg-[#2c1b4d] border ${isDraft ? 'border-amber-500/70' : 'border-gray-700'} rounded-md px-3 py-1.5`}
-                  >
-                    {isDraft ? (
-                      <DocumentTextIcon className="h-4 w-4 text-amber-400 mr-1.5" />
-                    ) : (
-                      <DocumentTextIcon className="h-4 w-4 opacity-50 mr-1.5" />
-                    )}
-                    <span className={`text-sm ${isDraft ? 'text-amber-400' : 'text-gray-200'}`}>
-                      {isDraft ? 'Borrador' : 'Publicado'}
-                    </span>
-                  </Toggle>
-                </>
-              ) : (
+              <Toggle
+                id="is_active"
+                pressed={isActive}
+                onPressedChange={handleActiveChange}
+                className="flex items-center space-x-2 bg-[#1c1033] hover:bg-[#2c1b4d] border border-gray-700 rounded-md px-3 py-1.5"
+              >
+                {isActive ? (
+                  <Play className="h-4 w-4 mr-1.5 text-green-500" />
+                ) : (
+                  <Pause className="h-4 w-4 mr-1.5 text-amber-500" />
+                )}
+                <span className="text-sm text-gray-200">
+                  {isActive ? 'Activo' : 'Inactivo'}
+                </span>
+              </Toggle>
+              
+              {isReelType && (
                 <Toggle
-                  pressed={isActive}
-                  onPressedChange={handleActiveChange}
-                  className="flex items-center space-x-2 bg-[#1c1033] hover:bg-[#2c1b4d] border border-gray-700 rounded-md px-3 py-1.5"
+                  id="is_draft"
+                  pressed={isDraft}
+                  onPressedChange={handleDraftChange}
+                  className={`flex items-center space-x-2 bg-[#1c1033] hover:bg-[#2c1b4d] border ${isDraft ? 'border-amber-500/70' : 'border-gray-700'} rounded-md px-3 py-1.5`}
                 >
-                  {isActive ? (
-                    <Play className="h-4 w-4 mr-1.5 text-green-500" />
+                  {isDraft ? (
+                    <DocumentTextIcon className="h-4 w-4 text-amber-400 mr-1.5" />
                   ) : (
-                    <Pause className="h-4 w-4 mr-1.5 text-amber-500" />
+                    <DocumentTextIcon className="h-4 w-4 opacity-50 mr-1.5" />
                   )}
-                  <span className="text-sm text-gray-200">
-                    {isActive ? 'Activo' : 'Inactivo'}
+                  <span className={`text-sm ${isDraft ? 'text-amber-400' : 'text-gray-200'}`}>
+                    {isDraft ? 'Borrador' : 'Publicado'}
                   </span>
                 </Toggle>
               )}

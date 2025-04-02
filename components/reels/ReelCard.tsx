@@ -37,7 +37,8 @@ export function MediaCard({
   deleteLoading 
 }: MediaCardProps) {
   const router = useRouter();
-  const isDraft = !media.url || media.url === '';
+  const isReel = media.media_type === 'reel';
+  const isDraft = isReel && (!media.url || media.url === '');
   
   const getMediaPath = (media: Media) => {
     return media.media_type === 'story' ? 'stories' : 'reels';
@@ -137,7 +138,7 @@ export function MediaCard({
               </div>
               
               <div className="text-xs md:text-sm text-gray-400 mb-2 md:mb-4 line-clamp-1">
-                {media.url ? (
+                {isReel && media.url ? (
                   <Link 
                     href={media.url} 
                     target="_blank" 
@@ -149,9 +150,9 @@ export function MediaCard({
                     <span className="hidden md:inline">{media.url}</span>
                     <span className="inline md:hidden">{getShortenedUrl(media.url)}</span>
                   </Link>
-                ) : (
+                ) : isReel && !media.url ? (
                   <span className="italic text-gray-600">Sin URL</span>
-                )}
+                ) : null}
               </div>
             </div>
 
