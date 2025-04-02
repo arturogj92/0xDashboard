@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Toggle } from '@/components/ui/toggle';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { 
   TrashIcon, 
   ChartBarIcon,  
@@ -44,6 +45,19 @@ export function MediaCard({
 
   const handleCardClick = () => {
     router.push(`/${getMediaPath(media)}/${media.id}`);
+  };
+
+  // Función para acortar la URL para visualización móvil
+  const getShortenedUrl = (url: string) => {
+    if (!url) return '';
+    
+    // Extraer el ID del reel de Instagram
+    const match = url.match(/(?:reel|p)\/([A-Za-z0-9_-]+)/);
+    if (match && match[1]) {
+      return `${match[1]}`;
+    }
+
+    return url;
   };
 
   return (
@@ -132,7 +146,8 @@ export function MediaCard({
                     onClick={(e) => e.stopPropagation()}
                   >
                     <LinkIcon className="h-3.5 w-3.5 mr-1.5 inline-block" />
-                    {media.url}
+                    <span className="hidden md:inline">{media.url}</span>
+                    <span className="inline md:hidden">{getShortenedUrl(media.url)}</span>
                   </Link>
                 ) : (
                   <span className="italic text-gray-600">Sin URL</span>
