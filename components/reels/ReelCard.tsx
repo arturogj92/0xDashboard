@@ -77,19 +77,13 @@ export function MediaCard({
         <div className="flex p-5">
           {/* Miniatura a la izquierda */}
           <div className="w-20 h-20 md:w-28 md:h-28 mr-2 md:mr-5 relative flex-shrink-0 rounded-lg overflow-hidden border border-indigo-900/50 shadow-md">
-            {media.media_type === 'story' && (media as Story).story_url_image && (media as Story).story_url_image !== '' ? (
+            {media.thumbnail_url && media.thumbnail_url !== '' && media.thumbnail_url.startsWith('http') ? (
               <Image 
-                src={(media as Story).story_url_image as string} 
+                src={media.thumbnail_url} 
                 alt={`Imagen de ${media.description}`}
                 fill
                 className="object-cover"
-              />
-            ) : media.thumbnailUrl ? (
-              <Image 
-                src={media.thumbnailUrl} 
-                alt={`Miniatura de ${media.description}`}
-                fill
-                className="object-cover"
+                unoptimized
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-[#0a0a0a]">

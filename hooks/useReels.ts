@@ -14,10 +14,10 @@ import {
   getReelDmHourlyCountCurrentDay 
 } from '@/lib/api';
 
-interface MediaWithStats extends Omit<Media, 'thumbnailUrl'> {
+interface MediaWithStats extends Omit<Media, 'thumbnail_url'> {
   active: boolean;
   url: string;
-  thumbnailUrl: string | null;
+  thumbnail_url: string | null;
   totalVisits: number;
   visits24: number;
   visits7d: number;
@@ -103,7 +103,7 @@ export function useReels() {
                 ...item,
                 active: item.is_active,
                 url: item.url || '',
-                thumbnailUrl: item.url ? getThumbnailUrl(item.url) : null,
+                thumbnail_url: item.thumbnail_url || null,
                 totalVisits,
                 visits24,
                 visits7d,
@@ -145,7 +145,7 @@ export function useReels() {
               ...item,
               active: item.is_active,
               url: item.url || '',
-              thumbnailUrl: null,
+              thumbnail_url: item.thumbnail_url || null,
               totalVisits,
               visits24,
               visits7d

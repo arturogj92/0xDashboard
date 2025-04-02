@@ -63,15 +63,15 @@ export default function Home() {
     );
   }
 
-  // Este casting corrige los errores del linter relacionados con la propiedad thumbnailUrl
+  // Este casting corrige los errores del linter relacionados con la propiedad thumbnail_url
   const fixedReels = reels.map(reel => ({
     ...reel,
-    thumbnailUrl: reel.thumbnailUrl === null ? undefined : reel.thumbnailUrl
+    thumbnail_url: reel.thumbnail_url === null ? undefined : reel.thumbnail_url
   }));
 
   const fixedStories = stories.map(story => ({
     ...story,
-    thumbnailUrl: story.thumbnailUrl === null ? undefined : story.thumbnailUrl
+    thumbnail_url: story.thumbnail_url === null ? undefined : story.thumbnail_url
   }));
 
   return (

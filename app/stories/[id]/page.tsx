@@ -256,14 +256,15 @@ export default function EditStory() {
                                     
                                     {/* Contenido del iPhone (imagen de la historia) - ahora con Dynamic Island visible */}
                                     <div className="absolute top-0 left-0 right-0 bottom-0 z-10 flex items-center justify-center">
-                                        {story.story_url_image ? (
+                                        {story.thumbnail_url && story.thumbnail_url !== '' && story.thumbnail_url.startsWith('http') ? (
                                             <div className="relative w-full h-full overflow-hidden rounded-[36px]">
                                                 <Image
-                                                    src={story.story_url_image}
+                                                    src={story.thumbnail_url}
                                                     alt="Imagen de la historia"
                                                     fill
                                                     className="object-cover"
                                                     priority
+                                                    unoptimized
                                                 />
                                             </div>
                                         ) : (

@@ -36,7 +36,6 @@ export default function EditReel() {
     const [isUrlSaving, setIsUrlSaving] = useState(false);
     const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
     const [saveTimeoutUrl, setSaveTimeoutUrl] = useState<NodeJS.Timeout | null>(null);
-    const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
     const [urlError, setUrlError] = useState<string | null>(null);
     const [urlSaveTimeout, setUrlSaveTimeout] = useState<NodeJS.Timeout | null>(null);
     const responsesSectionRef = useRef<any>(null);
@@ -48,15 +47,6 @@ export default function EditReel() {
         return match ? match[1] : null;
     };
 
-    const getThumbnailUrl = (url: string) => {
-        if (!url) return null;
-        const reelId = extractInstagramReelId(url);
-        if (reelId) {
-            return `https://www.instagram.com/p/${reelId}/media/?size=l`;
-        }
-        return null;
-    };
-
     useEffect(() => {
         fetchReel();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,7 +54,9 @@ export default function EditReel() {
 
     useEffect(() => {
         // Actualizar la miniatura cuando cambia la URL
-        setThumbnailUrl(getThumbnailUrl(url));
+        if (reel) {
+            setReel({ ...reel, thumbnail_url: reel.thumbnail_url });
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url]);
 
@@ -92,7 +84,6 @@ export default function EditReel() {
                 setReel(reelData);
                 setDescription(reelResponse.data.description || '');
                 setUrl(reelResponse.data.url || '');
-                setThumbnailUrl(getThumbnailUrl(reelResponse.data.url || ''));
 
                 // Cargar las respuestas, keywords y comentarios públicos después de tener el reel
                 await Promise.all([
@@ -459,13 +450,14 @@ export default function EditReel() {
                                     <div className="absolute top-0 left-0 right-0 bottom-0 z-10 flex items-center justify-center">
                                         {url ? (
                                             <div className="relative w-full h-full overflow-hidden rounded-[36px]">
-                                                {thumbnailUrl ? (
+                                                {reel.thumbnail_url && reel.thumbnail_url !== '' && reel.thumbnail_url.startsWith('http') ? (
                                                     <div className="w-full h-full relative">
                                                         <Image 
-                                                            src={thumbnailUrl} 
+                                                            src={reel.thumbnail_url} 
                                                             alt="Miniatura del reel"
                                                             fill
                                                             className="object-cover"
+                                                            unoptimized
                                                         />
                                                     </div>
                                                 ) : (

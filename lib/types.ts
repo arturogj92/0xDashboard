@@ -7,7 +7,7 @@ export interface Media {
     media_type: 'reel' | 'story';
     keywords?: Keyword[];
     responses?: Response[];
-    thumbnailUrl?: string;
+    thumbnail_url?: string;
     totalVisits?: number;
     visits24?: number;
     visits7d?: number;
@@ -21,7 +21,6 @@ export interface Reel extends Media {
 
 export interface Story extends Media {
     media_type: 'story';
-    story_url_image?: string;
 }
 
 export interface DmLog {
