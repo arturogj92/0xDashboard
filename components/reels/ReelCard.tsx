@@ -12,7 +12,7 @@ import {
   PlayIcon,
   PauseIcon
 } from '@heroicons/react/24/outline';
-import { Calendar, CalendarDays, CalendarClock, Play, Pause } from 'lucide-react';
+import { CalendarDays, CalendarClock } from 'lucide-react';
 import { Card } from '../ui/card';
 import {
   Tooltip,
@@ -221,9 +221,9 @@ export function MediaCard({
                     {deleteLoading === media.id ? (
                       <div className="h-3 w-3 md:h-4 md:w-4 animate-spin rounded-full border-b-2 border-gray-300"></div>
                     ) : media.is_active ? (
-                      <Pause className="h-3 w-3 md:h-4 md:w-4" />
+                      <PauseIcon className="h-3 w-3 md:h-4 md:w-4" />
                     ) : (
-                      <Play className="h-3 w-3 md:h-4 md:w-4" />
+                      <PlayIcon className="h-3 w-3 md:h-4 md:w-4" />
                     )}
                   </Toggle>
                 </TooltipTrigger>

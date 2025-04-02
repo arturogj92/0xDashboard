@@ -59,11 +59,13 @@ export default function EditReel() {
 
     useEffect(() => {
         fetchReel();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
         // Actualizar la miniatura cuando cambia la URL
         setThumbnailUrl(getThumbnailUrl(url));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [url]);
 
     const fetchReel = async () => {
@@ -177,6 +179,7 @@ export default function EditReel() {
         if (reel?.id) {
             fetchKeywords(reel);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [reel?.id]);
 
     // Asegurarnos de que los comentarios públicos se carguen cuando cambia el reel
@@ -184,6 +187,7 @@ export default function EditReel() {
         if (reel?.id) {
             fetchPublicComments(reel);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [reel?.id]);
 
     // Si hay keywords o comentarios públicos en la respuesta inicial pero no se muestran, forzar una actualización

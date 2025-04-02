@@ -26,7 +26,8 @@ export default function NewReel() {
             url: isDraft ? null : formData.get('url') as string,
             description: formData.get('description') as string,
             is_active: isActive,
-            is_draft: isDraft
+            is_draft: isDraft,
+            media_type: 'reel' as const
         };
         try {
             const response = await createReel({

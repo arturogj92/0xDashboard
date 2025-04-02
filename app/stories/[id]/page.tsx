@@ -36,6 +36,7 @@ export default function EditStory() {
         fetchStory();
         fetchKeywords();
         fetchResponses();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchStory = async () => {
