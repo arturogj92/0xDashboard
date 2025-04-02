@@ -28,11 +28,15 @@ export default function LoginPage() {
     }
 
     try {
+      console.log('Iniciando proceso de login con:', email);
       const result = await login({ email, password });
+      console.log('Resultado del login:', result);
+      
       if (!result.success) {
         setError(result.message || 'Error al iniciar sesión');
       }
     } catch (err: any) {
+      console.error('Error al intentar login:', err);
       setError(err.message || 'Error al iniciar sesión');
     } finally {
       setIsLoading(false);

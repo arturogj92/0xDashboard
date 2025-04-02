@@ -45,28 +45,36 @@ export const getReelDmLogs = async (reelId: number): Promise<ApiResponse<{
   total: number;
   logs: DmLog[]
 }>> => {
-  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-logs`);
+  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-logs`, {
+    headers: createAuthHeaders()
+  });
   return response.json();
 };
 
 export const getReelDmTotalCountToday = async (reelId: number): Promise<ApiResponse<{
   total_count_today: number;
 }>> => {
-  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-total-count-today`);
+  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-total-count-today`, {
+    headers: createAuthHeaders()
+  });
   return response.json();
 };
 
 export const getReelDmTotalCount = async (reelId: number): Promise<ApiResponse<{
   total_count: number;
 }>> => {
-  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-total-count`);
+  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-total-count`, {
+    headers: createAuthHeaders()
+  });
   return response.json();
 };
 
 export const getReelDmTotalCount7d = async (reelId: number): Promise<ApiResponse<{
   total_count_7d: number;
 }>> => {
-  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-total-count-7d`);
+  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-total-count-7d`, {
+    headers: createAuthHeaders()
+  });
   return response.json();
 };
 
@@ -173,7 +181,7 @@ export const toggleReelStatus = async (id: number, isActive: boolean): Promise<A
 export const createOrUpdateKeyword = async (data: Keyword): Promise<ApiResponse<Keyword>> => {
     const response = await fetch(`${API_URL}/api/media/${data.media_id}/keywords`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: createAuthHeaders(),
         body: JSON.stringify({
             id: data.id || 0,
             media_id: data.media_id,
@@ -192,7 +200,7 @@ export const getReelKeywords = async (mediaId: number): Promise<ApiResponse<Keyw
 export const updateKeyword = async (id: number, data: Partial<Keyword>): Promise<ApiResponse<Keyword>> => {
     const response = await fetch(`${API_URL}/api/keywords/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: createAuthHeaders(),
         body: JSON.stringify(data),
     });
     return response.json();
@@ -202,6 +210,7 @@ export const updateKeyword = async (id: number, data: Partial<Keyword>): Promise
 export const deleteReelKeyword = async (reelId: number, keywordId: number): Promise<ApiResponse<void>> => {
     const response = await fetch(`${API_URL}/api/reels/${reelId}/keywords/${keywordId}`, {
         method: 'DELETE',
+        headers: createAuthHeaders(),
     });
     return response.json();
 };
@@ -210,7 +219,7 @@ export const deleteReelKeyword = async (reelId: number, keywordId: number): Prom
 export const createKeyword = async (data: Keyword): Promise<ApiResponse<Keyword>> => {
     const response = await fetch(`${API_URL}/api/reels/${data.reel_id}/keywords`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: createAuthHeaders(),
         body: JSON.stringify(data),
     });
     return response.json();
@@ -220,7 +229,7 @@ export const createKeyword = async (data: Keyword): Promise<ApiResponse<Keyword>
 export const createPublicComment = async (data: PublicComment): Promise<ApiResponse<PublicComment>> => {
     const response = await fetch(`${API_URL}/api/reels/${data.reel_id}/public-comments`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: createAuthHeaders(),
         body: JSON.stringify({ comment_message: data.comment_message }),
     });
     return response.json();
@@ -229,21 +238,23 @@ export const createPublicComment = async (data: PublicComment): Promise<ApiRespo
 export const generateAIPublicComments = async (reelId: number, count: number): Promise<ApiResponse<PublicComment[]>> => {
     const response = await fetch(`${API_URL}/api/reels/${reelId}/generate-multiple-public-comments`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: createAuthHeaders(),
         body: JSON.stringify({ count }),
     });
     return response.json();
 };
 
 export const getReelPublicComments = async (reelId: number): Promise<ApiResponse<PublicComment[]>> => {
-    const response = await fetch(`${API_URL}/api/reels/${reelId}/public-comments`);
+    const response = await fetch(`${API_URL}/api/reels/${reelId}/public-comments`, {
+        headers: createAuthHeaders()
+    });
     return response.json();
 };
 
 export const updatePublicComment = async (id: number, data: Partial<PublicComment>): Promise<ApiResponse<PublicComment>> => {
     const response = await fetch(`${API_URL}/api/public-comments/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: createAuthHeaders(),
         body: JSON.stringify(data),
     });
     return response.json();
@@ -252,6 +263,7 @@ export const updatePublicComment = async (id: number, data: Partial<PublicCommen
 export const deletePublicComment = async (reelId: number, commentId: number): Promise<ApiResponse<void>> => {
     const response = await fetch(`${API_URL}/api/reels/${reelId}/public-comments/${commentId}`, {
         method: 'DELETE',
+        headers: createAuthHeaders(),
     });
     return response.json();
 };
@@ -260,7 +272,7 @@ export const deletePublicComment = async (reelId: number, commentId: number): Pr
 export const createOrUpdateResponse = async (data: Response): Promise<ApiResponse<Response>> => {
     const response = await fetch(`${API_URL}/api/media/${data.media_id}/responses`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: createAuthHeaders(),
         body: JSON.stringify(data),
     });
     return response.json();
@@ -276,6 +288,7 @@ export const getMediaResponses = async (mediaId: number): Promise<ApiResponse<Re
 export const deleteResponse = async (mediaId: number, responseId: number): Promise<ApiResponse<void>> => {
     const response = await fetch(`${API_URL}/api/media/${mediaId}/responses/${responseId}`, {
         method: 'DELETE',
+        headers: createAuthHeaders(),
     });
     return response.json();
 };
@@ -286,7 +299,9 @@ export const getReelDmDailyCountLastWeek = async (reelId: number): Promise<ApiRe
     count: number;
   }>;
 }>> => {
-  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-daily-count-last-week`);
+  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-daily-count-last-week`, {
+    headers: createAuthHeaders()
+  });
   return response.json();
 };
 
@@ -296,7 +311,9 @@ export const getReelDmHourlyCountCurrentDay = async (reelId: number): Promise<Ap
     count: number;
   }>;
 }>> => {
-  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-hourly-count-current-day`);
+  const response = await fetch(`${API_URL}/api/reels/${reelId}/dm-hourly-count-current-day`, {
+    headers: createAuthHeaders()
+  });
   return response.json();
 };
 
@@ -352,16 +369,16 @@ export const toggleStoryStatus = async (id: number, isActive: boolean): Promise<
 
 // Story Keywords
 export async function getStoryKeywords(storyId: number): Promise<ApiResponse<Keyword[]>> {
-    const response = await fetch(`${API_URL}/api/stories/${storyId}/keywords`);
+    const response = await fetch(`${API_URL}/api/stories/${storyId}/keywords`, {
+        headers: createAuthHeaders()
+    });
     return response.json();
 }
 
 export async function createOrUpdateStoryKeyword(keyword: Omit<Keyword, 'id'>): Promise<ApiResponse<Keyword>> {
     const response = await fetch(`${API_URL}/api/media/${keyword.media_id}/keywords`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: createAuthHeaders(),
         body: JSON.stringify(keyword),
     });
     return response.json();
@@ -370,19 +387,23 @@ export async function createOrUpdateStoryKeyword(keyword: Omit<Keyword, 'id'>): 
 export async function deleteStoryKeyword(storyId: number, keywordId: number): Promise<ApiResponse<void>> {
     const response = await fetch(`${API_URL}/api/stories/${storyId}/keywords/${keywordId}`, {
         method: 'DELETE',
+        headers: createAuthHeaders(),
     });
     return response.json();
 }
 
 // Story Responses
 export async function getStoryResponses(storyId: number): Promise<ApiResponse<Response[]>> {
-    const response = await fetch(`${API_URL}/api/stories/${storyId}/responses`);
+    const response = await fetch(`${API_URL}/api/stories/${storyId}/responses`, {
+        headers: createAuthHeaders()
+    });
     return response.json();
 }
 
 export async function deleteStoryResponse(storyId: number, responseId: number): Promise<ApiResponse<void>> {
     const response = await fetch(`${API_URL}/api/stories/${storyId}/responses/${responseId}`, {
         method: 'DELETE',
+        headers: createAuthHeaders(),
     });
     return response.json();
 }
@@ -399,9 +420,7 @@ export interface AIResponseGenerationParams {
 export async function generateAIResponse(mediaId: number, params: AIResponseGenerationParams): Promise<ApiResponse<Response>> {
     const response = await fetch(`${API_URL}/api/media/${mediaId}/generate-complete-response`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: createAuthHeaders(),
         body: JSON.stringify(params),
     });
     return response.json();
@@ -432,6 +451,7 @@ export const updateReelUrl = async (id: number, url: string): Promise<ApiRespons
 export const deleteKeyword = async (mediaId: number, keywordId: number): Promise<ApiResponse<void>> => {
     const response = await fetch(`${API_URL}/api/media/${mediaId}/keywords/${keywordId}`, {
         method: 'DELETE',
+        headers: createAuthHeaders(),
     });
     return response.json();
 };
