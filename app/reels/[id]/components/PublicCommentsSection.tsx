@@ -235,6 +235,9 @@ export default function PublicCommentsSection({ reelId, comments, onCommentsChan
                     </DialogHeader>
                     
                     <div className="py-4">
+                        <div className="bg-amber-900/20 border border-amber-800/30 p-3 rounded-md text-sm text-amber-300 mb-4">
+                            <p>La generación de comentarios puede tardar unos segundos. Por favor, ten paciencia mientras la IA procesa tu solicitud.</p>
+                        </div>
                         <label className="block text-sm font-medium text-gray-300 mb-2">
                             Número de comentarios a generar
                         </label>
@@ -252,16 +255,16 @@ export default function PublicCommentsSection({ reelId, comments, onCommentsChan
                             </span>
                             <button
                                 type="button"
-                                onClick={() => setAiCommentsCount(prev => Math.min(maxPossibleAIComments, prev + 1))}
+                                onClick={() => setAiCommentsCount(prev => Math.min(3, prev + 1))}
                                 className="w-8 h-8 flex items-center justify-center text-white bg-indigo-700/30 rounded-md hover:bg-indigo-700/50"
-                                disabled={aiCommentsCount >= maxPossibleAIComments}
+                                disabled={aiCommentsCount >= 3}
                             >
                                 +
                             </button>
                         </div>
                         
                         <p className="mt-2 text-xs text-gray-400">
-                            Puedes generar hasta <span className="text-amber-400 font-semibold">{maxPossibleAIComments}</span> comentarios más antes de alcanzar el límite.
+                            Puedes generar hasta <span className="text-amber-400 font-semibold">3</span> comentarios por generación.
                         </p>
                     </div>
                     
