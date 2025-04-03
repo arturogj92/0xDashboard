@@ -47,7 +47,13 @@ export default function RootLayout({
                       <h1 className="text-lg font-bold bg-gradient-to-tr from-blue-300 to-purple-400 bg-clip-text text-transparent">{">"} Replyer</h1>
                     </Link>
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-center space-x-4">
+                    <Link 
+                      href="/precios" 
+                      className="flex items-center px-4 py-1.5 rounded-full text-sm font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-500 hover:to-purple-500 transition-colors shadow-md shadow-indigo-900/30"
+                    >
+                      Contratar
+                    </Link>
                     <UserNav />
                   </div>
                 </div>
