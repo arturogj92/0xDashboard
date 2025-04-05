@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createReel } from '@/lib/api';
 import { Toggle } from '@/components/ui/toggle';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { DocumentTextIcon } from '@heroicons/react/24/outline';
-
+import { CardSkeleton, HeaderSkeleton } from '@/components/ui/skeleton';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 export default function NewReel() {
     const router = useRouter();
@@ -15,6 +16,7 @@ export default function NewReel() {
     const [isDraft, setIsDraft] = useState(false);
     const [isActive, setIsActive] = useState(true);
     const [urlValue, setUrlValue] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -61,6 +63,37 @@ export default function NewReel() {
     const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUrlValue(e.target.value);
     };
+
+    useEffect(() => {
+        // Simulación de carga
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (isLoading) {
+        return (
+            <ProtectedRoute>
+                <div className="min-h-screen py-8">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <HeaderSkeleton />
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="md:col-span-1">
+                                <CardSkeleton />
+                            </div>
+                            <div className="md:col-span-2">
+                                <CardSkeleton />
+                                <div className="mt-6">
+                                    <CardSkeleton />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ProtectedRoute>
+        );
+    }
 
     return (
         <div>

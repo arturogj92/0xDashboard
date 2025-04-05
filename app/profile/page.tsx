@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Input } from '@/components/ui/input';
@@ -8,10 +8,28 @@ import { Button } from '@/components/ui/button';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import Image from 'next/image';
 import { User as UserIcon } from 'lucide-react';
+import { ProfileSkeleton } from '@/components/ui/skeleton';
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulación de carga
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <ProtectedRoute>
+        <ProfileSkeleton />
+      </ProtectedRoute>
+    );
+  }
 
   return (
     <ProtectedRoute>

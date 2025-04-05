@@ -14,6 +14,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { CalendarDays, CalendarClock } from 'lucide-react';
 import { Card } from '../ui/card';
+import { Skeleton, ImageSkeleton } from '../ui/skeleton';
 import {
   Tooltip,
   TooltipContent,
@@ -39,6 +40,7 @@ export function MediaCard({
   const router = useRouter();
   const isReel = media.media_type === 'reel';
   const isDraft = isReel && (!media.url || media.url === '');
+  const [imageLoading, setImageLoading] = useState(true);
   
   const getMediaPath = (media: Media) => {
     return media.media_type === 'story' ? 'stories' : 'reels';
@@ -78,13 +80,20 @@ export function MediaCard({
           {/* Miniatura a la izquierda */}
           <div className="w-20 h-20 md:w-28 md:h-28 mr-2 md:mr-5 relative flex-shrink-0 rounded-lg overflow-hidden border border-indigo-900/50 shadow-md">
             {media.thumbnail_url && media.thumbnail_url !== '' && media.thumbnail_url.startsWith('http') ? (
-              <Image 
-                src={media.thumbnail_url} 
-                alt={`Imagen de ${media.description}`}
-                fill
-                className="object-cover"
-                unoptimized
-              />
+              <>
+                {imageLoading && (
+                  <ImageSkeleton className="absolute inset-0 z-10" />
+                )}
+                <Image 
+                  src={media.thumbnail_url} 
+                  alt={`Imagen de ${media.description}`}
+                  fill
+                  className={`object-cover transition-opacity duration-300 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
+                  unoptimized
+                  onLoadingComplete={() => setImageLoading(false)}
+                  onError={() => setImageLoading(false)}
+                />
+              </>
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-[#0a0a0a]">
                 <DocumentTextIcon className="h-8 w-8 text-gray-600" />

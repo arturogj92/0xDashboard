@@ -13,6 +13,7 @@ import { CreateMediaModal } from '@/components/media/CreateMediaModal';
 import { useRouter } from 'next/navigation';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/contexts/AuthContext';
+import { PageSkeleton } from '@/components/ui/skeleton';
 
 export default function Home() {
   const router = useRouter();
@@ -53,9 +54,9 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-900"></div>
-      </div>
+      <ProtectedRoute>
+        <PageSkeleton />
+      </ProtectedRoute>
     );
   }
 

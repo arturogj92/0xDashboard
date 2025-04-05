@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { PageSkeleton } from '@/components/ui/skeleton';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -50,11 +51,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   // Mostrar un indicador de carga mientras se verifica la autenticación
   if (isLoading || isCheckingAuth) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-black">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-indigo-500"></div>
-      </div>
-    );
+    return <PageSkeleton />;
   }
 
   // Mostrar el contenido protegido solo si está autenticado

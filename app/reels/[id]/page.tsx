@@ -19,6 +19,7 @@ import {
     SparklesIcon
 } from '@heroicons/react/24/outline';
 import { Button } from '@/components/ui/button';
+import { CardSkeleton, HeaderSkeleton, ImageSkeleton } from '@/components/ui/skeleton';
 
 // Importar la imagen
 import DescriptionImage from '@/public/images/descriptions/description-story.png';
@@ -41,6 +42,7 @@ export default function EditReel() {
     const [urlSaveTimeout, setUrlSaveTimeout] = useState<NodeJS.Timeout | null>(null);
     const [isChangingUrl, setIsChangingUrl] = useState(false);
     const responsesSectionRef = useRef<any>(null);
+    const [thumbnailLoading, setThumbnailLoading] = useState(true);
 
     const extractInstagramReelId = (url: string) => {
         if (!url) return null;
@@ -327,9 +329,24 @@ export default function EditReel() {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center min-h-screen bg-black">
-                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-indigo-500"></div>
-            </div>
+            <ProtectedRoute>
+                <div className="min-h-screen py-8">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <HeaderSkeleton />
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="md:col-span-1">
+                                <CardSkeleton />
+                            </div>
+                            <div className="md:col-span-2">
+                                <CardSkeleton />
+                                <div className="mt-6">
+                                    <CardSkeleton />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ProtectedRoute>
         );
     }
 
@@ -488,13 +505,18 @@ export default function EditReel() {
                                                 <div className="relative w-full h-full overflow-hidden rounded-[36px]">
                                                     {reel && reel.thumbnail_url && reel.thumbnail_url !== '' && reel.thumbnail_url.startsWith('http') ? (
                                                         <div className="w-full h-full relative" key={reel.thumbnail_url || 'placeholder'}>
+                                                            {thumbnailLoading && (
+                                                                <ImageSkeleton className="absolute inset-0 z-10" />
+                                                            )}
                                                             <Image 
                                                                 src={reel.thumbnail_url} 
                                                                 alt="Miniatura del reel"
                                                                 fill
-                                                                className="object-cover"
+                                                                className={`object-cover transition-opacity duration-300 ${thumbnailLoading ? 'opacity-0' : 'opacity-100'}`}
                                                                 unoptimized
                                                                 loader={({ src }) => src}
+                                                                onLoadingComplete={() => setThumbnailLoading(false)}
+                                                                onError={() => setThumbnailLoading(false)}
                                                             />
                                                         </div>
                                                     ) : (

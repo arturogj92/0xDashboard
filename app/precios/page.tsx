@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { motion, useScroll, useTransform, useMotionValueEvent, useSpring, useMotionValue } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
+import { ProfileSkeleton } from '@/components/ui/skeleton';
 
 const plans = [
   {
@@ -183,6 +184,8 @@ export default function PreciosPage() {
   const containerRef = useRef(null);
   const { scrollY } = useScroll();
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [parallaxY, setParallaxY] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Suaviza el efecto de scroll con spring physics
   const springConfig = { stiffness: 100, damping: 30, mass: 0.5 };
@@ -191,6 +194,36 @@ export default function PreciosPage() {
   useMotionValueEvent(smoothScrollY, "change", (latest) => {
     setScrollPosition(latest);
   });
+
+  useEffect(() => {
+    // Simulación de carga
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen py-16 px-4 md:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="animate-pulse">
+              <div className="h-10 w-64 mx-auto bg-indigo-900/20 rounded-lg mb-3"></div>
+              <div className="h-5 w-full max-w-xl mx-auto bg-indigo-900/20 rounded-lg"></div>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="animate-pulse">
+                <div className="h-96 bg-indigo-900/20 rounded-xl"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="py-12" ref={containerRef}>

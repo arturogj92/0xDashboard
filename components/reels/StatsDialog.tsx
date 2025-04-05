@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Cell } from 'recharts';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface StatsDialogProps {
   open: boolean;
@@ -52,8 +53,17 @@ export function StatsDialog({
         
         <div className="mt-4">
           {loading ? (
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-900"></div>
+            <div className="space-y-4">
+              <div className="flex justify-between mb-2">
+                <Skeleton className="h-6 w-48" />
+                <Skeleton className="h-6 w-24" />
+              </div>
+              <Skeleton className="h-64 w-full rounded-md" />
+              
+              <div className="mt-8">
+                <Skeleton className="h-6 w-36 mb-3" />
+                <Skeleton className="h-48 w-full rounded-md" />
+              </div>
             </div>
           ) : error ? (
             <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded relative">
