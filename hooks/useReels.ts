@@ -11,7 +11,8 @@ import {
   getReelDmTotalCount, 
   getReelDmDailyCountLastWeek, 
   getReelDmTotalCount7d,
-  getReelDmHourlyCountCurrentDay 
+  getReelDmHourlyCountCurrentDay,
+  getReelDmConsolidatedStats
 } from '@/lib/api';
 
 interface MediaWithStats extends Omit<Media, 'thumbnail_url'> {
@@ -73,86 +74,72 @@ export function useReels() {
         ]);
 
         if (reelsResponse.success) {
-          const reelsWithStats = await Promise.all(reelsResponse.data
-            .filter((item): item is Reel => item.media_type === 'reel')
-            .map(async (item) => {
+          // Procesar los reels en paralelo, obteniendo las estadísticas de cada uno
+          const reelsWithStats = await Promise.all(
+            reelsResponse.data
+              .filter((item): item is Reel => item.media_type === 'reel')
+              .map(async (item) => {
+                // Obtener estadísticas consolidadas para este reel específico
+                const statsResponse = await getReelDmConsolidatedStats(item.id);
+                
+                let totalVisits = 0;
+                let visits24 = 0;
+                let visits7d = 0;
+                
+                if (statsResponse.success) {
+                  totalVisits = statsResponse.data.all_time_total;
+                  visits24 = statsResponse.data.today_total;
+                  visits7d = statsResponse.data.last_7_days_total;
+                }
+                
+                const reelWithStats: ReelWithStats = {
+                  ...item,
+                  active: item.is_active,
+                  url: item.url || '',
+                  thumbnail_url: item.thumbnail_url || null,
+                  totalVisits,
+                  visits24,
+                  visits7d,
+                  shortcode: item.shortcode
+                };
+
+                return reelWithStats;
+              })
+          );
+
+          setReels(reelsWithStats);
+        }
+
+        if (storiesResponse.success) {
+          // Procesar las historias en paralelo, obteniendo las estadísticas de cada una
+          const storiesWithStats = await Promise.all(
+            storiesResponse.data.map(async (item: Story) => {
+              // Obtener estadísticas consolidadas para esta historia específica
+              const statsResponse = await getReelDmConsolidatedStats(item.id);
+              
               let totalVisits = 0;
               let visits24 = 0;
               let visits7d = 0;
-
-              try {
-                const totalCountResponse = await getReelDmTotalCount(item.id);
-                if (totalCountResponse.success) {
-                  totalVisits = totalCountResponse.data.total_count;
-                }
-
-                const todayCountResponse = await getReelDmTotalCountToday(item.id);
-                if (todayCountResponse.success) {
-                  visits24 = todayCountResponse.data.total_count_today;
-                }
-
-                const weekCountResponse = await getReelDmTotalCount7d(item.id);
-                if (weekCountResponse.success) {
-                  visits7d = weekCountResponse.data.total_count_7d;
-                }
-              } catch (error) {
-                // Si ocurre un error al obtener los contadores, se mantienen los valores en 0
+              
+              if (statsResponse.success) {
+                totalVisits = statsResponse.data.all_time_total;
+                visits24 = statsResponse.data.today_total;
+                visits7d = statsResponse.data.last_7_days_total;
               }
-
-              const reelWithStats: ReelWithStats = {
+              
+              const storyWithStats: StoryWithStats = {
                 ...item,
                 active: item.is_active,
                 url: item.url || '',
                 thumbnail_url: item.thumbnail_url || null,
                 totalVisits,
                 visits24,
-                visits7d,
-                shortcode: item.shortcode
+                visits7d
               };
 
-              return reelWithStats;
-            }));
-
-          setReels(reelsWithStats);
-        }
-
-        if (storiesResponse.success) {
-          const storiesWithStats = await Promise.all(storiesResponse.data.map(async (item: Story) => {
-            let totalVisits = 0;
-            let visits24 = 0;
-            let visits7d = 0;
-
-            try {
-              const totalCountResponse = await getReelDmTotalCount(item.id);
-              if (totalCountResponse.success) {
-                totalVisits = totalCountResponse.data.total_count;
-              }
-
-              const todayCountResponse = await getReelDmTotalCountToday(item.id);
-              if (todayCountResponse.success) {
-                visits24 = todayCountResponse.data.total_count_today;
-              }
-
-              const weekCountResponse = await getReelDmTotalCount7d(item.id);
-              if (weekCountResponse.success) {
-                visits7d = weekCountResponse.data.total_count_7d;
-              }
-            } catch (error) {
-              // Si ocurre un error al obtener los contadores, se mantienen los valores en 0
-            }
-
-            const storyWithStats: StoryWithStats = {
-              ...item,
-              active: item.is_active,
-              url: item.url || '',
-              thumbnail_url: item.thumbnail_url || null,
-              totalVisits,
-              visits24,
-              visits7d
-            };
-
-            return storyWithStats;
-          }));
+              return storyWithStats;
+            })
+          );
 
           setStories(storiesWithStats);
         }
@@ -231,18 +218,18 @@ export function useReels() {
     setStatsError(null);
     
     try {
-      const [weeklyResponse, hourlyResponse, totalResponse] = await Promise.all([
-        getReelDmDailyCountLastWeek(id),
-        getReelDmHourlyCountCurrentDay(id),
-        getReelDmTotalCount(id)
-      ]);
-
-      if (totalResponse.success) {
-        setTotalDms(totalResponse.data.total_count);
-      }
-
-      if (weeklyResponse.success) {
-        setWeeklyStats(weeklyResponse.data.daily_stats);
+      // Obtenemos las estadísticas consolidadas específicas para este media_id
+      const consolidatedResponse = await getReelDmConsolidatedStats(id);
+      
+      // También obtenemos las estadísticas horarias que no están en el consolidado
+      const hourlyResponse = await getReelDmHourlyCountCurrentDay(id);
+      
+      if (consolidatedResponse.success) {
+        setTotalDms(consolidatedResponse.data.all_time_total);
+        setWeeklyStats(consolidatedResponse.data.daily_breakdown.map(item => ({
+          day: item.day,
+          count: item.count
+        })));
       }
 
       if (hourlyResponse.success) {

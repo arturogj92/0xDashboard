@@ -305,6 +305,22 @@ export const getReelDmDailyCountLastWeek = async (reelId: number): Promise<ApiRe
   return response.json();
 };
 
+export const getReelDmConsolidatedStats = async (mediaId: string | number = 'all'): Promise<ApiResponse<{
+  daily_breakdown: Array<{
+    day: string;
+    count: number;
+  }>;
+  today_total: number;
+  last_7_days_total: number;
+  all_time_total: number;
+  media_id: string;
+}>> => {
+  const response = await fetch(`${API_URL}/api/reels/${mediaId}/dm-consolidated-stats`, {
+    headers: createAuthHeaders()
+  });
+  return response.json();
+};
+
 export const getReelDmHourlyCountCurrentDay = async (reelId: number): Promise<ApiResponse<{
   hourly_stats: Array<{
     hour: string;
