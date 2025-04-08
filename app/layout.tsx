@@ -10,6 +10,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { UserNav } from "@/components/auth/UserNav";
 import RootLayoutInner from "@/components/layout/RootLayoutInner";
+import Footer from './components/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -39,6 +40,7 @@ export default function RootLayout({
           </RootLayoutInner>
           <SpeedInsights />
           <Analytics />
+          <Footer />
         </AuthProvider>
       </body>
     </html>

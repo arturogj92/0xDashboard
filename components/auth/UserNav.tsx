@@ -3,17 +3,20 @@
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
 import { 
   LogOut, 
   User as UserIcon,
-  Settings,
   UserCircle
 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function UserNav() {
   const { user, logout, isAuthenticated } = useAuth();
-  const [showMenu, setShowMenu] = useState(false);
 
   if (!isAuthenticated) {
     return (
@@ -40,12 +43,8 @@ export function UserNav() {
         <span className="hidden md:inline">Tus automatizaciones</span>
       </Link>
       
-      <div className="relative group">
-        <div 
-          className="flex items-center px-1.5 py-1 bg-indigo-900/40 rounded-full hover:bg-indigo-900/60 transition-colors cursor-pointer md:px-2 md:gap-1.5"
-          onMouseEnter={() => setShowMenu(true)}
-          onMouseLeave={() => setShowMenu(false)}
-        >
+      <DropdownMenu>
+        <DropdownMenuTrigger className="flex items-center px-1.5 py-1 bg-indigo-900/40 rounded-full hover:bg-indigo-900/60 transition-colors cursor-pointer md:px-2 md:gap-1.5 outline-none">
           <div className="relative w-6 h-6 rounded-full overflow-hidden bg-indigo-900/60 flex items-center justify-center">
             {user?.avatar_url ? (
               <Image 
@@ -62,34 +61,27 @@ export function UserNav() {
             <p className="text-xs font-medium text-white">{user?.name || user?.username}</p>
             <p className="text-[10px] text-gray-400">{user?.email}</p>
           </div>
-        </div>
+        </DropdownMenuTrigger>
         
-        {/* Menú desplegable */}
-        <div 
-          className={`absolute right-0 mt-1 w-48 bg-card border border-color rounded-md shadow-lg overflow-hidden z-10 transition-all duration-200 origin-top-right ${
-            showMenu ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
-          }`}
-          onMouseEnter={() => setShowMenu(true)}
-          onMouseLeave={() => setShowMenu(false)}
-        >
-          <div className="py-1">
+        <DropdownMenuContent align="end" className="w-48 bg-[#120724] border border-indigo-900/30">
+          <DropdownMenuItem asChild>
             <Link 
               href="/profile"
-              className="flex items-center px-4 py-2 text-sm text-foreground hover:bg-button-hover transition-colors"
+              className="flex items-center px-4 py-2 text-sm text-white hover:bg-indigo-900/40 transition-colors cursor-pointer"
             >
-              <UserCircle className="h-4 w-4 mr-2 text-primary" />
+              <UserCircle className="h-4 w-4 mr-2 text-indigo-400" />
               Tu Perfil
             </Link>
-            <button
-              onClick={logout}
-              className="flex w-full items-center px-4 py-2 text-sm text-foreground hover:bg-button-hover transition-colors"
-            >
-              <LogOut className="h-4 w-4 mr-2 text-red-400" />
-              Cerrar Sesión
-            </button>
-          </div>
-        </div>
-      </div>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={logout}
+            className="flex items-center px-4 py-2 text-sm text-white hover:bg-indigo-900/40 transition-colors cursor-pointer"
+          >
+            <LogOut className="h-4 w-4 mr-2 text-red-400" />
+            Cerrar Sesión
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 } 
