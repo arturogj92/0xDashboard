@@ -100,6 +100,13 @@ export default function LoginPage() {
                 />
               </div>
 
+              <div className="text-xs text-gray-400 text-center">
+                Al iniciar sesión, aceptas nuestros{' '}
+                <Link href="/terms" className="text-indigo-400 hover:text-indigo-300 underline">
+                  Términos de Servicio
+                </Link>
+              </div>
+
               <Button
                 type="submit"
                 className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
