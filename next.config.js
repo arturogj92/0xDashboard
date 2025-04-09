@@ -31,6 +31,15 @@ const nextConfig = {
     ],
   },
   output: 'standalone',
+  // Configuración para desarrollo HTTPS
+  async rewrites() {
+    return [
+      {
+        source: '/:path*',
+        destination: 'https://127.0.0.1:3001/:path*',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig; 

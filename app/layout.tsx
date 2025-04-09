@@ -11,6 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { UserNav } from "@/components/auth/UserNav";
 import RootLayoutInner from "@/components/layout/RootLayoutInner";
 import Footer from './components/Footer';
+import FacebookSDK from "@/components/FacebookSDK";
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -41,6 +42,10 @@ export default function RootLayout({
           <SpeedInsights />
           <Analytics />
           <Footer />
+          <FacebookSDK 
+            appId={process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || ''} 
+            apiVersion="v22.0"
+          />
         </AuthProvider>
       </body>
     </html>

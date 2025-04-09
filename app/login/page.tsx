@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
+import FacebookLoginButton from '@/components/auth/FacebookLoginButton';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -66,6 +67,17 @@ export default function LoginPage() {
                 {error}
               </div>
             )}
+
+            <FacebookLoginButton />
+
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-indigo-900/30"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-[#120724] text-gray-400">O continúa con email</span>
+              </div>
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>

@@ -82,8 +82,25 @@ export interface AuthResponse {
 }
 
 export interface LoginCredentials {
-    email: string;
-    password: string;
+    email?: string;
+    password?: string;
+    provider?: 'facebook' | 'email';
+    accessToken?: string;
+    userData?: {
+        id: string;
+        name: string;
+        email: string;
+        picture?: string;
+        businesses?: Array<{
+            id: string;
+            name: string;
+            picture?: {
+                data: {
+                    url: string;
+                }
+            }
+        }>;
+    };
 }
 
 export interface RegisterCredentials {

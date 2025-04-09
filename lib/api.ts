@@ -547,41 +547,40 @@ export const registerUser = async (credentials: RegisterCredentials): Promise<Au
 };
 
 export const loginUser = async (credentials: LoginCredentials): Promise<AuthResponse> => {
-    console.log('Iniciando sesión:', credentials);
-    try {
-        const response = await fetch(`${API_URL}/api/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(credentials),
-        });
-
-        const data = await response.json();
-        console.log('Respuesta del servidor al iniciar sesión:', data);
-
-        if (!response.ok) {
-            console.error(`Error ${response.status}: ${response.statusText}`);
-            return { 
-                success: false, 
-                data: { token: '', user: {} as User },
-                message: data.message || `Error ${response.status}: ${response.statusText}`
-            };
-        }
-
-        if (data.success && data.data?.token) {
-            // Guardar el token en localStorage
-            localStorage.setItem('token', data.data.token);
-            console.log('Token guardado:', data.data.token);
-        }
-
-        return data;
-    } catch (error) {
-        console.error('Error en la petición de login:', error);
-        return { 
-            success: false, 
-            data: { token: '', user: {} as User },
-            message: 'Error de red al intentar iniciar sesión' 
-        };
+  try {
+    let endpoint = `${API_URL}/api/auth/login`;
+    
+    // Si es login con Facebook, usar un endpoint diferente
+    if (credentials.provider === 'facebook') {
+      endpoint = `${API_URL}/api/auth/facebook/login`;
     }
+
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+    });
+
+    const data = await response.json();
+
+    if (data.success && data.data.token) {
+      localStorage.setItem('token', data.data.token);
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error en loginUser:', error);
+    return {
+      success: false,
+      data: {
+        token: '',
+        user: null as any,
+      },
+      message: 'Error al conectar con el servidor',
+    };
+  }
 };
 
 export const getUserProfile = async (): Promise<ApiResponse<User>> => {

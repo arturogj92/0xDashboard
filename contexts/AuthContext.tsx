@@ -76,6 +76,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     setError(null);
     try {
+      // Si es login con Facebook, guardar el token de acceso
+      if (credentials.provider === 'facebook' && credentials.accessToken) {
+        localStorage.setItem('fb_access_token', credentials.accessToken);
+      }
+
       const response = await loginUser(credentials);
       console.log('Respuesta de login:', response);
       
