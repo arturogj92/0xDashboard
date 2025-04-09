@@ -7,7 +7,6 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import Image from "next/image";
 import Link from "next/link";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { useAuth } from "@/contexts/AuthContext";
 import { UserNav } from "@/components/auth/UserNav";
 import RootLayoutInner from "@/components/layout/RootLayoutInner";
 import Footer from './components/Footer';
@@ -44,7 +43,7 @@ export default function RootLayout({
           <Footer />
           <FacebookSDK 
             appId={process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || ''} 
-            apiVersion="v22.0"
+            apiVersion={process.env.NEXT_PUBLIC_FACEBOOK_API_VERSION || 'v18.0'}
           />
         </AuthProvider>
       </body>

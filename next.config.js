@@ -17,7 +17,15 @@ const nextConfig = {
       'cdninstagram.com',
       'www.instagram.com', 
       'instagram.com',
-      'ggrjdxfnoqnqsohqmalh.supabase.co'
+      'ggrjdxfnoqnqsohqmalh.supabase.co',
+      // Dominios de Facebook para imágenes
+      'scontent-mad1-1.xx.fbcdn.net',
+      'scontent-mad1-2.xx.fbcdn.net',
+      'scontent-mad2-1.xx.fbcdn.net',
+      'scontent-mad2-2.xx.fbcdn.net',
+      'graph.facebook.com',
+      'platform-lookaside.fbsbx.com',
+      'static.xx.fbcdn.net'
     ],
     remotePatterns: [
       {
@@ -28,6 +36,14 @@ const nextConfig = {
         protocol: 'https',
         hostname: '*.supabase.co',
       },
+      {
+        protocol: 'https',
+        hostname: '*.fbcdn.net',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.facebook.com',
+      }
     ],
   },
   output: 'standalone',

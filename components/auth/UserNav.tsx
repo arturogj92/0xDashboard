@@ -14,9 +14,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useState } from 'react';
 
 export function UserNav() {
   const { user, logout, isAuthenticated } = useAuth();
+  const [avatarError, setAvatarError] = useState(false);
 
   if (!isAuthenticated) {
     return (
@@ -30,6 +32,14 @@ export function UserNav() {
       </div>
     );
   }
+
+  // Verificar si la URL de avatar es válida para next/image
+  const hasValidAvatar = user?.avatar_url && !avatarError;
+  const avatarUrl = user?.avatar_url || '';
+  const userName = user?.name || user?.username || 'Usuario';
+  
+  // Verificar si es una URL de Facebook
+  const isFacebookImage = avatarUrl.includes('fbcdn.net');
 
   return (
     <div className="flex items-center gap-1 md:gap-2">
@@ -46,19 +56,22 @@ export function UserNav() {
       <DropdownMenu>
         <DropdownMenuTrigger className="flex items-center px-1.5 py-1 bg-indigo-900/40 rounded-full hover:bg-indigo-900/60 transition-colors cursor-pointer md:px-2 md:gap-1.5 outline-none">
           <div className="relative w-6 h-6 rounded-full overflow-hidden bg-indigo-900/60 flex items-center justify-center">
-            {user?.avatar_url ? (
+            {hasValidAvatar ? (
               <Image 
-                src={user.avatar_url} 
-                alt={user.name || user.username} 
-                fill 
-                className="object-cover"
+                src={avatarUrl} 
+                alt={userName} 
+                width={24}
+                height={24}
+                className="object-cover w-full h-full"
+                onError={() => setAvatarError(true)}
+                unoptimized={isFacebookImage} // No optimizar imágenes de Facebook
               />
             ) : (
               <UserIcon className="h-3 w-3 text-white/60" />
             )}
           </div>
           <div className="hidden md:flex md:flex-col">
-            <p className="text-xs font-medium text-white">{user?.name || user?.username}</p>
+            <p className="text-xs font-medium text-white">{userName}</p>
             <p className="text-[10px] text-gray-400">{user?.email}</p>
           </div>
         </DropdownMenuTrigger>
