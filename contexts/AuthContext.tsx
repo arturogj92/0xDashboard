@@ -14,6 +14,7 @@ interface AuthContextType {
   logout: () => void;
   error: string | null;
   refreshUserProfile: () => Promise<void>;
+  loginWithToken: (token: string, userData: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -119,6 +120,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Nueva función para manejar el login post-callback (ej: Facebook)
+  const loginWithToken = (token: string, userData: User) => {
+    console.log('Login con token', token, userData);
+    localStorage.setItem('token', token); // Guardar el nuevo token
+    setUser(userData); // Establecer el usuario en el estado
+    setError(null); // Limpiar errores previos
+    router.push('/'); // Redirigir al dashboard o página principal
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     setUser(null);
@@ -133,7 +143,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     register,
     logout: handleLogout,
     error,
-    refreshUserProfile
+    refreshUserProfile,
+    loginWithToken
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

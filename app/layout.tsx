@@ -7,10 +7,9 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import Image from "next/image";
 import Link from "next/link";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { useAuth } from "@/contexts/AuthContext";
-import { UserNav } from "@/components/auth/UserNav";
 import RootLayoutInner from "@/components/layout/RootLayoutInner";
 import Footer from './components/Footer';
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -32,8 +31,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es">
-      <body className={`inter.className ${dmSans.variable}`}>
+    <html lang="es" suppressHydrationWarning>
+      <body 
+        className={cn(
+          "min-h-screen bg-[#080213] font-sans antialiased",
+          inter.className,
+          dmSans.variable
+        )}
+      >
+        <div id="fb-root"></div>
         <AuthProvider>
           <RootLayoutInner>
             {children}
