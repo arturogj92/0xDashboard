@@ -27,10 +27,23 @@ declare global {
   interface Window {
     fbAsyncInit: () => void;
     FB?: {
-      init: (params: { appId: string; cookie: boolean; xfbml: boolean; version: string; }) => void;
-      login: (callback: (response: any) => void, options: { scope: string; }) => void;
+      init: (params: { 
+        appId: string; 
+        cookie: boolean; 
+        xfbml: boolean; 
+        version: string;
+        config_id?: string;
+      }) => void;
+      login: (
+        callback: (response: any) => void, 
+        options: { 
+          scope: string;
+          config_id?: string;
+          auth_type?: string;
+        }
+      ) => void;
       api: (path: string, params: { fields: string; }, callback: (response: any) => void) => void;
-      getLoginStatus: (callback: (response: any) => void) => void; // Opcional: útil para verificar estado inicial
+      getLoginStatus: (callback: (response: any) => void) => void;
     };
   }
 }
@@ -46,11 +59,23 @@ export default function LoginPage() {
   const router = useRouter();
 
   const NEXT_PUBLIC_FACEBOOK_APP_ID = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID;
+  const NEXT_PUBLIC_FACEBOOK_API_VERSION = process.env.NEXT_PUBLIC_FACEBOOK_API_VERSION || 'v17.0';
+  const NEXT_PUBLIC_FACEBOOK_CONFIG_ID = process.env.NEXT_PUBLIC_FACEBOOK_CONFIG_ID;
 
   useEffect(() => {
+    console.log('NEXT_PUBLIC_FACEBOOK_APP_ID:', NEXT_PUBLIC_FACEBOOK_APP_ID);
+    console.log('NEXT_PUBLIC_FACEBOOK_CONFIG_ID:', NEXT_PUBLIC_FACEBOOK_CONFIG_ID);
+    console.log('NEXT_PUBLIC_FACEBOOK_APP_ID (original):', process.env.NEXT_PUBLIC_FACEBOOK_APP_ID);
+    
     if (!NEXT_PUBLIC_FACEBOOK_APP_ID) {
         console.error('Facebook App ID no configurado en variables de entorno.');
         setError('La configuración de inicio de sesión con Facebook no está completa.');
+        return;
+    }
+
+    if (!NEXT_PUBLIC_FACEBOOK_CONFIG_ID) {
+        console.error('Facebook Config ID no configurado. Es necesario para el login de Facebook Business.');
+        setError('La configuración de inicio de sesión con Facebook Business no está completa.');
         return;
     }
 
@@ -61,12 +86,13 @@ export default function LoginPage() {
 
     window.fbAsyncInit = function() {
       window.FB?.init({
-        appId      : NEXT_PUBLIC_FACEBOOK_APP_ID!,
-        cookie     : true,
-        xfbml      : true,
-        version    : 'v19.0'
+        appId: NEXT_PUBLIC_FACEBOOK_APP_ID!,
+        cookie: true,
+        xfbml: true,
+        version: NEXT_PUBLIC_FACEBOOK_API_VERSION,
+        config_id: NEXT_PUBLIC_FACEBOOK_CONFIG_ID
       });
-      console.log('Facebook SDK initialized.');
+      console.log('Facebook SDK initialized with Business configuration.');
       setIsFbSdkReady(true); 
     };
 
@@ -83,7 +109,7 @@ export default function LoginPage() {
        }
      }(document, 'script', 'facebook-jssdk'));
 
-  }, [NEXT_PUBLIC_FACEBOOK_APP_ID]);
+  }, [NEXT_PUBLIC_FACEBOOK_APP_ID, NEXT_PUBLIC_FACEBOOK_API_VERSION, NEXT_PUBLIC_FACEBOOK_CONFIG_ID]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,12 +149,23 @@ export default function LoginPage() {
       };
       
       try {
-        const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'; 
-        const res = await fetch(`${backendUrl}/api/auth/facebook/callback`, {
+        // Usar la variable específica para la URL del backend
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '');
+        if (!apiUrl) {
+          console.error('Error: NEXT_PUBLIC_API_URL no está configurado en .env.local');
+          setError('La configuración de la aplicación está incompleta (API URL). Contacta al administrador.');
+          setIsFbLoading(false);
+          return;
+        }
+        console.log('Intentando conectar con el backend en:', apiUrl);
+        
+        // La ruta correcta debe incluir /api
+        const res = await fetch(`${apiUrl}/api/auth/facebook/callback`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: 'include', // Importante para CORS
           body: JSON.stringify({
             userID: userData.id,
             email: userData.email,
@@ -137,6 +174,13 @@ export default function LoginPage() {
             picture: userData.picture
           }),
         });
+
+        if (!res.ok) {
+          console.error('Error en la respuesta del servidor:', res.status, res.statusText);
+          const errorData = await res.text();
+          console.error('Detalles del error:', errorData);
+          throw new Error(`Error del servidor: ${res.status} ${res.statusText}`);
+        }
 
         const data = await res.json();
         console.log('Backend response:', data);
@@ -180,13 +224,16 @@ export default function LoginPage() {
       setError('El SDK de Facebook no está listo. Inténtalo de nuevo en un momento.');
       return;
     }
-    setIsFbLoading(true); // Mover setIsFbLoading(true) aquí
+    setIsFbLoading(true);
     setError(null);
 
     window.FB.login((loginResponse) => {
-       // Llamada a la función auxiliar usando void
       void processFacebookLoginResponse(loginResponse);
-    }, { scope: 'email,public_profile' });
+    }, { 
+      config_id: NEXT_PUBLIC_FACEBOOK_CONFIG_ID,
+      scope: 'public_profile,email,business_management,instagram_basic,instagram_manage_comments,instagram_manage_messages,pages_manage_metadata,pages_show_list,pages_messaging,pages_manage_engagement',
+      auth_type: 'rerequest'
+    });
   };
 
   return (

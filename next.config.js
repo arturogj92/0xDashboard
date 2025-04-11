@@ -17,7 +17,9 @@ const nextConfig = {
       'cdninstagram.com',
       'www.instagram.com', 
       'instagram.com',
-      'ggrjdxfnoqnqsohqmalh.supabase.co'
+      'ggrjdxfnoqnqsohqmalh.supabase.co',
+      'lh3.googleusercontent.com',
+      'platform-lookaside.fbsbx.com'
     ],
     remotePatterns: [
       {
@@ -27,6 +29,14 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: '*.supabase.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'platform-lookaside.fbsbx.com',
       },
     ],
   },
