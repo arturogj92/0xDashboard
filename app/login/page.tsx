@@ -249,6 +249,42 @@ export default function LoginPage() {
     });
   };
 
+  // Función para detectar si es un dispositivo móvil
+  const isMobile = () => {
+    if (typeof window === 'undefined') return false;
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  };
+
+  // Función para iniciar login con Google
+  const initiateGoogleLogin = () => {
+    setError(null);
+    setIsLoadingGoogle(true);
+    
+    if (isMobile()) {
+      // En móvil, usar autenticación directa en lugar de popup
+      const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(window.location.origin + '/auth/google/callback')}&response_type=code&scope=email%20profile&prompt=select_account`;
+      
+      // Redireccionar a Google Auth
+      window.location.href = googleLoginUrl;
+      return;
+    }
+    
+    // Desktop: usar el método actual de simular click en el botón de Google
+    const googleLoginButton = document.getElementById('google-login-button');
+    if (googleLoginButton) {
+      const clickableButton = googleLoginButton.querySelector('div[role="button"]');
+      if (clickableButton) {
+        (clickableButton as HTMLElement).click();
+      } else {
+        setError("No se pudo iniciar el login con Google. Inténtalo de nuevo.");
+        setIsLoadingGoogle(false);
+      }
+    } else {
+      setError("No se pudo iniciar el login con Google. Inténtalo de nuevo.");
+      setIsLoadingGoogle(false);
+    }
+  };
+
   // --- Funciones para Google Login ---
   const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     setError(null);
@@ -391,25 +427,7 @@ export default function LoginPage() {
             <Button
               variant="outline"
               className="w-full bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 flex items-center justify-center space-x-2 mb-4 shadow-sm"
-              onClick={() => {
-                setError(null);
-                setIsLoadingGoogle(true);
-                // El componente GoogleLogin está oculto y se activará programáticamente
-                const googleLoginButton = document.getElementById('google-login-button');
-                if (googleLoginButton) {
-                  // Simular clic en el elemento hijo que contiene el botón real
-                  const clickableButton = googleLoginButton.querySelector('div[role="button"]');
-                  if (clickableButton) {
-                    (clickableButton as HTMLElement).click();
-                  } else {
-                    setError("No se pudo iniciar el login con Google. Inténtalo de nuevo.");
-                    setIsLoadingGoogle(false);
-                  }
-                } else {
-                  setError("No se pudo iniciar el login con Google. Inténtalo de nuevo.");
-                  setIsLoadingGoogle(false);
-                }
-              }}
+              onClick={initiateGoogleLogin}
               disabled={isLoading || isFbLoading || isLoadingGoogle}
             >
               {isLoadingGoogle ? (
