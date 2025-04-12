@@ -40,3 +40,38 @@ body {
 .bg-accent { background-color: var(--accent); }
 .bg-card { background-color: var(--card); }
 .border-color { border-color: var(--border); }
+
+/* Estilos personalizados para el botón de Google */
+/* Estos selectores apuntan específicamente al iframe y su contenedor */
+div[style*="position: relative"] div[style*="position: absolute"] > iframe {
+  width: 100% !important;
+  transform: scale(1) !important;
+  left: 0 !important;
+}
+
+.w-full div[style*="position: relative"] {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Selector más específico para el botón de Google */
+div[aria-labelledby="button-label"] {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Asegurar que el contenedor del iframe tenga ancho completo */
+div[style*="display: inline-block"] {
+  width: 100% !important;
+  display: block !important;
+}
+
+/* Forzar que cualquier botón dentro de un div width:100% también tenga ancho completo */
+.w-full button {
+  width: 100% !important;
+}
+
+/* Si algo sigue con ancho incorrecto, este es un enfoque nuclear */
+.w-full > div, .w-full > div > div, .w-full iframe, .w-full * {
+  max-width: 100% !important;
+}

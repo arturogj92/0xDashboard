@@ -624,6 +624,49 @@ export const verifyToken = async (token: string): Promise<ApiResponse<{ valid: b
     return data;
 };
 
+/**
+ * Llama al backend para procesar el login con Google.
+ * @param idToken El token de ID obtenido de Google.
+ * @returns La respuesta de autenticación del backend.
+ */
+export const loginWithGoogle = async (idToken: string): Promise<AuthResponse> => {
+  try {
+    const response = await fetch(`${API_URL}/api/auth/google/callback`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ idToken }),
+    });
+
+    const data: AuthResponse = await response.json();
+
+    if (!response.ok || !data.success) {
+        console.error('Error en login con Google:', data.message || 'Error desconocido devuelto por la API');
+        return {
+            success: false,
+            data: data?.data ?? { token: '', user: {} as User },
+            message: data?.message || 'Error en el servidor'
+        };
+    }
+
+    if (data.success && data.data?.token) {
+        localStorage.setItem('token', data.data.token);
+        console.log('Token de Google guardado:', data.data.token);
+    }
+
+    return data;
+
+  } catch (error) {
+    console.error('Error de red o excepción en loginWithGoogle:', error);
+    return {
+        success: false,
+        data: { token: '', user: {} as User },
+        message: 'No se pudo conectar con el servidor.'
+    };
+  }
+};
+
 export const logout = () => {
     localStorage.removeItem('token');
     window.location.href = '/login';

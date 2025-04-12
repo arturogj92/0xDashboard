@@ -10,6 +10,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import RootLayoutInner from "@/components/layout/RootLayoutInner";
 import Footer from './components/Footer';
 import { cn } from "@/lib/utils";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -25,11 +26,18 @@ const dmSans = DM_Sans({
   display: 'swap',      // recomendación de Google
 });
 
+const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
+  if (!googleClientId) {
+    console.error("Error: La variable de entorno NEXT_PUBLIC_GOOGLE_CLIENT_ID no está configurada.");
+  }
+
   return (
     <html lang="es" suppressHydrationWarning>
       <body 
@@ -40,14 +48,20 @@ export default function RootLayout({
         )}
       >
         <div id="fb-root"></div>
-        <AuthProvider>
-          <RootLayoutInner>
-            {children}
-          </RootLayoutInner>
-          <SpeedInsights />
-          <Analytics />
-          <Footer />
-        </AuthProvider>
+        {googleClientId ? (
+          <GoogleOAuthProvider clientId={googleClientId}>
+            <AuthProvider>
+              <RootLayoutInner>
+                {children}
+              </RootLayoutInner>
+              <SpeedInsights />
+              <Analytics />
+              <Footer />
+            </AuthProvider>
+          </GoogleOAuthProvider>
+        ) : (
+          <div>Error: La configuración de Google Login está incompleta. Contacta al administrador.</div>
+        )}
       </body>
     </html>
   );
