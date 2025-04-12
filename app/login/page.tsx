@@ -281,7 +281,7 @@ export default function LoginPage() {
       if (mobile) {
         // Construir la URL del callback basada en el origin actual
         const origin = window.location.origin;
-        const redirectUri = `${origin}/auth/google/callback`;
+        const redirectUri = `https://www.0xreplyer.com/auth/google/callback`;
         console.log(`Redirect URI: ${redirectUri}`);
         
         // Client ID debe estar disponible
