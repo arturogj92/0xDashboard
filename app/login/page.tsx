@@ -252,7 +252,20 @@ export default function LoginPage() {
   // Función para detectar si es un dispositivo móvil
   const isMobile = () => {
     if (typeof window === 'undefined') return false;
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    // Mejor detección de dispositivos móviles usando userAgent
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+    const isMobileByUA = Boolean(
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent) ||
+      (userAgent.includes('Mobi') || userAgent.includes('Android'))
+    );
+    
+    // Algunos navegadores en tablets pueden reportar false negatives, agregamos detección por tamaño
+    const isMobileBySize = typeof window !== 'undefined' && window.innerWidth < 768;
+    
+    console.log(`Detección móvil: UA=${isMobileByUA}, Size=${isMobileBySize}, Final=${isMobileByUA || isMobileBySize}`);
+    
+    return isMobileByUA || isMobileBySize;
   };
 
   // Función para iniciar login con Google
@@ -260,26 +273,58 @@ export default function LoginPage() {
     setError(null);
     setIsLoadingGoogle(true);
     
-    if (isMobile()) {
-      // En móvil, usar autenticación directa en lugar de popup
-      const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(window.location.origin + '/auth/google/callback')}&response_type=code&scope=email%20profile&prompt=select_account`;
+    try {
+      // Verificar si estamos en un dispositivo móvil
+      const mobile = isMobile();
+      console.log(`Iniciando login con Google. Dispositivo móvil: ${mobile}`);
       
-      // Redireccionar a Google Auth
-      window.location.href = googleLoginUrl;
-      return;
-    }
-    
-    // Desktop: usar el método actual de simular click en el botón de Google
-    const googleLoginButton = document.getElementById('google-login-button');
-    if (googleLoginButton) {
-      const clickableButton = googleLoginButton.querySelector('div[role="button"]');
-      if (clickableButton) {
-        (clickableButton as HTMLElement).click();
-      } else {
-        setError("No se pudo iniciar el login con Google. Inténtalo de nuevo.");
-        setIsLoadingGoogle(false);
+      if (mobile) {
+        // Construir la URL del callback basada en el origin actual
+        const origin = window.location.origin;
+        const redirectUri = `${origin}/auth/google/callback`;
+        console.log(`Redirect URI: ${redirectUri}`);
+        
+        // Client ID debe estar disponible
+        const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+        if (!clientId) {
+          console.error('NEXT_PUBLIC_GOOGLE_CLIENT_ID no está configurado');
+          setError('Error en la configuración de autenticación. Contacte al administrador.');
+          setIsLoadingGoogle(false);
+          return;
+        }
+        
+        // Construir URL de autenticación Google con parámetros más seguros
+        const googleLoginUrl = 
+          `https://accounts.google.com/o/oauth2/v2/auth?` +
+          `client_id=${encodeURIComponent(clientId)}` +
+          `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+          `&response_type=code` +
+          `&scope=${encodeURIComponent('email profile')}` +
+          `&prompt=select_account` +
+          `&access_type=online`;
+        
+        console.log(`Redirigiendo a: ${googleLoginUrl}`);
+        
+        // Redireccionar a la URL de autenticación de Google
+        window.location.href = googleLoginUrl;
+        return;
       }
-    } else {
+      
+      // Si no es móvil, usar el método de popup como antes
+      console.log('Usando método popup para escritorio');
+      const googleLoginButton = document.getElementById('google-login-button');
+      if (googleLoginButton) {
+        const clickableButton = googleLoginButton.querySelector('div[role="button"]');
+        if (clickableButton) {
+          (clickableButton as HTMLElement).click();
+        } else {
+          throw new Error('No se encontró el botón clickeable de Google');
+        }
+      } else {
+        throw new Error('No se encontró el elemento #google-login-button');
+      }
+    } catch (error) {
+      console.error('Error al iniciar login con Google:', error);
       setError("No se pudo iniciar el login con Google. Inténtalo de nuevo.");
       setIsLoadingGoogle(false);
     }

@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 export default function GoogleCallbackPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [debugInfo, setDebugInfo] = useState<string>('');
   const router = useRouter();
   const searchParams = useSearchParams();
   const { loginWithToken } = useAuth();
@@ -14,17 +15,42 @@ export default function GoogleCallbackPage() {
   useEffect(() => {
     async function handleCallback() {
       try {
+        console.log('Iniciando procesamiento de callback de Google');
+        
+        // Recopilar información de depuración
+        const params = Array.from(searchParams.entries())
+          .map(([key, value]) => `${key}: ${key === 'code' ? value.substring(0, 10) + '...' : value}`)
+          .join(', ');
+        
+        setDebugInfo(`URL params: ${params}`);
+        console.log(`Parámetros de URL: ${params}`);
+        
         // Obtener el código de autorización de la URL
         const code = searchParams.get('code');
         if (!code) {
           const errorMsg = searchParams.get('error') || 'No se recibió código de autorización';
+          console.error(`Error en callback: ${errorMsg}`);
           setError(`Error en la autenticación con Google: ${errorMsg}`);
           setLoading(false);
           return;
         }
 
+        console.log('Código de autorización recibido, enviando al backend...');
+        
+        // Verificar que la URL de la API está configurada
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        if (!apiUrl) {
+          console.error('NEXT_PUBLIC_API_URL no está configurado');
+          setError('Error de configuración: URL de API no establecida');
+          setLoading(false);
+          return;
+        }
+        
+        setDebugInfo(prev => `${prev}\nURL de API: ${apiUrl}`);
+        console.log(`Enviando solicitud a: ${apiUrl}/api/auth/google/mobile-callback`);
+
         // Intercambiar el código por un token ID en el backend
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/google/mobile-callback`, {
+        const response = await fetch(`${apiUrl}/api/auth/google/mobile-callback`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -33,20 +59,36 @@ export default function GoogleCallbackPage() {
         });
 
         const data = await response.json();
-
+        console.log('Respuesta del backend recibida:', { success: data.success, hasToken: !!data?.data?.token });
+        
         if (!response.ok || !data.success) {
+          setDebugInfo(prev => `${prev}\nRespuesta de error: ${JSON.stringify(data)}`);
+          console.error('Error en respuesta del backend:', data);
           setError(data.message || 'Error al procesar la autenticación con Google');
           setLoading(false);
           return;
         }
 
+        if (!data.data?.token) {
+          console.error('No se recibió token en la respuesta');
+          setError('Error: No se recibió token de autenticación');
+          setLoading(false);
+          return;
+        }
+
+        console.log('Login exitoso, guardando token y redirigiendo...');
+        
         // Guardar el token y datos de usuario
         loginWithToken(data.data.token, data.data.user);
         
-        // Redirigir al home o dashboard
-        router.push('/');
+        // Redirigir al home o dashboard después de un breve retraso para permitir que se guarde el token
+        setTimeout(() => {
+          router.push('/');
+        }, 500);
+        
       } catch (err) {
         console.error('Error procesando callback de Google:', err);
+        setDebugInfo(prev => `${prev}\nError: ${err instanceof Error ? err.message : String(err)}`);
         setError('Error inesperado al procesar la autenticación');
         setLoading(false);
       }
@@ -85,6 +127,13 @@ export default function GoogleCallbackPage() {
           </div>
           
           <p className="text-red-300 mb-6">{error}</p>
+          
+          {/* Mostrar información de depuración en entorno de desarrollo */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="bg-gray-900 p-3 mb-4 rounded overflow-auto text-xs text-gray-400">
+              <pre>{debugInfo}</pre>
+            </div>
+          )}
           
           <div className="flex flex-col space-y-3">
             <button 
