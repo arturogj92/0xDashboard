@@ -60,8 +60,6 @@ export default function LoginPage() {
   const [isFbLoading, setIsFbLoading] = useState(false);
   const [isLoadingGoogle, setIsLoadingGoogle] = useState(false);
   const [isFbSdkReady, setIsFbSdkReady] = useState(false);
-  // Nuevo estado para mostrar la advertencia de Brave
-  const [showBraveWarning, setShowBraveWarning] = useState(false);
   const { login, loginWithToken } = useAuth();
   const router = useRouter();
 
@@ -251,23 +249,6 @@ export default function LoginPage() {
     });
   };
 
-  // Función para detectar si el navegador es Brave
-  const detectBrave = () => {
-    // Verificar el objeto navigator.brave (presente en versiones recientes de Brave)
-    if (typeof window !== 'undefined' && 'brave' in navigator) {
-      return true;
-    }
-    
-    // Verificar características distintivas de Brave
-    const isBrave = 
-      // Brave en modo normal tiene 0 plugins
-      (window.navigator.plugins.length === 0 && navigator.userAgent.includes('Chrome')) ||
-      // En el User Agent a veces aparece "Brave"
-      /Brave/.test(navigator.userAgent);
-    
-    return isBrave;
-  };
-
   // --- Funciones para Google Login ---
   const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     setError(null);
@@ -278,11 +259,6 @@ export default function LoginPage() {
       console.error("No se recibió credential (idToken) de Google.");
       setError("Error al obtener credenciales de Google.");
       setIsLoadingGoogle(false);
-
-      // Detectar si el usuario está en Brave
-      if (detectBrave()) {
-        setShowBraveWarning(true);
-      }
       return;
     }
 
@@ -297,20 +273,10 @@ export default function LoginPage() {
         // La redirección ahora la maneja el AuthContext
       } else {
         setError(response.message || 'Error al iniciar sesión con Google desde el backend.');
-        
-        // Detectar si el usuario está en Brave cuando hay error en el login
-        if (detectBrave()) {
-          setShowBraveWarning(true);
-        }
       }
     } catch (err) {
       console.error("Error llamando al backend con Google Token:", err);
       setError('Ocurrió un error inesperado durante el login con Google. Inténtalo de nuevo.');
-      
-      // Detectar si el usuario está en Brave cuando hay error en la comunicación con el backend
-      if (detectBrave()) {
-        setShowBraveWarning(true);
-      }
     } finally {
       setIsLoadingGoogle(false);
     }
@@ -319,12 +285,7 @@ export default function LoginPage() {
   const handleGoogleError = () => {
     console.error("Google Login Failed");
     setError('Fallo al iniciar sesión con Google. Inténtalo de nuevo.');
-    setIsLoadingGoogle(false);
-    
-    // Verificar si es Brave y mostrar advertencia
-    if (detectBrave()) {
-      setShowBraveWarning(true);
-    }
+    setIsLoadingGoogle(false); // Asegurarse de resetear el loading
   };
 
   return (
@@ -348,19 +309,6 @@ export default function LoginPage() {
             {error && (
               <div className="mb-4 p-3 bg-red-900/30 border border-red-500/50 rounded-md text-red-200 text-sm">
                 {error}
-              </div>
-            )}
-            
-            {/* Banner de advertencia para usuarios de Brave */}
-            {showBraveWarning && (
-              <div className="mb-4 p-3 bg-amber-900/30 border border-amber-500/50 rounded-md text-amber-200 text-sm">
-                <p className="font-bold mb-1">⚠️ Detectamos que estás usando Brave</p>
-                <p>El navegador Brave bloquea por defecto el inicio de sesión con Google. Para continuar:</p>
-                <ol className="list-decimal ml-5 mt-2 space-y-1">
-                  <li>Abre la configuración de Escudos (ícono de león)</li>
-                  <li>Desactiva temporalmente "Bloquear cookies entre sitios"</li>
-                  <li>O usa otro navegador como Chrome o Safari</li>
-                </ol>
               </div>
             )}
 
@@ -454,20 +402,12 @@ export default function LoginPage() {
                   if (clickableButton) {
                     (clickableButton as HTMLElement).click();
                   } else {
-                    setError('No se pudo iniciar el login con Google. Inténtalo de nuevo.');
+                    setError("No se pudo iniciar el login con Google. Inténtalo de nuevo.");
                     setIsLoadingGoogle(false);
-                    // Verificar si es Brave y mostrar advertencia
-                    if (detectBrave()) {
-                      setShowBraveWarning(true);
-                    }
                   }
                 } else {
-                  setError('No se pudo iniciar el login con Google. Inténtalo de nuevo.');
+                  setError("No se pudo iniciar el login con Google. Inténtalo de nuevo.");
                   setIsLoadingGoogle(false);
-                  // Verificar si es Brave y mostrar advertencia
-                  if (detectBrave()) {
-                    setShowBraveWarning(true);
-                  }
                 }
               }}
               disabled={isLoading || isFbLoading || isLoadingGoogle}
