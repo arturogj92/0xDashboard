@@ -374,16 +374,13 @@ export default function EditReel() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Header sin fondo con título a la izquierda e imagen a la derecha */}
                     <div className="mb-8">
-                        <div className="md:flex md:items-center md:justify-between w-full">
-                            <div className="flex items-center">
-                                <button
-                                    onClick={handleGoBack}
-                                    className="p-2 rounded-full text-gray-400 hover:text-white focus:outline-none"
-                                    aria-label="Volver atrás"
-                                >
-                                    <ArrowLeftIcon className="h-6 w-6" />
-                                </button>
-                                <div className="ml-2">
+                        <div className="md:flex md:items-center w-full justify-between">
+                            <div className="flex flex-col flex-1">
+                                <div className="flex items-center">
+                                    <ArrowLeftIcon 
+                                        className="h-6 w-6 text-gray-400 hover:text-white cursor-pointer" 
+                                        onClick={handleGoBack}
+                                    />
                                     <h1 className="text-2xl font-bold text-white flex items-center">
                                         <Image
                                             src="/images/icons/reel-icon.png"
@@ -394,14 +391,14 @@ export default function EditReel() {
                                         />
                                         Editar Reel
                                     </h1>
-                                    <p className="text-gray-400">
-                                        Configura tu reel con palabras clave y respuestas automáticas
-                                    </p>
                                 </div>
+                                <p className="text-gray-400 ml-6">
+                                    Configura tu reel con palabras clave y respuestas automáticas
+                                </p>
                             </div>
 
                             {/* Imagen de descripción sin fondo */}
-                            <div className="mt-6 md:mt-0 md:w-1/3">
+                            <div className="mt-6 md:mt-0 md:w-1/3 flex justify-end">
                                 <div className="relative w-full h-48 md:h-32 lg:h-48">
                                     <Image
                                         src={DescriptionImage}

@@ -277,7 +277,7 @@ export default function EditStory() {
                                                     <div className="text-center p-3 mt-[25px]">
                                                         <PhotoIcon className="h-5 w-5 mx-auto text-gray-500" />
                                                         <p className="mt-1 text-[10px] text-gray-400 px-1">
-                                                            ¡No te preocupes! La imagen de tu historiaaparecerá automáticamente cuando alguien escriba una de tus palabras clave.
+                                                            ¡No te preocupes! La imagen de tu historia aparecerá automáticamente cuando alguien escriba una de tus palabras clave.
                                                         </p>
                                                         <p className="mt-1 text-[10px] text-gray-400 px-1">
                                                             No necesitas hacer nada más 👍
