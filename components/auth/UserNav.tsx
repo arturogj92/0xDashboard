@@ -59,7 +59,6 @@ export function UserNav() {
           </div>
           <div className="hidden md:flex md:flex-col">
             <p className="text-xs font-medium text-white">{user?.name || user?.username}</p>
-            <p className="text-[10px] text-gray-400">{user?.email}</p>
           </div>
         </DropdownMenuTrigger>
         
