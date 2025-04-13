@@ -78,26 +78,32 @@ export const getReelDmTotalCount7d = async (reelId: number): Promise<ApiResponse
   return response.json();
 };
 
-export const getReel = async (id: number): Promise<ApiResponse<Media>> => {
+export const getReel = async (id: number): Promise<ApiResponse<Media> & { statusCode?: number }> => {
     const response = await fetch(`${API_URL}/api/reels/${id}`, {
         headers: createAuthHeaders()
     });
     const data = await response.json();
-    if (data.success) {
-        // Convertir el tipo según media_type
-        if (data.data.media_type === 'story') {
-            return {
-                ...data,
-                data: data.data as Story
-            };
-        } else {
-            return {
-                ...data,
-                data: data.data as Reel
-            };
-        }
+    
+    // Si no es exitoso, añadir el código de estado HTTP
+    if (!data.success) {
+        return {
+            ...data,
+            statusCode: response.status
+        };
     }
-    return data;
+    
+    // Si es exitoso, procesar el tipo de datos según sea reel o story
+    if (data.data.media_type === 'story') {
+        return {
+            ...data,
+            data: data.data as Story
+        };
+    } else {
+        return {
+            ...data,
+            data: data.data as Reel
+        };
+    }
 };
 
 export const updateReelDescription = async (id: number, description: string, publish_draft?: boolean, url?: string): Promise<ApiResponse<Media>> => {
@@ -377,11 +383,21 @@ export const getStories = async (): Promise<ApiResponse<Story[]>> => {
     return response.json();
 };
 
-export const getStory = async (id: number): Promise<ApiResponse<Story>> => {
+export const getStory = async (id: number): Promise<ApiResponse<Story> & { statusCode?: number }> => {
     const response = await fetch(`${API_URL}/api/stories/${id}`, {
         headers: createAuthHeaders()
     });
-    return response.json();
+    const data = await response.json();
+    
+    // Si no es exitoso, añadir el código de estado HTTP
+    if (!data.success) {
+        return {
+            ...data,
+            statusCode: response.status
+        };
+    }
+    
+    return data;
 };
 
 export const updateStoryDescription = async (id: number, description: string): Promise<ApiResponse<Story>> => {
