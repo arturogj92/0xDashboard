@@ -47,7 +47,16 @@ export default function EditStory() {
                 setStory(response.data);
                 setDescription(response.data.description || '');
             } else {
-                setError('Error al cargar la story');
+                // Manejar el error específico de permisos - Story no pertenece al usuario
+                if (response.statusCode === 403) {
+                    setError('No tienes permisos para acceder a esta historia');
+                    // Redirigir a la página principal después de un breve retraso
+                    setTimeout(() => {
+                        router.push('/');
+                    }, 2000);
+                } else {
+                    setError('Error al cargar la story');
+                }
             }
         } catch (err) {
             setError('Error al cargar la story');

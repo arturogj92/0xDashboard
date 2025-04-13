@@ -96,7 +96,16 @@ export default function EditReel() {
                     fetchPublicComments(reelData)
                 ]);
             } else {
-                setError('Error al cargar los datos del reel');
+                // Manejar el error específico de permisos - Reel no pertenece al usuario
+                if (reelResponse.statusCode === 403) {
+                    setError('No tienes permisos para acceder a este reel');
+                    // Redirigir a la página principal después de un breve retraso
+                    setTimeout(() => {
+                        router.push('/');
+                    }, 2000);
+                } else {
+                    setError('Error al cargar los datos del reel');
+                }
             }
         } catch (err) {
             setError('Error al cargar los datos del reel');
