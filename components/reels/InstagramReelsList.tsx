@@ -3,6 +3,7 @@ import { getUserInstagramReels } from '@/lib/api';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Spinner } from '@/components/ui/Spinner';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface InstagramReel {
   id: string;
@@ -57,8 +58,28 @@ export const InstagramReelsList = ({ onSelectReel }: InstagramReelsListProps) =>
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[300px]">
-        <Spinner size="lg" />
+      <div className="space-y-4">
+        {/* Skeleton para la info de la cuenta */}
+        <div className="flex items-center space-x-3 mb-4">
+          <Skeleton className="w-10 h-10 rounded-full" />
+          <div className="flex-1">
+            <Skeleton className="h-5 w-40 mb-2" />
+            <Skeleton className="h-3 w-24" />
+          </div>
+        </div>
+        
+        {/* Grid de skeletons para los reels */}
+        <div className="grid grid-cols-2 gap-3">
+          {Array(6).fill(0).map((_, index) => (
+            <div key={index} className="relative aspect-[9/16] rounded-lg overflow-hidden">
+              <Skeleton className="w-full h-full" />
+              <div className="absolute bottom-0 left-0 right-0 p-2">
+                <Skeleton className="h-3 w-full mb-1" />
+                <Skeleton className="h-2 w-2/3" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
