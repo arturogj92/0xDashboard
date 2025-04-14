@@ -151,36 +151,48 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
                 <label htmlFor="url" className="block text-sm font-medium text-gray-200 mb-2">
                   URL del Reel
                 </label>
-                <div className="flex items-center gap-2">
-                  <div className="flex-1">
-                    <input
-                      type="url"
-                      name="url"
-                      id="url"
-                      required={!isDraft}
-                      disabled={isDraft}
-                      value={urlValue}
-                      onChange={(e) => setUrlValue(e.target.value)}
-                      className="block w-full rounded-md border-gray-700 bg-[#1c1033] py-2.5 px-3 text-gray-200 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm disabled:bg-gray-900"
-                      placeholder={isDraft ? "No requerido en modo borrador" : "https://www.instagram.com/reel/..."}
-                    />
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1">
+                      <input
+                        type="url"
+                        name="url"
+                        id="url"
+                        required={!isDraft}
+                        disabled={isDraft}
+                        value={urlValue}
+                        onChange={(e) => setUrlValue(e.target.value)}
+                        className="block w-full rounded-md border-gray-700 bg-[#1c1033] py-2.5 px-3 text-gray-200 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm disabled:bg-gray-900"
+                        placeholder={isDraft ? "No requerido en modo borrador" : "https://www.instagram.com/reel/..."}
+                      />
+                    </div>
                   </div>
+                  
                   {!isDraft && (
-                    <Button 
-                      type="button"
-                      variant="outline"
-                      onClick={() => setInstagramReelsDialogOpen(true)}
-                      className="p-2.5 rounded-md border border-indigo-500/50 hover:bg-indigo-600/20"
-                    >
-                      <Instagram className="h-5 w-5 text-indigo-400" />
-                    </Button>
+                    <>
+                      <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                          <div className="w-full border-t border-gray-700"></div>
+                        </div>
+                        <div className="relative flex justify-center">
+                          <span className="bg-[#120724] px-2 text-xs text-gray-400">
+                            o
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <Button 
+                        type="button"
+                        variant="outline"
+                        onClick={() => setInstagramReelsDialogOpen(true)}
+                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-md border border-indigo-500/50 hover:bg-indigo-600/20"
+                      >
+                        <Instagram className="h-5 w-5 text-indigo-400" />
+                        <span className="text-sm text-gray-200">Seleccionar reel de Instagram</span>
+                      </Button>
+                    </>
                   )}
                 </div>
-                {!isDraft && (
-                  <p className="text-xs text-gray-500 mt-1">
-                    Ingresa la URL del reel o selecciona uno de tus reels de Instagram.
-                  </p>
-                )}
               </div>
             )}
 
@@ -234,7 +246,7 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
                       <DocumentTextIcon className="h-4 w-4 opacity-50 mr-1.5" />
                     )}
                     <span className={`text-sm ${isDraft ? 'text-amber-400' : 'text-gray-200'}`}>
-                      {isDraft ? 'Borrador' : 'Publicado'}
+                      {'Draft'}
                     </span>
                   </Toggle>
                 )}
