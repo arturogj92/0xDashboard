@@ -274,18 +274,22 @@ export default function EditReel() {
             setIsUrlSaving(true);
             const response = await updateReelUrl(reel.id, newUrl);
             if (response.success) {
-                // Actualizar tanto la URL como la miniatura del reel
+                // Preservar la miniatura existente si el backend no devuelve una
+                const newThumbnailUrl = response.data.thumbnail_url || reel.thumbnail_url || selectedThumbnailUrl;
+                
+                // Actualizar el reel preservando la miniatura
                 setReel({ 
                     ...reel, 
                     url: newUrl,
-                    thumbnail_url: response.data.thumbnail_url 
+                    thumbnail_url: newThumbnailUrl
                 });
                 setUrlError(null);
                 
-                // Resetear la bandera de cambio de URL solo cuando tenemos una respuesta exitosa
-                if (response.data.thumbnail_url) {
-                    setIsChangingUrl(false);
-                    // Forzar reinicio del estado de carga de la miniatura
+                // Resetear la bandera de cambio de URL
+                setIsChangingUrl(false);
+                
+                // Forzar reinicio del estado de carga de la miniatura solo si hay una nueva miniatura
+                if (newThumbnailUrl && newThumbnailUrl !== reel.thumbnail_url) {
                     setThumbnailLoading(true);
                 }
             } else {
@@ -568,12 +572,14 @@ export default function EditReel() {
                                             {url && !isChangingUrl ? (
                                                 <div className="relative w-full h-full overflow-hidden rounded-[36px]">
                                                     {(reel && ((reel.thumbnail_url && reel.thumbnail_url !== '' && reel.thumbnail_url.startsWith('http')) || selectedThumbnailUrl)) ? (
-                                                        <div className="w-full h-full relative" key={(reel.thumbnail_url || selectedThumbnailUrl || 'placeholder')}>
+                                                        <div className="w-full h-full relative" key={(reel.thumbnail_url || selectedThumbnailUrl || 'placeholder') + new Date().getTime()}>
                                                             {thumbnailLoading && (
                                                                 <ImageSkeleton className="absolute inset-0 z-10" />
                                                             )}
                                                             <Image 
-                                                                src={reel.thumbnail_url || selectedThumbnailUrl} 
+                                                                src={reel.thumbnail_url && reel.thumbnail_url !== '' && reel.thumbnail_url.startsWith('http') 
+                                                                    ? reel.thumbnail_url 
+                                                                    : selectedThumbnailUrl} 
                                                                 alt="Miniatura del reel"
                                                                 fill
                                                                 className={`object-cover transition-opacity duration-300 ${thumbnailLoading ? 'opacity-0' : 'opacity-100'}`}
