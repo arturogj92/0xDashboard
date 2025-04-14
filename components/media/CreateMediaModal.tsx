@@ -93,6 +93,9 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
     setIsDraft(!isDraft);
     if (!isDraft) {
       setUrlValue('');
+      setShowThumbnail(false);
+      setSelectedThumbnailUrl('');
+      setSelectedReelCaption('');
     }
   };
 
