@@ -683,6 +683,57 @@ export const loginWithGoogle = async (idToken: string): Promise<AuthResponse> =>
   }
 };
 
+/**
+ * Obtiene los reels de Instagram del usuario autenticado
+ * @param limit Número máximo de reels a obtener (opcional)
+ * @returns ApiResponse con la cuenta de Instagram y los reels
+ */
+export const getUserInstagramReels = async (limit?: number): Promise<ApiResponse<{
+  instagram_account: {
+    id: string;
+    username: string;
+    profile_picture_url: string;
+    media_count: number;
+  };
+  reels: Array<{
+    id: string;
+    caption: string;
+    media_type: string;
+    media_url: string;
+    permalink: string;
+    thumbnail_url: string;
+    timestamp: string;
+    shortcode: string;
+  }>;
+}>> => {
+  try {
+    const queryParams = limit ? `?limit=${limit}` : '';
+    const response = await fetch(`${API_URL}/api/auth/instagram/reels${queryParams}`, {
+      method: 'GET',
+      headers: createAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      console.error('Error al obtener reels de Instagram:', response.status, response.statusText);
+      return { 
+        success: false, 
+        data: null as any, 
+        message: `Error ${response.status}: ${response.statusText}` 
+      };
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error en la petición para obtener reels de Instagram:', error);
+    return { 
+      success: false, 
+      data: null as any, 
+      message: 'Error de red al obtener los reels de Instagram' 
+    };
+  }
+};
+
 export const logout = () => {
     localStorage.removeItem('token');
     window.location.href = '/login';

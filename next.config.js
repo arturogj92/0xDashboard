@@ -19,7 +19,8 @@ const nextConfig = {
       'instagram.com',
       'ggrjdxfnoqnqsohqmalh.supabase.co',
       'lh3.googleusercontent.com',
-      'platform-lookaside.fbsbx.com'
+      'platform-lookaside.fbsbx.com',
+      'scontent-mad1-1.xx.fbcdn.net'
     ],
     remotePatterns: [
       {
@@ -37,6 +38,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'platform-lookaside.fbsbx.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.xx.fbcdn.net',
       },
     ],
   },
