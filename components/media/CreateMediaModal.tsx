@@ -221,14 +221,18 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
                   id="is_active"
                   pressed={isActive}
                   onPressedChange={handleActiveChange}
-                  className="flex items-center space-x-2 bg-[#1c1033] hover:bg-[#2c1b4d] border border-gray-700 rounded-md px-3 py-1.5"
+                  className={`flex items-center space-x-2 bg-[#1c1033] hover:bg-[#2c1b4d] border ${
+                    isActive 
+                      ? 'border-green-500 text-green-500' 
+                      : 'border-red-500 text-red-500'
+                  } rounded-md px-3 py-1.5`}
                 >
                   {isActive ? (
                     <Play className="h-4 w-4 mr-1.5 text-green-500" />
                   ) : (
-                    <Pause className="h-4 w-4 mr-1.5 text-amber-500" />
+                    <Pause className="h-4 w-4 mr-1.5 text-red-500" />
                   )}
-                  <span className="text-sm text-gray-200">
+                  <span className={`text-sm ${isActive ? 'text-green-500' : 'text-red-500'}`}>
                     {isActive ? 'Activo' : 'Inactivo'}
                   </span>
                 </Toggle>
