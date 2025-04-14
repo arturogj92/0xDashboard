@@ -60,14 +60,6 @@ export default function EditReel() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(() => {
-        // Actualizar la miniatura cuando cambia la URL
-        if (reel) {
-            setReel({ ...reel, thumbnail_url: reel.thumbnail_url });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [url]);
-
     const fetchReel = async () => {
         try {
             const reelResponse = await getReel(reelId);
@@ -275,12 +267,19 @@ export default function EditReel() {
             setIsUrlSaving(true);
             const response = await updateReelUrl(reel.id, newUrl);
             if (response.success) {
-                setReel({ ...reel, url: newUrl });
+                // Actualizar tanto la URL como la miniatura del reel
+                setReel({ 
+                    ...reel, 
+                    url: newUrl,
+                    thumbnail_url: response.data.thumbnail_url 
+                });
                 setUrlError(null);
                 
                 // Resetear la bandera de cambio de URL solo cuando tenemos una respuesta exitosa
                 if (response.data.thumbnail_url) {
                     setIsChangingUrl(false);
+                    // Forzar reinicio del estado de carga de la miniatura
+                    setThumbnailLoading(true);
                 }
             } else {
                 setUrlError('URL inválida');
