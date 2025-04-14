@@ -15,24 +15,9 @@ export function InstagramReelsDialog({
   onOpenChange, 
   onSelectReel 
 }: InstagramReelsDialogProps) {
-  const [selectedReelUrl, setSelectedReelUrl] = useState<string | null>(null);
-  const [selectedThumbnailUrl, setSelectedThumbnailUrl] = useState<string>('');
-  const [selectedCaption, setSelectedCaption] = useState<string>('');
-
   const handleSelectReel = (url: string, thumbnailUrl: string, caption: string) => {
-    setSelectedReelUrl(url);
-    setSelectedThumbnailUrl(thumbnailUrl);
-    setSelectedCaption(caption);
-  };
-
-  const handleConfirmSelection = () => {
-    if (selectedReelUrl) {
-      onSelectReel(selectedReelUrl, selectedThumbnailUrl, selectedCaption);
-      onOpenChange(false);
-      setSelectedReelUrl(null);
-      setSelectedThumbnailUrl('');
-      setSelectedCaption('');
-    }
+    onSelectReel(url, thumbnailUrl, caption);
+    onOpenChange(false);
   };
 
   return (
@@ -54,7 +39,7 @@ export function InstagramReelsDialog({
             </DialogTitle>
           </div>
           <DialogDescription className="text-gray-400 mt-1">
-            Selecciona un reel de tu cuenta de Instagram para añadirlo
+            Haz clic en un reel para seleccionarlo
           </DialogDescription>
         </DialogHeader>
 
@@ -70,14 +55,6 @@ export function InstagramReelsDialog({
             className="rounded-md border-gray-700 bg-[#1c1033] text-white hover:bg-[#2c1b4d] px-6 py-2"
           >
             Cancelar
-          </Button>
-          <Button 
-            type="button" 
-            disabled={!selectedReelUrl}
-            onClick={handleConfirmSelection}
-            className="rounded-md bg-indigo-600 text-white hover:bg-indigo-700 px-6 py-2 disabled:opacity-50 disabled:pointer-events-none"
-          >
-            Seleccionar
           </Button>
         </div>
       </DialogContent>
