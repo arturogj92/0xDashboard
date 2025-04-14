@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// IDs y credenciales de la aplicación desde variables de entorno
-const CLIENT_ID = process.env.NEXT_PUBLIC_INSTAGRAM_BUSINESS_CLIENT_ID;
-const CLIENT_SECRET = 'ca40f9ecdd1aa00834304aff0a938620'; // Secret proporcionado por el usuario
+// IDs y credenciales específicas de la aplicación de Instagram (no de Facebook)
+// Estos deben obtenerse de la sección "Instagram Basic Display" en Facebook Developer Portal
+const CLIENT_ID = process.env.NEXT_PUBLIC_INSTAGRAM_APP_ID || '1382119013140231';
+const CLIENT_SECRET = 'ca40f9ecdd1aa00834304aff0a938620';
 
-// Interfaz para representar un reel/media de Instagram
+// Interfaz para representar un media de Instagram
 interface InstagramMedia {
   id: string;
   media_type: string;
@@ -27,13 +28,14 @@ export async function POST(request: NextRequest) {
     console.log('Código de autorización recibido:', code);
     console.log('URL de redirección:', redirectUri);
 
-    // Hacemos la solicitud a Instagram para obtener el token
+    // Hacemos la solicitud para obtener el token usando Instagram Basic Display API
     try {
+      console.log('Intercambiando código por token usando Basic Display API...');
       const tokenResponse = await fetch('https://api.instagram.com/oauth/access_token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
-          client_id: CLIENT_ID!,
+          client_id: CLIENT_ID,
           client_secret: CLIENT_SECRET,
           grant_type: 'authorization_code',
           redirect_uri: redirectUri,
@@ -43,22 +45,24 @@ export async function POST(request: NextRequest) {
       
       if (!tokenResponse.ok) {
         const errorText = await tokenResponse.text();
-        console.error('Error al obtener token de Instagram:', errorText);
+        console.error('Error al obtener token de Instagram Basic Display:', errorText);
         
-        // Si hay un error, retornamos también datos simulados para la demo
-        // pero registramos el error para depuración
+        // Si hay un error, retornamos datos simulados
         console.log('Usando datos simulados como fallback debido al error');
         return fallbackToMockData(code);
       }
       
       const tokenData = await tokenResponse.json();
+      console.log('Respuesta de token:', JSON.stringify(tokenData));
+      
       const accessToken = tokenData.access_token;
       const userId = tokenData.user_id;
       
-      console.log('Token obtenido correctamente, ID de usuario:', userId);
+      console.log('Token obtenido correctamente. User ID:', userId);
       
-      // Obtenemos la información del usuario con el token
-      const userResponse = await fetch(`https://graph.instagram.com/me?fields=id,username,account_type&access_token=${accessToken}`);
+      // Obtenemos información detallada del usuario usando el token
+      console.log('Obteniendo información del usuario...');
+      const userResponse = await fetch(`https://graph.instagram.com/me?fields=id,username,account_type,media_count&access_token=${accessToken}`);
       
       if (!userResponse.ok) {
         console.error('Error al obtener datos del usuario:', await userResponse.text());
@@ -66,29 +70,19 @@ export async function POST(request: NextRequest) {
       }
       
       const userData = await userResponse.json();
+      console.log('Datos del usuario obtenidos:', JSON.stringify(userData));
       
-      // Obtenemos más información del perfil
-      const profileResponse = await fetch(`https://graph.instagram.com/${userId}?fields=id,username,profile_picture_url,media_count&access_token=${accessToken}`);
-      const profileData = profileResponse.ok ? await profileResponse.json() : {};
-      
-      // Ahora obtenemos los últimos 5 reels o media del usuario
+      // Obtenemos los medios del usuario usando el token
       let recentMedia: InstagramMedia[] = [];
       try {
-        // Log de los permisos disponibles
-        console.log('Accediendo a medias con permisos básicos. Token ID:', userId);
-        
-        // Con permisos limitados, es posible que no podamos acceder a los medios
-        // Intentamos primero con el endpoint de usuario básico
-        const mediaEndpoint = `https://graph.instagram.com/me/media`;
-        console.log('Usando endpoint básico:', mediaEndpoint);
-        
+        console.log('Obteniendo medios del usuario...');
         const mediaResponse = await fetch(
-          `${mediaEndpoint}?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp&limit=5&access_token=${accessToken}`
+          `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp&limit=5&access_token=${accessToken}`
         );
         
         if (mediaResponse.ok) {
           const mediaData = await mediaResponse.json();
-          console.log('Datos de media obtenidos con permisos básicos:', mediaData);
+          console.log('Medios obtenidos:', JSON.stringify(mediaData));
           
           if (mediaData.data && Array.isArray(mediaData.data)) {
             recentMedia = mediaData.data;
@@ -97,51 +91,24 @@ export async function POST(request: NextRequest) {
           }
         } else {
           const errorText = await mediaResponse.text();
-          console.error('Error al obtener media con permisos básicos:', errorText);
-          
-          // Con permisos limitados, es posible que necesitemos usar el endpoint específico de ID
-          try {
-            console.log('Intentando endpoint de ID específico...');
-            const userMediaResponse = await fetch(
-              `https://graph.instagram.com/${userId}/media?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp&limit=5&access_token=${accessToken}`
-            );
-            
-            if (userMediaResponse.ok) {
-              const userMediaData = await userMediaResponse.json();
-              console.log('Datos de media obtenidos con endpoint de ID:', userMediaData);
-              
-              if (userMediaData.data && Array.isArray(userMediaData.data)) {
-                recentMedia = userMediaData.data;
-              }
-            } else {
-              const userMediaErrorText = await userMediaResponse.text();
-              console.error('Error con endpoint de ID:', userMediaErrorText);
-              
-              // Si ambos fallan, no mostramos medios
-              console.log('No se pudieron obtener medios con los permisos actuales.');
-              console.log('Esto es normal si la app no tiene configurados permisos avanzados.');
-            }
-          } catch (alternativeError) {
-            console.error('Error al intentar endpoint alternativo:', alternativeError);
-          }
+          console.error('Error al obtener medios:', errorText);
         }
       } catch (mediaError) {
-        console.error('Error al procesar media:', mediaError);
-        // Si falla, continuamos sin los media pero con los datos de perfil
+        console.error('Error al procesar medios:', mediaError);
       }
       
-      // Combinamos los datos obtenidos
+      // Datos del usuario con medios (si están disponibles)
       const instagramUserData = {
         id: userData.id,
         username: userData.username,
         account_type: userData.account_type,
-        profile_picture: profileData.profile_picture_url || null,
-        media_count: profileData.media_count || 0,
+        profile_picture: null, // Basic Display API no proporciona URL de perfil directamente
+        media_count: userData.media_count || 0,
         connected: true,
         recent_media: recentMedia
       };
       
-      console.log('Datos reales de Instagram obtenidos:', instagramUserData);
+      console.log('Datos de Instagram obtenidos correctamente');
       
       return NextResponse.json({ 
         success: true, 
@@ -151,7 +118,6 @@ export async function POST(request: NextRequest) {
       
     } catch (apiError) {
       console.error('Error en la comunicación con la API de Instagram:', apiError);
-      // Si ocurre un error con la API real, usamos los datos simulados
       return fallbackToMockData(code);
     }
     
@@ -168,14 +134,14 @@ export async function POST(request: NextRequest) {
 function fallbackToMockData(code: string) {
   const lastFourChars = code.slice(-4);
   
-  // Creamos algunos reels simulados
+  // Creamos algunos medias simulados
   const mockReels = Array(5).fill(null).map((_, index) => ({
     id: `${17841405793387}${lastFourChars}_${index}`,
     media_type: index % 2 === 0 ? 'VIDEO' : 'IMAGE',
     media_url: index % 2 === 0 ? null : `https://i.pravatar.cc/500?u=${Date.now()}_${index}`,
-    permalink: `https://www.instagram.com/reel/mock_${index}_${lastFourChars}/`,
+    permalink: `https://www.instagram.com/p/mock_${index}_${lastFourChars}/`,
     thumbnail_url: `https://i.pravatar.cc/300?u=${Date.now()}_thumb_${index}`,
-    caption: `Este es un reel simulado #${index + 1} para demostración 🎬✨`,
+    caption: `Este es un contenido simulado #${index + 1} para demostración 📸✨`,
     timestamp: new Date(Date.now() - index * 86400000).toISOString() // Cada uno un día anterior
   }));
   
@@ -186,8 +152,8 @@ function fallbackToMockData(code: string) {
     profile_picture: 'https://i.pravatar.cc/150?u=' + Date.now(),
     bio: '⚠️ DATOS SIMULADOS (modo fallback) ⚠️\nNo se pudieron obtener los datos reales de Instagram.',
     website: 'https://www.instagram.com',
-    is_business: true,
-    account_type: 'BUSINESS',
+    is_business: false,
+    account_type: 'PERSONAL',
     media_count: Math.floor(Math.random() * 200) + 20,
     follower_count: Math.floor(Math.random() * 5000) + 500,
     following_count: Math.floor(Math.random() * 1000) + 100,
@@ -200,6 +166,6 @@ function fallbackToMockData(code: string) {
   return NextResponse.json({ 
     success: true, 
     data: mockUserData,
-    message: 'FALLBACK: Se están usando datos simulados debido a un error en la API de Instagram'
+    message: 'FALLBACK: Usando datos simulados debido a un error con la API de Instagram'
   });
 } 

@@ -85,18 +85,19 @@ export default function ProfilePage() {
   }, []);
 
   const connectInstagram = () => {
-    const clientId = '1382119013140231';
+    // Usar el ID específico de la aplicación de Instagram, no el de Facebook
+    // Debes obtener este ID en la sección "Instagram Basic Display" en el Facebook Developer Portal
+    const clientId = process.env.NEXT_PUBLIC_INSTAGRAM_APP_ID || '1382119013140231';
     const redirectUri = typeof window !== 'undefined' ? `${window.location.origin}/profile` : '/profile';
     
-    // Reducimos los permisos a los más básicos para evitar el error "Invalid platform app"
+    // Permisos básicos para Instagram Basic Display API
     const scopes = [
-      'instagram_basic',                   // Permiso básico
-      'instagram_business_basic',          // Básico para business
-      'instagram_business_manage_messages', // Para mensajes
-      'instagram_business_manage_comments'  // Para comentarios
+      'user_profile',          // Para ver el perfil
+      'user_media'             // Para ver los medios
     ].join('%2C');
     
-    const authUrl = `https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scopes}`;
+    // URL de autorización para Instagram Basic Display API (no Graph API)
+    const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scopes}&response_type=code`;
     
     // Copiar la URL al portapapeles
     navigator.clipboard.writeText(authUrl)
