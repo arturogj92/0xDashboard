@@ -7,7 +7,7 @@ import Image from 'next/image';
 interface InstagramReelsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSelectReel: (url: string) => void;
+  onSelectReel: (url: string, thumbnailUrl: string, caption: string) => void;
 }
 
 export function InstagramReelsDialog({ 
@@ -16,16 +16,22 @@ export function InstagramReelsDialog({
   onSelectReel 
 }: InstagramReelsDialogProps) {
   const [selectedReelUrl, setSelectedReelUrl] = useState<string | null>(null);
+  const [selectedThumbnailUrl, setSelectedThumbnailUrl] = useState<string>('');
+  const [selectedCaption, setSelectedCaption] = useState<string>('');
 
-  const handleSelectReel = (url: string) => {
+  const handleSelectReel = (url: string, thumbnailUrl: string, caption: string) => {
     setSelectedReelUrl(url);
+    setSelectedThumbnailUrl(thumbnailUrl);
+    setSelectedCaption(caption);
   };
 
   const handleConfirmSelection = () => {
     if (selectedReelUrl) {
-      onSelectReel(selectedReelUrl);
+      onSelectReel(selectedReelUrl, selectedThumbnailUrl, selectedCaption);
       onOpenChange(false);
       setSelectedReelUrl(null);
+      setSelectedThumbnailUrl('');
+      setSelectedCaption('');
     }
   };
 

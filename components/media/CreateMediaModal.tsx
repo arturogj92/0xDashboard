@@ -25,6 +25,9 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
   const [urlValue, setUrlValue] = useState('');
   const [description, setDescription] = useState('');
   const [instagramReelsDialogOpen, setInstagramReelsDialogOpen] = useState(false);
+  const [selectedThumbnailUrl, setSelectedThumbnailUrl] = useState<string>('');
+  const [selectedReelCaption, setSelectedReelCaption] = useState<string>('');
+  const [showThumbnail, setShowThumbnail] = useState(false);
 
   const isReelType = mediaType === 'reel';
 
@@ -76,6 +79,9 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
     setIsDraft(false);
     setIsActive(true);
     setError(null);
+    setSelectedThumbnailUrl('');
+    setSelectedReelCaption('');
+    setShowThumbnail(false);
   };
 
   const handleCloseModal = () => {
@@ -94,8 +100,11 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
     setIsActive(!isActive);
   };
 
-  const handleInstagramReelSelect = (reelUrl: string) => {
+  const handleInstagramReelSelect = (reelUrl: string, thumbnailUrl: string, caption: string) => {
     setUrlValue(reelUrl);
+    setSelectedThumbnailUrl(thumbnailUrl);
+    setSelectedReelCaption(caption);
+    setShowThumbnail(!!thumbnailUrl);
     
     // Si está en modo borrador y selecciona un reel, desactivar el modo borrador
     if (isDraft) {
@@ -119,10 +128,10 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
                 alt={isReelType ? "Reel Icon" : "Story Icon"}
                 width={36}
                 height={36}
-                className="mr-2"
+                className="mr-[-10px]"
               />
               <DialogTitle className="text-xl font-semibold text-white">
-                {isReelType ? 'Nuevo Reel' : 'Nueva Historia'}
+                {isReelType ? 'Nueva automatización de Reel' : 'Nueva automatización de Historia'}
                 {isReelType && isDraft && (
                   <span className="inline-flex items-center rounded-md px-2.5 py-1 ml-2 text-xs font-medium text-amber-400 bg-[#120724] border border-amber-500/70">
                     DRAFT
@@ -161,13 +170,37 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
                         required={!isDraft}
                         disabled={isDraft}
                         value={urlValue}
-                        onChange={(e) => setUrlValue(e.target.value)}
+                        onChange={(e) => {
+                          setUrlValue(e.target.value);
+                          // Si se borra la URL, quitar la miniatura
+                          if (!e.target.value) {
+                            setShowThumbnail(false);
+                          }
+                        }}
                         className="block w-full rounded-md border-gray-700 bg-[#1c1033] py-2.5 px-3 text-gray-200 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm disabled:bg-gray-900"
                         placeholder={isDraft ? "No requerido en modo borrador" : "https://www.instagram.com/reel/..."}
                       />
                     </div>
                   </div>
                   
+                  {/* Añadir miniatura si está disponible */}
+                  {!isDraft && showThumbnail && selectedThumbnailUrl && (
+                    <div className="flex items-center p-2 bg-[#1c1033]/50 rounded-md mt-2">
+                      <div className="relative w-16 h-28 overflow-hidden rounded-md mr-3">
+                        <Image 
+                          src={selectedThumbnailUrl}
+                          alt="Vista previa del reel"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs text-gray-300 font-medium mb-1">Reel seleccionado:</p>
+                        <p className="text-xs text-gray-400 line-clamp-2">{selectedReelCaption}</p>
+                      </div>
+                    </div>
+                  )}
+
                   {!isDraft && (
                     <>
                       <div className="relative">

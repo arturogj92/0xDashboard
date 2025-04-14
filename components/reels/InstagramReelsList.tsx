@@ -23,7 +23,7 @@ interface InstagramAccount {
 }
 
 interface InstagramReelsListProps {
-  onSelectReel: (url: string) => void;
+  onSelectReel: (url: string, thumbnailUrl: string, caption: string) => void;
 }
 
 export const InstagramReelsList = ({ onSelectReel }: InstagramReelsListProps) => {
@@ -115,7 +115,7 @@ export const InstagramReelsList = ({ onSelectReel }: InstagramReelsListProps) =>
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}
             className="relative aspect-[9/16] bg-gray-100 rounded-lg overflow-hidden cursor-pointer"
-            onClick={() => onSelectReel(reel.permalink)}
+            onClick={() => onSelectReel(reel.permalink, reel.thumbnail_url || '', reel.caption || 'Reel de Instagram')}
           >
             {reel.thumbnail_url ? (
               <Image
