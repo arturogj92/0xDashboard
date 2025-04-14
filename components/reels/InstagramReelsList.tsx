@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { getUserInstagramReels } from '@/lib/api';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -23,38 +23,93 @@ interface InstagramAccount {
   media_count: number;
 }
 
+interface Pagination {
+  has_next_page: boolean;
+  next_cursor: string | null;
+}
+
 interface InstagramReelsListProps {
   onSelectReel: (url: string, thumbnailUrl: string, caption: string) => void;
 }
 
 export const InstagramReelsList = ({ onSelectReel }: InstagramReelsListProps) => {
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reels, setReels] = useState<InstagramReel[]>([]);
   const [account, setAccount] = useState<InstagramAccount | null>(null);
+  const [pagination, setPagination] = useState<Pagination | null>(null);
+  
+  const observerTarget = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const fetchReels = async () => {
-      try {
+  const fetchReels = useCallback(async (afterCursor?: string) => {
+    try {
+      if (!afterCursor) {
         setLoading(true);
-        const response = await getUserInstagramReels(10);
-        
-        if (response.success && response.data) {
+      } else {
+        setLoadingMore(true);
+      }
+      
+      const response = await getUserInstagramReels(10, afterCursor);
+      
+      if (response.success && response.data) {
+        if (afterCursor) {
+          // Añadir a los reels existentes
+          setReels(prev => [...prev, ...response.data.reels]);
+        } else {
+          // Primera carga
           setReels(response.data.reels);
           setAccount(response.data.instagram_account);
-        } else {
-          setError(response.message || 'Error al obtener los reels');
         }
-      } catch (error) {
-        setError('Error al cargar los reels de Instagram');
-        console.error('Error fetching Instagram reels:', error);
-      } finally {
-        setLoading(false);
+        
+        // Guardar información de paginación con la estructura correcta
+        if (response.data.pagination) {
+          setPagination({
+            has_next_page: response.data.pagination.has_next_page,
+            next_cursor: response.data.pagination.next_cursor
+          });
+        }
+      } else {
+        setError(response.message || 'Error al obtener los reels');
       }
-    };
-
-    fetchReels();
+    } catch (error) {
+      setError('Error al cargar los reels de Instagram');
+      console.error('Error fetching Instagram reels:', error);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchReels();
+  }, [fetchReels]);
+  
+  // Configurar el observador de Intersection para el scroll infinito
+  const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
+    const [target] = entries;
+    if (target.isIntersecting && pagination?.has_next_page && !loadingMore) {
+      fetchReels(pagination.next_cursor || undefined);
+    }
+  }, [pagination, loadingMore, fetchReels]);
+
+  useEffect(() => {
+    const element = observerTarget.current;
+    if (!element) return;
+    
+    const option = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    };
+    
+    const observer = new IntersectionObserver(handleObserver, option);
+    observer.observe(element);
+    
+    return () => {
+      if (element) observer.unobserve(element);
+    };
+  }, [handleObserver]);
 
   if (loading) {
     return (
@@ -158,6 +213,22 @@ export const InstagramReelsList = ({ onSelectReel }: InstagramReelsListProps) =>
           </motion.div>
         ))}
       </div>
+      
+      {/* Elemento observado para el scroll infinito */}
+      <div ref={observerTarget} className="w-full flex items-center justify-center py-4">
+        {loadingMore && (
+          <div className="flex flex-col items-center justify-center">
+            <Spinner size="md" />
+            <p className="text-xs text-gray-300 mt-2">Cargando más reels...</p>
+          </div>
+        )}
+      </div>
+      
+      {!pagination?.has_next_page && reels.length > 0 && (
+        <p className="text-center text-xs text-gray-400 py-2">
+          No hay más reels disponibles
+        </p>
+      )}
     </div>
   );
 };

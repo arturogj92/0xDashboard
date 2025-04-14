@@ -686,9 +686,10 @@ export const loginWithGoogle = async (idToken: string): Promise<AuthResponse> =>
 /**
  * Obtiene los reels de Instagram del usuario autenticado
  * @param limit Número máximo de reels a obtener (opcional)
+ * @param afterCursor ID del último reel para paginación (opcional)
  * @returns ApiResponse con la cuenta de Instagram y los reels
  */
-export const getUserInstagramReels = async (limit?: number): Promise<ApiResponse<{
+export const getUserInstagramReels = async (limit?: number, afterCursor?: string): Promise<ApiResponse<{
   instagram_account: {
     id: string;
     username: string;
@@ -705,10 +706,19 @@ export const getUserInstagramReels = async (limit?: number): Promise<ApiResponse
     timestamp: string;
     shortcode: string;
   }>;
+  pagination: {
+    has_next_page: boolean;
+    next_cursor: string | null;
+  };
 }>> => {
   try {
-    const queryParams = limit ? `?limit=${limit}` : '';
-    const response = await fetch(`${API_URL}/api/auth/instagram/reels${queryParams}`, {
+    const queryParams = new URLSearchParams();
+    if (limit) queryParams.append('limit', limit.toString());
+    if (afterCursor) queryParams.append('after', afterCursor);
+    
+    const url = `${API_URL}/api/auth/instagram/reels${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    
+    const response = await fetch(url, {
       method: 'GET',
       headers: createAuthHeaders(),
     });

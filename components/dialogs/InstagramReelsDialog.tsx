@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { InstagramReelsList } from '@/components/reels/InstagramReelsList';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { Spinner } from '@/components/ui/Spinner';
 
 interface InstagramReelsDialogProps {
   open: boolean;
@@ -16,21 +15,6 @@ export function InstagramReelsDialog({
   onOpenChange, 
   onSelectReel 
 }: InstagramReelsDialogProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  
-  // Reset loading state when dialog opens
-  useEffect(() => {
-    if (open) {
-      setIsLoading(true);
-      // Simular un tiempo mínimo de carga para mostrar el spinner
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [open]);
-  
-  // Cuando se selecciona un reel, notificamos al componente padre
   const handleSelectReel = (url: string, thumbnailUrl: string, caption: string) => {
     onSelectReel(url, thumbnailUrl, caption);
     onOpenChange(false);
@@ -60,14 +44,7 @@ export function InstagramReelsDialog({
         </DialogHeader>
 
         <div className="overflow-y-auto max-h-[60vh] pr-1 pb-4">
-          {isLoading ? (
-            <div className="flex flex-col items-center justify-center min-h-[300px] space-y-4">
-              <div className="h-10 w-10 border-3 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-sm text-gray-400">Cargando tus reels...</p>
-            </div>
-          ) : (
-            <InstagramReelsList onSelectReel={handleSelectReel} />
-          )}
+          <InstagramReelsList onSelectReel={handleSelectReel} />
         </div>
 
         <div className="flex justify-end space-x-3 mt-4 pt-3 border-t border-gray-800">
