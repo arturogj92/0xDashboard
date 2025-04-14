@@ -1,4 +1,4 @@
-import { Reel, Keyword, PublicComment, Response, ApiResponse, DmLog, Media, Story, LoginCredentials, RegisterCredentials, AuthResponse, User, SocialConnection, InstagramMedia } from './types';
+import { Reel, Keyword, PublicComment, Response, ApiResponse, DmLog, Media, Story, LoginCredentials, RegisterCredentials, AuthResponse, User } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
@@ -686,45 +686,4 @@ export const loginWithGoogle = async (idToken: string): Promise<AuthResponse> =>
 export const logout = () => {
     localStorage.removeItem('token');
     window.location.href = '/login';
-};
-
-// Conexión y autenticación de Facebook/Instagram
-export const connectFacebookAccount = async (accessToken: string): Promise<ApiResponse<SocialConnection>> => {
-  const response = await fetch(`${API_URL}/api/auth/connect/facebook`, {
-    method: 'POST',
-    headers: createAuthHeaders(),
-    body: JSON.stringify({ access_token: accessToken }),
-  });
-  return response.json();
-};
-
-export const disconnectFacebookAccount = async (): Promise<ApiResponse<{ success: boolean }>> => {
-  const response = await fetch(`${API_URL}/api/auth/disconnect/facebook`, {
-    method: 'POST',
-    headers: createAuthHeaders(),
-  });
-  return response.json();
-};
-
-export const getInstagramUserReels = async (): Promise<ApiResponse<InstagramMedia[]>> => {
-  const response = await fetch(`${API_URL}/api/instagram/reels`, {
-    headers: createAuthHeaders()
-  });
-  return response.json();
-};
-
-export const importInstagramReel = async (instagramMediaId: string): Promise<ApiResponse<Reel>> => {
-  const response = await fetch(`${API_URL}/api/instagram/import-reel`, {
-    method: 'POST',
-    headers: createAuthHeaders(),
-    body: JSON.stringify({ instagram_media_id: instagramMediaId }),
-  });
-  return response.json();
-};
-
-export const getFacebookConnectionStatus = async (): Promise<ApiResponse<SocialConnection>> => {
-  const response = await fetch(`${API_URL}/api/auth/facebook/status`, {
-    headers: createAuthHeaders()
-  });
-  return response.json();
 }; 

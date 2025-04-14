@@ -3,163 +3,183 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import Image from 'next/image';
-import { User as UserIcon, Instagram, Facebook, VideoIcon } from 'lucide-react';
+import { User as UserIcon, Loader2, Video } from 'lucide-react';
 import { ProfileSkeleton } from '@/components/ui/skeleton';
-import { getFacebookConnectionStatus, getInstagramUserReels, importInstagramReel, connectFacebookAccount, disconnectFacebookAccount } from '@/lib/api';
-import { InstagramMedia } from '@/lib/types';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
 
-// Facebook SDK se cargará de forma dinámica; no usamos la declaración global
-// para evitar conflictos con otros tipos
+// Añadir declaración global para FB (para evitar errores de TypeScript)
+declare global {
+  interface Window {
+    FB: any; // Puedes ser más específico si tienes los tipos del SDK
+    fbAsyncInit: () => void;
+  }
+}
+
+// Interfaz para los datos de un Reel (simplificada)
+interface Reel {
+  id: string;
+  media_url: string;
+  thumbnail_url?: string;
+  permalink: string;
+  caption?: string;
+}
 
 export default function ProfilePage() {
-  const { user, logout, refreshUserProfile } = useAuth();
+  const { user, logout/*, updateAuthUser */ } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [fbStatus, setFbStatus] = useState<'connected' | 'disconnected'>('disconnected');
-  const [instagramReels, setInstagramReels] = useState<InstagramMedia[]>([]);
-  const [isLoadingReels, setIsLoadingReels] = useState(false);
-  const [importingReelId, setImportingReelId] = useState<string | null>(null);
+  const [isConnectingFb, setIsConnectingFb] = useState(false);
+  const [fbError, setFbError] = useState<string | null>(null);
+  const [fbConnected, setFbConnected] = useState(false);
+  const [reels, setReels] = useState<Reel[]>([]);
+  const [isFetchingReels, setIsFetchingReels] = useState(false);
+  const [reelsError, setReelsError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Simulación de carga y carga del estado de conexión de Facebook
-    const loadData = async () => {
-      try {
-        const fbStatusResponse = await getFacebookConnectionStatus();
-        if (fbStatusResponse.success && fbStatusResponse.data) {
-          setFbStatus(fbStatusResponse.data.status === 'connected' ? 'connected' : 'disconnected');
-          
-          // Si Facebook está conectado, intentamos obtener los reels de Instagram
-          if (fbStatusResponse.data.status === 'connected') {
-            loadInstagramReels();
-          }
-        }
-      } catch (error) {
-        console.error('Error al cargar datos de conexión:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
+    // Simulación de carga
     const timer = setTimeout(() => {
-      loadData();
+      setIsLoading(false);
     }, 1000);
-    
     return () => clearTimeout(timer);
   }, []);
 
-  const loadInstagramReels = async () => {
-    setIsLoadingReels(true);
-    try {
-      const reelsResponse = await getInstagramUserReels();
-      if (reelsResponse.success) {
-        setInstagramReels(reelsResponse.data);
-      }
-    } catch (error) {
-      console.error('Error al cargar reels de Instagram:', error);
-    } finally {
-      setIsLoadingReels(false);
+  const handleFacebookConnect = () => {
+    if (!window.FB) {
+      console.error("Facebook SDK not loaded.");
+      setFbError("Error al cargar el SDK de Facebook. Inténtalo de nuevo.");
+      return;
     }
+
+    setIsConnectingFb(true);
+    setFbError(null);
+
+    window.FB.login(
+      function (response: any) {
+        setIsConnectingFb(false);
+        if (response.authResponse) {
+          console.log('¡Bienvenido! Obteniendo tu información.... ', response);
+          alert('¡Conexión con Facebook exitosa! (Simulado) AccessToken: ' + response.authResponse.accessToken);
+          setFbConnected(true);
+        } else {
+          console.log('El usuario canceló el inicio de sesión o no lo autorizó completamente.', response);
+          setFbError('La conexión con Facebook fue cancelada o falló.');
+        }
+      },
+      {
+        scope: 'public_profile,email,instagram_basic,pages_show_list',
+      }
+    );
   };
 
-  const loadFacebookSDK = (): Promise<void> => {
+  // --- Función para llamar a la API de Facebook --- 
+  const fbApi = (path: string, params: any = {}): Promise<any> => {
     return new Promise((resolve, reject) => {
-      // Verificar si ya está cargado
-      if (typeof window !== 'undefined' && (window as any).FB) {
-        resolve();
-        return;
+      if (!window.FB) {
+        return reject(new Error("Facebook SDK no cargado."));
       }
-
-      // Cargar el SDK
-      const script = document.createElement('script');
-      script.async = true;
-      script.defer = true;
-      script.crossOrigin = "anonymous";
-      script.src = "https://connect.facebook.net/es_ES/sdk.js";
-      script.onload = () => {
-        // Inicializar el SDK
-        (window as any).FB.init({
-          appId: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || '123456789',
-          cookie: true,
-          xfbml: true,
-          version: 'v18.0'
-        });
-        resolve();
-      };
-      script.onerror = reject;
-      document.head.appendChild(script);
+      window.FB.api(path, params, (response: any) => {
+        if (response && !response.error) {
+          resolve(response);
+        } else {
+          console.error('Error en llamada FB API:', response?.error);
+          reject(response?.error || new Error('Error desconocido en API de Facebook'));
+        }
+      });
     });
   };
 
-  const handleConnectFacebook = async () => {
+  // --- Función para obtener Reels --- 
+  const fetchInstagramReels = async () => {
+    console.log('Iniciando búsqueda de Reels...');
+    setIsFetchingReels(true);
+    setReelsError(null);
+    setReels([]);
+
     try {
-      // Cargar el SDK de Facebook si no está cargado
-      await loadFacebookSDK();
-      
-      // Iniciar proceso de login
-      (window as any).FB.login(function(response: any) {
-        if (response.authResponse) {
-          const accessToken = response.authResponse.accessToken;
-          handleFacebookToken(accessToken);
-        } else {
-          console.log('El usuario canceló el inicio de sesión o no autorizó la aplicación.');
+      // 1. Obtener las cuentas (Páginas) del usuario y sus IG Business Accounts vinculadas
+      // Pedimos explícitamente el token de acceso de la página
+      const accountsResponse = await fbApi('/me/accounts', {
+        fields: 'name,access_token,instagram_business_account{id,username,name,profile_picture_url}'
+      });
+      console.log('Cuentas de Facebook:', accountsResponse);
+
+      if (!accountsResponse.data || accountsResponse.data.length === 0) {
+        throw new Error('No se encontraron Páginas de Facebook administradas por el usuario.');
+      }
+
+      // 2. Encontrar la primera cuenta de Instagram vinculada
+      // (Podrías necesitar lógica más compleja si el usuario tiene varias)
+      let igAccount = null;
+      let pageAccessToken = null;
+      for (const page of accountsResponse.data) {
+        if (page.instagram_business_account) {
+          igAccount = page.instagram_business_account;
+          pageAccessToken = page.access_token; // Guardamos el token de la página
+          console.log('Cuenta de Instagram encontrada:', igAccount);
+          break;
         }
-      }, {scope: 'instagram_basic,instagram_content_publish,pages_show_list,pages_read_engagement,public_profile'});
-      
-    } catch (error) {
-      console.error('Error al cargar/inicializar Facebook SDK:', error);
-    }
-  };
+      }
 
-  const handleFacebookToken = async (accessToken: string) => {
-    try {
-      const response = await connectFacebookAccount(accessToken);
-      if (response.success) {
-        setFbStatus('connected');
-        await refreshUserProfile(); // Actualizar datos del usuario
-        loadInstagramReels(); // Cargar reels después de conectar
+      if (!igAccount || !igAccount.id) {
+        throw new Error('No se encontró una cuenta de Instagram Business vinculada a las Páginas de Facebook.');
+      }
+
+      if (!pageAccessToken) {
+         console.warn('No se obtuvo Token de Acceso de la Página, intentando con token de usuario...');
+         // Si no obtenemos page token, FB.api usará el token de usuario por defecto
+         // pero podría fallar por permisos.
+      }
+
+      // 3. Obtener los media de la cuenta de Instagram
+      console.log(`Buscando media para la cuenta IG: ${igAccount.id}`);
+      const mediaResponse = await fbApi(`/${igAccount.id}/media`, {
+        fields: 'id,media_type,media_product_type,media_url,thumbnail_url,permalink,caption,timestamp,like_count,comments_count',
+        limit: 50, // Ajusta el límite según necesites
+        access_token: pageAccessToken || undefined // ¡Importante! Usar el token de la página si lo tenemos
+      });
+      console.log('Media de Instagram:', mediaResponse);
+
+      // 4. Filtrar para obtener solo Reels
+      const fetchedReels = mediaResponse.data
+        .filter((item: any) => item.media_product_type === 'REELS')
+        .map((item: any) => ({ // Mapear a nuestra interfaz Reel
+           id: item.id,
+           media_url: item.media_url,
+           thumbnail_url: item.thumbnail_url,
+           permalink: item.permalink,
+           caption: item.caption
+        }));
+      console.log('Reels filtrados:', fetchedReels);
+
+      if (fetchedReels.length === 0) {
+         setReelsError('No se encontraron Reels en la cuenta de Instagram vinculada.');
       } else {
-        console.error('Error al conectar con Facebook:', response.message);
+          setReels(fetchedReels);
       }
-    } catch (error) {
-      console.error('Error al procesar token de Facebook:', error);
-    }
-  };
 
-  const handleDisconnectFacebook = async () => {
-    try {
-      const response = await disconnectFacebookAccount();
-      if (response.success) {
-        setFbStatus('disconnected');
-        setInstagramReels([]);
-        await refreshUserProfile(); // Actualizar datos del usuario
-      }
-    } catch (error) {
-      console.error('Error al desconectar Facebook:', error);
-    }
-  };
-
-  const handleImportReel = async (reelId: string) => {
-    setImportingReelId(reelId);
-    try {
-      const response = await importInstagramReel(reelId);
-      if (response.success) {
-        // Marcar visualmente que se importó correctamente
-        // Opcionalmente, podríamos redirigir al usuario a la página del reel importado
-        const remainingReels = instagramReels.filter(reel => reel.id !== reelId);
-        setInstagramReels(remainingReels);
-      }
-    } catch (error) {
-      console.error('Error al importar reel:', error);
+    } catch (error: any) {
+      console.error('Error al obtener Reels:', error);
+      setReelsError(error.message || 'Ocurrió un error al buscar los Reels.');
     } finally {
-      setImportingReelId(null);
+      setIsFetchingReels(false);
     }
   };
+
+  // --- Efecto para buscar Reels cuando se conecta a FB --- 
+  useEffect(() => {
+    // Comprobamos si fbConnected es true y si NO estamos ya buscando reels
+    if (fbConnected && !isFetchingReels && reels.length === 0 && !reelsError) {
+       // Pequeño retraso para asegurar que FB.api esté listo después del login
+       const timer = setTimeout(() => {
+           fetchInstagramReels();
+       }, 500); 
+       return () => clearTimeout(timer);
+    }
+  // Dependencia en fbConnected para que se ejecute cuando cambie a true
+  // eslint-disable-next-line react-hooks/exhaustive-deps 
+  }, [fbConnected]); 
 
   if (isLoading) {
     return (
@@ -232,125 +252,76 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Sección de Conexión con Redes Sociales */}
+              {/* Sección para conectar Facebook */}
               <div className="border-t border-indigo-900/50 pt-6">
-                <h3 className="text-lg font-medium text-white mb-3">Conexión con Redes Sociales</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <Facebook className="text-blue-500 h-6 w-6" />
-                      <div>
-                        <p className="text-white">Facebook</p>
-                        <p className="text-xs text-gray-400">
-                          {fbStatus === 'connected' 
-                            ? 'Conectado' 
-                            : 'No conectado'}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    {fbStatus === 'connected' ? (
-                      <Button 
-                        variant="outline"
-                        className="border-red-700/50 text-red-400 hover:bg-red-900/20 hover:text-red-300"
-                        onClick={handleDisconnectFacebook}
-                      >
-                        Desconectar
-                      </Button>
-                    ) : (
-                      <Button 
-                        className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white"
-                        onClick={handleConnectFacebook}
-                      >
-                        Conectar
-                      </Button>
+                <h3 className="text-lg font-medium text-white mb-3">Conectar con Redes Sociales</h3>
+                
+                {!fbConnected ? (
+                  <>
+                    <p className="text-sm text-gray-400 mb-4">
+                      Conecta tu cuenta de Facebook para poder acceder a tus Reels de Instagram.
+                    </p>
+                    <Button
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white mb-3 disabled:opacity-50"
+                      onClick={handleFacebookConnect}
+                      disabled={isConnectingFb}
+                    >
+                      {isConnectingFb ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : null}
+                      {isConnectingFb ? 'Conectando...' : 'Conectar cuenta de Facebook'}
+                    </Button>
+                    {fbError && (
+                      <p className="text-sm text-red-500 mt-2">{fbError}</p>
                     )}
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <Instagram className="text-pink-500 h-6 w-6" />
-                      <div>
-                        <p className="text-white">Instagram</p>
-                        <p className="text-xs text-gray-400">
-                          {user?.instagram_connected 
-                            ? `Conectado como ${user.instagram_username}` 
-                            : 'No conectado'}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <Badge variant={user?.instagram_connected ? "success" : "outline"}>
-                      {user?.instagram_connected ? "Conectado" : "Vinculado a Facebook"}
-                    </Badge>
-                  </div>
-                </div>
+                  </>
+                ) : (
+                  <p className="text-sm text-green-500 mb-4">¡Cuenta de Facebook conectada!</p>
+                )}
               </div>
 
-              {/* Lista de Reels de Instagram */}
-              {fbStatus === 'connected' && (
+              {/* --- Nueva Sección para Mostrar Reels --- */}
+              {fbConnected && (
                 <div className="border-t border-indigo-900/50 pt-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-medium text-white">Tus Reels de Instagram</h3>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={loadInstagramReels}
-                      disabled={isLoadingReels}
-                    >
-                      {isLoadingReels ? "Cargando..." : "Actualizar"}
-                    </Button>
-                  </div>
-
-                  {isLoadingReels ? (
-                    <div className="text-center py-8">
-                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500 mx-auto"></div>
-                      <p className="text-gray-400 mt-2">Cargando reels...</p>
+                  <h3 className="text-lg font-medium text-white mb-3">Tus Reels de Instagram</h3>
+                  {isFetchingReels && (
+                    <div className="flex items-center justify-center text-gray-400">
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      <span>Buscando Reels...</span>
                     </div>
-                  ) : instagramReels.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {instagramReels.map((reel) => (
-                        <Card key={reel.id} className="bg-[#1c1033] border border-indigo-900/50 overflow-hidden">
-                          <div className="p-3 space-y-2">
-                            <div className="aspect-video relative bg-black/50 rounded-md overflow-hidden">
-                              {reel.thumbnail_url ? (
-                                <Image 
-                                  src={reel.thumbnail_url} 
-                                  alt={reel.caption || 'Reel thumbnail'} 
-                                  fill 
-                                  className="object-cover"
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center">
-                                  <VideoIcon className="h-12 w-12 text-indigo-500/50" />
-                                </div>
-                              )}
+                  )}
+                  {reelsError && !isFetchingReels && (
+                    <p className="text-sm text-red-500">Error: {reelsError}</p>
+                  )}
+                  {!isFetchingReels && !reelsError && reels.length === 0 && (
+                     <p className="text-sm text-gray-500">No se encontraron Reels o aún no se han buscado.</p>
+                  )}
+                  {!isFetchingReels && reels.length > 0 && (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
+                      {reels.map((reel) => (
+                        <a 
+                          key={reel.id} 
+                          href={reel.permalink} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="relative aspect-video rounded-md overflow-hidden group bg-gray-800"
+                        >
+                          {reel.thumbnail_url ? (
+                            <Image 
+                              src={reel.thumbnail_url} 
+                              alt={reel.caption || 'Instagram Reel'} 
+                              fill
+                              className="object-cover transition-transform duration-300 group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="flex items-center justify-center h-full">
+                              <Video className="w-8 h-8 text-gray-500" />
                             </div>
-                            <p className="text-sm text-gray-300 line-clamp-2">
-                              {reel.caption || "Sin descripción"}
-                            </p>
-                            <div className="flex justify-between items-center">
-                              <p className="text-xs text-gray-400">
-                                {new Date(reel.timestamp).toLocaleDateString()}
-                              </p>
-                              <Button 
-                                size="sm"
-                                disabled={importingReelId === reel.id}
-                                onClick={() => handleImportReel(reel.id)}
-                                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
-                              >
-                                {importingReelId === reel.id ? 'Importando...' : 'Importar'}
-                              </Button>
-                            </div>
-                          </div>
-                        </Card>
+                          )}
+                          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors duration-300"></div>
+                          {/* Podrías añadir info como caption o likes aquí si lo deseas */}
+                        </a>
                       ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 border border-dashed border-indigo-900/50 rounded-lg">
-                      <VideoIcon className="h-12 w-12 text-indigo-500/50 mx-auto mb-2" />
-                      <p className="text-gray-400">No se encontraron reels en tu cuenta de Instagram</p>
-                      <p className="text-gray-500 text-sm mt-1">Publica reels en Instagram para importarlos aquí</p>
                     </div>
                   )}
                 </div>

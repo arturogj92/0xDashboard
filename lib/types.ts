@@ -70,9 +70,6 @@ export interface User {
     email: string;
     name?: string;
     avatar_url?: string;
-    fb_connected?: boolean;
-    instagram_connected?: boolean;
-    instagram_username?: string;
 }
 
 export interface AuthResponse {
@@ -94,24 +91,4 @@ export interface RegisterCredentials {
     email: string;
     password: string;
     name?: string;
-}
-
-export interface SocialConnection {
-    provider: 'facebook' | 'instagram';
-    access_token: string;
-    user_id: string;
-    username?: string;
-    expires_at?: string;
-    status: 'connected' | 'expired' | 'disconnected';
-}
-
-export interface InstagramMedia {
-    id: string;
-    media_type: string;
-    media_url: string;
-    thumbnail_url?: string;
-    permalink: string;
-    caption?: string;
-    timestamp: string;
-    username?: string;
 } 
