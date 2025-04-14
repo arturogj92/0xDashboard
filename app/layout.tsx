@@ -11,6 +11,7 @@ import RootLayoutInner from "@/components/layout/RootLayoutInner";
 import Footer from './components/Footer';
 import { cn } from "@/lib/utils";
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import FacebookSDKLoader from '@/components/FacebookSDKLoader';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -62,6 +63,9 @@ export default function RootLayout({
         ) : (
           <div>Error: La configuración de Google Login está incompleta. Contacta al administrador.</div>
         )}
+
+        {/* Añadir el componente cargador del SDK */}
+        <FacebookSDKLoader />
       </body>
     </html>
   );
