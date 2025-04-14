@@ -50,7 +50,9 @@ export const InstagramReelsList = ({ onSelectReel }: InstagramReelsListProps) =>
         setLoadingMore(true);
       }
       
-      const response = await getUserInstagramReels(10, afterCursor);
+      // Reducir el número de reels inicial a 6 para cargar más rápido
+      const limit = !afterCursor ? 6 : 10;
+      const response = await getUserInstagramReels(limit, afterCursor);
       
       if (response.success && response.data) {
         if (afterCursor) {
