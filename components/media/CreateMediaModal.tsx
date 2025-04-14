@@ -28,7 +28,6 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
   const [selectedThumbnailUrl, setSelectedThumbnailUrl] = useState<string>('');
   const [selectedReelCaption, setSelectedReelCaption] = useState<string>('');
   const [showThumbnail, setShowThumbnail] = useState(false);
-  const [loadingReelsDialog, setLoadingReelsDialog] = useState(false);
 
   const isReelType = mediaType === 'reel';
 
@@ -113,20 +112,6 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
     // Si está en modo borrador y selecciona un reel, desactivar el modo borrador
     if (isDraft) {
       setIsDraft(false);
-    }
-  };
-
-  // Manejar la apertura del diálogo de reels con un estado de carga
-  const handleOpenReelsDialog = () => {
-    setLoadingReelsDialog(true);
-    setInstagramReelsDialogOpen(true);
-  };
-
-  // Cuando se cierra el diálogo de reels, resetear el estado de carga
-  const handleReelsDialogOpenChange = (open: boolean) => {
-    setInstagramReelsDialogOpen(open);
-    if (!open) {
-      setLoadingReelsDialog(false);
     }
   };
 
@@ -235,17 +220,11 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
                       <Button 
                         type="button"
                         variant="outline"
-                        onClick={handleOpenReelsDialog}
+                        onClick={() => setInstagramReelsDialogOpen(true)}
                         className="w-full flex items-center justify-center gap-2 py-2.5 rounded-md border border-indigo-500/50 hover:bg-indigo-600/20"
                       >
-                        {loadingReelsDialog ? (
-                          <div className="h-5 w-5 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
-                        ) : (
-                          <Instagram className="h-5 w-5 text-indigo-400" />
-                        )}
-                        <span className="text-sm text-gray-200">
-                          {loadingReelsDialog ? 'Cargando reels...' : 'Seleccionar reel de Instagram'}
-                        </span>
+                        <Instagram className="h-5 w-5 text-indigo-400" />
+                        <span className="text-sm text-gray-200">Seleccionar reel de Instagram</span>
                       </Button>
                     </>
                   )}
@@ -346,7 +325,7 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
 
       <InstagramReelsDialog 
         open={instagramReelsDialogOpen}
-        onOpenChange={handleReelsDialogOpenChange}
+        onOpenChange={setInstagramReelsDialogOpen}
         onSelectReel={handleInstagramReelSelect}
       />
     </>
