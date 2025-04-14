@@ -257,6 +257,18 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
               </div>
             </div>
 
+            {isDraft && (
+              <div className="mt-3 p-3 text-xs rounded-md bg-amber-900/20 border border-amber-500/30 text-amber-300">
+                <p className="flex items-center">
+                  <DocumentTextIcon className="h-4 w-4 mr-2 text-amber-400" />
+                  <span>
+                    El modo Draft te permite preparar la automatización (respuestas, palabras clave) antes de publicar el reel. 
+                    Una vez que publiques tu reel en Instagram, solo tendrás que añadir la URL y desactivar el modo Draft.
+                  </span>
+                </p>
+              </div>
+            )}
+
             <div className="flex justify-end space-x-3 mt-6 pt-3">
               <Button 
                 type="button" 
