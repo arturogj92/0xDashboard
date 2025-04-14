@@ -18,6 +18,9 @@ export async function POST(request: NextRequest) {
 
     // Hacemos la solicitud a Instagram para obtener el token
     try {
+      // Primero intentamos con el endpoint de OAuth de Instagram
+      console.log('Intentando obtener token con el endpoint de OAuth de Instagram...');
+      
       const tokenResponse = await fetch('https://api.instagram.com/oauth/access_token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -34,12 +37,75 @@ export async function POST(request: NextRequest) {
         const errorText = await tokenResponse.text();
         console.error('Error al obtener token de Instagram:', errorText);
         
-        // Si hay un error, retornamos también datos simulados para la demo
-        // pero registramos el error para depuración
-        console.log('Usando datos simulados como fallback debido al error');
-        return fallbackToMockData(code);
+        // Intentamos con el endpoint de Graph API de Facebook como alternativa
+        console.log('Intentando con el endpoint de Graph API de Facebook...');
+        
+        const fbTokenResponse = await fetch(`https://graph.facebook.com/v18.0/oauth/access_token?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&client_secret=${CLIENT_SECRET}&code=${code}`);
+        
+        if (!fbTokenResponse.ok) {
+          console.error('Error al obtener token de Facebook:', await fbTokenResponse.text());
+          console.log('Usando datos simulados como fallback debido a errores en ambos intentos');
+          return fallbackToMockData(code);
+        }
+        
+        const fbTokenData = await fbTokenResponse.json();
+        const accessToken = fbTokenData.access_token;
+        
+        // Usamos este token para obtener información del usuario
+        const userResponse = await fetch(`https://graph.facebook.com/v18.0/me?fields=id,name,accounts{instagram_business_account{id,username,profile_picture_url,media_count}}&access_token=${accessToken}`);
+        
+        if (!userResponse.ok) {
+          console.error('Error al obtener datos del usuario:', await userResponse.text());
+          return fallbackToMockData(code);
+        }
+        
+        const userData = await userResponse.json();
+        
+        // Extraemos los datos de Instagram Business
+        let instagramProfile = null;
+        
+        if (userData.accounts && 
+            userData.accounts.data && 
+            userData.accounts.data.length > 0) {
+          
+          for (const account of userData.accounts.data) {
+            if (account.instagram_business_account) {
+              instagramProfile = account.instagram_business_account;
+              break;
+            }
+          }
+        }
+        
+        if (!instagramProfile) {
+          console.error('No se encontró cuenta de Instagram Business asociada');
+          return fallbackToMockData(code);
+        }
+        
+        // Formateamos los datos como esperamos
+        const instagramUserData = {
+          id: instagramProfile.id,
+          username: instagramProfile.username,
+          account_type: 'BUSINESS',
+          profile_picture: instagramProfile.profile_picture_url || null,
+          media_count: instagramProfile.media_count || 0,
+          connected: true,
+          access_token: accessToken,
+          user_id: userData.id
+        };
+        
+        console.log('Datos reales de Instagram obtenidos (via Facebook):', { 
+          ...instagramUserData, 
+          access_token: '[REDACTED]'
+        });
+        
+        return NextResponse.json({ 
+          success: true, 
+          data: instagramUserData,
+          message: 'Datos de Instagram obtenidos correctamente (via Facebook)'
+        });
       }
       
+      // Si llegamos aquí, el endpoint de Instagram funcionó
       const tokenData = await tokenResponse.json();
       const accessToken = tokenData.access_token;
       const userId = tokenData.user_id;

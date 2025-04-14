@@ -95,15 +95,13 @@ export default function ProfilePage() {
   const connectInstagram = () => {
     const clientId = '1382119013140231';
     const redirectUri = typeof window !== 'undefined' ? `${window.location.origin}/profile` : '/profile';
+    
+    // Ajustamos los permisos para solicitar solo lo básico
     const scopes = [
-      'instagram_business_basic',
-      'instagram_business_manage_messages',
-      'instagram_business_manage_comments',
-      'instagram_business_content_publish',
-      'instagram_business_manage_insights',
-      'pages_show_list',
+      'instagram_basic',
+      'instagram_content_publish',
       'pages_read_engagement',
-      'business_management'
+      'pages_show_list'
     ].join('%2C');
     
     const authUrl = `https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scopes}`;
