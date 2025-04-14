@@ -20,7 +20,7 @@ interface CreateMediaModalProps {
 export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: CreateMediaModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isDraft, setIsDraft] = useState(true);
+  const [isDraft, setIsDraft] = useState(false);
   const [isActive, setIsActive] = useState(true);
   const [urlValue, setUrlValue] = useState('');
   const [description, setDescription] = useState('');
@@ -73,7 +73,7 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
   const resetForm = () => {
     setUrlValue('');
     setDescription('');
-    setIsDraft(true);
+    setIsDraft(false);
     setIsActive(true);
     setError(null);
   };
