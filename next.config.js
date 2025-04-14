@@ -9,6 +9,14 @@ const nextConfig = {
       'scontent-mad1-2.cdninstagram.com',
       'scontent-mad2-1.cdninstagram.com',
       'scontent-mad2-2.cdninstagram.com',
+      'scontent-iad3-1.cdninstagram.com',
+      'scontent-iad3-2.cdninstagram.com',
+      'scontent-iad3-1.xx.fbcdn.net',
+      'scontent-iad3-2.xx.fbcdn.net',
+      'scontent-dfw5-1.cdninstagram.com',
+      'scontent-dfw5-2.cdninstagram.com',
+      'scontent-lga3-1.cdninstagram.com',
+      'scontent-lga3-2.cdninstagram.com',
       'scontent.cdninstagram.com',
       'instagram.com',
       'www.instagram.com',
@@ -26,6 +34,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: '*.instagram.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.cdninstagram.com',
       },
       {
         protocol: 'https',
