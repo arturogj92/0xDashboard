@@ -74,9 +74,16 @@ export async function POST(request: NextRequest) {
       // Ahora obtenemos los últimos 5 reels o media del usuario
       let recentMedia: InstagramMedia[] = [];
       try {
-        // Para obtener los media necesitamos permisos adecuados: instagram_business_basic
+        // Para obtener los media necesitamos permisos adecuados y usar el endpoint correcto
+        // Primero intentamos con el endpoint de negocio/creator
+        console.log('Intentando obtener media desde el endpoint de Graph API...');
+        
+        // Endpoint para cuentas de negocio/creator
+        const mediaEndpoint = `https://graph.instagram.com/${userId}/media`;
+        console.log('Usando endpoint:', mediaEndpoint);
+        
         const mediaResponse = await fetch(
-          `https://graph.instagram.com/${userId}/media?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp&limit=5&access_token=${accessToken}`
+          `${mediaEndpoint}?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp&limit=5&access_token=${accessToken}`
         );
         
         if (mediaResponse.ok) {
@@ -85,10 +92,36 @@ export async function POST(request: NextRequest) {
           
           if (mediaData.data && Array.isArray(mediaData.data)) {
             recentMedia = mediaData.data;
+          } else {
+            console.warn('La respuesta no contiene un array de medios:', mediaData);
           }
         } else {
-          console.error('Error al obtener media:', await mediaResponse.text());
-          // Si falla, continuamos sin los media pero con los datos de perfil
+          const errorText = await mediaResponse.text();
+          console.error('Error al obtener media:', errorText);
+          console.log('Token utilizado (parcial):', accessToken.substring(0, 10) + '...');
+          console.log('Permisos solicitados: instagram_business_basic, etc.');
+          
+          // Intentamos el endpoint alternativo (legacy) si el primero falla
+          try {
+            console.log('Intentando endpoint alternativo...');
+            const legacyMediaResponse = await fetch(
+              `https://graph.facebook.com/v19.0/${userId}/media?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp&limit=5&access_token=${accessToken}`
+            );
+            
+            if (legacyMediaResponse.ok) {
+              const legacyMediaData = await legacyMediaResponse.json();
+              console.log('Datos de media obtenidos con endpoint alternativo:', legacyMediaData);
+              
+              if (legacyMediaData.data && Array.isArray(legacyMediaData.data)) {
+                recentMedia = legacyMediaData.data;
+              }
+            } else {
+              console.error('Error también con endpoint alternativo:', await legacyMediaResponse.text());
+              // Si ambos fallan, seguimos sin medios pero con los datos de perfil
+            }
+          } catch (legacyError) {
+            console.error('Error al intentar endpoint alternativo:', legacyError);
+          }
         }
       } catch (mediaError) {
         console.error('Error al procesar media:', mediaError);

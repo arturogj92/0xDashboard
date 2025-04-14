@@ -87,12 +87,23 @@ export default function ProfilePage() {
   const connectInstagram = () => {
     const clientId = '1382119013140231';
     const redirectUri = typeof window !== 'undefined' ? `${window.location.origin}/profile` : '/profile';
+    
+    // Amplío los permisos solicitados para incluir todos los necesarios para acceder a medios
     const scopes = [
-      'instagram_business_basic',
-      'instagram_business_manage_messages',
-      'instagram_business_manage_comments',
-      'instagram_business_content_publish',
-      'instagram_business_manage_insights'
+      'instagram_basic',                   // Incluyo este permiso básico
+      'instagram_content_publish',         // Para publicar contenido
+      'instagram_manage_comments',         // Para gestionar comentarios
+      'instagram_manage_insights',         // Para acceder a estadísticas
+      'pages_show_list',                   // Para ver páginas asociadas
+      'pages_read_engagement',             // Para leer engagement
+      'business_management',               // Para gestión de negocio
+      'instagram_business_basic',          // Información básica de negocio
+      'instagram_business_manage_messages', // Gestionar mensajes
+      'instagram_business_manage_comments', // Gestionar comentarios
+      'instagram_business_content_publish', // Publicar contenido business
+      'instagram_business_manage_insights', // Insights de business
+      'instagram_graph_user_media',        // IMPORTANTE: Para acceder a medios
+      'instagram_graph_user_profile'       // IMPORTANTE: Para acceder al perfil
     ].join('%2C');
     
     const authUrl = `https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scopes}`;
@@ -341,11 +352,34 @@ export default function ProfilePage() {
                     )}
 
                     {/* Sección de contenido reciente */}
-                    {igProfile?.recent_media && igProfile.recent_media.length > 0 && (
+                    {igProfile?.recent_media && igProfile.recent_media.length > 0 ? (
                       <div className="mt-4">
                         <h4 className="text-white font-medium mb-3">Contenido reciente</h4>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                           {igProfile.recent_media.slice(0, 5).map(renderMediaItem)}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="mt-4 bg-indigo-900/20 p-4 rounded-lg border border-indigo-700/50">
+                        <h4 className="text-white font-medium mb-2">Contenido reciente</h4>
+                        <div className="text-gray-400 text-sm">
+                          <p>No se ha podido obtener el contenido reciente de tu cuenta de Instagram.</p>
+                          <p className="mt-2">Posibles motivos:</p>
+                          <ul className="list-disc list-inside mt-1 space-y-1">
+                            <li>Tu cuenta no está configurada como cuenta Business o Creator</li>
+                            <li>No has concedido los permisos necesarios</li>
+                            <li>No tienes publicaciones en tu cuenta</li>
+                            <li>Error temporal en la API de Instagram</li>
+                          </ul>
+                          <p className="mt-3">
+                            <Button 
+                              variant="link" 
+                              className="text-pink-400 hover:text-pink-300 p-0 h-auto"
+                              onClick={disconnectInstagram}
+                            >
+                              Prueba a desconectar tu cuenta
+                            </Button> y volver a conectarla concediendo todos los permisos solicitados.
+                          </p>
                         </div>
                       </div>
                     )}
