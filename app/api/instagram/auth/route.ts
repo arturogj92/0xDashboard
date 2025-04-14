@@ -74,13 +74,13 @@ export async function POST(request: NextRequest) {
       // Ahora obtenemos los últimos 5 reels o media del usuario
       let recentMedia: InstagramMedia[] = [];
       try {
-        // Para obtener los media necesitamos permisos adecuados y usar el endpoint correcto
-        // Primero intentamos con el endpoint de negocio/creator
-        console.log('Intentando obtener media desde el endpoint de Graph API...');
+        // Log de los permisos disponibles
+        console.log('Accediendo a medias con permisos básicos. Token ID:', userId);
         
-        // Endpoint para cuentas de negocio/creator
-        const mediaEndpoint = `https://graph.instagram.com/${userId}/media`;
-        console.log('Usando endpoint:', mediaEndpoint);
+        // Con permisos limitados, es posible que no podamos acceder a los medios
+        // Intentamos primero con el endpoint de usuario básico
+        const mediaEndpoint = `https://graph.instagram.com/me/media`;
+        console.log('Usando endpoint básico:', mediaEndpoint);
         
         const mediaResponse = await fetch(
           `${mediaEndpoint}?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp&limit=5&access_token=${accessToken}`
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
         
         if (mediaResponse.ok) {
           const mediaData = await mediaResponse.json();
-          console.log('Datos de media obtenidos:', mediaData);
+          console.log('Datos de media obtenidos con permisos básicos:', mediaData);
           
           if (mediaData.data && Array.isArray(mediaData.data)) {
             recentMedia = mediaData.data;
@@ -97,30 +97,32 @@ export async function POST(request: NextRequest) {
           }
         } else {
           const errorText = await mediaResponse.text();
-          console.error('Error al obtener media:', errorText);
-          console.log('Token utilizado (parcial):', accessToken.substring(0, 10) + '...');
-          console.log('Permisos solicitados: instagram_business_basic, etc.');
+          console.error('Error al obtener media con permisos básicos:', errorText);
           
-          // Intentamos el endpoint alternativo (legacy) si el primero falla
+          // Con permisos limitados, es posible que necesitemos usar el endpoint específico de ID
           try {
-            console.log('Intentando endpoint alternativo...');
-            const legacyMediaResponse = await fetch(
-              `https://graph.facebook.com/v19.0/${userId}/media?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp&limit=5&access_token=${accessToken}`
+            console.log('Intentando endpoint de ID específico...');
+            const userMediaResponse = await fetch(
+              `https://graph.instagram.com/${userId}/media?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp&limit=5&access_token=${accessToken}`
             );
             
-            if (legacyMediaResponse.ok) {
-              const legacyMediaData = await legacyMediaResponse.json();
-              console.log('Datos de media obtenidos con endpoint alternativo:', legacyMediaData);
+            if (userMediaResponse.ok) {
+              const userMediaData = await userMediaResponse.json();
+              console.log('Datos de media obtenidos con endpoint de ID:', userMediaData);
               
-              if (legacyMediaData.data && Array.isArray(legacyMediaData.data)) {
-                recentMedia = legacyMediaData.data;
+              if (userMediaData.data && Array.isArray(userMediaData.data)) {
+                recentMedia = userMediaData.data;
               }
             } else {
-              console.error('Error también con endpoint alternativo:', await legacyMediaResponse.text());
-              // Si ambos fallan, seguimos sin medios pero con los datos de perfil
+              const userMediaErrorText = await userMediaResponse.text();
+              console.error('Error con endpoint de ID:', userMediaErrorText);
+              
+              // Si ambos fallan, no mostramos medios
+              console.log('No se pudieron obtener medios con los permisos actuales.');
+              console.log('Esto es normal si la app no tiene configurados permisos avanzados.');
             }
-          } catch (legacyError) {
-            console.error('Error al intentar endpoint alternativo:', legacyError);
+          } catch (alternativeError) {
+            console.error('Error al intentar endpoint alternativo:', alternativeError);
           }
         }
       } catch (mediaError) {

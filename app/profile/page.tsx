@@ -88,22 +88,12 @@ export default function ProfilePage() {
     const clientId = '1382119013140231';
     const redirectUri = typeof window !== 'undefined' ? `${window.location.origin}/profile` : '/profile';
     
-    // Amplío los permisos solicitados para incluir todos los necesarios para acceder a medios
+    // Reducimos los permisos a los más básicos para evitar el error "Invalid platform app"
     const scopes = [
-      'instagram_basic',                   // Incluyo este permiso básico
-      'instagram_content_publish',         // Para publicar contenido
-      'instagram_manage_comments',         // Para gestionar comentarios
-      'instagram_manage_insights',         // Para acceder a estadísticas
-      'pages_show_list',                   // Para ver páginas asociadas
-      'pages_read_engagement',             // Para leer engagement
-      'business_management',               // Para gestión de negocio
-      'instagram_business_basic',          // Información básica de negocio
-      'instagram_business_manage_messages', // Gestionar mensajes
-      'instagram_business_manage_comments', // Gestionar comentarios
-      'instagram_business_content_publish', // Publicar contenido business
-      'instagram_business_manage_insights', // Insights de business
-      'instagram_graph_user_media',        // IMPORTANTE: Para acceder a medios
-      'instagram_graph_user_profile'       // IMPORTANTE: Para acceder al perfil
+      'instagram_basic',                   // Permiso básico
+      'instagram_business_basic',          // Básico para business
+      'instagram_business_manage_messages', // Para mensajes
+      'instagram_business_manage_comments'  // Para comentarios
     ].join('%2C');
     
     const authUrl = `https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scopes}`;
