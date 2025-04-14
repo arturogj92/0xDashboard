@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { InstagramReelsList } from '@/components/reels/InstagramReelsList';
 import { Button } from '@/components/ui/button';
@@ -15,13 +15,33 @@ export function InstagramReelsDialog({
   onOpenChange, 
   onSelectReel 
 }: InstagramReelsDialogProps) {
-  const handleSelectReel = (url: string, thumbnailUrl: string, caption: string) => {
+  // Estado local para controlar el diálogo, independientemente del padre
+  const [internalOpen, setInternalOpen] = useState(false);
+  
+  // Sincronizar el estado interno con el externo
+  useEffect(() => {
+    setInternalOpen(open);
+  }, [open]);
+  
+  // Manejar cambios en el estado del diálogo
+  const handleOpenChange = useCallback((newOpen: boolean) => {
+    setInternalOpen(newOpen);
+    if (newOpen === false) {
+      // Solo propagar el cierre al padre cuando sea un cierre explícito
+      // (botón cancelar o clic fuera del diálogo)
+      onOpenChange(false);
+    }
+  }, [onOpenChange]);
+
+  const handleSelectReel = useCallback((url: string, thumbnailUrl: string, caption: string) => {
+    // Llamar al callback del padre sin cerrar este diálogo
     onSelectReel(url, thumbnailUrl, caption);
-    onOpenChange(false);
-  };
+    // Cerrar solo este diálogo sin propagar
+    setInternalOpen(false);
+  }, [onSelectReel]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={internalOpen} onOpenChange={handleOpenChange}>
       <DialogContent 
         className="max-w-md md:max-w-xl bg-[#120724] border border-indigo-900/30 rounded-xl shadow-xl"
       >
@@ -51,7 +71,7 @@ export function InstagramReelsDialog({
           <Button 
             type="button" 
             variant="outline" 
-            onClick={() => onOpenChange(false)}
+            onClick={() => handleOpenChange(false)}
             className="rounded-md border-gray-700 bg-[#1c1033] text-white hover:bg-[#2c1b4d] px-6 py-2"
           >
             Cancelar
