@@ -4,6 +4,17 @@ import { NextRequest, NextResponse } from 'next/server';
 const CLIENT_ID = process.env.NEXT_PUBLIC_INSTAGRAM_BUSINESS_CLIENT_ID;
 const CLIENT_SECRET = 'ca40f9ecdd1aa00834304aff0a938620'; // Secret proporcionado por el usuario
 
+// Interfaz para representar un reel/media de Instagram
+interface InstagramMedia {
+  id: string;
+  media_type: string;
+  media_url?: string;
+  permalink: string;
+  thumbnail_url?: string;
+  caption?: string;
+  timestamp: string;
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Obtener el código de autorización del cuerpo de la solicitud
@@ -18,9 +29,6 @@ export async function POST(request: NextRequest) {
 
     // Hacemos la solicitud a Instagram para obtener el token
     try {
-      // Primero intentamos con el endpoint de OAuth de Instagram
-      console.log('Intentando obtener token con el endpoint de OAuth de Instagram...');
-      
       const tokenResponse = await fetch('https://api.instagram.com/oauth/access_token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -37,75 +45,12 @@ export async function POST(request: NextRequest) {
         const errorText = await tokenResponse.text();
         console.error('Error al obtener token de Instagram:', errorText);
         
-        // Intentamos con el endpoint de Graph API de Facebook como alternativa
-        console.log('Intentando con el endpoint de Graph API de Facebook...');
-        
-        const fbTokenResponse = await fetch(`https://graph.facebook.com/v18.0/oauth/access_token?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&client_secret=${CLIENT_SECRET}&code=${code}`);
-        
-        if (!fbTokenResponse.ok) {
-          console.error('Error al obtener token de Facebook:', await fbTokenResponse.text());
-          console.log('Usando datos simulados como fallback debido a errores en ambos intentos');
-          return fallbackToMockData(code);
-        }
-        
-        const fbTokenData = await fbTokenResponse.json();
-        const accessToken = fbTokenData.access_token;
-        
-        // Usamos este token para obtener información del usuario
-        const userResponse = await fetch(`https://graph.facebook.com/v18.0/me?fields=id,name,accounts{instagram_business_account{id,username,profile_picture_url,media_count}}&access_token=${accessToken}`);
-        
-        if (!userResponse.ok) {
-          console.error('Error al obtener datos del usuario:', await userResponse.text());
-          return fallbackToMockData(code);
-        }
-        
-        const userData = await userResponse.json();
-        
-        // Extraemos los datos de Instagram Business
-        let instagramProfile = null;
-        
-        if (userData.accounts && 
-            userData.accounts.data && 
-            userData.accounts.data.length > 0) {
-          
-          for (const account of userData.accounts.data) {
-            if (account.instagram_business_account) {
-              instagramProfile = account.instagram_business_account;
-              break;
-            }
-          }
-        }
-        
-        if (!instagramProfile) {
-          console.error('No se encontró cuenta de Instagram Business asociada');
-          return fallbackToMockData(code);
-        }
-        
-        // Formateamos los datos como esperamos
-        const instagramUserData = {
-          id: instagramProfile.id,
-          username: instagramProfile.username,
-          account_type: 'BUSINESS',
-          profile_picture: instagramProfile.profile_picture_url || null,
-          media_count: instagramProfile.media_count || 0,
-          connected: true,
-          access_token: accessToken,
-          user_id: userData.id
-        };
-        
-        console.log('Datos reales de Instagram obtenidos (via Facebook):', { 
-          ...instagramUserData, 
-          access_token: '[REDACTED]'
-        });
-        
-        return NextResponse.json({ 
-          success: true, 
-          data: instagramUserData,
-          message: 'Datos de Instagram obtenidos correctamente (via Facebook)'
-        });
+        // Si hay un error, retornamos también datos simulados para la demo
+        // pero registramos el error para depuración
+        console.log('Usando datos simulados como fallback debido al error');
+        return fallbackToMockData(code);
       }
       
-      // Si llegamos aquí, el endpoint de Instagram funcionó
       const tokenData = await tokenResponse.json();
       const accessToken = tokenData.access_token;
       const userId = tokenData.user_id;
@@ -126,17 +71,28 @@ export async function POST(request: NextRequest) {
       const profileResponse = await fetch(`https://graph.instagram.com/${userId}?fields=id,username,profile_picture_url,media_count&access_token=${accessToken}`);
       const profileData = profileResponse.ok ? await profileResponse.json() : {};
       
-      // Intercambiamos el token de corta duración por uno de larga duración
-      const longLivedTokenResponse = await fetch(`https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${CLIENT_SECRET}&access_token=${accessToken}`);
-      
-      let longLivedToken = accessToken;
-      
-      if (longLivedTokenResponse.ok) {
-        const longLivedTokenData = await longLivedTokenResponse.json();
-        longLivedToken = longLivedTokenData.access_token;
-        console.log('Token de larga duración obtenido');
-      } else {
-        console.warn('No se pudo obtener token de larga duración, usando token normal');
+      // Ahora obtenemos los últimos 5 reels o media del usuario
+      let recentMedia: InstagramMedia[] = [];
+      try {
+        // Para obtener los media necesitamos permisos adecuados: instagram_business_basic
+        const mediaResponse = await fetch(
+          `https://graph.instagram.com/${userId}/media?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp&limit=5&access_token=${accessToken}`
+        );
+        
+        if (mediaResponse.ok) {
+          const mediaData = await mediaResponse.json();
+          console.log('Datos de media obtenidos:', mediaData);
+          
+          if (mediaData.data && Array.isArray(mediaData.data)) {
+            recentMedia = mediaData.data;
+          }
+        } else {
+          console.error('Error al obtener media:', await mediaResponse.text());
+          // Si falla, continuamos sin los media pero con los datos de perfil
+        }
+      } catch (mediaError) {
+        console.error('Error al procesar media:', mediaError);
+        // Si falla, continuamos sin los media pero con los datos de perfil
       }
       
       // Combinamos los datos obtenidos
@@ -147,15 +103,10 @@ export async function POST(request: NextRequest) {
         profile_picture: profileData.profile_picture_url || null,
         media_count: profileData.media_count || 0,
         connected: true,
-        // Incluimos los tokens para su uso posterior (en un entorno real, estos deberían encriptarse y almacenarse en una base de datos)
-        access_token: longLivedToken,
-        user_id: userId
+        recent_media: recentMedia
       };
       
-      console.log('Datos reales de Instagram obtenidos:', { 
-        ...instagramUserData, 
-        access_token: '[REDACTED]' // No mostramos el token en los logs
-      });
+      console.log('Datos reales de Instagram obtenidos:', instagramUserData);
       
       return NextResponse.json({ 
         success: true, 
@@ -181,8 +132,17 @@ export async function POST(request: NextRequest) {
 // Función auxiliar para retornar datos simulados en caso de error
 function fallbackToMockData(code: string) {
   const lastFourChars = code.slice(-4);
-  // Generamos un token falso para pruebas
-  const fakeToken = 'FAKE_TOKEN_' + Math.random().toString(36).substring(2, 15);
+  
+  // Creamos algunos reels simulados
+  const mockReels = Array(5).fill(null).map((_, index) => ({
+    id: `${17841405793387}${lastFourChars}_${index}`,
+    media_type: index % 2 === 0 ? 'VIDEO' : 'IMAGE',
+    media_url: index % 2 === 0 ? null : `https://i.pravatar.cc/500?u=${Date.now()}_${index}`,
+    permalink: `https://www.instagram.com/reel/mock_${index}_${lastFourChars}/`,
+    thumbnail_url: `https://i.pravatar.cc/300?u=${Date.now()}_thumb_${index}`,
+    caption: `Este es un reel simulado #${index + 1} para demostración 🎬✨`,
+    timestamp: new Date(Date.now() - index * 86400000).toISOString() // Cada uno un día anterior
+  }));
   
   const mockUserData = {
     id: '17841405793387' + lastFourChars,
@@ -197,15 +157,10 @@ function fallbackToMockData(code: string) {
     follower_count: Math.floor(Math.random() * 5000) + 500,
     following_count: Math.floor(Math.random() * 1000) + 100,
     connected: true,
-    // Incluimos tokens falsos para pruebas
-    access_token: fakeToken,
-    user_id: '17841405793387' + lastFourChars
+    recent_media: mockReels
   };
 
-  console.log('Datos de Instagram simulados (fallback):', {
-    ...mockUserData,
-    access_token: '[REDACTED]' // No mostramos el token en los logs
-  });
+  console.log('Datos de Instagram simulados (fallback):', mockUserData);
   
   return NextResponse.json({ 
     success: true, 
