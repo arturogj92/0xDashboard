@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import Image from 'next/image';
-import { User as UserIcon, Instagram, Loader2 } from 'lucide-react';
+import { User as UserIcon, Instagram, Loader2, Film, Clock, Eye, ExternalLink } from 'lucide-react';
 import { ProfileSkeleton } from '@/components/ui/skeleton';
 
 // Esta interfaz representa la estructura de datos real que devolvería la API de Instagram
@@ -24,6 +24,20 @@ interface InstagramProfile {
   follower_count?: number;
   following_count?: number;
   connected: boolean;
+  access_token?: string;
+  user_id?: string;
+}
+
+// Interfaz para los reels de Instagram
+interface InstagramReel {
+  id: string;
+  caption: string;
+  media_type: string;
+  media_url: string;
+  permalink: string;
+  thumbnail_url?: string;
+  timestamp: string;
+  username: string;
 }
 
 export default function ProfilePage() {
@@ -34,6 +48,8 @@ export default function ProfilePage() {
   const [igUsername, setIgUsername] = useState('');
   const [igProfile, setIgProfile] = useState<InstagramProfile | null>(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [reels, setReels] = useState<InstagramReel[]>([]);
+  const [isLoadingReels, setIsLoadingReels] = useState(false);
 
   useEffect(() => {
     // Simulación de carga
@@ -61,6 +77,11 @@ export default function ProfilePage() {
           setIgConnected(true);
           setIgUsername(parsedData.username);
           setIgProfile(parsedData);
+          
+          // Si tenemos datos de perfil con token, cargar reels
+          if (parsedData.access_token && parsedData.user_id) {
+            fetchUserReels(parsedData.access_token, parsedData.user_id);
+          }
         } catch (error) {
           console.error("Error al cargar datos de Instagram:", error);
           localStorage.removeItem('instagram_data');
@@ -79,7 +100,10 @@ export default function ProfilePage() {
       'instagram_business_manage_messages',
       'instagram_business_manage_comments',
       'instagram_business_content_publish',
-      'instagram_business_manage_insights'
+      'instagram_business_manage_insights',
+      'pages_show_list',
+      'pages_read_engagement',
+      'business_management'
     ].join('%2C');
     
     const authUrl = `https://www.instagram.com/oauth/authorize?enable_fb_login=0&force_authentication=1&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scopes}`;
@@ -134,11 +158,49 @@ export default function ProfilePage() {
       setIgUsername(data.data.username);
       setIgProfile(data.data);
       
+      // Si tenemos access_token y user_id, cargar reels
+      if (data.data.access_token && data.data.user_id) {
+        await fetchUserReels(data.data.access_token, data.data.user_id);
+      }
+      
     } catch (error) {
       console.error('Error al procesar la autenticación de Instagram:', error);
       alert('Hubo un error al conectar tu cuenta de Instagram. Por favor, intenta nuevamente.');
     } finally {
       setIsAuthenticating(false);
+    }
+  };
+
+  const fetchUserReels = async (accessToken: string, userId: string) => {
+    try {
+      setIsLoadingReels(true);
+      
+      const response = await fetch('/api/instagram/reels', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          accessToken,
+          userId,
+          limit: 5 // Obtener 5 reels para la demostración
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error al obtener reels: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.success && data.data) {
+        setReels(data.data);
+      } else {
+        console.error('Error en la respuesta del API:', data.error || 'Error desconocido');
+      }
+      
+    } catch (error) {
+      console.error('Error al obtener reels:', error);
+    } finally {
+      setIsLoadingReels(false);
     }
   };
 
@@ -148,6 +210,25 @@ export default function ProfilePage() {
     setIgConnected(false);
     setIgUsername('');
     setIgProfile(null);
+    setReels([]);
+  };
+
+  // Función para formatear la fecha
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', { 
+      day: 'numeric', 
+      month: 'short', 
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  // Función para recortar el texto del caption
+  const truncateCaption = (caption: string, maxLength: number = 100) => {
+    if (caption.length <= maxLength) return caption;
+    return caption.substring(0, maxLength) + '...';
   };
 
   if (isLoading) {
@@ -160,8 +241,8 @@ export default function ProfilePage() {
 
   return (
     <ProtectedRoute>
-      <div className="flex flex-col items-center justify-center min-h-[80vh] px-4">
-        <div className="w-full max-w-2xl">
+      <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 py-8">
+        <div className="w-full max-w-3xl">
           <div className="mb-8 text-center">
             <h1 className="text-3xl font-bold text-white">Perfil de Usuario</h1>
             <p className="text-gray-400 mt-2">Información de tu cuenta</p>
@@ -278,6 +359,72 @@ export default function ProfilePage() {
                     >
                       Desconectar cuenta
                     </Button>
+
+                    {/* Sección de reels del usuario */}
+                    <div className="mt-6 pt-4 border-t border-indigo-900/50">
+                      <div className="flex justify-between items-center mb-3">
+                        <h4 className="text-white font-medium flex items-center">
+                          <Film className="h-4 w-4 mr-2 text-pink-500" />
+                          Tus Reels Recientes
+                        </h4>
+                        {reels.length > 0 && (
+                          <span className="text-xs text-gray-400">{reels.length} encontrados</span>
+                        )}
+                      </div>
+                      
+                      {isLoadingReels ? (
+                        <div className="flex justify-center p-8">
+                          <Loader2 className="h-8 w-8 text-pink-500 animate-spin" />
+                        </div>
+                      ) : reels.length > 0 ? (
+                        <div className="space-y-3">
+                          {reels.map(reel => (
+                            <div key={reel.id} className="bg-indigo-900/20 rounded-lg p-3 border border-indigo-900/50">
+                              <div className="flex">
+                                {reel.thumbnail_url ? (
+                                  <div className="w-20 h-20 relative rounded overflow-hidden mr-3 flex-shrink-0">
+                                    <Image 
+                                      src={reel.thumbnail_url}
+                                      alt={reel.caption || 'Reel thumbnail'}
+                                      fill
+                                      className="object-cover"
+                                    />
+                                  </div>
+                                ) : (
+                                  <div className="w-20 h-20 bg-indigo-900/50 flex items-center justify-center rounded mr-3 flex-shrink-0">
+                                    <Film className="h-8 w-8 text-indigo-300" />
+                                  </div>
+                                )}
+                                <div className="flex-1 overflow-hidden">
+                                  <p className="text-white text-sm line-clamp-2">{truncateCaption(reel.caption)}</p>
+                                  <div className="flex items-center text-xs text-gray-400 mt-2">
+                                    <Clock className="h-3 w-3 mr-1" />
+                                    <span>{formatDate(reel.timestamp)}</span>
+                                  </div>
+                                  <div className="mt-2">
+                                    <a 
+                                      href={reel.permalink} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                      className="text-xs flex items-center text-pink-400 hover:text-pink-300 transition-colors"
+                                    >
+                                      <ExternalLink className="h-3 w-3 mr-1" />
+                                      Ver en Instagram
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-6 bg-indigo-900/10 rounded-lg border border-indigo-900/30">
+                          <Film className="h-10 w-10 text-gray-600 mx-auto mb-2" />
+                          <p className="text-gray-400">No se encontraron reels en tu cuenta</p>
+                          <p className="text-xs text-gray-500 mt-1">Publica reels en Instagram para verlos aquí</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ) : (
                   <div className="bg-[#1c1033] p-5 rounded-lg border border-indigo-900/50 mb-4">

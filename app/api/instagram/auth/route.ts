@@ -60,6 +60,19 @@ export async function POST(request: NextRequest) {
       const profileResponse = await fetch(`https://graph.instagram.com/${userId}?fields=id,username,profile_picture_url,media_count&access_token=${accessToken}`);
       const profileData = profileResponse.ok ? await profileResponse.json() : {};
       
+      // Intercambiamos el token de corta duración por uno de larga duración
+      const longLivedTokenResponse = await fetch(`https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${CLIENT_SECRET}&access_token=${accessToken}`);
+      
+      let longLivedToken = accessToken;
+      
+      if (longLivedTokenResponse.ok) {
+        const longLivedTokenData = await longLivedTokenResponse.json();
+        longLivedToken = longLivedTokenData.access_token;
+        console.log('Token de larga duración obtenido');
+      } else {
+        console.warn('No se pudo obtener token de larga duración, usando token normal');
+      }
+      
       // Combinamos los datos obtenidos
       const instagramUserData = {
         id: userData.id,
@@ -67,10 +80,16 @@ export async function POST(request: NextRequest) {
         account_type: userData.account_type,
         profile_picture: profileData.profile_picture_url || null,
         media_count: profileData.media_count || 0,
-        connected: true
+        connected: true,
+        // Incluimos los tokens para su uso posterior (en un entorno real, estos deberían encriptarse y almacenarse en una base de datos)
+        access_token: longLivedToken,
+        user_id: userId
       };
       
-      console.log('Datos reales de Instagram obtenidos:', instagramUserData);
+      console.log('Datos reales de Instagram obtenidos:', { 
+        ...instagramUserData, 
+        access_token: '[REDACTED]' // No mostramos el token en los logs
+      });
       
       return NextResponse.json({ 
         success: true, 
@@ -96,6 +115,9 @@ export async function POST(request: NextRequest) {
 // Función auxiliar para retornar datos simulados en caso de error
 function fallbackToMockData(code: string) {
   const lastFourChars = code.slice(-4);
+  // Generamos un token falso para pruebas
+  const fakeToken = 'FAKE_TOKEN_' + Math.random().toString(36).substring(2, 15);
+  
   const mockUserData = {
     id: '17841405793387' + lastFourChars,
     username: 'user_' + lastFourChars,
@@ -108,10 +130,16 @@ function fallbackToMockData(code: string) {
     media_count: Math.floor(Math.random() * 200) + 20,
     follower_count: Math.floor(Math.random() * 5000) + 500,
     following_count: Math.floor(Math.random() * 1000) + 100,
-    connected: true
+    connected: true,
+    // Incluimos tokens falsos para pruebas
+    access_token: fakeToken,
+    user_id: '17841405793387' + lastFourChars
   };
 
-  console.log('Datos de Instagram simulados (fallback):', mockUserData);
+  console.log('Datos de Instagram simulados (fallback):', {
+    ...mockUserData,
+    access_token: '[REDACTED]' // No mostramos el token en los logs
+  });
   
   return NextResponse.json({ 
     success: true, 
