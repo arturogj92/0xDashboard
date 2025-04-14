@@ -19,7 +19,8 @@ const nextConfig = {
       'instagram.com',
       'ggrjdxfnoqnqsohqmalh.supabase.co',
       'lh3.googleusercontent.com',
-      'platform-lookaside.fbsbx.com'
+      'platform-lookaside.fbsbx.com',
+      'i.pravatar.cc'
     ],
     remotePatterns: [
       {
