@@ -86,7 +86,16 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
 
   const handleCloseModal = () => {
     resetForm();
+    setInstagramReelsDialogOpen(false);
     onOpenChange(false);
+  };
+
+  const handleMainDialogChange = (isOpen: boolean) => {
+    if (!isOpen) {
+      setInstagramReelsDialogOpen(false);
+      resetForm();
+    }
+    onOpenChange(isOpen);
   };
 
   const handleDraftChange = () => {
@@ -117,7 +126,7 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
 
   return (
     <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog open={open} onOpenChange={handleMainDialogChange}>
         <DialogContent 
           className={`max-w-md bg-[#120724] ${isReelType && isDraft 
             ? 'border-2 border-amber-500/70' 

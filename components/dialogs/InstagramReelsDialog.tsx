@@ -26,19 +26,18 @@ export function InstagramReelsDialog({
   // Manejar cambios en el estado del diálogo
   const handleOpenChange = useCallback((newOpen: boolean) => {
     setInternalOpen(newOpen);
-    if (newOpen === false) {
-      // Solo propagar el cierre al padre cuando sea un cierre explícito
-      // (botón cancelar o clic fuera del diálogo)
-      onOpenChange(false);
-    }
+    
+    // Siempre informar al padre del cambio de estado
+    // Esto es necesario para que el estado padre se mantenga sincronizado
+    onOpenChange(newOpen);
   }, [onOpenChange]);
 
   const handleSelectReel = useCallback((url: string, thumbnailUrl: string, caption: string) => {
-    // Llamar al callback del padre sin cerrar este diálogo
+    // Llamar al callback del padre con los datos del reel
     onSelectReel(url, thumbnailUrl, caption);
-    // Cerrar solo este diálogo sin propagar
-    setInternalOpen(false);
-  }, [onSelectReel]);
+    // Cerrar este diálogo
+    handleOpenChange(false);
+  }, [onSelectReel, handleOpenChange]);
 
   return (
     <Dialog open={internalOpen} onOpenChange={handleOpenChange}>
