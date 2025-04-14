@@ -20,6 +20,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Button } from '@/components/ui/button';
 import { CardSkeleton, HeaderSkeleton, ImageSkeleton } from '@/components/ui/skeleton';
+import { InstagramReelsDialog } from '@/components/dialogs/InstagramReelsDialog';
 
 // Importar la imagen
 import DescriptionImage from '@/public/images/descriptions/description-story.png';
@@ -43,6 +44,9 @@ export default function EditReel() {
     const [isChangingUrl, setIsChangingUrl] = useState(false);
     const responsesSectionRef = useRef<any>(null);
     const [thumbnailLoading, setThumbnailLoading] = useState(true);
+    const [instagramReelsDialogOpen, setInstagramReelsDialogOpen] = useState(false);
+    const [selectedThumbnailUrl, setSelectedThumbnailUrl] = useState<string>('');
+    const [selectedReelCaption, setSelectedReelCaption] = useState<string>('');
 
     const extractInstagramReelId = (url: string) => {
         if (!url) return null;
@@ -288,14 +292,31 @@ export default function EditReel() {
         }
     };
 
-    // Función para publicar el reel
-    const handlePublishReel = async () => {
-        if (!reel || !url.trim()) return;
+    const handleInstagramReelSelect = (reelUrl: string, thumbnailUrl: string, caption: string) => {
+        setUrl(reelUrl);
+        setSelectedThumbnailUrl(thumbnailUrl);
+        setSelectedReelCaption(caption);
+        
+        // Si el reel está en modo borrador y se selecciona un reel, actualizar inmediatamente
+        if (!reel?.url) {
+            handlePublishReel(reelUrl);
+        } else {
+            // Si ya está publicado, guardar la nueva URL
+            setIsChangingUrl(true);
+            handleAutoSaveUrl(reelUrl);
+        }
+    };
+
+    const handlePublishReel = async (customUrl?: string) => {
+        if (!reel) return;
+        const urlToPublish = customUrl || url;
+
+        if (!urlToPublish.trim()) return;
 
         setIsSaving(true);
         setError(null);
         try {
-            const response = await publishReel(reel.id, url, description);
+            const response = await publishReel(reel.id, urlToPublish, description);
             console.log("Respuesta de publicar reel:", response); // Para debug
             
             if (response.success) {
@@ -303,13 +324,14 @@ export default function EditReel() {
                 const updatedReel = {
                     ...reel,
                     description,
-                    url,
+                    url: urlToPublish,
                     thumbnail_url: response.data.thumbnail_url
                 };
                 console.log("Nuevo estado del reel:", updatedReel); // Para debug
                 
                 // Actualizamos el estado completo
                 setReel(updatedReel);
+                setUrl(urlToPublish);
                 
                 // Resetear la bandera de cambio de URL
                 setIsChangingUrl(false);
@@ -482,20 +504,41 @@ export default function EditReel() {
                                                 {urlError}
                                             </p>
                                         )}
+
+                                        <div className="relative mt-2">
+                                            <div className="absolute inset-0 flex items-center">
+                                                <div className="w-full border-t border-gray-700"></div>
+                                            </div>
+                                            <div className="relative flex justify-center">
+                                                <span className="bg-[#120724] px-2 text-xs text-gray-400">
+                                                    o
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <Button 
+                                            type="button"
+                                            variant="outline"
+                                            onClick={() => setInstagramReelsDialogOpen(true)}
+                                            className="w-full mt-2 flex items-center justify-center gap-2 py-2.5 rounded-md border border-indigo-500/50 hover:bg-indigo-600/20"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 text-indigo-400"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
+                                            <span className="text-sm text-gray-200">Seleccionar reel de Instagram</span>
+                                        </Button>
                                     </div>
 
                                     {/* Botón para guardar */}
                                     {!reel.url && url.trim() !== '' && (
                                         <div className="flex justify-center mt-4">
                                             <button
-                                                onClick={handlePublishReel}
+                                                onClick={() => handlePublishReel()}
                                                 className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                             >
                                                 {isSaving ? 'Publicando...' : 'Publicar Reel'}
                                             </button>
                                         </div>
                                     )}
-                                    
+
                                     {/* iPhone con previsualización del reel */}
                                     <div className="relative w-[200px] h-[398px] mx-auto mt-6">
                                         {/* Marco del iPhone */}
@@ -633,6 +676,13 @@ export default function EditReel() {
                     </div>
                 </div>
             </div>
+
+            {/* Diálogo de selección de reels de Instagram */}
+            <InstagramReelsDialog 
+                open={instagramReelsDialogOpen}
+                onOpenChange={setInstagramReelsDialogOpen}
+                onSelectReel={handleInstagramReelSelect}
+            />
         </ProtectedRoute>
     );
 } 
