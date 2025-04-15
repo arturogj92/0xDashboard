@@ -50,49 +50,99 @@ export default function Home() {
   // Determinar si el usuario puede crear automatizaciones
   const canCreateAutomations = user?.isFacebookLinked && user?.isFacebookTokenValid;
 
-  // Mensaje de advertencia si no puede crear automatizaciones
+  // Generalización de avisos para conexión/reconexión de Instagram
   let automationWarning = null;
+  const isInstagramMissing = user?.isFacebookLinked && user?.isFacebookTokenValid && (!user?.instagram_username || !user?.instagram_profile_pic_url);
   if (user?.isFacebookLinked && !user?.isFacebookTokenValid) {
     automationWarning = (
       <div className="w-full max-w-2xl mx-auto bg-yellow-900/10 shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
-        <Image
-          src="/images/descriptions/insta-facebook-link.png"
-          alt="Instagram y Facebook Link Icon"
-          width={128}
-          height={128}
-          className="mb-2 mx-auto"
-        />
-        <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">
-          <span role="img" aria-label="reloj" className="mr-2">⏰</span>
-          ¡Reconecta tu cuenta de Instagram!
-        </h2>
+        <span className="text-3xl mb-2">⏰</span>
+        <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">¡Reconecta tu cuenta de Instagram!</h2>
         <p className="text-base text-center text-yellow-100 mb-4 break-words w-full leading-snug">
           Tu sesión de Facebook ha expirado. Para seguir creando automatizaciones, por favor reconecta tu cuenta de Instagram mediante Facebook.
         </p>
-        <Button
-          className="px-8 py-4 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-400 hover:from-pink-600 hover:to-yellow-500 text-white border-0 flex items-center justify-center space-x-2 mb-4 rounded-lg text-lg font-bold shadow-md mx-auto"
-          onClick={handleConnectFacebook}
-        >
-          <FaInstagram className="w-6 h-6 text-white" />
-          <span>{user?.isFacebookLinked && !user?.isFacebookTokenValid ? 'Requisitos para conectar la cuenta' : 'Requisitos para conectar la cuenta'}</span>
-        </Button>
+        <InstagramConnectButton reconnect />
+        <ConnectHelpButton reconnect />
+      </div>
+    );
+  } else if (isInstagramMissing) {
+    automationWarning = (
+      <div className="w-full max-w-2xl mx-auto bg-yellow-900/10 shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
+        <span className="text-3xl mb-2">⚠️</span>
+        <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">No se encontró ninguna cuenta Business de Instagram</h2>
+        <p className="text-base text-center text-yellow-100 mb-4 break-words w-full leading-snug">
+          No se ha detectado ninguna cuenta Business o Creador de Instagram vinculada a tu Facebook. Por favor, reconecta y asegúrate de seleccionar una cuenta válida durante el proceso.
+        </p>
+        <InstagramConnectButton reconnect />
+        <ConnectHelpButton reconnect />
+      </div>
+    );
+  } else if (!canCreateAutomations) {
+    automationWarning = (
+      <div className="w-full max-w-2xl mx-auto bg-yellow-900/10 shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
+        <span className="text-3xl mb-2">⚠️</span>
+        <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">¡Conecta tu cuenta de Instagram a través de Facebook!</h2>
+        <p className="text-base text-center text-yellow-100 mb-4 break-words w-full leading-snug">
+          Para crear automatizaciones necesitas vincular tu cuenta de Instagram mediante Facebook.
+        </p>
+        <InstagramConnectButton />
+        <ConnectHelpButton />
+      </div>
+    );
+  }
+
+  // Componentes reutilizables para el botón y la ayuda
+  function InstagramConnectButton({ reconnect = false }: { reconnect?: boolean }) {
+    return (
+      <Button
+        className="px-8 py-4 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-400 hover:from-pink-600 hover:to-yellow-500 text-white border-0 flex items-center justify-center space-x-2 mb-4 rounded-lg text-lg font-bold shadow-md mx-auto"
+        onClick={handleConnectFacebook}
+      >
+        <FaInstagram className="w-6 h-6 text-white" />
+        <span>{reconnect ? 'Reconectar cuenta de Instagram' : 'Iniciar sesión con Instagram'}</span>
+      </Button>
+    );
+  }
+
+  function ConnectHelpButton({ reconnect = false }: { reconnect?: boolean }) {
+    return (
+      <>
         <button
           className="mt-3 text-xs text-yellow-300 underline hover:text-yellow-100 transition-colors text-center"
           onClick={() => setInfoModalOpen(true)}
           type="button"
         >
-          {user?.isFacebookLinked && !user?.isFacebookTokenValid ? '¿Cómo reconectar mi cuenta?' : '¿Cómo conectar mi cuenta?'}
+          {reconnect ? '¿Cómo reconectar mi cuenta?' : '¿Cómo conectar mi cuenta?'}
         </button>
         <Dialog open={infoModalOpen} onOpenChange={setInfoModalOpen}>
-          <DialogContent className="bg-[#120724] border border-indigo-900/50 text-white max-w-2xl">
+          <DialogContent className="bg-[#120724] border border-indigo-900/50 text-white w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl p-4 sm:p-6 md:p-8 overflow-y-auto max-h-[90vh]">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold text-center flex items-center justify-center gap-2 mb-2">
                 <FaInstagram className="text-pink-400 text-xl" />
-                <span>Añade tu cuenta de instagram a través de facebook</span>
+                <span>Conecta Instagram con Facebook</span>
                 <FaFacebook className="text-blue-400 text-xl" />
               </DialogTitle>
               <DialogDescription className="text-gray-400 text-center">
-                Para usar las funciones de automatización, necesitas conectar tu Instagram Professional.
+                Para usar las funciones de automatización, necesitas conectar tu Instagram Professional.<br />
+                <span className="block mt-2 text-yellow-200 font-semibold">Es obligatorio tener una <b>cuenta de Facebook</b> asociada a tu cuenta de Instagram.</span>
+                <span className="block mt-2 text-gray-300">Si creaste tu cuenta de Instagram sin Facebook, primero debes crear una cuenta de Facebook y enlazarla a tu Instagram.</span>
+                <a
+                  href="https://www.facebook.com/help/instagram/570895513091465"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block mt-2 text-blue-400 underline hover:text-blue-300"
+                >
+                  Cómo vincular tu cuenta de Facebook a Instagram
+                </a>
+                <span className="block mt-4 text-gray-300">Puedes enlazar tu cuenta iniciando sesión en tu cuenta de Facebook desde Meta Business:</span>
+                <a
+                  href="https://business.facebook.com/business/loginpage/?login_options[0]=FB&login_options[1]=IG&login_options[2]=SSO&config_ref=biz_login_tool_flavor_mbs&create_business_portfolio_for_bm=1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block mt-2 text-blue-400 underline hover:text-blue-300"
+                >
+                  Acceder a Meta Business para enlazar cuentas
+                </a>
               </DialogDescription>
             </DialogHeader>
             <div className="mt-4">
@@ -142,7 +192,7 @@ export default function Home() {
                 </li>
               </ul>
               <div className="bg-yellow-900/30 border border-yellow-800 text-yellow-200 p-3 rounded text-center">
-                Si tu token está expirado o no tienes la cuenta correctamente vinculada, <b>no podrás crear automatizaciones de reels ni historias</b>.
+                Si tu token está expirado o no tienes la cuenta correctamente vinculada, <b>no podrás crear reels ni historias</b>.
               </div>
               <div className="flex justify-center mt-6">
                 <Button className="bg-indigo-700 hover:bg-indigo-600 text-white" onClick={() => setInfoModalOpen(false)}>
@@ -152,99 +202,7 @@ export default function Home() {
             </div>
           </DialogContent>
         </Dialog>
-      </div>
-    );
-  } else if (!canCreateAutomations) {
-    automationWarning = (
-      <div className="w-full max-w-2xl mx-auto bg-yellow-900/10 shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
-        <Image
-          src="/images/descriptions/insta-facebook-link.png"
-          alt="Instagram y Facebook Link Icon"
-          width={128}
-          height={128}
-          className="mb-2 mx-auto"
-        />
-        <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">¡Conecta tu cuenta de Instagram a través de Facebook!</h2>
-        <p className="text-base text-center text-yellow-100 mb-4 break-words w-full leading-snug">
-          Para crear automatizaciones necesitas vincular tu cuenta de Instagram mediante Facebook.
-        </p>
-        <Button
-          className="px-8 py-4 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-400 hover:from-pink-600 hover:to-yellow-500 text-white border-0 flex items-center justify-center space-x-2 mb-4 rounded-lg text-lg font-bold shadow-md mx-auto"
-          onClick={handleConnectFacebook}
-        >
-          <FaInstagram className="w-6 h-6 text-white" />
-          <span>{user?.isFacebookLinked && !user?.isFacebookTokenValid ? 'Reconectar cuenta de Instagram' : 'Enlazar cuenta de Instagram'}</span>
-        </Button>
-        <button
-          className="mt-3 text-xs text-yellow-300 underline hover:text-yellow-100 transition-colors text-center"
-          onClick={() => setInfoModalOpen(true)}
-          type="button"
-        >
-          {user?.isFacebookLinked && !user?.isFacebookTokenValid ? 'Requisitos para conectar la cuenta' : 'Requisitos para conectar la cuenta'}
-        </button>
-        <Dialog open={infoModalOpen} onOpenChange={setInfoModalOpen}>
-          <DialogContent className="bg-[#120724] border border-indigo-900/50 text-white max-w-2xl">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-bold text-center flex items-center justify-center gap-2 mb-2">
-                <FaInstagram className="text-pink-400 text-xl" />
-                <span>Añade tu cuenta de instagram a través de facebook</span>
-                <FaFacebook className="text-blue-400 text-xl" />
-              </DialogTitle>
-              <DialogDescription className="text-gray-400 text-center">
-                Para usar las funciones de automatización, necesitas conectar tu Instagram Professional.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="mt-4">
-              <h3 className="text-lg font-semibold text-center mb-4 text-yellow-200">✨ ¿Qué necesitas?</h3>
-              <ul className="space-y-4 text-left mb-6">
-                <li className="flex items-start gap-3 p-2 border border-indigo-900/30 rounded bg-indigo-900/20">
-                  <FaInstagram className="text-pink-400 text-xl mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="text-gray-200">Una cuenta de Instagram de tipo </span>
-                    <span className="text-yellow-200 font-bold">Business</span>
-                    <span className="text-gray-200"> o </span>
-                    <span className="text-yellow-200 font-bold">Creador</span>
-                    <span className="ml-2 text-lg">📱</span>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3 p-2 border border-indigo-900/30 rounded bg-indigo-900/20">
-                  <FaFacebook className="text-blue-400 text-xl mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="text-gray-200">Que esté vinculada a una </span>
-                    <span className="text-yellow-200 font-bold">Página de Facebook</span>
-                    <span className="text-gray-200"> (no solo perfil personal) </span>
-                    <span className="ml-2 text-lg">📄</span>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3 p-2 border border-indigo-900/30 rounded bg-indigo-900/20">
-                  <span className="text-yellow-300 text-xl mt-1 flex-shrink-0">👑</span>
-                  <div>
-                    <span className="text-gray-200">Permisos de </span>
-                    <span className="text-yellow-200 font-bold">administrador</span>
-                    <span className="text-gray-200"> en la página de Facebook vinculada</span>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3 p-2 border border-indigo-900/30 rounded bg-indigo-900/20">
-                  <span className="text-green-400 text-xl mt-1 flex-shrink-0">✅</span>
-                  <div>
-                    <span className="text-gray-200">Conceder </span>
-                    <span className="text-yellow-200 font-bold">todos los permisos</span>
-                    <span className="text-gray-200"> solicitados durante el proceso de conexión</span>
-                  </div>
-                </li>
-              </ul>
-              <div className="bg-yellow-900/30 border border-yellow-800 text-yellow-200 p-3 rounded text-center">
-                Si tu token está expirado o no tienes la cuenta correctamente vinculada, <b>no podrás crear automatizaciones de reels ni historias</b>.
-              </div>
-              <div className="flex justify-center mt-6">
-                <Button className="bg-indigo-700 hover:bg-indigo-600 text-white" onClick={() => setInfoModalOpen(false)}>
-                  Entendido
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+      </>
     );
   }
 
