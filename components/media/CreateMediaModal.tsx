@@ -182,7 +182,6 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
                         required={!isDraft}
                         disabled={isDraft}
                         value={urlValue}
-                        readOnly={true}
                         onChange={(e) => {
                           setUrlValue(e.target.value);
                           // Si se borra la URL, quitar la miniatura
@@ -190,8 +189,8 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
                             setShowThumbnail(false);
                           }
                         }}
-                        className="block w-full rounded-md border-gray-700 bg-[#1c1033] py-2.5 px-3 text-gray-200 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm disabled:bg-gray-900 cursor-not-allowed"
-                        placeholder={isDraft ? "No requerido en modo borrador" : "Selecciona un reel de Instagram..."}
+                        className="block w-full rounded-md border-gray-700 bg-[#1c1033] py-2.5 px-3 text-gray-200 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm disabled:bg-gray-900"
+                        placeholder={isDraft ? "No requerido en modo borrador" : "https://www.instagram.com/reel/..."}
                       />
                     </div>
                   </div>
