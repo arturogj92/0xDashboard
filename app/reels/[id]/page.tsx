@@ -60,6 +60,14 @@ export default function EditReel() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    useEffect(() => {
+        // Actualizar la miniatura cuando cambia la URL
+        if (reel) {
+            setReel({ ...reel, thumbnail_url: reel.thumbnail_url });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [url]);
+
     const fetchReel = async () => {
         try {
             const reelResponse = await getReel(reelId);
@@ -202,13 +210,6 @@ export default function EditReel() {
         }
     }, [reel]);
 
-    // Cuando cambie el valor de thumbnailLoading o la URL de la miniatura, resetear isChangingUrl 
-    useEffect(() => {
-        if ((!thumbnailLoading && reel?.thumbnail_url) || selectedThumbnailUrl) {
-            setIsChangingUrl(false);
-        }
-    }, [thumbnailLoading, reel?.thumbnail_url, selectedThumbnailUrl]);
-
     const handleGoBack = () => {
         router.back();
     };
@@ -247,19 +248,10 @@ export default function EditReel() {
         // Si está borrando la URL o cambiándola significativamente
         if ((oldValue && !newValue) || (oldValue && newValue && oldValue.length > 5 && !newValue.includes(oldValue.substring(0, 5)))) {
             setIsChangingUrl(true);
-            // Restablecer el estado de carga de la miniatura para mostrar el esqueleto
-            setThumbnailLoading(true);
         }
         
         setUrl(newValue);
         setUrlError(null);
-        
-        // Mostrar estado de "cargando" inmediatamente
-        if (newValue && newValue.includes('instagram.com/reel/')) {
-            setIsChangingUrl(true);
-            // Restablecer el estado de carga de la miniatura para mostrar el esqueleto
-            setThumbnailLoading(true);
-        }
         
         // Solo auto-guardar si el reel ya está publicado
         if (reel?.url) {
@@ -276,52 +268,40 @@ export default function EditReel() {
         }
     };
 
-    const handleAutoSaveUrl = async (newUrl: string) => {
+    const handleAutoSaveUrl = async (newUrl: string, directThumbnailUrl?: string) => {
         if (!reel) return;
         
         try {
             setIsUrlSaving(true);
             
-            // Si la URL es de Instagram, intentar extraer la miniatura inmediatamente
-            if (newUrl && newUrl.includes('instagram.com/reel/')) {
-                // Actualizar primero con la URL, mientras se obtiene la miniatura
+            // Si tenemos un thumbnail directo de Instagram, actualizamos el estado inmediatamente
+            if (directThumbnailUrl) {
                 setReel({
                     ...reel,
-                    url: newUrl
+                    url: newUrl,
+                    thumbnail_url: directThumbnailUrl
                 });
-                
-                // Mostrar que estamos actualizando
-                setIsChangingUrl(true);
+                setIsChangingUrl(false);
             }
             
             const response = await updateReelUrl(reel.id, newUrl);
             if (response.success) {
-                // Preservar la miniatura existente si el backend no devuelve una
-                const newThumbnailUrl = response.data.thumbnail_url || reel.thumbnail_url || selectedThumbnailUrl;
-                
-                // Actualizar el reel preservando la miniatura
-                setReel({ 
-                    ...reel, 
-                    url: newUrl,
-                    thumbnail_url: newThumbnailUrl
+                // Actualizar con la respuesta del servidor, preservando valores existentes
+                setReel((prevReel) => {
+                    if (!prevReel) return null;
+                    
+                    return {
+                        ...prevReel,
+                        url: newUrl,
+                        thumbnail_url: response.data.thumbnail_url || directThumbnailUrl || prevReel.thumbnail_url
+                    };
                 });
+                
                 setUrlError(null);
                 
-                // Resetear la bandera de cambio de URL
-                if (newThumbnailUrl) {
+                // Resetear la bandera de cambio de URL solo cuando tenemos una respuesta exitosa
+                if (response.data.thumbnail_url || directThumbnailUrl) {
                     setIsChangingUrl(false);
-                    // Forzar reinicio del estado de carga de la miniatura
-                    setThumbnailLoading(true);
-                    
-                    // Si no tenemos una miniatura seleccionada pero tenemos una del backend, guardarla también en selectedThumbnailUrl
-                    if (response.data.thumbnail_url && !selectedThumbnailUrl) {
-                        setSelectedThumbnailUrl(response.data.thumbnail_url);
-                    }
-                } else if (newUrl && newUrl.includes('instagram.com/reel/')) {
-                    // Si no tenemos miniatura pero la URL parece válida, intentar cargarla de nuevo en 2 segundos
-                    setTimeout(() => {
-                        fetchReelThumbnail(newUrl);
-                    }, 2000);
                 }
             } else {
                 setUrlError('URL inválida');
@@ -333,40 +313,13 @@ export default function EditReel() {
         }
     };
 
-    // Nueva función para cargar específicamente la miniatura de un reel
-    const fetchReelThumbnail = async (reelUrl: string) => {
-        if (!reel) return;
-        
-        try {
-            // Usar updateReelUrl de nuevo, pero esta vez específicamente para obtener la miniatura
-            const response = await updateReelUrl(reel.id, reelUrl);
-            
-            if (response.success && response.data.thumbnail_url) {
-                // Si tenemos éxito en obtener la miniatura, actualizar el estado
-                setReel({
-                    ...reel,
-                    thumbnail_url: response.data.thumbnail_url
-                });
-                setSelectedThumbnailUrl(response.data.thumbnail_url);
-                setIsChangingUrl(false);
-                setThumbnailLoading(true);
-            } else {
-                // Si después del segundo intento sigue sin haber miniatura, mostrar un mensaje
-                console.log('No se pudo obtener la miniatura del reel después de varios intentos');
-                setIsChangingUrl(false);
-            }
-        } catch (err) {
-            console.error('Error al obtener la miniatura:', err);
-            setIsChangingUrl(false);
-        }
-    };
-
     const handleInstagramReelSelect = (reelUrl: string, thumbnailUrl: string, caption: string) => {
         setUrl(reelUrl);
         setSelectedThumbnailUrl(thumbnailUrl);
         setSelectedReelCaption(caption);
+        setThumbnailLoading(false);
         
-        // Actualizar la miniatura en el estado del reel para mostrarla inmediatamente
+        // Actualizar inmediatamente la vista previa con el thumbnail recibido
         if (reel) {
             setReel({
                 ...reel,
@@ -380,8 +333,8 @@ export default function EditReel() {
             handlePublishReel(reelUrl);
         } else {
             // Si ya está publicado, guardar la nueva URL
-            setIsChangingUrl(true);
-            handleAutoSaveUrl(reelUrl);
+            setIsChangingUrl(false); // No ocultar la imagen mientras se procesa
+            handleAutoSaveUrl(reelUrl, thumbnailUrl);
         }
     };
 
@@ -435,18 +388,6 @@ export default function EditReel() {
             if (urlSaveTimeout) clearTimeout(urlSaveTimeout);
         };
     }, [saveTimeout, urlSaveTimeout]);
-
-    // Añadir un efecto para reintentar cargar la miniatura si cambia la URL
-    useEffect(() => {
-        // Si tenemos una URL pero no tenemos miniatura, intentar cargarla
-        if (url && url.includes('instagram.com/reel/') && reel && (!reel.thumbnail_url || reel.thumbnail_url === '')) {
-            const retryTimeout = setTimeout(() => {
-                fetchReelThumbnail(url);
-            }, 3000); // Esperar 3 segundos y volver a intentar
-            
-            return () => clearTimeout(retryTimeout);
-        }
-    }, [url, reel?.thumbnail_url]);
 
     if (loading) {
         return (
@@ -642,15 +583,13 @@ export default function EditReel() {
                                         <div className="absolute top-0 left-0 right-0 bottom-0 z-10 flex items-center justify-center">
                                             {url && !isChangingUrl ? (
                                                 <div className="relative w-full h-full overflow-hidden rounded-[36px]">
-                                                    {(reel && ((reel.thumbnail_url && reel.thumbnail_url !== '' && reel.thumbnail_url.startsWith('http')) || selectedThumbnailUrl)) ? (
-                                                        <div className="w-full h-full relative" key={(reel.thumbnail_url || selectedThumbnailUrl || 'placeholder') + new Date().getTime()}>
+                                                    {reel && reel.thumbnail_url && reel.thumbnail_url !== '' && reel.thumbnail_url.startsWith('http') ? (
+                                                        <div className="w-full h-full relative" key={reel.thumbnail_url || 'placeholder'}>
                                                             {thumbnailLoading && (
                                                                 <ImageSkeleton className="absolute inset-0 z-10" />
                                                             )}
                                                             <Image 
-                                                                src={reel.thumbnail_url && reel.thumbnail_url !== '' && reel.thumbnail_url.startsWith('http') 
-                                                                    ? reel.thumbnail_url 
-                                                                    : selectedThumbnailUrl} 
+                                                                src={reel.thumbnail_url} 
                                                                 alt="Miniatura del reel"
                                                                 fill
                                                                 className={`object-cover transition-opacity duration-300 ${thumbnailLoading ? 'opacity-0' : 'opacity-100'}`}
