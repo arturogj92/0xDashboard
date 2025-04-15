@@ -121,12 +121,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   // Nueva función para manejar el login post-callback (ej: Facebook)
-  const loginWithToken = (token: string, userData: User) => {
+  const loginWithToken = async (token: string, userData: User) => {
     console.log('Login con token', token, userData);
     localStorage.setItem('token', token); // Guardar el nuevo token
-    setUser(userData); // Establecer el usuario en el estado
     setError(null); // Limpiar errores previos
-    router.push('/'); // Redirigir al dashboard o página principal
+    setIsLoading(true);
+    try {
+      const profileResponse = await getUserProfile();
+      if (profileResponse.success && profileResponse.data) {
+        setUser(profileResponse.data);
+        router.push('/'); // Redirigir al dashboard o página principal
+      } else {
+        // Si falla, hacer logout
+        handleLogout();
+      }
+    } catch (err) {
+      handleLogout();
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleLogout = () => {
