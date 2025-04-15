@@ -52,29 +52,28 @@ export default function Home() {
   // Determinar si el usuario puede crear automatizaciones
   const canCreateAutomations = user?.isFacebookLinked && user?.isFacebookTokenValid;
 
-  // Mensaje de advertencia como botón que abre modal
+  // Mensaje de advertencia como card responsivo y usable en móvil
   const automationWarning = !canCreateAutomations ? (
-    <div className="bg-yellow-900/20 border border-yellow-700 text-yellow-300 px-4 py-5 rounded mb-6 text-center flex flex-col items-center">
-      <Button
-        variant="destructive"
-        className="bg-yellow-900/60 hover:bg-yellow-900 text-yellow-300 border border-yellow-600 px-4 py-3 rounded text-lg font-bold mb-3"
-        onClick={() => setInfoModalOpen(true)}
-      >
-        <span className="mr-2">⚠️</span>
-        ¡Conecta tu cuenta de Instagram a través de Facebook!
-        <span className="ml-2">⚠️</span>
-      </Button>
-      <p className="text-base mb-4">
+    <div className="w-full max-w-md mx-auto bg-yellow-900/10 shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
+      <span className="text-3xl mb-2">⚠️</span>
+      <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">¡Conecta tu cuenta de Instagram a través de Facebook!</h2>
+      <p className="text-base text-center text-yellow-100 mb-4 break-words w-full leading-snug">
         Para crear automatizaciones necesitas vincular tu cuenta de Instagram mediante Facebook.
       </p>
-      {/* Botón para iniciar el flujo de conexión con Facebook */}
       <Button
-        className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-full flex items-center gap-2 shadow-lg mb-2"
+        className="w-full py-3 rounded-full font-bold text-white text-base bg-gradient-to-r from-pink-500 via-red-500 to-yellow-400 border-0 shadow-md hover:from-pink-600 hover:to-yellow-500 transition-all duration-200 mb-2"
+        style={{ boxShadow: '0 2px 12px 0 rgba(255, 0, 100, 0.15)' }}
         onClick={handleConnectFacebook}
       >
-        <FaFacebook className="text-2xl" />
-        Conectar cuenta de Instagram vía Facebook
+        Conectar cuenta de Instagram
       </Button>
+      <button
+        className="mt-3 text-xs text-yellow-300 underline hover:text-yellow-100 transition-colors text-center"
+        onClick={() => setInfoModalOpen(true)}
+        type="button"
+      >
+        ¿Cómo conectar mi cuenta?
+      </button>
       <Dialog open={infoModalOpen} onOpenChange={setInfoModalOpen}>
         <DialogContent className="bg-[#120724] border border-indigo-900/50 text-white max-w-2xl">
           <DialogHeader>
@@ -87,7 +86,6 @@ export default function Home() {
               Para usar las funciones de automatización, necesitas conectar tu Instagram Professional.
             </DialogDescription>
           </DialogHeader>
-          
           <div className="mt-4">
             <Image
               src="/images/descriptions/instagram-not-connected.png"
@@ -96,9 +94,7 @@ export default function Home() {
               height={160}
               className="object-contain mx-auto mb-4"
             />
-            
             <h3 className="text-lg font-semibold text-center mb-4 text-yellow-200">✨ ¿Qué necesitas?</h3>
-            
             <ul className="space-y-4 text-left mb-6">
               <li className="flex items-start gap-3 p-2 border border-indigo-900/30 rounded bg-indigo-900/20">
                 <FaInstagram className="text-pink-400 text-xl mt-1 flex-shrink-0" />
@@ -110,7 +106,6 @@ export default function Home() {
                   <span className="ml-2 text-lg">📱</span>
                 </div>
               </li>
-              
               <li className="flex items-start gap-3 p-2 border border-indigo-900/30 rounded bg-indigo-900/20">
                 <FaFacebook className="text-blue-400 text-xl mt-1 flex-shrink-0" />
                 <div>
@@ -120,7 +115,6 @@ export default function Home() {
                   <span className="ml-2 text-lg">📄</span>
                 </div>
               </li>
-              
               <li className="flex items-start gap-3 p-2 border border-indigo-900/30 rounded bg-indigo-900/20">
                 <span className="text-yellow-300 text-xl mt-1 flex-shrink-0">👑</span>
                 <div>
@@ -129,7 +123,6 @@ export default function Home() {
                   <span className="text-gray-200"> en la página de Facebook vinculada</span>
                 </div>
               </li>
-              
               <li className="flex items-start gap-3 p-2 border border-indigo-900/30 rounded bg-indigo-900/20">
                 <span className="text-green-400 text-xl mt-1 flex-shrink-0">✅</span>
                 <div>
@@ -139,11 +132,9 @@ export default function Home() {
                 </div>
               </li>
             </ul>
-            
             <div className="bg-yellow-900/30 border border-yellow-800 text-yellow-200 p-3 rounded text-center">
               Si tu token está expirado o no tienes la cuenta correctamente vinculada, <b>no podrás crear reels ni historias</b>.
             </div>
-            
             <div className="flex justify-center mt-6">
               <Button className="bg-indigo-700 hover:bg-indigo-600 text-white" onClick={() => setInfoModalOpen(false)}>
                 Entendido
