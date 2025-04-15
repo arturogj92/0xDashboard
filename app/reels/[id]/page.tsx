@@ -247,6 +247,8 @@ export default function EditReel() {
         // Si está borrando la URL o cambiándola significativamente
         if ((oldValue && !newValue) || (oldValue && newValue && oldValue.length > 5 && !newValue.includes(oldValue.substring(0, 5)))) {
             setIsChangingUrl(true);
+            // Restablecer el estado de carga de la miniatura para mostrar el esqueleto
+            setThumbnailLoading(true);
         }
         
         setUrl(newValue);
@@ -255,6 +257,8 @@ export default function EditReel() {
         // Mostrar estado de "cargando" inmediatamente
         if (newValue && newValue.includes('instagram.com/reel/')) {
             setIsChangingUrl(true);
+            // Restablecer el estado de carga de la miniatura para mostrar el esqueleto
+            setThumbnailLoading(true);
         }
         
         // Solo auto-guardar si el reel ya está publicado
@@ -431,6 +435,18 @@ export default function EditReel() {
             if (urlSaveTimeout) clearTimeout(urlSaveTimeout);
         };
     }, [saveTimeout, urlSaveTimeout]);
+
+    // Añadir un efecto para reintentar cargar la miniatura si cambia la URL
+    useEffect(() => {
+        // Si tenemos una URL pero no tenemos miniatura, intentar cargarla
+        if (url && url.includes('instagram.com/reel/') && reel && (!reel.thumbnail_url || reel.thumbnail_url === '')) {
+            const retryTimeout = setTimeout(() => {
+                fetchReelThumbnail(url);
+            }, 3000); // Esperar 3 segundos y volver a intentar
+            
+            return () => clearTimeout(retryTimeout);
+        }
+    }, [url, reel?.thumbnail_url]);
 
     if (loading) {
         return (
