@@ -67,9 +67,9 @@ div[style*="display: inline-block"] {
 }
 
 /* Forzar que cualquier botón dentro de un div width:100% también tenga ancho completo */
-.w-full button {
+/* .w-full button {
   width: 100% !important;
-}
+} */
 
 /* Si algo sigue con ancho incorrecto, este es un enfoque nuclear */
 .w-full > div, .w-full > div > div, .w-full iframe, .w-full * {

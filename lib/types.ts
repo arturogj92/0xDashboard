@@ -72,6 +72,8 @@ export interface User {
     avatar_url?: string;
     isFacebookLinked?: boolean;
     isFacebookTokenValid?: boolean;
+    instagram_username?: string;
+    instagram_profile_pic_url?: string;
 }
 
 export interface AuthResponse {
