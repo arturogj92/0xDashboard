@@ -70,6 +70,8 @@ export interface User {
     email: string;
     name?: string;
     avatar_url?: string;
+    isFacebookLinked?: boolean;
+    isFacebookTokenValid?: boolean;
 }
 
 export interface AuthResponse {
