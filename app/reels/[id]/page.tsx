@@ -21,6 +21,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { CardSkeleton, HeaderSkeleton, ImageSkeleton } from '@/components/ui/skeleton';
 import { InstagramReelsDialog } from '@/components/dialogs/InstagramReelsDialog';
+import { Instagram } from 'lucide-react';
+import { FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 
 // Importar la imagen
 import DescriptionImage from '@/public/images/descriptions/description-story.png';
@@ -38,9 +41,7 @@ export default function EditReel() {
     const [isSaving, setIsSaving] = useState(false);
     const [isUrlSaving, setIsUrlSaving] = useState(false);
     const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
-    const [saveTimeoutUrl, setSaveTimeoutUrl] = useState<NodeJS.Timeout | null>(null);
     const [urlError, setUrlError] = useState<string | null>(null);
-    const [urlSaveTimeout, setUrlSaveTimeout] = useState<NodeJS.Timeout | null>(null);
     const [isChangingUrl, setIsChangingUrl] = useState(false);
     const responsesSectionRef = useRef<any>(null);
     const [thumbnailLoading, setThumbnailLoading] = useState(true);
@@ -241,100 +242,48 @@ export default function EditReel() {
         setSaveTimeout(timeoutId);
     };
 
-    const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = e.target.value;
-        const oldValue = url;
-        
-        // Si está borrando la URL o cambiándola significativamente
-        if ((oldValue && !newValue) || (oldValue && newValue && oldValue.length > 5 && !newValue.includes(oldValue.substring(0, 5)))) {
-            setIsChangingUrl(true);
-        }
-        
-        setUrl(newValue);
-        setUrlError(null);
-        
-        // Solo auto-guardar si el reel ya está publicado
-        if (reel?.url) {
-            setIsUrlSaving(true);
-            if (urlSaveTimeout) {
-                clearTimeout(urlSaveTimeout);
-            }
-            
-            const timeoutId = setTimeout(() => {
-                handleAutoSaveUrl(newValue);
-            }, 2000); // 2 segundos
-
-            setUrlSaveTimeout(timeoutId);
-        }
-    };
-
-    const handleAutoSaveUrl = async (newUrl: string, directThumbnailUrl?: string) => {
-        if (!reel) return;
-        
-        try {
-            setIsUrlSaving(true);
-            
-            // Si tenemos un thumbnail directo de Instagram, actualizamos el estado inmediatamente
-            if (directThumbnailUrl) {
-                setReel({
-                    ...reel,
-                    url: newUrl,
-                    thumbnail_url: directThumbnailUrl
-                });
-                setIsChangingUrl(false);
-            }
-            
-            const response = await updateReelUrl(reel.id, newUrl);
-            if (response.success) {
-                // Actualizar con la respuesta del servidor, preservando valores existentes
-                setReel((prevReel) => {
-                    if (!prevReel) return null;
-                    
-                    return {
-                        ...prevReel,
-                        url: newUrl,
-                        thumbnail_url: response.data.thumbnail_url || directThumbnailUrl || prevReel.thumbnail_url
-                    };
-                });
-                
-                setUrlError(null);
-                
-                // Resetear la bandera de cambio de URL solo cuando tenemos una respuesta exitosa
-                if (response.data.thumbnail_url || directThumbnailUrl) {
-                    setIsChangingUrl(false);
-                }
-            } else {
-                setUrlError('URL inválida');
-            }
-        } catch (err) {
-            setUrlError('Error al actualizar la URL');
-        } finally {
-            setIsUrlSaving(false);
-        }
-    };
-
-    const handleInstagramReelSelect = (reelUrl: string, thumbnailUrl: string, caption: string) => {
+    const handleInstagramReelSelect = async (reelUrl: string, thumbnailUrl: string, caption: string) => {
         setUrl(reelUrl);
         setSelectedThumbnailUrl(thumbnailUrl);
         setSelectedReelCaption(caption);
         setThumbnailLoading(false);
         
-        // Actualizar inmediatamente la vista previa con el thumbnail recibido
+        // Actualizar la miniatura inmediatamente en lugar de esperar la respuesta del backend
         if (reel) {
+            // Actualizar temporalmente el reel con la nueva miniatura
             setReel({
                 ...reel,
-                url: reelUrl,
-                thumbnail_url: thumbnailUrl
+                thumbnail_url: thumbnailUrl,
+                url: reelUrl
             });
         }
+        
+        // Desactivar la bandera de cambio de URL para mostrar la miniatura inmediatamente
+        setIsChangingUrl(false);
         
         // Si el reel está en modo borrador y se selecciona un reel, actualizar inmediatamente
         if (!reel?.url) {
             handlePublishReel(reelUrl);
         } else {
-            // Si ya está publicado, guardar la nueva URL
-            setIsChangingUrl(false); // No ocultar la imagen mientras se procesa
-            handleAutoSaveUrl(reelUrl, thumbnailUrl);
+            // Si ya está publicado, guardar la nueva URL con updateReelUrl
+            try {
+                setIsUrlSaving(true);
+                const response = await updateReelUrl(reel.id, reelUrl);
+                if (response.success) {
+                    setReel({ 
+                        ...reel, 
+                        url: reelUrl, 
+                        thumbnail_url: thumbnailUrl || response.data.thumbnail_url 
+                    });
+                    setUrlError(null);
+                } else {
+                    setUrlError('URL inválida');
+                }
+            } catch (err) {
+                setUrlError('Error al actualizar la URL');
+            } finally {
+                setIsUrlSaving(false);
+            }
         }
     };
 
@@ -385,9 +334,8 @@ export default function EditReel() {
     useEffect(() => {
         return () => {
             if (saveTimeout) clearTimeout(saveTimeout);
-            if (urlSaveTimeout) clearTimeout(urlSaveTimeout);
         };
-    }, [saveTimeout, urlSaveTimeout]);
+    }, [saveTimeout]);
 
     if (loading) {
         return (
@@ -515,61 +463,45 @@ export default function EditReel() {
                                             URL del Reel
                                         </label>
                                         <div className="relative">
-                                            <input
-                                                type="url"
-                                                value={url}
-                                                onChange={handleUrlChange}
-                                                placeholder="https://www.instagram.com/reel/..."
-                                                className={`w-full text-white bg-transparent hover:bg-[#1c1033] focus:bg-[#1c1033] rounded-md px-4 py-2 focus:outline-none focus:ring-1 ${
-                                                    urlError ? 'focus:ring-red-500 border-red-500' : 'focus:ring-indigo-500 border-b border-gray-600'
-                                                }`}
-                                            />
-                                            {isUrlSaving && reel?.url && !urlError && (
-                                                <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-                                                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-indigo-500 border-r-transparent"></div>
+                                            <FormItem className="flex flex-col space-y-1.5">
+                                                <div className="flex w-full">
+                                                    <Input
+                                                        placeholder="URL del reel"
+                                                        value={url}
+                                                        readOnly
+                                                        className="rounded-r-none border-r-0"
+                                                    />
+                                                    <Button
+                                                        type="button"
+                                                        className="rounded-l-none"
+                                                        onClick={() => setInstagramReelsDialogOpen(true)}
+                                                    >
+                                                        <Instagram className="h-4 w-4 mr-2" />
+                                                        Seleccionar
+                                                    </Button>
                                                 </div>
-                                            )}
+                                                <FormMessage />
+                                            </FormItem>
                                         </div>
                                         {urlError && (
                                             <p className="mt-1 text-xs text-red-500 text-center">
                                                 {urlError}
                                             </p>
                                         )}
-
-                                        <div className="relative mt-2">
-                                            <div className="absolute inset-0 flex items-center">
-                                                <div className="w-full border-t border-gray-700"></div>
-                                            </div>
-                                            <div className="relative flex justify-center">
-                                                <span className="bg-[#120724] px-2 text-xs text-gray-400">
-                                                    o
-                                                </span>
-                                            </div>
-                                        </div>
-                                        
-                                        <Button 
-                                            type="button"
-                                            variant="outline"
-                                            onClick={() => setInstagramReelsDialogOpen(true)}
-                                            className="w-full mt-2 flex items-center justify-center gap-2 py-2.5 rounded-md border border-indigo-500/50 hover:bg-indigo-600/20"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 text-indigo-400"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
-                                            <span className="text-sm text-gray-200">Seleccionar reel de Instagram</span>
-                                        </Button>
                                     </div>
 
                                     {/* Botón para guardar */}
                                     {!reel.url && url.trim() !== '' && (
                                         <div className="flex justify-center mt-4">
                                             <button
-                                                onClick={() => handlePublishReel()}
+                                                onClick={() => setInstagramReelsDialogOpen(true)}
                                                 className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                             >
                                                 {isSaving ? 'Publicando...' : 'Publicar Reel'}
                                             </button>
                                         </div>
                                     )}
-
+                                    
                                     {/* iPhone con previsualización del reel */}
                                     <div className="relative w-[200px] h-[398px] mx-auto mt-6">
                                         {/* Marco del iPhone */}
@@ -707,13 +639,13 @@ export default function EditReel() {
                     </div>
                 </div>
             </div>
-
-            {/* Diálogo de selección de reels de Instagram */}
-            <InstagramReelsDialog 
-                open={instagramReelsDialogOpen}
-                onOpenChange={setInstagramReelsDialogOpen}
-                onSelectReel={handleInstagramReelSelect}
-            />
+            {instagramReelsDialogOpen && (
+                <InstagramReelsDialog
+                    open={instagramReelsDialogOpen}
+                    onOpenChange={(open) => setInstagramReelsDialogOpen(open)}
+                    onSelectReel={handleInstagramReelSelect}
+                />
+            )}
         </ProtectedRoute>
     );
 } 
