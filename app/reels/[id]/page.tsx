@@ -252,6 +252,11 @@ export default function EditReel() {
         setUrl(newValue);
         setUrlError(null);
         
+        // Mostrar estado de "cargando" inmediatamente
+        if (newValue && newValue.includes('instagram.com/reel/')) {
+            setIsChangingUrl(true);
+        }
+        
         // Solo auto-guardar si el reel ya está publicado
         if (reel?.url) {
             setIsUrlSaving(true);
@@ -272,6 +277,19 @@ export default function EditReel() {
         
         try {
             setIsUrlSaving(true);
+            
+            // Si la URL es de Instagram, intentar extraer la miniatura inmediatamente
+            if (newUrl && newUrl.includes('instagram.com/reel/')) {
+                // Actualizar primero con la URL, mientras se obtiene la miniatura
+                setReel({
+                    ...reel,
+                    url: newUrl
+                });
+                
+                // Mostrar que estamos actualizando
+                setIsChangingUrl(true);
+            }
+            
             const response = await updateReelUrl(reel.id, newUrl);
             if (response.success) {
                 // Preservar la miniatura existente si el backend no devuelve una
@@ -286,11 +304,20 @@ export default function EditReel() {
                 setUrlError(null);
                 
                 // Resetear la bandera de cambio de URL
-                setIsChangingUrl(false);
-                
-                // Forzar reinicio del estado de carga de la miniatura solo si hay una nueva miniatura
-                if (newThumbnailUrl && newThumbnailUrl !== reel.thumbnail_url) {
+                if (newThumbnailUrl) {
+                    setIsChangingUrl(false);
+                    // Forzar reinicio del estado de carga de la miniatura
                     setThumbnailLoading(true);
+                    
+                    // Si no tenemos una miniatura seleccionada pero tenemos una del backend, guardarla también en selectedThumbnailUrl
+                    if (response.data.thumbnail_url && !selectedThumbnailUrl) {
+                        setSelectedThumbnailUrl(response.data.thumbnail_url);
+                    }
+                } else if (newUrl && newUrl.includes('instagram.com/reel/')) {
+                    // Si no tenemos miniatura pero la URL parece válida, intentar cargarla de nuevo en 2 segundos
+                    setTimeout(() => {
+                        fetchReelThumbnail(newUrl);
+                    }, 2000);
                 }
             } else {
                 setUrlError('URL inválida');
@@ -299,6 +326,34 @@ export default function EditReel() {
             setUrlError('Error al actualizar la URL');
         } finally {
             setIsUrlSaving(false);
+        }
+    };
+
+    // Nueva función para cargar específicamente la miniatura de un reel
+    const fetchReelThumbnail = async (reelUrl: string) => {
+        if (!reel) return;
+        
+        try {
+            // Usar updateReelUrl de nuevo, pero esta vez específicamente para obtener la miniatura
+            const response = await updateReelUrl(reel.id, reelUrl);
+            
+            if (response.success && response.data.thumbnail_url) {
+                // Si tenemos éxito en obtener la miniatura, actualizar el estado
+                setReel({
+                    ...reel,
+                    thumbnail_url: response.data.thumbnail_url
+                });
+                setSelectedThumbnailUrl(response.data.thumbnail_url);
+                setIsChangingUrl(false);
+                setThumbnailLoading(true);
+            } else {
+                // Si después del segundo intento sigue sin haber miniatura, mostrar un mensaje
+                console.log('No se pudo obtener la miniatura del reel después de varios intentos');
+                setIsChangingUrl(false);
+            }
+        } catch (err) {
+            console.error('Error al obtener la miniatura:', err);
+            setIsChangingUrl(false);
         }
     };
 
