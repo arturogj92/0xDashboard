@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/contexts/AuthContext';
 import { PageSkeleton } from '@/components/ui/skeleton';
-import { FaInstagram, FaFacebook } from 'react-icons/fa';
+import { FaInstagram, FaFacebook, FaPlug } from 'react-icons/fa';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 export default function Home() {
@@ -52,7 +52,7 @@ export default function Home() {
 
   // Generalización de avisos para conexión/reconexión de Instagram
   let automationWarning = null;
-  const isInstagramMissing = user?.isFacebookLinked && user?.isFacebookTokenValid && (!user?.instagram_username || !user?.instagram_profile_pic_url);
+  const isInstagramMissing = user?.isFacebookLinked && user?.isFacebookTokenValid && (!user?.instagram_username);
   if (user?.isFacebookLinked && !user?.isFacebookTokenValid) {
     automationWarning = (
       <div className="w-full max-w-2xl mx-auto bg-yellow-900/10 shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
@@ -265,6 +265,7 @@ export default function Home() {
       'ads_read',
       'pages_show_list',
       'instagram_basic',
+      'business_management',
       'instagram_content_publish',
       'instagram_manage_comments',
       'instagram_manage_insights',
@@ -402,7 +403,10 @@ export default function Home() {
                 />
               )}
               <span className="text-white font-medium">{user.instagram_username}</span>
-              <span className="text-xs text-gray-400 ml-2">(Instagram conectado)</span>
+              <span className="flex items-center text-xs text-green-400 ml-2 font-semibold">
+                <FaPlug className="inline-block mr-1 text-green-400" />
+                Conectado
+              </span>
             </div>
           )}
         </div>
