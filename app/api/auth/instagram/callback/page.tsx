@@ -40,7 +40,7 @@ export default function InstagramCallbackPage() {
           setStatus('success');
           setMessage("¡Cuenta de Instagram vinculada correctamente!");
           setTimeout(() => {
-            router.replace("/");
+            window.location.href = "/";
           }, 2000);
         } else {
           setStatus('error');
