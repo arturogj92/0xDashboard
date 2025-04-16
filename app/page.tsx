@@ -244,66 +244,48 @@ export default function Home() {
   }, []);
 
   function handleConnectFacebook() {
-    const NEXT_PUBLIC_FACEBOOK_APP_ID = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID;
-    const NEXT_PUBLIC_FACEBOOK_API_VERSION = process.env.NEXT_PUBLIC_FACEBOOK_API_VERSION || 'v17.0';
-    const NEXT_PUBLIC_FACEBOOK_CONFIG_ID = process.env.NEXT_PUBLIC_FACEBOOK_CONFIG_ID;
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '');
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    if (!NEXT_PUBLIC_FACEBOOK_APP_ID || !NEXT_PUBLIC_FACEBOOK_CONFIG_ID || !apiUrl) {
+    const FACEBOOK_APP_ID = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID;
+    const REDIRECT_URI = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') + '/api/auth/instagram/callback';
+    const STATE = Math.random().toString(36).substring(2) + Date.now(); // Puedes guardar este state en localStorage si quieres validación CSRF
+
+    if (!FACEBOOK_APP_ID || !REDIRECT_URI) {
       window.alert('Configuración de Facebook incompleta. Contacta al administrador.');
       return;
     }
-    if (!token) {
-      window.alert('Debes estar autenticado para vincular tu cuenta de Facebook.');
-      return;
-    }
-    if (!window.FB) {
-      window.alert('El SDK de Facebook aún se está cargando. Espera unos segundos y vuelve a intentarlo.');
-      return;
-    }
-    window.FB.login((loginResponse) => {
-      if (loginResponse.authResponse) {
-        const accessToken = loginResponse.authResponse.accessToken;
-        window.FB!.api('/me', { fields: 'id,name,email,picture' }, async (userResponse) => {
-          if (userResponse && !userResponse.error) {
-            const userData = {
-              userID: userResponse.id,
-              name: userResponse.name,
-              email: userResponse.email,
-              accessToken: accessToken,
-              picture: userResponse.picture
-            };
-            try {
-              const res = await fetch(`${apiUrl}/api/auth/link-facebook`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`
-                },
-                credentials: 'include',
-                body: JSON.stringify(userData)
-              });
-              const data = await res.json();
-              if (res.ok && data.success) {
-                window.location.reload();
-              } else {
-                window.alert(data.message || 'Error al vincular la cuenta de Facebook');
-              }
-            } catch (err) {
-              window.alert('Error de red al vincular la cuenta de Facebook');
-            }
-          } else {
-            window.alert('No se pudieron obtener los datos de usuario de Facebook.');
-          }
-        });
-      } else {
-        window.alert('Vinculación cancelada o no autorizada.');
-      }
-    }, {
-      config_id: NEXT_PUBLIC_FACEBOOK_CONFIG_ID,
-      scope: 'public_profile,email,business_management,instagram_basic,instagram_manage_comments,instagram_manage_messages,pages_manage_metadata,pages_show_list,pages_messaging,pages_manage_engagement',
-      auth_type: 'rerequest'
-    });
+
+    // Scopes necesarios para Facebook + Instagram
+    const scope = [
+      'public_profile',
+      'email',
+      'pages_manage_ads',
+      'pages_manage_metadata',
+      'pages_read_engagement',
+      'pages_read_user_content',
+      'pages_messaging',
+      'ads_read',
+      'pages_show_list',
+      'instagram_basic',
+      'instagram_content_publish',
+      'instagram_manage_comments',
+      'instagram_manage_insights',
+      'page_events',
+      'instagram_manage_messages',
+      'instagram_manage_events'
+    ].join(',');
+
+    // El parámetro extras debe ir url-encoded
+    const extras = encodeURIComponent(JSON.stringify({ setup: { channel: 'IG_API_ONBOARDING' } }));
+
+    const fbOauthUrl =
+      `https://www.facebook.com/dialog/oauth?` +
+      `client_id=${FACEBOOK_APP_ID}` +
+      `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
+      `&scope=${encodeURIComponent(scope)}` +
+      `&response_type=code` +
+      `&state=${encodeURIComponent(STATE)}` +
+      `&extras=${extras}`;
+
+    window.location.href = fbOauthUrl;
   }
 
   if (loading) {
