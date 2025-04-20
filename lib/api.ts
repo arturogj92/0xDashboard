@@ -732,8 +732,26 @@ export const getUserInstagramReels = async (limit?: number, afterCursor?: string
       };
     }
 
-    const data = await response.json();
-    return data;
+    const result = await response.json();
+    // Si la respuesta es exitosa, asegurar que siempre haya instagram_account
+    if (result.success && result.data) {
+      const { reels, pagination, instagram_account } = result.data;
+      return {
+        success: result.success,
+        data: {
+          instagram_account: instagram_account ?? {
+            id: '',
+            username: '',
+            profile_picture_url: '',
+            media_count: Array.isArray(reels) ? reels.length : 0
+          },
+          reels,
+          pagination
+        },
+        message: result.message
+      };
+    }
+    return result;
   } catch (error) {
     console.error('Error en la petición para obtener reels de Instagram:', error);
     return { 
