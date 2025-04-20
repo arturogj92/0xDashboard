@@ -48,18 +48,18 @@ export default function Home() {
   const { user } = useAuth();
 
   // Determinar si el usuario puede crear automatizaciones
-  const canCreateAutomations = user?.isFacebookLinked && user?.isFacebookTokenValid;
+  const canCreateAutomations = user?.isInstagramLinked && user?.isInstagramTokenValid;
 
   // Generalización de avisos para conexión/reconexión de Instagram
   let automationWarning = null;
-  const isInstagramMissing = user?.isFacebookLinked && user?.isFacebookTokenValid && (!user?.instagram_username);
-  if (user?.isFacebookLinked && !user?.isFacebookTokenValid) {
+  const isInstagramMissing = user?.isInstagramLinked && user?.isInstagramTokenValid && (!user?.instagram_username);
+  if (user?.isInstagramLinked && !user?.isInstagramTokenValid) {
     automationWarning = (
       <div className="w-full max-w-2xl mx-auto bg-yellow-900/10 shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
         <span className="text-3xl mb-2">⏰</span>
         <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">¡Reconecta tu cuenta de Instagram!</h2>
         <p className="text-base text-center text-yellow-100 mb-4 break-words w-full leading-snug">
-          Tu sesión de Facebook ha expirado. Para seguir creando automatizaciones, por favor reconecta tu cuenta de Instagram mediante Facebook.
+          Tu sesión de Instagram ha expirado. Para seguir creando automatizaciones, por favor reconecta tu cuenta de Instagram.
         </p>
         <InstagramConnectButton reconnect />
         <ConnectHelpButton reconnect />
@@ -71,7 +71,7 @@ export default function Home() {
         <span className="text-3xl mb-2">⚠️</span>
         <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">No se encontró ninguna cuenta Business de Instagram</h2>
         <p className="text-base text-center text-yellow-100 mb-4 break-words w-full leading-snug">
-          No se ha detectado ninguna cuenta Business o Creador de Instagram vinculada a tu Facebook. Por favor, reconecta y asegúrate de seleccionar una cuenta válida durante el proceso.
+          No se ha detectado ninguna cuenta Business o Creador de Instagram vinculada. Por favor, reconecta y asegúrate de seleccionar una cuenta válida durante el proceso.
         </p>
         <InstagramConnectButton reconnect />
         <ConnectHelpButton reconnect />
@@ -81,9 +81,9 @@ export default function Home() {
     automationWarning = (
       <div className="w-full max-w-2xl mx-auto bg-yellow-900/10 shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
         <span className="text-3xl mb-2">⚠️</span>
-        <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">¡Conecta tu cuenta de Instagram a través de Facebook!</h2>
+        <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">¡Conecta tu cuenta de Instagram!</h2>
         <p className="text-base text-center text-yellow-100 mb-4 break-words w-full leading-snug">
-          Para crear automatizaciones necesitas vincular tu cuenta de Instagram mediante Facebook.
+          Para crear automatizaciones necesitas vincular tu cuenta de Instagram.
         </p>
         <InstagramConnectButton />
         <ConnectHelpButton />
@@ -96,7 +96,7 @@ export default function Home() {
     return (
       <Button
         className="px-8 py-4 bg-gradient-to-r from-pink-500 via-red-500 to-yellow-400 hover:from-pink-600 hover:to-yellow-500 text-white border-0 flex items-center justify-center space-x-2 mb-4 rounded-lg text-lg font-bold shadow-md mx-auto"
-        onClick={handleConnectFacebook}
+        onClick={handleConnectInstagram}
       >
         <FaInstagram className="w-6 h-6 text-white" />
         <span>{reconnect ? 'Reconectar cuenta de Instagram' : 'Iniciar sesión con Instagram'}</span>
@@ -243,13 +243,13 @@ export default function Home() {
     }(document, 'script', 'facebook-jssdk'));
   }, []);
 
-  function handleConnectFacebook() {
+  function handleConnectInstagram() {
     const FACEBOOK_APP_ID = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID;
     const REDIRECT_URI = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') + '/api/auth/instagram/callback';
     const STATE = Math.random().toString(36).substring(2) + Date.now(); // Puedes guardar este state en localStorage si quieres validación CSRF
 
     if (!FACEBOOK_APP_ID || !REDIRECT_URI) {
-      window.alert('Configuración de Facebook incompleta. Contacta al administrador.');
+      window.alert('Configuración de Instagram incompleta. Contacta al administrador.');
       return;
     }
 
@@ -392,7 +392,7 @@ export default function Home() {
             </div>
           </div>
           {/* Mostrar datos de Instagram solo si la cuenta está conectada y el token es válido */}
-          {user?.isFacebookLinked && user?.isFacebookTokenValid && user?.instagram_username && (
+          {user?.isInstagramLinked && user?.isInstagramTokenValid && user?.instagram_username && (
             <div className="flex items-center gap-3 mt-6 bg-[#1c1033] px-4 py-2 rounded-lg border border-indigo-900/50 w-fit">
               <FaInstagram className="text-pink-500 w-6 h-6" />
               {user.instagram_profile_pic_url && (

@@ -70,8 +70,8 @@ export interface User {
     email: string;
     name?: string;
     avatar_url?: string;
-    isFacebookLinked?: boolean;
-    isFacebookTokenValid?: boolean;
+    isInstagramLinked?: boolean;
+    isInstagramTokenValid?: boolean;
     instagram_username?: string;
     instagram_profile_pic_url?: string;
 }
