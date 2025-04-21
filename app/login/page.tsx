@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -53,9 +53,17 @@ declare global {
 }
 
 export default function LoginPage() {
-  const searchParams = useSearchParams();
-  const registered = searchParams.get('registered');
-  const confirmed  = searchParams.get('confirmed');
+  // Flags para mostrar banners tras registro o confirmación
+  const [registered, setRegistered] = useState<string | null>(null);
+  const [confirmed, setConfirmed] = useState<string | null>(null);
+  
+  // Leer parámetros de URL manualmente en cliente
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setRegistered(params.get('registered'));
+    setConfirmed(params.get('confirmed'));
+  }, []);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
