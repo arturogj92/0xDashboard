@@ -7,12 +7,7 @@ import {
   toggleStoryStatus,
   deleteReel,
   deleteStory,
-  getReelDmTotalCountToday, 
-  getReelDmTotalCount, 
-  getReelDmDailyCountLastWeek, 
-  getReelDmTotalCount7d,
   getReelDmHourlyCountCurrentDay,
-  getReelDmConsolidatedStats,
   getAllMediaDmConsolidatedStats
 } from '@/lib/api';
 

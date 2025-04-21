@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -53,6 +53,9 @@ declare global {
 }
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const registered = searchParams.get('registered');
+  const confirmed  = searchParams.get('confirmed');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -387,6 +390,23 @@ export default function LoginPage() {
           </div>
 
           <div className="bg-[#120724] p-8 rounded-xl shadow-lg border border-indigo-900/30">
+            {/* Mensajes tras registro o confirmación */}
+            {registered === 'true' && (
+              <div className="mb-4 p-3 bg-blue-900/30 border border-blue-500/50 rounded-md text-blue-200 text-sm">
+                ¡Registro exitoso! Revisa tu correo para confirmar tu cuenta.
+              </div>
+            )}
+            {confirmed === 'true' && (
+              <div className="mb-4 p-3 bg-green-900/30 border border-green-500/50 rounded-md text-green-200 text-sm">
+                ¡Correo confirmado! Ahora puedes iniciar sesión.
+              </div>
+            )}
+            {confirmed === 'false' && (
+              <div className="mb-4 p-3 bg-red-900/30 border border-red-500/50 rounded-md text-red-200 text-sm">
+                Error al confirmar el correo. Por favor regístrate de nuevo.
+              </div>
+            )}
+
             {error && (
               <div className="mb-4 p-3 bg-red-900/30 border border-red-500/50 rounded-md text-red-200 text-sm">
                 {error}

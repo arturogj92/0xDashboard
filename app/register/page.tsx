@@ -33,6 +33,8 @@ export default function RegisterPage() {
       const result = await register({ username, email, password, name });
       if (!result.success) {
         setError(result.message || 'Error al registrar usuario');
+      } else {
+        router.push('/login?registered=true');
       }
     } catch (err: any) {
       setError(err.message || 'Error al registrar usuario');
