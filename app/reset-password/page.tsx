@@ -1,11 +1,12 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { validateResetToken, resetPassword } from '@/lib/api';
 
-export default function ResetPasswordPage() {
+// Componente cliente interno que usa useSearchParams
+function ResetPasswordForm() {
   const params = useSearchParams();
   const router = useRouter();
   const token = params.get('token') || '';
@@ -68,5 +69,14 @@ export default function ResetPasswordPage() {
         </form>
       )}
     </div>
+  );
+}
+
+// Componente principal envuelto en Suspense
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<p className="text-center mt-10 text-gray-300">Cargando...</p>}>
+      <ResetPasswordForm />
+    </Suspense>
   );
 } 
