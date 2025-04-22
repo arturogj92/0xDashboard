@@ -8,7 +8,8 @@ import {
   deleteReel,
   deleteStory,
   getReelDmHourlyCountCurrentDay,
-  getAllMediaDmConsolidatedStats
+  getAllMediaDmConsolidatedStats,
+  getMediaBatchStats
 } from '@/lib/api';
 
 interface MediaWithStats extends Omit<Media, 'thumbnail_url'> {
@@ -64,38 +65,33 @@ export function useReels() {
   useEffect(() => {
     const fetchMedia = async () => {
       try {
-        // Obtener todas las estadísticas consolidadas en una sola llamada
-        const allStatsResponse = await getAllMediaDmConsolidatedStats();
-        
         // Obtener listas de reels y stories
         const [reelsResponse, storiesResponse] = await Promise.all([
           getReels(),
           getStories()
         ]);
 
-        // Extraer datos de estadísticas para facilitar acceso
-        let mediaStats: Record<string, any> = {};
-        let overallStats = {
-          daily_breakdown: [] as Array<{day: string; count: number}>,
-          today_total: 0,
-          last_7_days_total: 0,
-          all_time_total: 0
-        };
-        
-        if (allStatsResponse.success) {
-          mediaStats = allStatsResponse.data.by_media;
-          overallStats = allStatsResponse.data.overall;
+        // Unificar IDs
+        let mediaIds: number[] = [];
+        if (reelsResponse.success) mediaIds = mediaIds.concat(reelsResponse.data.map(r => r.id));
+        if (storiesResponse.success) mediaIds = mediaIds.concat(storiesResponse.data.map(s => s.id));
+
+        // Limitar a 10 por petición (el backend soporta 10)
+        const batchStatsResp = mediaIds.length ? await getMediaBatchStats(mediaIds.slice(0, 10)) : { success: true, data: [] };
+        const statsMap: Record<number, any> = {};
+        if (batchStatsResp.success) {
+          batchStatsResp.data.forEach(stat => {
+            statsMap[stat.media_id] = stat;
+          });
         }
-        
-        // Procesar reels con sus estadísticas correspondientes
+
+        // Procesar reels con statsMap
         if (reelsResponse.success) {
           const reelsWithStats = reelsResponse.data
-            .filter((item): item is Reel => item.media_type === 'reel')
+            .filter((it): it is Reel => it.media_type === 'reel')
             .map(item => {
-              // Buscar estadísticas para este reel específico
-              const stats = mediaStats[item.id.toString()] || null;
-              
-              const reelWithStats: ReelWithStats = {
+              const stats = statsMap[item.id] || null;
+              return {
                 ...item,
                 active: item.is_active,
                 url: item.url || '',
@@ -104,21 +100,15 @@ export function useReels() {
                 visits24: stats ? stats.today_total : 0,
                 visits7d: stats ? stats.last_7_days_total : 0,
                 shortcode: item.shortcode
-              };
-              
-              return reelWithStats;
+              } as ReelWithStats;
             });
-          
           setReels(reelsWithStats);
         }
-        
-        // Procesar stories con sus estadísticas correspondientes
+
         if (storiesResponse.success) {
-          const storiesWithStats = storiesResponse.data.map((item: Story) => {
-            // Buscar estadísticas para esta story específica
-            const stats = mediaStats[item.id.toString()] || null;
-            
-            const storyWithStats: StoryWithStats = {
+          const storiesWithStats = storiesResponse.data.map(item => {
+            const stats = statsMap[item.id] || null;
+            return {
               ...item,
               active: item.is_active,
               url: item.url || '',
@@ -126,11 +116,8 @@ export function useReels() {
               totalVisits: stats ? stats.all_time_total : 0,
               visits24: stats ? stats.today_total : 0,
               visits7d: stats ? stats.last_7_days_total : 0
-            };
-            
-            return storyWithStats;
+            } as StoryWithStats;
           });
-          
           setStories(storiesWithStats);
         }
       } catch (err) {

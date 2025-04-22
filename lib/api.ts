@@ -765,4 +765,25 @@ export const getUserInstagramReels = async (limit?: number, afterCursor?: string
 export const logout = () => {
     localStorage.removeItem('token');
     window.location.href = '/login';
+};
+
+// Batch stats (hasta 10 IDs por petición)
+export const getMediaBatchStats = async (
+  mediaIds: number[],
+  timezone?: string
+): Promise<ApiResponse<Array<{
+  media_id: number;
+  today_total: number;
+  last_7_days_total: number;
+  all_time_total: number;
+}>>> => {
+  const response = await fetch(`${API_URL}/api/media/stats/batch`, {
+    method: 'POST',
+    headers: createAuthHeaders(),
+    body: JSON.stringify({
+      media_ids: mediaIds,
+      timezone: timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
+    })
+  });
+  return response.json();
 }; 
