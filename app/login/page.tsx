@@ -53,6 +53,16 @@ declare global {
 }
 
 export default function LoginPage() {
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const router = useRouter();
+  
+  // Redireccionar a home si el usuario ya está autenticado
+  useEffect(() => {
+    if (isAuthenticated && !authLoading) {
+      router.push('/');
+    }
+  }, [isAuthenticated, authLoading, router]);
+
   // Flags para mostrar banners tras registro o confirmación
   const [registered, setRegistered] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState<string | null>(null);
@@ -72,7 +82,6 @@ export default function LoginPage() {
   const [isLoadingGoogle, setIsLoadingGoogle] = useState(false);
   const [isFbSdkReady, setIsFbSdkReady] = useState(false);
   const { login, loginWithToken } = useAuth();
-  const router = useRouter();
 
   const NEXT_PUBLIC_FACEBOOK_APP_ID = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID;
   const NEXT_PUBLIC_FACEBOOK_API_VERSION = process.env.NEXT_PUBLIC_FACEBOOK_API_VERSION || 'v17.0';
