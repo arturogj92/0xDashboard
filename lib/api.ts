@@ -786,4 +786,21 @@ export const getMediaBatchStats = async (
     })
   });
   return response.json();
+};
+
+export const getMediaDmStats = async (
+  mediaId: number,
+  timezone?: string
+): Promise<ApiResponse<{
+  hourly_stats: Array<{ hour: string; count: number }>;
+  daily_stats: Array<{ day: string; count: number }>;
+  today_total: number;
+  last_7_days_total: number;
+  all_time_total: number;
+}>> => {
+  const tz = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  const response = await fetch(`${API_URL}/api/media/${mediaId}/dm-stats?timezone=${encodeURIComponent(tz)}`, {
+    headers: createAuthHeaders()
+  });
+  return response.json();
 }; 

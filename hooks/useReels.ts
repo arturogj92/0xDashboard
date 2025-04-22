@@ -9,7 +9,8 @@ import {
   deleteStory,
   getReelDmHourlyCountCurrentDay,
   getAllMediaDmConsolidatedStats,
-  getMediaBatchStats
+  getMediaBatchStats,
+  getMediaDmStats
 } from '@/lib/api';
 
 interface MediaWithStats extends Omit<Media, 'thumbnail_url'> {
@@ -195,38 +196,18 @@ export function useReels() {
     setStatsError(null);
     
     try {
-      // Ejecutamos ambas peticiones en paralelo
-      const [hourlyResponse, allStatsResponse] = await Promise.all([
-        getReelDmHourlyCountCurrentDay(id),
-        getAllMediaDmConsolidatedStats()
-      ]);
-      
-      if (allStatsResponse.success) {
-        const mediaStats = allStatsResponse.data.by_media[id.toString()];
-        
-        if (mediaStats) {
-          setTotalDms(mediaStats.all_time_total);
-          setWeeklyStats(mediaStats.daily_breakdown.map(item => ({
-            day: item.day,
-            count: item.count
-          })));
-        } else {
-          // Si no hay estadísticas para este media, usar valores por defecto
-          setTotalDms(0);
-          setWeeklyStats([]);
-        }
-      }
-
-      if (hourlyResponse.success) {
-        const formattedHourlyData = hourlyResponse.data.hourly_stats.map(stat => {
-          const date = new Date(stat.hour);
-          return {
-            hour: `${date.getHours()}h`,
-            count: stat.count,
-            timestamp: date.getTime()
-          };
-        });
-        setHourlyData(formattedHourlyData);
+      const statsResp = await getMediaDmStats(id);
+      if (statsResp.success) {
+        setTotalDms(statsResp.data.all_time_total);
+        setWeeklyStats(statsResp.data.daily_stats);
+        const formattedHourly = statsResp.data.hourly_stats.map(item => ({
+          hour: new Date(item.hour).getHours() + 'h',
+          count: item.count,
+          timestamp: new Date(item.hour).getTime()
+        }));
+        setHourlyData(formattedHourly);
+      } else {
+        setStatsError('Error al cargar las estadísticas');
       }
     } catch (err) {
       setStatsError('Error al cargar las estadísticas');
