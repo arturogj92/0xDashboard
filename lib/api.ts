@@ -803,4 +803,28 @@ export const getMediaDmStats = async (
     headers: createAuthHeaders()
   });
   return response.json();
+};
+
+// ---------------- Password reset -----------------
+export const requestPasswordReset = async (email: string): Promise<ApiResponse<any>> => {
+  const response = await fetch(`${API_URL}/api/auth/forgot-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email })
+  });
+  return response.json();
+};
+
+export const validateResetToken = async (token: string): Promise<ApiResponse<any>> => {
+  const response = await fetch(`${API_URL}/api/auth/reset-password/validate?token=${encodeURIComponent(token)}`);
+  return response.json();
+};
+
+export const resetPassword = async (token: string, newPassword: string): Promise<ApiResponse<any>> => {
+  const response = await fetch(`${API_URL}/api/auth/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, newPassword })
+  });
+  return response.json();
 }; 
