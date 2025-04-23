@@ -827,4 +827,17 @@ export const resetPassword = async (token: string, newPassword: string): Promise
     body: JSON.stringify({ token, newPassword })
   });
   return response.json();
-}; 
+};
+
+/**
+ * Obtiene estadísticas globales de DMs (todos los reels).
+ * @param {string} timezone Zona horaria IANA (p.ej. 'Europe/Madrid').
+ */
+export async function getGlobalMediaStats(timezone: string = 'UTC') {
+  const response = await fetch(`${API_URL}/api/media/stats/global`, {
+    method: 'POST',
+    headers: createAuthHeaders(),
+    body: JSON.stringify({ timezone }),
+  });
+  return response.json();
+} 
