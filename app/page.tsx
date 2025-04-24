@@ -9,7 +9,7 @@ import { MediaCard } from '@/components/reels/ReelCard';
 import { DeleteDialog } from '@/components/reels/DeleteDialog';
 import { StatsDialog } from '@/components/reels/StatsDialog';
 import { useReels } from '@/hooks/useReels';
-import { useGlobalMediaStats } from '@/hooks/useGlobalStats';
+import { useGlobalMediaStats, useGlobalStoryStats } from '@/hooks/useGlobalStats';
 import { CreateMediaModal } from '@/components/media/CreateMediaModal';
 import { useRouter } from 'next/navigation';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
@@ -20,6 +20,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 
 export default function Home() {
   const { stats, loading: loadingGlobal, error: errorGlobal } = useGlobalMediaStats();
+  const { stats: storyStats, loading: loadingStoryGlobal, error: errorStoryGlobal } = useGlobalStoryStats();
   const router = useRouter();
   const [reelModalOpen, setReelModalOpen] = useState(false);
   const [storyModalOpen, setStoryModalOpen] = useState(false);
@@ -425,18 +426,11 @@ export default function Home() {
               <p className="text-red-400 text-center">Error al cargar estadísticas globales</p>
             )}
             {stats && (
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
-                {/* Total histórico */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {/* Últimos 28 días */}
                 <div className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center">
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
-                  <span className="text-gray-300 text-sm">Total histórico</span>
-                  <span className="text-white font-bold text-xl">{stats.all_time_total}</span>
-                  <span className="text-gray-400 text-xs mt-1">mensajes</span>
-                </div>
-                {/* Último mes */}
-                <div className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center">
-                  <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
-                  <span className="text-gray-300 text-sm">Último mes</span>
+                  <span className="text-gray-300 text-sm">Últimos 28 días</span>
                   <span className="text-white font-bold text-xl">{stats.last_28_days_total}</span>
                   <span className="text-gray-400 text-xs mt-1">mensajes</span>
                 </div>
@@ -532,6 +526,48 @@ export default function Home() {
             )}
           </div>
         </div>
+
+        {/* Estadísticas globales de tus Historias */}
+        {fixedStories.length > 0 && (
+          <div className="mb-8 px-4 md:px-6">
+            <h3 className="text-xl font-semibold text-white mb-1 text-center">Estadísticas globales de tus Historias</h3>
+            <p className="text-center text-gray-400 mb-4 text-sm">Resumen de respuestas automáticas enviadas en todas las automatizaciones de Historias.</p>
+            {loadingStoryGlobal && (
+              <p className="text-gray-400 text-center">Cargando estadísticas...</p>
+            )}
+            {errorStoryGlobal && (
+              <p className="text-red-400 text-center">Error al cargar estadísticas globales de Historias</p>
+            )}
+            {storyStats && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center">
+                  <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
+                  <span className="text-gray-300 text-sm">Últimos 28 días</span>
+                  <span className="text-white font-bold text-xl">{storyStats.last_28_days_total}</span>
+                  <span className="text-gray-400 text-xs mt-1">mensajes</span>
+                </div>
+                <div className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center">
+                  <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
+                  <span className="text-gray-300 text-sm">Últimos 7 días</span>
+                  <span className="text-white font-bold text-xl">{storyStats.last_7_days_total}</span>
+                  <span className="text-gray-400 text-xs mt-1">mensajes</span>
+                </div>
+                <div className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center">
+                  <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
+                  <span className="text-gray-300 text-sm">Ayer</span>
+                  <span className="text-white font-bold text-xl">{storyStats.yesterday_total}</span>
+                  <span className="text-gray-400 text-xs mt-1">mensajes</span>
+                </div>
+                <div className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center">
+                  <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
+                  <span className="text-gray-300 text-sm">Hoy</span>
+                  <span className="text-white font-bold text-xl">{storyStats.today_total}</span>
+                  <span className="text-gray-400 text-xs mt-1">mensajes</span>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Sección de Historias */}
         <div className="mb-8 bg-[#120724] rounded-xl p-6 shadow-md mx-4 md:mx-6">

@@ -830,14 +830,35 @@ export const resetPassword = async (token: string, newPassword: string): Promise
 };
 
 /**
- * Obtiene estadísticas globales de DMs (todos los reels).
+ * Obtiene estadísticas globales de DMs filtradas por tipo de medio.
  * @param {string} timezone Zona horaria IANA (p.ej. 'Europe/Madrid').
+ * @param {string|null} mediaType 'reel' | 'story' o null para todos.
  */
-export async function getGlobalMediaStats(timezone: string = 'UTC') {
+export async function getGlobalMediaStats(
+  timezone: string = 'UTC',
+  mediaType: string | null = 'reel'
+) {
   const response = await fetch(`${API_URL}/api/media/stats/global`, {
     method: 'POST',
     headers: createAuthHeaders(),
-    body: JSON.stringify({ timezone }),
+    body: JSON.stringify({ timezone, media_type: mediaType }),
+  });
+  return response.json();
+}
+
+/**
+ * Obtiene estadísticas globales de DMs filtradas para historias.
+ * @param {string} timezone Zona horaria IANA (p.ej. 'Europe/Madrid').
+ * @param {string|null} mediaType 'story' | 'reel' o null para todos.
+ */
+export async function getGlobalStoryStats(
+  timezone: string = 'UTC',
+  mediaType: string | null = 'story'
+) {
+  const response = await fetch(`${API_URL}/api/media/stats/global`, {
+    method: 'POST',
+    headers: createAuthHeaders(),
+    body: JSON.stringify({ timezone, media_type: mediaType }),
   });
   return response.json();
 } 
