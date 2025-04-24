@@ -3,6 +3,7 @@ import { getGlobalMediaStats } from '@/lib/api';
 
 interface GlobalStats {
   today_total: number;
+  yesterday_total: number;
   last_7_days_total: number;
   last_28_days_total: number;
   all_time_total: number;
