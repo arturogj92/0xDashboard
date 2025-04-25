@@ -17,6 +17,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { PageSkeleton } from '@/components/ui/skeleton';
 import { FaInstagram, FaFacebook, FaPlug } from 'react-icons/fa';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import GlobalStatsModal from '@/components/dialogs/GlobalStatsModal';
 
 export default function Home() {
   const { stats, loading: loadingGlobal, error: errorGlobal } = useGlobalMediaStats();
@@ -292,6 +293,11 @@ export default function Home() {
     window.location.href = fbOauthUrl;
   }
 
+  // Estado para modal de estadísticas globales
+  const [globalStatsInfo, setGlobalStatsInfo] = useState<
+    { period: '28d'|'7d'|'yesterday'|'today'; mediaType: 'reel'|'story' } | null
+  >(null);
+
   if (loading) {
     return (
       <ProtectedRoute>
@@ -428,28 +434,40 @@ export default function Home() {
             {stats && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {/* Últimos 28 días */}
-                <div className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center">
+                <div
+                  className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center cursor-pointer hover:bg-[#2a1d4b]"
+                  onClick={() => setGlobalStatsInfo({ period: '28d', mediaType: 'reel' })}
+                >
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
                   <span className="text-gray-300 text-sm">Últimos 28 días</span>
                   <span className="text-white font-bold text-xl">{stats.last_28_days_total}</span>
                   <span className="text-gray-400 text-xs mt-1">mensajes</span>
                 </div>
                 {/* Últimos 7 días */}
-                <div className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center">
+                <div
+                  className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center cursor-pointer hover:bg-[#2a1d4b]"
+                  onClick={() => setGlobalStatsInfo({ period: '7d', mediaType: 'reel' })}
+                >
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
                   <span className="text-gray-300 text-sm">Últimos 7 días</span>
                   <span className="text-white font-bold text-xl">{stats.last_7_days_total}</span>
                   <span className="text-gray-400 text-xs mt-1">mensajes</span>
                 </div>
                 {/* Ayer */}
-                <div className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center">
+                <div
+                  className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center cursor-pointer hover:bg-[#2a1d4b]"
+                  onClick={() => setGlobalStatsInfo({ period: 'yesterday', mediaType: 'reel' })}
+                >
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
                   <span className="text-gray-300 text-sm">Ayer</span>
                   <span className="text-white font-bold text-xl">{stats.yesterday_total}</span>
                   <span className="text-gray-400 text-xs mt-1">mensajes</span>
                 </div>
                 {/* Hoy */}
-                <div className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center">
+                <div
+                  className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center cursor-pointer hover:bg-[#2a1d4b]"
+                  onClick={() => setGlobalStatsInfo({ period: 'today', mediaType: 'reel' })}
+                >
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
                   <span className="text-gray-300 text-sm">Hoy</span>
                   <span className="text-white font-bold text-xl">{stats.today_total}</span>
@@ -458,6 +476,16 @@ export default function Home() {
               </div>
             )}
           </div>
+        )}
+
+        {/* Modal de estadísticas globales */}
+        {globalStatsInfo && (
+          <GlobalStatsModal
+            open={true}
+            onOpenChange={(open) => !open && setGlobalStatsInfo(null)}
+            period={globalStatsInfo.period}
+            mediaType={globalStatsInfo.mediaType}
+          />
         )}
 
         {/* Sección de Reels */}
@@ -540,25 +568,41 @@ export default function Home() {
             )}
             {storyStats && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center">
+                {/* Últimos 28 días */}
+                <div
+                  className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center cursor-pointer hover:bg-[#2a1d4b]"
+                  onClick={() => setGlobalStatsInfo({ period: '28d', mediaType: 'story' })}
+                >
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
                   <span className="text-gray-300 text-sm">Últimos 28 días</span>
                   <span className="text-white font-bold text-xl">{storyStats.last_28_days_total}</span>
                   <span className="text-gray-400 text-xs mt-1">mensajes</span>
                 </div>
-                <div className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center">
+                {/* Últimos 7 días */}
+                <div
+                  className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center cursor-pointer hover:bg-[#2a1d4b]"
+                  onClick={() => setGlobalStatsInfo({ period: '7d', mediaType: 'story' })}
+                >
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
                   <span className="text-gray-300 text-sm">Últimos 7 días</span>
                   <span className="text-white font-bold text-xl">{storyStats.last_7_days_total}</span>
                   <span className="text-gray-400 text-xs mt-1">mensajes</span>
                 </div>
-                <div className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center">
+                {/* Ayer */}
+                <div
+                  className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center cursor-pointer hover:bg-[#2a1d4b]"
+                  onClick={() => setGlobalStatsInfo({ period: 'yesterday', mediaType: 'story' })}
+                >
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
                   <span className="text-gray-300 text-sm">Ayer</span>
                   <span className="text-white font-bold text-xl">{storyStats.yesterday_total}</span>
                   <span className="text-gray-400 text-xs mt-1">mensajes</span>
                 </div>
-                <div className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center">
+                {/* Hoy */}
+                <div
+                  className="bg-[#1c1033] p-4 rounded-lg flex flex-col items-center cursor-pointer hover:bg-[#2a1d4b]"
+                  onClick={() => setGlobalStatsInfo({ period: 'today', mediaType: 'story' })}
+                >
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
                   <span className="text-gray-300 text-sm">Hoy</span>
                   <span className="text-white font-bold text-xl">{storyStats.today_total}</span>
