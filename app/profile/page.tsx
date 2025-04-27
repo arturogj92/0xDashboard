@@ -88,15 +88,6 @@ export default function ProfilePage() {
                       {user?.email}
                     </div>
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">
-                      {t('labelFullName')}
-                    </label>
-                    <div className="p-3 bg-[#1c1033] border border-indigo-900/50 rounded-md text-white">
-                      {user?.name || t('notSet')}
-                    </div>
-                  </div>
                 </div>
               </div>
 

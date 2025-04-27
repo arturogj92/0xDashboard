@@ -12,7 +12,7 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
   const t = useTranslations('app');
   
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-transparent flex flex-col">
       <nav className="bg-navbar shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-12">
