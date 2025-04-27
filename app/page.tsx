@@ -62,7 +62,7 @@ export default function Home() {
   const isInstagramMissing = user?.isInstagramLinked && user?.isInstagramTokenValid && (!user?.instagram_username);
   if (user?.isInstagramLinked && !user?.isInstagramTokenValid) {
     automationWarning = (
-      <div className="w-full max-w-2xl mx-auto bg-yellow-900/10 shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
+      <div className="w-full max-w-2xl mx-auto bg-[#120724] shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
         <span className="text-3xl mb-2">⏰</span>
         <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">{tHome('reconnectTitle')}</h2>
         <p className="text-base text-center text-yellow-100 mb-4 break-words w-full leading-snug">
@@ -74,7 +74,7 @@ export default function Home() {
     );
   } else if (isInstagramMissing) {
     automationWarning = (
-      <div className="w-full max-w-2xl mx-auto bg-yellow-900/10 shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
+      <div className="w-full max-w-2xl mx-auto bg-[#120724] shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
         <span className="text-3xl mb-2">⚠️</span>
         <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">{tHome('noBusinessAccountTitle')}</h2>
         <p className="text-base text-center text-yellow-100 mb-4 break-words w-full leading-snug">
@@ -86,7 +86,7 @@ export default function Home() {
     );
   } else if (!canCreateAutomations) {
     automationWarning = (
-      <div className="w-full max-w-2xl mx-auto bg-yellow-900/10 shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
+      <div className="w-full max-w-2xl mx-auto bg-[#120724] shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
         <span className="text-3xl mb-2">⚠️</span>
         <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">{tHome('connectInstagramTitle')}</h2>
         <p className="text-base text-center text-yellow-100 mb-4 break-words w-full leading-snug">
