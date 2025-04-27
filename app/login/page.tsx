@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -55,6 +56,7 @@ declare global {
 export default function LoginPage() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const router = useRouter();
+  const tLogin = useTranslations('login');
   
   // Redireccionar a home si el usuario ya está autenticado
   useEffect(() => {
@@ -403,24 +405,24 @@ export default function LoginPage() {
               />
             </div>
             <h1 className="text-3xl font-bold text-white">Bienvenido de nuevo</h1>
-            <p className="text-gray-400 mt-2">Inicia sesión en tu cuenta</p>
+            <p className="text-gray-400 mt-2">{tLogin('subtitle')}</p>
           </div>
 
           <div className="bg-[#120724] p-8 rounded-xl shadow-lg border border-indigo-900/30">
             {/* Mensajes tras registro o confirmación */}
             {registered === 'true' && (
               <div className="mb-4 p-3 bg-blue-900/30 border border-blue-500/50 rounded-md text-blue-200 text-sm">
-                ¡Registro exitoso! Revisa tu correo para confirmar tu cuenta.
+                {tLogin('registrationSuccess')}
               </div>
             )}
             {confirmed === 'true' && (
               <div className="mb-4 p-3 bg-green-900/30 border border-green-500/50 rounded-md text-green-200 text-sm">
-                ¡Correo confirmado! Ahora puedes iniciar sesión.
+                {tLogin('emailConfirmed')}
               </div>
             )}
             {confirmed === 'false' && (
               <div className="mb-4 p-3 bg-red-900/30 border border-red-500/50 rounded-md text-red-200 text-sm">
-                Error al confirmar el correo. Por favor regístrate de nuevo.
+                {tLogin('emailConfirmationError')}
               </div>
             )}
 
@@ -433,14 +435,14 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-1">
-                  Email
+                  {tLogin('labelEmail')}
                 </label>
                 <Input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tu@email.com"
+                  placeholder={tLogin('placeholderEmail')}
                   className="bg-[#1c1033] border-indigo-900/50 text-white"
                   disabled={isLoading || isFbLoading || isLoadingGoogle}
                 />
@@ -449,7 +451,7 @@ export default function LoginPage() {
               <div>
                 <div className="flex items-center justify-between">
                   <label htmlFor="password" className="block text-sm font-medium text-gray-400 mb-1">
-                    Contraseña
+                    {tLogin('labelPassword')}
                   </label>
                 </div>
                 <Input
@@ -457,16 +459,16 @@ export default function LoginPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder={tLogin('placeholderPassword')}
                   className="bg-[#1c1033] border-indigo-900/50 text-white"
                   disabled={isLoading || isFbLoading || isLoadingGoogle}
                 />
               </div>
 
               <div className="text-xs text-gray-400 text-center">
-                Al iniciar sesión, aceptas nuestros{' '}
+                {tLogin('termsText')}
                 <Link href="/terms" className="text-indigo-400 hover:text-indigo-300 underline">
-                  Términos de Servicio
+                  {tLogin('termsLink')}
                 </Link>
               </div>
 
@@ -475,7 +477,7 @@ export default function LoginPage() {
                 className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
                 disabled={isLoading || isFbLoading || isLoadingGoogle}
               >
-                {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+                {isLoading ? tLogin('buttonLoggingIn') : tLogin('buttonLogin')}
               </Button>
             </form>
 
@@ -484,7 +486,7 @@ export default function LoginPage() {
                 <span className="w-full border-t border-indigo-800/50"></span>
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-[#120724] px-2 text-gray-500">O continúa con</span>
+                <span className="bg-[#120724] px-2 text-gray-500">{tLogin('orContinueWith')}</span>
               </div>
             </div>
 
@@ -496,11 +498,11 @@ export default function LoginPage() {
               disabled={!isFbSdkReady || isLoading || isFbLoading || isLoadingGoogle}
             >
               {isFbLoading ? (
-                <span>Conectando con Facebook...</span>
+                <span>{tLogin('facebookLoading')}</span>
               ) : (
                 <>
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12Z" clipRule="evenodd" /></svg>
-                  <span>Iniciar sesión con Facebook</span>
+                  <span>{tLogin('facebookLogin')}</span>
                 </>
               )}
             </Button>
@@ -513,7 +515,7 @@ export default function LoginPage() {
               disabled={isLoading || isFbLoading || isLoadingGoogle}
             >
               {isLoadingGoogle ? (
-                <span className="text-gray-500">Verificando con Google...</span>
+                <span className="text-gray-500">{tLogin('googleLoading')}</span>
               ) : (
                 <>
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -522,7 +524,7 @@ export default function LoginPage() {
                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                   </svg>
-                  <span>Iniciar sesión con Google</span>
+                  <span>{tLogin('googleLogin')}</span>
                 </>
               )}
             </Button>
@@ -541,16 +543,16 @@ export default function LoginPage() {
 
             <div className="mt-6 text-center text-sm">
               <p className="text-gray-400">
-                ¿No tienes una cuenta?{' '}
+                {tLogin('noAccount')}
                 <Link href="/register" className="text-indigo-400 hover:text-indigo-300">
-                  Regístrate
+                  {tLogin('register')}
                 </Link>
               </p>
             </div>
 
             <div className="text-center text-sm mb-2">
               <Link href="/forgot-password" className="text-indigo-400 hover:underline">
-                ¿Olvidaste tu contraseña?
+                {tLogin('forgotPassword')}
               </Link>
             </div>
           </div>

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Spinner } from '@/components/ui/Spinner';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useTranslations } from 'next-intl';
 
 interface InstagramReel {
   id: string;
@@ -33,6 +34,7 @@ interface InstagramReelsListProps {
 }
 
 export const InstagramReelsList = ({ onSelectReel }: InstagramReelsListProps) => {
+  const t = useTranslations('components.instagramReelsList');
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +44,7 @@ export const InstagramReelsList = ({ onSelectReel }: InstagramReelsListProps) =>
   
   const observerTarget = useRef<HTMLDivElement | null>(null);
 
-  const fetchReels = useCallback(async (afterCursor?: string) => {
+  const fetchReels = useCallback(async (afterCursor?: string | null) => {
     try {
       if (!afterCursor) {
         setLoading(true);
@@ -52,7 +54,7 @@ export const InstagramReelsList = ({ onSelectReel }: InstagramReelsListProps) =>
       
       // Reducir el número de reels inicial a 6 para cargar más rápido
       const limit = !afterCursor ? 6 : 10;
-      const response = await getUserInstagramReels(limit, afterCursor);
+      const response = await getUserInstagramReels(limit, afterCursor ?? undefined);
       
       if (response.success && response.data) {
         if (afterCursor) {
@@ -72,16 +74,16 @@ export const InstagramReelsList = ({ onSelectReel }: InstagramReelsListProps) =>
           });
         }
       } else {
-        setError(response.message || 'Error al obtener los reels');
+        setError(response.message || t('errorFetching'));
       }
     } catch (error) {
-      setError('Error al cargar los reels de Instagram');
+      setError(t('errorLoading'));
       console.error('Error fetching Instagram reels:', error);
     } finally {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchReels();
@@ -91,7 +93,7 @@ export const InstagramReelsList = ({ onSelectReel }: InstagramReelsListProps) =>
   const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
     const [target] = entries;
     if (target.isIntersecting && pagination?.has_next_page && !loadingMore) {
-      fetchReels(pagination.next_cursor || undefined);
+      fetchReels(pagination.next_cursor);
     }
   }, [pagination, loadingMore, fetchReels]);
 
@@ -143,18 +145,18 @@ export const InstagramReelsList = ({ onSelectReel }: InstagramReelsListProps) =>
 
   if (error) {
     return (
-      <div className="bg-red-50 p-4 rounded-lg text-red-600 text-center">
+      <div className="text-red-400 bg-red-900/20 border border-red-700/50 p-4 rounded-lg">
         <p>{error}</p>
-        <p className="text-sm mt-2">Por favor intenta de nuevo más tarde o añade el reel manualmente.</p>
+        <p className="text-sm mt-2">{t('retryMessage')}</p>
       </div>
     );
   }
 
   if (!account) {
     return (
-      <div className="bg-yellow-50 p-4 rounded-lg text-yellow-700 text-center">
-        <p>No se pudo obtener información de tu cuenta de Instagram.</p>
-        <p className="text-sm mt-2">¿Has conectado tu cuenta de Instagram?</p>
+      <div className="text-yellow-400 bg-yellow-900/20 border border-yellow-700/50 p-4 rounded-lg">
+        <p>{t('errorAccountInfo')}</p>
+        <p className="text-sm mt-2">{t('checkConnection')}</p>
       </div>
     );
   }
@@ -231,8 +233,20 @@ export const InstagramReelsList = ({ onSelectReel }: InstagramReelsListProps) =>
       
       {!pagination?.has_next_page && reels.length > 0 && (
         <p className="text-center text-xs text-gray-400 py-2">
-          No hay más reels disponibles
+          {t('noMoreReels')}
         </p>
+      )}
+
+      {/* TODO: Restaurar el componente Select cuando esté disponible */}
+      <p className="text-sm text-gray-400 p-4 border border-dashed border-gray-600 rounded-md">Componente Select eliminado temporalmente debido a error de import.</p>
+
+      {pagination?.has_next_page && (
+        <button onClick={() => fetchReels(pagination.next_cursor)} disabled={loadingMore} className="mt-4 text-sm text-indigo-400 hover:text-indigo-300 disabled:opacity-50">
+          {loadingMore ? t('loadingMore') : t('loadMoreReels')}
+        </button>
+      )}
+      {!pagination?.has_next_page && reels.length > 0 && (
+        <p className="mt-4 text-xs text-gray-500">{t('noMoreReels')}</p>
       )}
     </div>
   );

@@ -6,62 +6,43 @@ import { Button } from "@/components/ui/button";
 import { motion, useScroll, useTransform, useMotionValueEvent, useSpring, useMotionValue } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { ProfileSkeleton } from '@/components/ui/skeleton';
+import { useTranslations } from 'next-intl';
 
-const plans = [
-  {
-    name: "Plan Básico",
-    description: "Para creadores emergentes que quieren automatizar sus primeras respuestas.",
-    price: "9,99€",
-    priceDescription: "al mes",
-    features: [
-      "1 reel configurado",
-      "Hasta 5 palabras clave",
-      "Respuestas personalizadas",
-      "Estadísticas básicas",
-      "Soporte por email"
-    ],
-    buttonText: "Empezar",
-    variant: "outline",
-    popular: false
-  },
-  {
-    name: "Pro",
-    description: "Para creadores que quieren escalar su presencia en Instagram.",
-    price: "24,99€",
-    priceDescription: "al mes",
-    features: [
-      "5 reels configurados",
-      "Hasta 20 palabras clave por reel",
-      "Generación de respuestas con IA",
-      "Estadísticas avanzadas",
-      "Soporte prioritario",
-      "Personalización de botones",
-      "Generación de comentarios con IA"
-    ],
-    buttonText: "Comenzar Ahora",
-    variant: "default",
-    popular: true
-  },
-  {
-    name: "Empresarial",
-    description: "Para marcas y creadores establecidos con gran audiencia.",
-    price: "69,99€",
-    priceDescription: "al mes",
-    features: [
-      "Reels ilimitados",
-      "Palabras clave ilimitadas",
-      "Respuestas con IA avanzada",
-      "Etiquetas personalizadas",
-      "Estadísticas en tiempo real",
-      "Soporte dedicado 24/7",
-      "Integración con otras plataformas",
-      "API personalizada"
-    ],
-    buttonText: "Contactar",
-    variant: "outline",
-    popular: false
-  }
-];
+const usePlans = () => {
+  const t = useTranslations('pricing');
+  return [
+    {
+      name: t('basicName'),
+      description: t('basicDescription'),
+      price: "9,99€",
+      priceDescription: t('priceSuffix'),
+      features: t.raw('basicFeatures'),
+      buttonText: t('basicButton'),
+      variant: "outline",
+      popular: false
+    },
+    {
+      name: t('proName'),
+      description: t('proDescription'),
+      price: "24,99€",
+      priceDescription: t('priceSuffix'),
+      features: t.raw('proFeatures'),
+      buttonText: t('proButton'),
+      variant: "default",
+      popular: true
+    },
+    {
+      name: t('enterpriseName'),
+      description: t('enterpriseDescription'),
+      price: "69,99€",
+      priceDescription: t('priceSuffix'),
+      features: t.raw('enterpriseFeatures'),
+      buttonText: t('enterpriseButton'),
+      variant: "outline",
+      popular: false
+    }
+  ];
+};
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -90,7 +71,8 @@ const cardHoverVariants = {
   }
 };
 
-const PricingCard = ({ plan, i, parallaxY }: { plan: typeof plans[0], i: number, parallaxY: number }) => {
+const PricingCard = ({ plan, i, parallaxY }: { plan: ReturnType<typeof usePlans>[0], i: number, parallaxY: number }) => {
+  const t = useTranslations('pricing');
   const cardRef = useRef(null);
   const y = useMotionValue(0);
   
@@ -129,7 +111,7 @@ const PricingCard = ({ plan, i, parallaxY }: { plan: typeof plans[0], i: number,
             }
           }
         }}
-        className="will-change-transform h-full"
+        className={`will-change-transform h-full`}
       >
         <Card className={`h-full flex flex-col border ${
           plan.popular 
@@ -138,7 +120,7 @@ const PricingCard = ({ plan, i, parallaxY }: { plan: typeof plans[0], i: number,
         }`}>
           {plan.popular && (
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-indigo-600 text-white px-4 py-1 rounded-full text-sm font-medium">
-              Más Popular
+              {t('mostPopular')}
             </div>
           )}
           <CardHeader className={`pb-8 ${plan.popular ? "pt-8" : "pt-6"}`}>
@@ -151,7 +133,7 @@ const PricingCard = ({ plan, i, parallaxY }: { plan: typeof plans[0], i: number,
           </CardHeader>
           <CardContent className="flex-grow">
             <ul className="space-y-3">
-              {plan.features.map((feature, index) => (
+              {plan.features && Array.isArray(plan.features) && plan.features.map((feature: string, index: number) => (
                 <li key={index} className="flex items-start">
                   <div className="flex-shrink-0 h-5 w-5 text-indigo-400 mt-0.5">
                     <CheckIcon />
@@ -181,6 +163,8 @@ const PricingCard = ({ plan, i, parallaxY }: { plan: typeof plans[0], i: number,
 };
 
 export default function PreciosPage() {
+  const t = useTranslations('pricing');
+  const plans = usePlans();
   const containerRef = useRef(null);
   const { scrollY } = useScroll();
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -234,7 +218,7 @@ export default function PreciosPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          Planes y Precios
+          {t('title')}
         </motion.h1>
         <motion.p 
           className="text-lg text-gray-400 max-w-2xl mx-auto"
@@ -242,7 +226,7 @@ export default function PreciosPage() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.2 }}
         >
-          Elige el plan que mejor se adapte a tus necesidades para automatizar tus respuestas en Instagram y potenciar tu crecimiento.
+          {t('subtitle')}
         </motion.p>
       </div>
 
@@ -265,7 +249,7 @@ export default function PreciosPage() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
         >
-          ¿Tienes necesidades específicas? Contacta con nuestro equipo para crear un plan personalizado.
+          {t('customPlanPrompt')}
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -275,7 +259,7 @@ export default function PreciosPage() {
           whileTap={{ scale: 0.95 }}
         >
           <Button variant="outline" className="border-indigo-500 text-indigo-400 hover:bg-indigo-950/50">
-            Contactar para un plan personalizado
+            {t('customPlanButton')}
           </Button>
         </motion.div>
       </div>

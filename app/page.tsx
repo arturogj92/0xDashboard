@@ -18,8 +18,11 @@ import { PageSkeleton } from '@/components/ui/skeleton';
 import { FaInstagram, FaFacebook, FaPlug } from 'react-icons/fa';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import GlobalStatsModal from '@/components/dialogs/GlobalStatsModal';
+import { useTranslations } from 'next-intl';
 
 export default function Home() {
+  const tHome = useTranslations('home');
+  const t = useTranslations('dashboard');
   const { stats, loading: loadingGlobal, error: errorGlobal } = useGlobalMediaStats();
   const { stats: storyStats, loading: loadingStoryGlobal, error: errorStoryGlobal } = useGlobalStoryStats();
   const router = useRouter();
@@ -61,9 +64,9 @@ export default function Home() {
     automationWarning = (
       <div className="w-full max-w-2xl mx-auto bg-yellow-900/10 shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
         <span className="text-3xl mb-2">⏰</span>
-        <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">¡Reconecta tu cuenta de Instagram!</h2>
+        <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">{tHome('reconnectTitle')}</h2>
         <p className="text-base text-center text-yellow-100 mb-4 break-words w-full leading-snug">
-          Tu sesión de Instagram ha expirado. Para seguir creando automatizaciones, por favor reconecta tu cuenta de Instagram.
+          {tHome('reconnectDescription')}
         </p>
         <InstagramConnectButton reconnect />
         <ConnectHelpButton reconnect />
@@ -73,9 +76,9 @@ export default function Home() {
     automationWarning = (
       <div className="w-full max-w-2xl mx-auto bg-yellow-900/10 shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
         <span className="text-3xl mb-2">⚠️</span>
-        <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">No se encontró ninguna cuenta Business de Instagram</h2>
+        <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">{tHome('noBusinessAccountTitle')}</h2>
         <p className="text-base text-center text-yellow-100 mb-4 break-words w-full leading-snug">
-          No se ha detectado ninguna cuenta Business o Creador de Instagram vinculada. Por favor, reconecta y asegúrate de seleccionar una cuenta válida durante el proceso.
+          {tHome('noBusinessAccountDescription')}
         </p>
         <InstagramConnectButton reconnect />
         <ConnectHelpButton reconnect />
@@ -85,9 +88,9 @@ export default function Home() {
     automationWarning = (
       <div className="w-full max-w-2xl mx-auto bg-yellow-900/10 shadow-lg px-4 py-6 rounded-2xl mb-6 flex flex-col items-center">
         <span className="text-3xl mb-2">⚠️</span>
-        <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">¡Conecta tu cuenta de Instagram!</h2>
+        <h2 className="font-extrabold text-xl text-center text-yellow-200 mb-2 leading-tight">{tHome('connectInstagramTitle')}</h2>
         <p className="text-base text-center text-yellow-100 mb-4 break-words w-full leading-snug">
-          Para crear automatizaciones necesitas vincular tu cuenta de Instagram.
+          {tHome('connectInstagramDescription')}
         </p>
         <InstagramConnectButton />
         <ConnectHelpButton />
@@ -103,7 +106,7 @@ export default function Home() {
         onClick={handleConnectInstagram}
       >
         <FaInstagram className="w-6 h-6 text-white" />
-        <span>{reconnect ? 'Reconectar cuenta de Instagram' : 'Iniciar sesión con Instagram'}</span>
+        <span>{reconnect ? tHome('reconnectInstagram') : tHome('loginInstagram')}</span>
       </Button>
     );
   }
@@ -116,36 +119,37 @@ export default function Home() {
           onClick={() => setInfoModalOpen(true)}
           type="button"
         >
-          {reconnect ? '¿Cómo reconectar mi cuenta?' : '¿Cómo conectar mi cuenta?'}
+          {reconnect ? tHome('howReconnect') : tHome('howConnect')}
         </button>
         <Dialog open={infoModalOpen} onOpenChange={setInfoModalOpen}>
           <DialogContent className="bg-[#120724] border border-indigo-900/50 text-white w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl p-4 sm:p-6 md:p-8 overflow-y-auto max-h-[90vh]">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold text-center flex items-center justify-center gap-2 mb-2">
                 <FaInstagram className="text-pink-400 text-xl" />
-                <span>Conecta Instagram con Facebook</span>
+                <span>{tHome('connectInstagramFacebook')}</span>
                 <FaFacebook className="text-blue-400 text-xl" />
               </DialogTitle>
               <DialogDescription className="text-gray-400 text-center">
-                Para usar las funciones de automatización, necesitas conectar tu Instagram Professional.<br />
-                <span className="block mt-2 text-yellow-200 font-semibold">Es obligatorio tener una <b>cuenta de Facebook</b> asociada a tu cuenta de Instagram.</span>
-                <span className="block mt-2 text-gray-300">Si creaste tu cuenta de Instagram sin Facebook, primero debes crear una cuenta de Facebook y enlazarla a tu Instagram.</span>
+                {tHome('automationDialogParagraph1')}
+                <br />
+                <span className="block mt-2 text-yellow-200 font-semibold">{tHome('automationDialogParagraph2')}</span>
+                <span className="block mt-2 text-gray-300">{tHome('automationDialogParagraph3')}</span>
                 <a
                   href="https://www.facebook.com/help/instagram/570895513091465"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block mt-2 text-blue-400 underline hover:text-blue-300"
                 >
-                  Cómo vincular tu cuenta de Facebook a Instagram
+                  {tHome('linkHowToLinkFacebookInstagram')}
                 </a>
-                <span className="block mt-4 text-gray-300">Puedes enlazar tu cuenta iniciando sesión en tu cuenta de Facebook desde Meta Business:</span>
+                <span className="block mt-4 text-gray-300">{tHome('automationDialogParagraph4')}</span>
                 <a
                   href="https://business.facebook.com/business/loginpage/?login_options[0]=FB&login_options[1]=IG&login_options[2]=SSO&config_ref=biz_login_tool_flavor_mbs&create_business_portfolio_for_bm=1"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block mt-2 text-blue-400 underline hover:text-blue-300"
                 >
-                  Acceder a Meta Business para enlazar cuentas
+                  {tHome('linkMetaBusiness')}
                 </a>
               </DialogDescription>
             </DialogHeader>
@@ -157,50 +161,31 @@ export default function Home() {
                 height={160}
                 className="object-contain mx-auto mb-4"
               />
-              <h3 className="text-lg font-semibold text-center mb-4 text-yellow-200">✨ ¿Qué necesitas?</h3>
+              <h3 className="text-lg font-semibold text-center mb-4 text-yellow-200">{tHome('automationInfoTitle')}</h3>
               <ul className="space-y-4 text-left mb-6">
                 <li className="flex items-start gap-3 p-2 border border-indigo-900/30 rounded bg-indigo-900/20">
                   <FaInstagram className="text-pink-400 text-xl mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="text-gray-200">Una cuenta de Instagram de tipo </span>
-                    <span className="text-yellow-200 font-bold">Business</span>
-                    <span className="text-gray-200"> o </span>
-                    <span className="text-yellow-200 font-bold">Creador</span>
-                    <span className="ml-2 text-lg">📱</span>
-                  </div>
+                  <div className="text-white">{tHome('automationInfoInstagramType')}</div>
                 </li>
                 <li className="flex items-start gap-3 p-2 border border-indigo-900/30 rounded bg-indigo-900/20">
                   <FaFacebook className="text-blue-400 text-xl mt-1 flex-shrink-0" />
-                  <div>
-                    <span className="text-gray-200">Que esté vinculada a una </span>
-                    <span className="text-yellow-200 font-bold">Página de Facebook</span>
-                    <span className="text-gray-200"> (no solo perfil personal) </span>
-                    <span className="ml-2 text-lg">📄</span>
-                  </div>
+                  <div className="text-white">{tHome('automationInfoFacebookPage')}</div>
                 </li>
                 <li className="flex items-start gap-3 p-2 border border-indigo-900/30 rounded bg-indigo-900/20">
                   <span className="text-yellow-300 text-xl mt-1 flex-shrink-0">👑</span>
-                  <div>
-                    <span className="text-gray-200">Permisos de </span>
-                    <span className="text-yellow-200 font-bold">administrador</span>
-                    <span className="text-gray-200"> en la página de Facebook vinculada</span>
-                  </div>
+                  <div className="text-white">{tHome('automationInfoAdminPermissions')}</div>
                 </li>
                 <li className="flex items-start gap-3 p-2 border border-indigo-900/30 rounded bg-indigo-900/20">
                   <span className="text-green-400 text-xl mt-1 flex-shrink-0">✅</span>
-                  <div>
-                    <span className="text-gray-200">Conceder </span>
-                    <span className="text-yellow-200 font-bold">todos los permisos</span>
-                    <span className="text-gray-200"> solicitados durante el proceso de conexión</span>
-                  </div>
+                  <div className="text-white">{tHome('automationInfoPermissions')}</div>
                 </li>
               </ul>
               <div className="bg-yellow-900/30 border border-yellow-800 text-yellow-200 p-3 rounded text-center">
-                Si tu token está expirado o no tienes la cuenta correctamente vinculada, <b>no podrás crear reels ni historias</b>.
+                {tHome('tokenExpiredWarning')}
               </div>
               <div className="flex justify-center mt-6">
                 <Button className="bg-indigo-700 hover:bg-indigo-600 text-white" onClick={() => setInfoModalOpen(false)}>
-                  Entendido
+                  {t('understood')}
                 </Button>
               </div>
             </div>
@@ -309,7 +294,7 @@ export default function Home() {
   if (error) {
     return (
       <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded relative" role="alert">
-        <strong className="font-bold">Error!</strong>
+        <strong className="font-bold">{t('error')}</strong>
         <span className="block sm:inline"> {error}</span>
       </div>
     );
@@ -335,7 +320,7 @@ export default function Home() {
             Bienvenido, {user?.name || user?.username || 'Usuario'}
           </h2>
           <p className="text-gray-400">
-            Gestiona tus reels y automatizaciones desde este panel
+            {t('manageDesc')}
           </p>
         </div>
         
@@ -381,9 +366,9 @@ export default function Home() {
                 </svg>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">Tus automatizaciones</h1>
+                <h1 className="text-2xl font-bold text-white">{t('yourAutomationsTitle')}</h1>
                 <p className="text-sm text-gray-400">
-                  Gestiona tus respuestas automáticas para reels e historias
+                  {t('yourAutomationsDesc')}
                 </p>
               </div>
             </div>
@@ -414,7 +399,7 @@ export default function Home() {
               <span className="text-white font-medium">{user.instagram_username}</span>
               <span className="flex items-center text-xs text-green-400 ml-2 font-semibold">
                 <FaPlug className="inline-block mr-1 text-green-400" />
-                Conectado
+                {t('connectedText')}
               </span>
             </div>
           )}
@@ -423,13 +408,13 @@ export default function Home() {
         {/* Estadísticas globales de tus Reels */}
         {fixedReels.length > 0 && (
           <div className="mb-8 px-4 md:px-6">
-            <h3 className="text-xl font-semibold text-white mb-1 text-center">Estadísticas globales de tus Reels</h3>
-            <p className="text-center text-gray-400 mb-4 text-sm">Resumen de respuestas automáticas enviadas en todas las automatizaciones de Reels.</p>
+            <h3 className="text-xl font-semibold text-white mb-1 text-center">{t('stats.reelsGlobalTitle')}</h3>
+            <p className="text-center text-gray-400 mb-4 text-sm">{t('stats.reelsGlobalDesc')}</p>
             {loadingGlobal && (
-              <p className="text-gray-400 text-center">Cargando estadísticas...</p>
+              <p className="text-gray-400 text-center">{t('stats.loading')}</p>
             )}
             {errorGlobal && (
-              <p className="text-red-400 text-center">Error al cargar estadísticas globales</p>
+              <p className="text-red-400 text-center">{t('stats.errorReels')}</p>
             )}
             {stats && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -439,9 +424,9 @@ export default function Home() {
                   onClick={() => setGlobalStatsInfo({ period: '28d', mediaType: 'reel' })}
                 >
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
-                  <span className="text-gray-300 text-sm">Últimos 28 días</span>
+                  <span className="text-gray-300 text-sm">{t('stats.last28Days')}</span>
                   <span className="text-white font-bold text-xl">{stats.last_28_days_total}</span>
-                  <span className="text-gray-400 text-xs mt-1">mensajes</span>
+                  <span className="text-gray-400 text-xs mt-1">{t('stats.messages')}</span>
                 </div>
                 {/* Últimos 7 días */}
                 <div
@@ -449,9 +434,9 @@ export default function Home() {
                   onClick={() => setGlobalStatsInfo({ period: '7d', mediaType: 'reel' })}
                 >
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
-                  <span className="text-gray-300 text-sm">Últimos 7 días</span>
+                  <span className="text-gray-300 text-sm">{t('stats.last7Days')}</span>
                   <span className="text-white font-bold text-xl">{stats.last_7_days_total}</span>
-                  <span className="text-gray-400 text-xs mt-1">mensajes</span>
+                  <span className="text-gray-400 text-xs mt-1">{t('stats.messages')}</span>
                 </div>
                 {/* Ayer */}
                 <div
@@ -459,9 +444,9 @@ export default function Home() {
                   onClick={() => setGlobalStatsInfo({ period: 'yesterday', mediaType: 'reel' })}
                 >
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
-                  <span className="text-gray-300 text-sm">Ayer</span>
+                  <span className="text-gray-300 text-sm">{t('stats.yesterday')}</span>
                   <span className="text-white font-bold text-xl">{stats.yesterday_total}</span>
-                  <span className="text-gray-400 text-xs mt-1">mensajes</span>
+                  <span className="text-gray-400 text-xs mt-1">{t('stats.messages')}</span>
                 </div>
                 {/* Hoy */}
                 <div
@@ -469,9 +454,9 @@ export default function Home() {
                   onClick={() => setGlobalStatsInfo({ period: 'today', mediaType: 'reel' })}
                 >
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
-                  <span className="text-gray-300 text-sm">Hoy</span>
+                  <span className="text-gray-300 text-sm">{t('stats.today')}</span>
                   <span className="text-white font-bold text-xl">{stats.today_total}</span>
-                  <span className="text-gray-400 text-xs mt-1">mensajes</span>
+                  <span className="text-gray-400 text-xs mt-1">{t('stats.messages')}</span>
                 </div>
               </div>
             )}
@@ -498,11 +483,11 @@ export default function Home() {
               height={36}
               className="mr-3"
             />
-            <h2 className="text-xl font-semibold text-white">Reels</h2>
+            <h2 className="text-xl font-semibold text-white">{t('reels.title')}</h2>
           </div>
 
           <p className="text-sm text-gray-400 mb-6">
-            Lista de reels configurados para respuestas automáticas
+            {t('reels.description')}
           </p>
 
           <div className="flex justify-start mb-8">
@@ -513,7 +498,7 @@ export default function Home() {
               disabled={!canCreateAutomations}
             >
               <PlusIcon className="h-4 w-4 mr-2" />
-              Añadir Reel
+              {t('reels.addReel')}
             </Button>
           </div>
           
@@ -539,7 +524,7 @@ export default function Home() {
                     height={48}
                     className="opacity-50 mb-4"
                   />
-                  <p className="text-gray-400 mb-4">No tienes reels configurados</p>
+                  <p className="text-gray-400 mb-4">{t('reels.noReels')}</p>
                   <Button 
                     variant="outline" 
                     className="rounded-full px-6 py-2 hover:bg-indigo-600/50 border-indigo-600/50"
@@ -547,7 +532,7 @@ export default function Home() {
                     disabled={!canCreateAutomations}
                   >
                     <PlusIcon className="h-4 w-4 mr-2" />
-                    Añadir tu primer Reel
+                    {t('reels.addFirstReel')}
                   </Button>
                 </div>
               </div>
@@ -558,13 +543,13 @@ export default function Home() {
         {/* Estadísticas globales de tus Historias */}
         {fixedStories.length > 0 && (
           <div className="mb-8 px-4 md:px-6">
-            <h3 className="text-xl font-semibold text-white mb-1 text-center">Estadísticas globales de tus Historias</h3>
-            <p className="text-center text-gray-400 mb-4 text-sm">Resumen de respuestas automáticas enviadas en todas las automatizaciones de Historias.</p>
+            <h3 className="text-xl font-semibold text-white mb-1 text-center">{t('stats.storiesGlobalTitle')}</h3>
+            <p className="text-center text-gray-400 mb-4 text-sm">{t('stats.storiesGlobalDesc')}</p>
             {loadingStoryGlobal && (
-              <p className="text-gray-400 text-center">Cargando estadísticas...</p>
+              <p className="text-gray-400 text-center">{t('stats.loading')}</p>
             )}
             {errorStoryGlobal && (
-              <p className="text-red-400 text-center">Error al cargar estadísticas globales de Historias</p>
+              <p className="text-red-400 text-center">{t('stats.errorStories')}</p>
             )}
             {storyStats && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -574,9 +559,9 @@ export default function Home() {
                   onClick={() => setGlobalStatsInfo({ period: '28d', mediaType: 'story' })}
                 >
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
-                  <span className="text-gray-300 text-sm">Últimos 28 días</span>
+                  <span className="text-gray-300 text-sm">{t('stats.last28Days')}</span>
                   <span className="text-white font-bold text-xl">{storyStats.last_28_days_total}</span>
-                  <span className="text-gray-400 text-xs mt-1">mensajes</span>
+                  <span className="text-gray-400 text-xs mt-1">{t('stats.messages')}</span>
                 </div>
                 {/* Últimos 7 días */}
                 <div
@@ -584,9 +569,9 @@ export default function Home() {
                   onClick={() => setGlobalStatsInfo({ period: '7d', mediaType: 'story' })}
                 >
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
-                  <span className="text-gray-300 text-sm">Últimos 7 días</span>
+                  <span className="text-gray-300 text-sm">{t('stats.last7Days')}</span>
                   <span className="text-white font-bold text-xl">{storyStats.last_7_days_total}</span>
-                  <span className="text-gray-400 text-xs mt-1">mensajes</span>
+                  <span className="text-gray-400 text-xs mt-1">{t('stats.messages')}</span>
                 </div>
                 {/* Ayer */}
                 <div
@@ -594,9 +579,9 @@ export default function Home() {
                   onClick={() => setGlobalStatsInfo({ period: 'yesterday', mediaType: 'story' })}
                 >
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
-                  <span className="text-gray-300 text-sm">Ayer</span>
+                  <span className="text-gray-300 text-sm">{t('stats.yesterday')}</span>
                   <span className="text-white font-bold text-xl">{storyStats.yesterday_total}</span>
-                  <span className="text-gray-400 text-xs mt-1">mensajes</span>
+                  <span className="text-gray-400 text-xs mt-1">{t('stats.messages')}</span>
                 </div>
                 {/* Hoy */}
                 <div
@@ -604,9 +589,9 @@ export default function Home() {
                   onClick={() => setGlobalStatsInfo({ period: 'today', mediaType: 'story' })}
                 >
                   <ChatBubbleLeftRightIcon className="h-6 w-6 text-indigo-400 mb-2" />
-                  <span className="text-gray-300 text-sm">Hoy</span>
+                  <span className="text-gray-300 text-sm">{t('stats.today')}</span>
                   <span className="text-white font-bold text-xl">{storyStats.today_total}</span>
-                  <span className="text-gray-400 text-xs mt-1">mensajes</span>
+                  <span className="text-gray-400 text-xs mt-1">{t('stats.messages')}</span>
                 </div>
               </div>
             )}
@@ -623,11 +608,11 @@ export default function Home() {
               height={36}
               className="mr-3"
             />
-            <h2 className="text-xl font-semibold text-white">Historias</h2>
+            <h2 className="text-xl font-semibold text-white">{t('stories.title')}</h2>
           </div>
 
           <p className="text-sm text-gray-400 mb-6">
-            Lista de historias configuradas para respuestas automáticas
+            {t('stories.description')}
           </p>
 
           <div className="flex justify-start mb-8">
@@ -638,7 +623,7 @@ export default function Home() {
               disabled={!canCreateAutomations}
             >
               <PlusIcon className="h-4 w-4 mr-2" />
-              Añadir Historia
+              {t('stories.addStory')}
             </Button>
           </div>
           
@@ -664,7 +649,7 @@ export default function Home() {
                     height={48}
                     className="opacity-50 mb-4"
                   />
-                  <p className="text-gray-400 mb-4">No tienes historias configuradas</p>
+                  <p className="text-gray-400 mb-4">{t('stories.noStories')}</p>
                   <Button 
                     variant="outline" 
                     className="rounded-full px-6 py-2 hover:bg-indigo-600/50 border-indigo-600/50"
@@ -672,7 +657,7 @@ export default function Home() {
                     disabled={!canCreateAutomations}
                   >
                     <PlusIcon className="h-4 w-4 mr-2" />
-                    Añadir tu primera Historia
+                    {t('stories.addFirstStory')}
                   </Button>
                 </div>
               </div>

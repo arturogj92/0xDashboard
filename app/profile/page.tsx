@@ -11,11 +11,15 @@ import { User as UserIcon } from 'lucide-react';
 import { ProfileSkeleton } from '@/components/ui/skeleton';
 import { InstagramConnect } from '@/components/auth/InstagramConnect';
 import { FaInstagram, FaPlug } from 'react-icons/fa';
+import { useLocale } from '@/contexts/I18nContext';
+import { useTranslations } from 'next-intl';
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
+  const t = useTranslations('app.profile');
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+  const { locale, setLocale } = useLocale();
 
   useEffect(() => {
     // Simulación de carga
@@ -38,8 +42,8 @@ export default function ProfilePage() {
       <div className="flex flex-col items-center justify-center min-h-[80vh] px-4">
         <div className="w-full max-w-2xl">
           <div className="mb-8 text-center">
-            <h1 className="text-3xl font-bold text-white">Perfil de Usuario</h1>
-            <p className="text-gray-400 mt-2">Información de tu cuenta</p>
+            <h1 className="text-3xl font-bold text-white">{t('title')}</h1>
+            <p className="text-gray-400 mt-2">{t('accountDescription')}</p>
           </div>
 
           <div className="bg-[#120724] p-8 rounded-xl shadow-lg border border-indigo-900/30">
@@ -59,17 +63,17 @@ export default function ProfilePage() {
               <div className="text-center md:text-left">
                 <h2 className="text-2xl font-bold text-white">{user?.name || user?.username}</h2>
                 <p className="text-md text-gray-400">{user?.email}</p>
-                <p className="text-sm text-gray-500 mt-1">Usuario desde {new Date().toLocaleDateString()}</p>
+                <p className="text-sm text-gray-500 mt-1">{t('userSince')} {new Date().toLocaleDateString()}</p>
               </div>
             </div>
 
             <div className="grid gap-6">
               <div>
-                <h3 className="text-lg font-medium text-white mb-3">Información de la cuenta</h3>
+                <h3 className="text-lg font-medium text-white mb-3">{t('accountInfo')}</h3>
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-400 mb-1">
-                      Nombre de usuario
+                      {t('labelUsername')}
                     </label>
                     <div className="p-3 bg-[#1c1033] border border-indigo-900/50 rounded-md text-white">
                       {user?.username}
@@ -78,7 +82,7 @@ export default function ProfilePage() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-400 mb-1">
-                      Correo electrónico
+                      {t('labelEmail')}
                     </label>
                     <div className="p-3 bg-[#1c1033] border border-indigo-900/50 rounded-md text-white">
                       {user?.email}
@@ -87,17 +91,29 @@ export default function ProfilePage() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-400 mb-1">
-                      Nombre completo
+                      {t('labelFullName')}
                     </label>
                     <div className="p-3 bg-[#1c1033] border border-indigo-900/50 rounded-md text-white">
-                      {user?.name || "No establecido"}
+                      {user?.name || t('notSet')}
                     </div>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-lg font-medium text-white mb-3">Instagram</h3>
+                <h3 className="text-lg font-medium text-white mb-3">{t('language')}</h3>
+                <select
+                  value={locale}
+                  onChange={(e) => setLocale(e.target.value as 'es' | 'en')}
+                  className="p-3 bg-[#1c1033] border border-indigo-900/50 rounded-md text-white w-full"
+                >
+                  <option value="es">{t('languageSpanish')}</option>
+                  <option value="en">{t('languageEnglish')}</option>
+                </select>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-medium text-white mb-3">{t('instagram')}</h3>
                 {(!user?.isInstagramLinked || !user?.isInstagramTokenValid) ? (
                   <InstagramConnect reconnect={Boolean(user?.isInstagramLinked && !user?.isInstagramTokenValid)} />
                 ) : (
@@ -126,13 +142,13 @@ export default function ProfilePage() {
                   className="border-red-700/50 text-red-400 hover:bg-red-900/20 hover:text-red-300"
                   onClick={logout}
                 >
-                  Cerrar sesión
+                  {t('logout')}
                 </Button>
                 <Button
                   className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
                   onClick={() => router.push('/')}
                 >
-                  Ir al Dashboard
+                  {t('goToDashboard')}
                 </Button>
               </div>
             </div>

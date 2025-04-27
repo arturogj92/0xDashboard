@@ -9,6 +9,7 @@ import { Instagram, Play, Pause } from 'lucide-react';
 import { createReel, createStory } from '@/lib/api';
 import Image from 'next/image';
 import { InstagramReelsDialog } from '@/components/dialogs/InstagramReelsDialog';
+import { useTranslations } from 'next-intl';
 
 interface CreateMediaModalProps {
   open: boolean;
@@ -18,6 +19,7 @@ interface CreateMediaModalProps {
 }
 
 export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: CreateMediaModalProps) {
+  const t = useTranslations('components.createMediaModal');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isDraft, setIsDraft] = useState(false);
@@ -66,8 +68,8 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
           setError('Error al crear la historia');
         }
       }
-    } catch (err) {
-      setError(`Error al crear ${isReelType ? 'el reel' : 'la historia'}`);
+    } catch (err: any) {
+      setError(t('errorCreating').replace('{mediaType}', isReelType ? 'reel' : 'story'));
     } finally {
       setLoading(false);
     }
@@ -143,7 +145,7 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
                 className="mr-[-10px]"
               />
               <DialogTitle className="text-xl font-semibold text-white">
-                {isReelType ? 'Nueva automatización de Reel' : 'Nueva automatización de Historia'}
+                {isReelType ? t('titleReel') : t('titleStory')}
                 {isReelType && isDraft && (
                   <span className="inline-flex items-center rounded-md px-2.5 py-1 ml-2 text-xs font-medium text-amber-400 bg-[#120724] border border-amber-500/70">
                     DRAFT
@@ -152,17 +154,14 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
               </DialogTitle>
             </div>
             <DialogDescription className="text-gray-400 mt-1">
-              {isReelType 
-                ? 'Añade un nuevo reel para configurar respuestas automáticas' 
-                : 'Añade una nueva historia para configurar respuestas automáticas'
-              }
+              {isReelType ? t('descriptionReel') : t('descriptionStory')}
             </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
               <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded relative" role="alert">
-                <strong className="font-bold">Error!</strong>
+                <strong className="font-bold">{t('errorGeneric')}</strong>
                 <span className="block sm:inline"> {error}</span>
               </div>
             )}
@@ -254,7 +253,7 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="block w-full rounded-md border-gray-700 bg-[#1c1033] py-2.5 px-3 text-gray-200 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm"
-                  placeholder={`Descripción ${isReelType ? 'del reel' : 'de la historia'}...`}
+                  placeholder={isReelType ? t('placeholderDescriptionReel') : t('placeholderDescriptionStory')}
                 />
               </div>
             </div>
@@ -305,8 +304,7 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
             {isDraft && (
               <div className="mt-3 p-3 text-xs rounded-md bg-amber-900/20 border border-amber-500/30 text-amber-300">
                 <p>
-                  El modo Draft te permite preparar la automatización (respuestas, palabras clave) antes de publicar el reel. 
-                  Una vez que publiques tu reel en Instagram, añade la URL o selecciona el reel y el modo Draft se desactivará automáticamente.
+                  {t('draftModeInfo').replace('{mediaType}', 'reel')}
                 </p>
               </div>
             )}
@@ -318,14 +316,14 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
                 onClick={handleCloseModal}
                 className="rounded-md border-gray-700 bg-[#1c1033] text-white hover:bg-[#2c1b4d] px-8 py-2.5"
               >
-                Cancelar
+                {t('buttonCancel')}
               </Button>
               <Button 
                 type="submit" 
                 disabled={loading}
                 className="rounded-md bg-indigo-600 text-white hover:bg-indigo-700 px-8 py-2.5"
               >
-                {loading ? 'Guardando...' : 'Guardar'}
+                {loading ? t('buttonCreating') : t('buttonCreate')}
               </Button>
             </div>
           </form>
