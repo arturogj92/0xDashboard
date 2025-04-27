@@ -92,6 +92,15 @@ div[style*="display: inline-block"] {
   background-attachment: fixed;
 }
 
+/* Fallback para dispositivos táctiles: desactivar attachment fixed */
+@media (pointer: coarse) {
+  .bg-grid-background {
+    background-attachment: scroll;
+    background-repeat: repeat;
+    background-size: auto;
+  }
+}
+
 /* Ajuste responsive para móvil: reducir tamaño de la grid */
 @media (max-width: 768px) {
   .bg-grid-background {
