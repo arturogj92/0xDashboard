@@ -84,7 +84,7 @@ div[style*="display: inline-block"] {
   background-image:
     linear-gradient(to bottom, var(--background) 0%, rgba(3, 0, 8, 0) 30%),
     linear-gradient(to top, var(--background) 0%, rgba(3, 0, 8, 0) 30%),
-    linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
     url('/images/background/diagonal-grid.jpg');
   background-repeat: no-repeat;
   background-size: cover;
