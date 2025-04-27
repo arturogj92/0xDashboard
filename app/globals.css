@@ -91,3 +91,10 @@ div[style*="display: inline-block"] {
   background-position: center;
   background-attachment: fixed;
 }
+
+/* Ajuste responsive para móvil: reducir tamaño de la grid */
+@media (max-width: 768px) {
+  .bg-grid-background {
+    background-size: 200% auto;
+  }
+}
