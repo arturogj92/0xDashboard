@@ -75,7 +75,8 @@
     "googleLoading": "Verifying with Google...",
     "googleLogin": "Log in with Google",
     "noAccount": "Don't have an account?",
-    "register": "Register"
+    "register": "Register",
+    "forgotPassword": "Forgot your password?"
   },
   "register": {
     "title": "Create your account",
