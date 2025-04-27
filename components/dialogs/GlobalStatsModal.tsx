@@ -69,8 +69,10 @@ export default function GlobalStatsModal({ open, onOpenChange, period, mediaType
           const dateObj = new Date();
           if (period === 'yesterday') dateObj.setDate(dateObj.getDate() - 1);
           const dateStr = dateObj.toISOString().slice(0, 10);
+          // Obtengo la zona horaria del usuario
+          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
           const res = await fetch(
-            `${BASE_URL}/api/media/stats/hourly-visits?date=${dateStr}&media_type=${mediaType}`,
+            `${BASE_URL}/api/media/stats/hourly-visits?date=${dateStr}&media_type=${mediaType}&timezone=${encodeURIComponent(tz)}`,
             { headers }
           );
           const json = await res.json();
