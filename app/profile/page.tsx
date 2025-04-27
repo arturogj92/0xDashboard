@@ -40,7 +40,7 @@ export default function ProfilePage() {
   return (
     <ProtectedRoute>
       <div className="flex flex-col items-center justify-center min-h-[80vh] px-4">
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-2xl mx-auto">
           <div className="mb-8 text-center">
             <h1 className="text-3xl font-bold text-white">{t('title')}</h1>
             <p className="text-gray-400 mt-2">{t('accountDescription')}</p>

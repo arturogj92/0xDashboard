@@ -317,7 +317,8 @@ export default function Home() {
       <div className="flex flex-col gap-8">
         <div className="px-4 md:px-6">
           <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
-            Bienvenido, {user?.name || user?.username || 'Usuario'}
+            {/* @ts-expect-error permitir interpolación de variables en traducción */}
+            {t('welcome', { name: user?.name || user?.username || 'Usuario' })}
           </h2>
           <p className="text-gray-400">
             {t('manageDesc')}
@@ -397,9 +398,16 @@ export default function Home() {
                 />
               )}
               <span className="text-white font-medium">{user.instagram_username}</span>
-              <span className="flex items-center text-xs text-green-400 ml-2 font-semibold">
-                <FaPlug className="inline-block mr-1 text-green-400" />
-                {t('connectedText')}
+              <span className="flex items-center text-xs text-green-400 ml-2 font-semibold space-x-2">
+                <FaPlug className="inline-block text-green-400" />
+                <span>{t('connectedText')}</span>
+                {/* Punto verde pulsante */}
+                <span className="relative inline-flex h-3 w-3 justify-center items-center">
+                  {/* Onda más grande */}
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-[ping_1s_ease-in-out_infinite]"></span>
+                  {/* Punto central */}
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400"></span>
+                </span>
               </span>
             </div>
           )}

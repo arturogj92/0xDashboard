@@ -393,8 +393,8 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="flex flex-col items-center justify-center min-h-[80vh] px-4">
-        <div className="w-full max-w-md">
+      <div className="flex flex-col items-center justify-center px-4">
+        <div className="w-full max-w-md mx-auto">
           <div className="mb-8 text-center">
             <div className="flex justify-center mb-4">
               <Image 

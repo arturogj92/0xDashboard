@@ -71,7 +71,9 @@ div[style*="display: inline-block"] {
   width: 100% !important;
 } */
 
-/* Si algo sigue con ancho incorrecto, este es un enfoque nuclear */
+/* Eliminé la regla nuclear de ancho original: */
+/*
 .w-full > div, .w-full > div > div, .w-full iframe, .w-full * {
   max-width: 100% !important;
 }
+*/
