@@ -53,9 +53,9 @@ export default function RootLayout({
           <GoogleOAuthProvider clientId={googleClientId}>
             <AuthProvider>
               <I18nProvider>
-                <RootLayoutInner>
-                  {children}
-                </RootLayoutInner>
+              <RootLayoutInner>
+                {children}
+              </RootLayoutInner>
               </I18nProvider>
               <SpeedInsights />
               <Analytics />

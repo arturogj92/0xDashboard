@@ -16,7 +16,7 @@ const usePlans = () => {
       description: t('basicDescription'),
       price: "9,99€",
       priceDescription: t('priceSuffix'),
-      features: t.raw('basicFeatures'),
+      features: t.raw('basicFeatures') as string[],
       buttonText: t('basicButton'),
       variant: "outline",
       popular: false
@@ -26,7 +26,7 @@ const usePlans = () => {
       description: t('proDescription'),
       price: "24,99€",
       priceDescription: t('priceSuffix'),
-      features: t.raw('proFeatures'),
+      features: t.raw('proFeatures') as string[],
       buttonText: t('proButton'),
       variant: "default",
       popular: true
@@ -36,7 +36,7 @@ const usePlans = () => {
       description: t('enterpriseDescription'),
       price: "69,99€",
       priceDescription: t('priceSuffix'),
-      features: t.raw('enterpriseFeatures'),
+      features: t.raw('enterpriseFeatures') as string[],
       buttonText: t('enterpriseButton'),
       variant: "outline",
       popular: false

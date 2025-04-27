@@ -17,6 +17,11 @@ declare module 'next-intl/client' {
 
 declare module 'next-intl' {
   import React from 'react';
-  export function useTranslations(namespace?: string): (key: string) => string;
+  export interface UseTranslations {
+    (key: string): string;
+    raw: (key: string) => unknown;
+    rich?: (key: string, values: Record<string, unknown>) => React.ReactNode;
+  }
+  export function useTranslations(namespace?: string): UseTranslations;
   export * from 'next-intl/client';
 } 
