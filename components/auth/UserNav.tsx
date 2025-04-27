@@ -54,6 +54,8 @@ export function UserNav() {
                 alt={user.name || user.username} 
                 fill 
                 className="object-cover"
+                unoptimized
+                referrerPolicy="no-referrer"
               />
             ) : (
               <UserIcon className="h-3 w-3 text-white/60" />
