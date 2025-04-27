@@ -2,18 +2,21 @@
 
 import { FaInstagram } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
+import { useTranslations } from 'next-intl';
 
 interface InstagramConnectProps {
   reconnect?: boolean;
 }
 
 export function InstagramConnect({ reconnect = false }: InstagramConnectProps) {
+  const t = useTranslations('components.instagramConnect');
+
   function handleConnectInstagram() {
     const FACEBOOK_APP_ID = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID;
     const REDIRECT_URI = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') + '/api/auth/instagram/callback';
     const STATE = Math.random().toString(36).substring(2) + Date.now();
     if (!FACEBOOK_APP_ID || !REDIRECT_URI) {
-      window.alert('Configuración de Instagram incompleta. Contacta al administrador.');
+      window.alert(t('errorConfig'));
       return;
     }
     const scope = [
@@ -54,16 +57,16 @@ export function InstagramConnect({ reconnect = false }: InstagramConnectProps) {
         onClick={handleConnectInstagram}
       >
         <FaInstagram className="w-6 h-6 text-white" />
-        <span>{reconnect ? 'Reconectar cuenta de Instagram' : 'Conecta tu cuenta de Instagram'}</span>
+        <span>{reconnect ? t('buttonReconnect') : t('buttonConnect')}</span>
       </Button>
       {!reconnect && (
         <p className="text-sm text-yellow-300 text-center">
-          Es necesario conectar su cuenta de Instagram para crear automatizaciones.
+          {t('connectPrompt')}
         </p>
       )}
       {reconnect && (
         <p className="text-sm text-yellow-300 text-center">
-          Si estás teniendo problemas con la cuenta de Instagram, prueba a reconectarla.
+          {t('reconnectPrompt')}
         </p>
       )}
     </div>

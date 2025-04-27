@@ -11,6 +11,7 @@ import RootLayoutInner from "@/components/layout/RootLayoutInner";
 import Footer from './components/Footer';
 import { cn } from "@/lib/utils";
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { I18nProvider } from '@/contexts/I18nContext';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -51,12 +52,13 @@ export default function RootLayout({
         {googleClientId ? (
           <GoogleOAuthProvider clientId={googleClientId}>
             <AuthProvider>
-              <RootLayoutInner>
-                {children}
-              </RootLayoutInner>
+              <I18nProvider>
+                <RootLayoutInner>
+                  {children}
+                </RootLayoutInner>
+              </I18nProvider>
               <SpeedInsights />
               <Analytics />
-              <Footer />
             </AuthProvider>
           </GoogleOAuthProvider>
         ) : (

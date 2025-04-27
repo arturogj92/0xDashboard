@@ -7,40 +7,46 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useTranslations } from 'next-intl';
 
 interface DeleteDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
+  mediaType?: 'reel' | 'story';
 }
 
 export function DeleteDialog({
   open,
   onOpenChange,
-  onConfirm
+  onConfirm,
+  mediaType
 }: DeleteDialogProps) {
+  const t = useTranslations('components.deleteDialog');
+  const message = t('message').replace('{mediaType}', mediaType || 'elemento');
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-black/90 border border-gray-700 text-gray-200 backdrop-blur-sm">
+      <DialogContent className="bg-[#120724] border border-indigo-900/50 text-white sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="text-xl text-gray-100">Confirmar eliminación</DialogTitle>
-          <DialogDescription className="text-gray-400">
-            ¿Estás seguro de que deseas eliminar este reel? Esta acción no se puede deshacer.
+          <DialogTitle className="text-xl text-gray-100">{t('title')}</DialogTitle>
+          <DialogDescription className="text-gray-400 mt-2">
+            {message}
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter className="flex justify-end gap-3 mt-4">
-          <Button 
-            variant="outline" 
-            onClick={() => onOpenChange(false)}
-            className="border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white relative overflow-hidden group"
-          >
-            Cancelar
+        <DialogFooter className="mt-6">
+          <Button variant="outline" onClick={() => onOpenChange(false)} className="text-gray-300 border-gray-600 hover:bg-gray-700/50">
+            {t('buttonCancel')}
           </Button>
-          <Button 
-            onClick={onConfirm} 
-            className="bg-red-900/80 hover:bg-red-800 text-red-100"
+          <Button
+            variant="destructive"
+            className="bg-red-700 hover:bg-red-800 text-white"
+            onClick={() => {
+              onConfirm();
+              onOpenChange(false);
+            }}
           >
-            Eliminar
+            {t('buttonConfirm')}
           </Button>
         </DialogFooter>
       </DialogContent>

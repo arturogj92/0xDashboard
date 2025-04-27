@@ -1,20 +1,30 @@
+'use client';
+
 import { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Cell } from 'recharts';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useTranslations } from 'next-intl';
 
-// Tooltip personalizado con fondo oscuro y texto claro
-function CustomTooltip({ active, payload, label }: any) {
+// Interfaz para tooltip personalizado
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: any[];
+  label?: string;
+}
+
+const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
+  const t = useTranslations('components.globalStatsModal');
   if (active && payload && payload.length) {
     return (
-      <div className="bg-card p-2 border border-border rounded-md shadow-md text-gray-100">
-        <p className="text-sm">{`${label} : ${payload[0].value} mensajes`}</p>
+      <div className="bg-gray-900 text-white p-2 border border-gray-700 rounded shadow-lg">
+        <p className="text-sm">{(t as any)('tooltipLabel', { label: label || '', value: payload[0].value })}</p>
       </div>
     );
   }
   return null;
-}
+};
 
 interface Props {
   open: boolean;
@@ -27,6 +37,7 @@ interface Props {
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 export default function GlobalStatsModal({ open, onOpenChange, period, mediaType }: Props) {
+  const t = useTranslations('components.globalStatsModal');
   // Ref para evitar llamadas duplicadas en desarrollo (StrictMode)
   const fetchedRef = useRef(false);
   const [loading, setLoading] = useState(false);
@@ -53,7 +64,7 @@ export default function GlobalStatsModal({ open, onOpenChange, period, mediaType
           );
           const json = await res.json();
           if (json.success) setDailyData(json.data);
-          else throw new Error(json.message || 'Error al cargar datos diarios');
+          else throw new Error(json.message || t('errorLoadingDaily'));
         } else {
           const dateObj = new Date();
           if (period === 'yesterday') dateObj.setDate(dateObj.getDate() - 1);
@@ -64,11 +75,11 @@ export default function GlobalStatsModal({ open, onOpenChange, period, mediaType
           );
           const json = await res.json();
           if (json.success) setHourlyData(json.data);
-          else throw new Error(json.message || 'Error al cargar datos horarios');
+          else throw new Error(json.message || t('errorLoadingHourly'));
         }
       } catch (err: any) {
         console.error(err);
-        setError(err.message);
+        setError(err.message || t('errorGeneric'));
       } finally {
         setLoading(false);
       }
@@ -78,10 +89,10 @@ export default function GlobalStatsModal({ open, onOpenChange, period, mediaType
 
   const getTitle = () => {
     switch (period) {
-      case '28d': return 'Últimos 28 días';
-      case '7d': return 'Últimos 7 días';
-      case 'yesterday': return 'Ayer';
-      case 'today': return 'Hoy';
+      case '28d': return t('period28d');
+      case '7d': return t('period7d');
+      case 'yesterday': return t('periodYesterday');
+      case 'today': return t('periodToday');
     }
   };
 
@@ -98,13 +109,15 @@ export default function GlobalStatsModal({ open, onOpenChange, period, mediaType
     return hourlyData;
   })();
 
+  const interval = period === '28d' || period === '7d' ? t('intervalDay') : t('intervalHour');
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-3xl bg-black/90 border border-gray-700 text-gray-200 backdrop-blur-sm">
         <DialogHeader>
-          <DialogTitle className="text-xl text-gray-100">Estadísticas: {getTitle()}</DialogTitle>
+          <DialogTitle className="text-xl text-gray-100">{t('titlePrefix')} {getTitle()}</DialogTitle>
           <DialogDescription className="text-gray-400">
-            Desglose por {period === '28d' || period === '7d' ? 'día' : 'hora'} ({mediaType})
+            {(t as any)('subtitle', { interval, mediaType })}
           </DialogDescription>
         </DialogHeader>
 
@@ -113,7 +126,7 @@ export default function GlobalStatsModal({ open, onOpenChange, period, mediaType
             <Skeleton className="h-64 w-full rounded-md" />
           ) : error ? (
             <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded">
-              {error}
+              {t('errorLoadingMessage')}: {error}
             </div>
           ) : (
             <div className="w-full mb-4">
@@ -154,7 +167,7 @@ export default function GlobalStatsModal({ open, onOpenChange, period, mediaType
             onClick={() => onOpenChange(false)}
             className="border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white"
           >
-            Cerrar
+            {t('buttonClose')}
           </Button>
         </DialogFooter>
       </DialogContent>

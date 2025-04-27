@@ -1,0 +1,10 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+todo el texto o frases que pongas en la aplicación tienes que enteneder que van internacionalizadas con el i18n que hay montado en front ok?
+- You can @ files here
+- You can use markdown but dont have to

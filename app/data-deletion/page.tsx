@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import PrivacyLinks from '../components/PrivacyLinks';
 

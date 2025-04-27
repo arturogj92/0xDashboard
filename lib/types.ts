@@ -74,6 +74,7 @@ export interface User {
     isInstagramTokenValid?: boolean;
     instagram_username?: string;
     instagram_profile_pic_url?: string;
+    locale?: 'es' | 'en';
 }
 
 export interface AuthResponse {
