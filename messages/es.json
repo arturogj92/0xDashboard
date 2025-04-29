@@ -65,7 +65,7 @@
     "labelPassword": "Contraseña",
     "placeholderEmail": "tu@email.com",
     "placeholderPassword": "••••••••",
-    "termsText": "Al iniciar sesión, aceptas nuestros",
+    "termsText": "Al iniciar sesión, aceptas nuestros ",
     "termsLink": "Términos de Servicio",
     "buttonLogin": "Iniciar sesión",
     "buttonLoggingIn": "Iniciando sesión...",
@@ -74,8 +74,9 @@
     "facebookLogin": "Iniciar sesión con Facebook",
     "googleLoading": "Verificando con Google...",
     "googleLogin": "Iniciar sesión con Google",
-    "noAccount": "¿No tienes una cuenta?",
-    "register": "Regístrate"
+    "noAccount": "¿No tienes una cuenta? ",
+    "register": "Regístrate",
+    "forgotPassword": "¿Olvidaste tu contraseña?"
   },
   "register": {
     "title": "Crea tu cuenta",
@@ -213,5 +214,25 @@
       "inactive": "Inactivos"
     },
     "understood": "Entendido"
+  },
+  "pricing": {
+    "title": "Precios",
+    "subtitle": "Elige el plan que mejor se adapte a tus necesidades",
+    "basicName": "Básico",
+    "basicDescription": "Automatizaciones esenciales",
+    "priceSuffix": "/mes",
+    "basicFeatures": ["Respuesta automática a comentarios", "Estadísticas básicas", "Soporte limitado"],
+    "basicButton": "Seleccionar Básico",
+    "proName": "Pro",
+    "proDescription": "Para profesionales avanzados",
+    "proFeatures": ["Todo lo de Básico", "Más comentarios automáticos", "Soporte prioritario"],
+    "proButton": "Seleccionar Pro",
+    "enterpriseName": "Enterprise",
+    "enterpriseDescription": "Soluciones a gran escala",
+    "enterpriseFeatures": ["Todo lo de Pro", "Integración personalizada", "Soporte 24/7"],
+    "enterpriseButton": "Contáctanos",
+    "mostPopular": "Más popular",
+    "customPlanPrompt": "¿Necesitas un plan personalizado?",
+    "customPlanButton": "Contáctanos"
   }
 } 

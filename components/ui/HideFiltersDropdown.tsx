@@ -41,7 +41,7 @@ export function HideFiltersDropdown({ mediaType, filters, onChange }: HideFilter
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="relative flex items-center space-x-1">
           <EyeOff className="w-5 h-5" />
-          <span>{t("label")}</span>
+          <span className="hidden sm:inline-block">{t("label")}</span>
           <ChevronDown className="w-4 h-4" />
         </Button>
       </DropdownMenuTrigger>

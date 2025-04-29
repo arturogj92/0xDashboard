@@ -36,7 +36,7 @@ export function SortingDropdown({ sortField, sortOrder, changeSorting }: Sorting
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="relative !z-[99] flex items-center space-x-1">
           <AdjustmentsHorizontalIcon className="w-5 h-5" />
-          <span>{current?.label || t("label")}</span>
+          <span className="hidden sm:inline-block">{current?.label || t("label")}</span>
           <ChevronDownIcon className="w-4 h-4" />
         </Button>
       </DropdownMenuTrigger>

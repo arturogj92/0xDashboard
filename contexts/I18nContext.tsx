@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useContext, useState, useMemo } from 'react';
+import { createContext, useContext, useState, useMemo, useEffect } from 'react';
 import { NextIntlClientProvider } from 'next-intl';
 import { useAuth } from '@/contexts/AuthContext';
 import esMessages from '@/messages/es.json';
@@ -17,6 +17,8 @@ const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  
   // Inicializamos con 'en' por defecto, luego localStorage, luego idioma del navegador, y finalmente preferencia del usuario
   let initialLocale: SupportedLocale = 'en';
   if (typeof window !== 'undefined') {
@@ -35,6 +37,15 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   }
 
   const [locale, setLocaleState] = useState<SupportedLocale>(initialLocale);
+
+  // Efecto para simular carga y evitar parpadeo de idioma
+  useEffect(() => {
+    // Pequeño timeout para permitir hidratación
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   const setLocale = (newLocale: SupportedLocale) => {
     setLocaleState(newLocale);
@@ -67,7 +78,13 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   return (
     <LocaleContext.Provider value={contextValue}>
       <NextIntlClientProvider locale={locale} messages={messages} timeZone={timeZone}>
-        {children}
+        {isLoading ? (
+          <div className="flex items-center justify-center min-h-screen bg-[#0a0416]">
+            {/* Puedes añadir un spinner aquí si quieres */}
+          </div>
+        ) : (
+          children
+        )}
       </NextIntlClientProvider>
     </LocaleContext.Provider>
   );

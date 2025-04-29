@@ -23,7 +23,7 @@ export function DeleteDialog({
   mediaType
 }: DeleteDialogProps) {
   const t = useTranslations('components.deleteDialog');
-  const message = t('message').replace('{mediaType}', mediaType || 'elemento');
+  const message = (t as any)('message', { mediaType: mediaType || 'elemento' });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
