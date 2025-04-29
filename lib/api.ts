@@ -138,22 +138,28 @@ export const deleteReel = async (id: number): Promise<ApiResponse<{ success: boo
     return response.json();
 };
 
-export const getReels = async (): Promise<ApiResponse<Media[]>> => {
-    const response = await fetch(`${API_URL}/api/reels`, {
+interface PaginationQuery {
+  page?: number;
+  limit?: number;
+  sort?: 'date' | 'visits';
+  order?: 'asc' | 'desc';
+}
+
+export const getReels = async (options: PaginationQuery = {}): Promise<ApiResponse<Media[]> & { pagination?: any }> => {
+    const params = new URLSearchParams();
+    if (options.page) params.append('page', String(options.page));
+    if (options.limit) params.append('limit', String(options.limit));
+    if (options.sort) params.append('sort', options.sort);
+    if (options.order) params.append('order', options.order);
+
+    const response = await fetch(`${API_URL}/api/reels?${params.toString()}`, {
         headers: createAuthHeaders()
     });
     const data = await response.json();
     if (data.success) {
-        // Convertir el tipo según media_type
         return {
             ...data,
-            data: data.data.map((item: any) => {
-                if (item.media_type === 'story') {
-                    return item as Story;
-                } else {
-                    return item as Reel;
-                }
-            })
+            data: data.data.map((item: any) => (item.media_type === 'story' ? (item as Story) : (item as Reel)))
         };
     }
     return data;
@@ -376,8 +382,14 @@ export const createStory = async (data: { url: string, description: string, is_a
     return response.json();
 };
 
-export const getStories = async (): Promise<ApiResponse<Story[]>> => {
-    const response = await fetch(`${API_URL}/api/stories`, {
+export const getStories = async (options: PaginationQuery = {}): Promise<ApiResponse<Story[]> & { pagination?: any }> => {
+    const params = new URLSearchParams();
+    if (options.page) params.append('page', String(options.page));
+    if (options.limit) params.append('limit', String(options.limit));
+    if (options.sort) params.append('sort', options.sort);
+    if (options.order) params.append('order', options.order);
+
+    const response = await fetch(`${API_URL}/api/stories?${params.toString()}`, {
         headers: createAuthHeaders()
     });
     return response.json();

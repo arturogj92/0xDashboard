@@ -31,6 +31,10 @@ interface StoryWithStats extends MediaWithStats {
   media_type: 'story';
 }
 
+// --- Multi-sorting types ---
+export type SortField = 'date' | 'visits' | 'draft';
+export type SortOrder = 'asc' | 'desc';
+
 export function useReels() {
   const [reels, setReels] = useState<ReelWithStats[]>([]);
   const [stories, setStories] = useState<StoryWithStats[]>([]);
@@ -46,7 +50,14 @@ export function useReels() {
   const [statsError, setStatsError] = useState<string | null>(null);
   const [hourlyData, setHourlyData] = useState<any[]>([]);
   const [weeklyStats, setWeeklyStats] = useState<Array<{ day: string; count: number }>>([]);
+  const [reelsPagination, setReelsPagination] = useState<{ page: number; totalPages: number } | null>(null);
+  const [storiesPagination, setStoriesPagination] = useState<{ page: number; totalPages: number } | null>(null);
 
+  // Estado de ordenación
+  const [sortField, setSortField] = useState<SortField>('visits');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+
+  // Paginación independiente
   const extractInstagramReelId = (url: string) => {
     if (!url) return null;
     const regex = /(?:reel|p)\/([A-Za-z0-9_-]+)/;
@@ -63,51 +74,32 @@ export function useReels() {
     return null;
   };
 
-  useEffect(() => {
-    const fetchMedia = async () => {
-      try {
-        // Obtener listas de reels y stories
-        const [reelsResponse, storiesResponse] = await Promise.all([
-          getReels(),
-          getStories()
-        ]);
+  const fetchReelsPage = async (pageNumber: number, sField: SortField = sortField, sOrder: SortOrder = sortOrder) => {
+    setLoading(true);
+    const apiSort = sField === 'draft' ? undefined : sField;
+    const apiOrder = sOrder;
+    try {
+      const reelsResponse = await getReels({ page: pageNumber, limit: 6, sort: apiSort, order: apiOrder });
 
-        // Unificar IDs
-        let mediaIds: number[] = [];
-        if (reelsResponse.success) mediaIds = mediaIds.concat(reelsResponse.data.map(r => r.id));
-        if (storiesResponse.success) mediaIds = mediaIds.concat(storiesResponse.data.map(s => s.id));
+      // Asegurar que la paginación se establezca incluso si solo hay 1 página
+      if (reelsResponse.success) {
+        setReelsPagination({
+          page: reelsResponse.pagination?.page || 1,
+          totalPages: reelsResponse.pagination?.totalPages || 1
+        });
+      } else {
+        setReelsPagination(null); // Resetear en caso de error
+      }
 
-        // Limitar a 10 por petición (el backend soporta 10)
-        const batchStatsResp = mediaIds.length ? await getMediaBatchStats(mediaIds.slice(0, 10)) : { success: true, data: [] };
-        const statsMap: Record<number, any> = {};
-        if (batchStatsResp.success) {
-          batchStatsResp.data.forEach(stat => {
-            statsMap[stat.media_id] = stat;
-          });
-        }
+      const mediaIds = reelsResponse.success ? reelsResponse.data.map(r => r.id) : [];
+      const batchStatsResp = mediaIds.length ? await getMediaBatchStats(mediaIds) : { success: true, data: [] };
+      const statsMap: Record<number, any> = {};
+      if (batchStatsResp.success) batchStatsResp.data.forEach(stat => (statsMap[stat.media_id] = stat));
 
-        // Procesar reels con statsMap
-        if (reelsResponse.success) {
-          const reelsWithStats = reelsResponse.data
-            .filter((it): it is Reel => it.media_type === 'reel')
-            .map(item => {
-              const stats = statsMap[item.id] || null;
-              return {
-                ...item,
-                active: item.is_active,
-                url: item.url || '',
-                thumbnail_url: item.thumbnail_url || null,
-                totalVisits: stats ? stats.all_time_total : 0,
-                visits24: stats ? stats.today_total : 0,
-                visits7d: stats ? stats.last_7_days_total : 0,
-                shortcode: item.shortcode
-              } as ReelWithStats;
-            });
-          setReels(reelsWithStats);
-        }
-
-        if (storiesResponse.success) {
-          const storiesWithStats = storiesResponse.data.map(item => {
+      if (reelsResponse.success) {
+        const reelsWithStats = reelsResponse.data
+          .filter((it): it is Reel => it.media_type === 'reel')
+          .map(item => {
             const stats = statsMap[item.id] || null;
             return {
               ...item,
@@ -116,20 +108,83 @@ export function useReels() {
               thumbnail_url: item.thumbnail_url || null,
               totalVisits: stats ? stats.all_time_total : 0,
               visits24: stats ? stats.today_total : 0,
-              visits7d: stats ? stats.last_7_days_total : 0
-            } as StoryWithStats;
+              visits7d: stats ? stats.last_7_days_total : 0,
+              shortcode: item.shortcode
+            } as ReelWithStats;
           });
-          setStories(storiesWithStats);
-        }
-      } catch (err) {
-        setError('Error al cargar los medios');
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    fetchMedia();
+        // Orden borrador (por ahora no incluido)
+        setReels(reelsWithStats);
+      }
+    } catch (err) {
+      setError('Error al cargar los reels');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchStoriesPage = async (pageNumber: number, sField: SortField = sortField, sOrder: SortOrder = sortOrder) => {
+    setLoading(true);
+    const apiSort = sField === 'draft' ? undefined : sField;
+    const apiOrder = sOrder;
+    try {
+      const storiesResponse = await getStories({ page: pageNumber, limit: 6, sort: apiSort, order: apiOrder });
+
+      // Asegurar que la paginación se establezca incluso si solo hay 1 página
+      if (storiesResponse.success) {
+        setStoriesPagination({
+          page: storiesResponse.pagination?.page || 1,
+          totalPages: storiesResponse.pagination?.totalPages || 1
+        });
+      } else {
+        setStoriesPagination(null); // Resetear en caso de error
+      }
+
+      const mediaIds = storiesResponse.success ? storiesResponse.data.map(r => r.id) : [];
+      const batchStatsResp = mediaIds.length ? await getMediaBatchStats(mediaIds) : { success: true, data: [] };
+      const statsMap: Record<number, any> = {};
+      if (batchStatsResp.success) batchStatsResp.data.forEach(stat => (statsMap[stat.media_id] = stat));
+
+      if (storiesResponse.success) {
+        const storiesWithStats = storiesResponse.data.map(item => {
+          const stats = statsMap[item.id] || null;
+          return {
+            ...item,
+            active: item.is_active,
+            url: item.url || '',
+            thumbnail_url: item.thumbnail_url || null,
+            totalVisits: stats ? stats.all_time_total : 0,
+            visits24: stats ? stats.today_total : 0,
+            visits7d: stats ? stats.last_7_days_total : 0
+          } as StoryWithStats;
+        });
+        setStories(storiesWithStats);
+      }
+    } catch (err) {
+      setError('Error al cargar las historias');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePageChange = (pageNumber: number) => {
+    if (reelsPagination && pageNumber === reelsPagination.page) return;
+    fetchReelsPage(pageNumber);
+  };
+
+  // Carga inicial de datos (reels y stories)
+  useEffect(() => {
+    fetchReelsPage(1);
+    fetchStoriesPage(1);
   }, []);
+
+  // Cambiar criterio de ordenación y recargar ambas listas en página 1
+  const changeSorting = (field: SortField, order: SortOrder) => {
+    setSortField(field);
+    setSortOrder(order);
+    fetchReelsPage(1, field, order);
+    fetchStoriesPage(1, field, order);
+  };
 
   const openDeleteDialog = (id: number) => {
     setReelToDelete(id);
@@ -216,6 +271,16 @@ export function useReels() {
     }
   };
 
+  const handleReelsPageChange = (pageNumber: number) => {
+    if (reelsPagination && pageNumber === reelsPagination.page) return;
+    fetchReelsPage(pageNumber);
+  };
+
+  const handleStoriesPageChange = (pageNumber: number) => {
+    if (storiesPagination && pageNumber === storiesPagination.page) return;
+    fetchStoriesPage(pageNumber);
+  };
+
   return {
     reels,
     stories,
@@ -234,6 +299,13 @@ export function useReels() {
     openDeleteDialog,
     handleDelete,
     handleToggleActive,
-    openStatsDialog
+    openStatsDialog,
+    reelsPagination,
+    storiesPagination,
+    sortField,
+    sortOrder,
+    changeSorting,
+    handleReelsPageChange,
+    handleStoriesPageChange
   };
 } 

@@ -196,6 +196,11 @@
       "today": "Today",
       "messages": "messages"
     },
+    "sorting": {
+      "label": "Sort by",
+      "date": "Date",
+      "visits": "Visits"
+    },
     "understood": "Understood"
   }
 } 

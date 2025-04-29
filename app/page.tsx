@@ -19,6 +19,9 @@ import { FaInstagram, FaFacebook, FaPlug } from 'react-icons/fa';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import GlobalStatsModal from '@/components/dialogs/GlobalStatsModal';
 import { useTranslations } from 'next-intl';
+import { Pagination } from '@/components/ui/Pagination';
+import { SortingDropdown } from '@/components/ui/SortingDropdown';
+import { ArrowUpWideNarrow, ArrowDownWideNarrow } from 'lucide-react';
 
 export default function Home() {
   const tHome = useTranslations('home');
@@ -48,7 +51,14 @@ export default function Home() {
     openDeleteDialog,
     handleDelete,
     handleToggleActive,
-    openStatsDialog
+    openStatsDialog,
+    reelsPagination,
+    storiesPagination,
+    sortField,
+    sortOrder,
+    changeSorting,
+    handleReelsPageChange,
+    handleStoriesPageChange
   } = useReels();
 
   // Usar el contexto de autenticación
@@ -482,16 +492,36 @@ export default function Home() {
         )}
 
         {/* Sección de Reels */}
-        <div className="mb-16 bg-[#120724] rounded-xl p-6 shadow-md mx-4 md:mx-6">
-          <div className="flex items-center mb-6">
-            <Image
-              src="/images/icons/reel-icon.png"
-              alt="Reel Icon"
-              width={36}
-              height={36}
-              className="mr-3"
-            />
-            <h2 className="text-xl font-semibold text-white">{t('reels.title')}</h2>
+        <div className="mb-16 relative bg-[#120724] rounded-xl p-6 shadow-md mx-4 md:mx-6">
+          <div className="relative flex items-center justify-between mb-6">
+            <div className="flex items-center">
+              <Image
+                src="/images/icons/reel-icon.png"
+                alt="Reel Icon"
+                width={36}
+                height={36}
+                className="mr-3"
+              />
+              <h2 className="text-xl font-semibold text-white">{t('reels.title')}</h2>
+            </div>
+            <div className="flex items-center space-x-2">
+              <SortingDropdown
+                sortField={sortField}
+                sortOrder={sortOrder}
+                changeSorting={changeSorting}
+              />
+              <Button
+                variant="outline"
+                className="p-2"
+                onClick={() => changeSorting(sortField, sortOrder === 'asc' ? 'desc' : 'asc')}
+              >
+                {sortOrder === 'asc' ? (
+                  <ArrowUpWideNarrow className="w-5 h-5" />
+                ) : (
+                  <ArrowDownWideNarrow className="w-5 h-5" />
+                )}
+              </Button>
+            </div>
           </div>
 
           <p className="text-sm text-gray-400 mb-6">
@@ -546,6 +576,15 @@ export default function Home() {
               </div>
             )}
           </div>
+
+          {/* Paginación reels */}
+          {reelsPagination && reelsPagination.totalPages >= 1 && (
+            <Pagination
+              page={reelsPagination.page}
+              totalPages={reelsPagination.totalPages}
+              onPageChange={handleReelsPageChange}
+            />
+          )}
         </div>
 
         {/* Estadísticas globales de tus Historias */}
@@ -608,15 +647,35 @@ export default function Home() {
 
         {/* Sección de Historias */}
         <div className="mb-8 bg-[#120724] rounded-xl p-6 shadow-md mx-4 md:mx-6">
-          <div className="flex items-center mb-6">
-            <Image
-              src="/images/icons/story-icon.png"
-              alt="Story Icon"
-              width={36}
-              height={36}
-              className="mr-3"
-            />
-            <h2 className="text-xl font-semibold text-white">{t('stories.title')}</h2>
+          <div className="relative flex items-center justify-between mb-6">
+            <div className="flex items-center">
+              <Image
+                src="/images/icons/story-icon.png"
+                alt="Story Icon"
+                width={36}
+                height={36}
+                className="mr-3"
+              />
+              <h2 className="text-xl font-semibold text-white">{t('stories.title')}</h2>
+            </div>
+            <div className="flex items-center space-x-2">
+              <SortingDropdown
+                sortField={sortField}
+                sortOrder={sortOrder}
+                changeSorting={changeSorting}
+              />
+              <Button
+                variant="outline"
+                className="p-2"
+                onClick={() => changeSorting(sortField, sortOrder === 'asc' ? 'desc' : 'asc')}
+              >
+                {sortOrder === 'asc' ? (
+                  <ArrowUpWideNarrow className="w-5 h-5" />
+                ) : (
+                  <ArrowDownWideNarrow className="w-5 h-5" />
+                )}
+              </Button>
+            </div>
           </div>
 
           <p className="text-sm text-gray-400 mb-6">
@@ -671,6 +730,15 @@ export default function Home() {
               </div>
             )}
           </div>
+
+          {/* Paginación stories */}
+          {storiesPagination && (
+            <Pagination
+              page={storiesPagination.page}
+              totalPages={storiesPagination.totalPages}
+              onPageChange={handleStoriesPageChange}
+            />
+          )}
         </div>
       </div>
     </ProtectedRoute>

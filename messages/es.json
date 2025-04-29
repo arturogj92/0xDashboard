@@ -195,6 +195,17 @@
       "today": "Hoy",
       "messages": "mensajes"
     },
+    "sorting": {
+      "label": "Ordenar por",
+      "date": "Fecha",
+      "visits": "Visitas",
+      "dateDesc": "Fecha (nuevos primero)",
+      "dateAsc": "Fecha (antiguos primero)",
+      "visitsDesc": "Visitas (más primero)",
+      "visitsAsc": "Visitas (menos primero)",
+      "draftDesc": "Borradores (primero)",
+      "draftAsc": "Borradores (después)"
+    },
     "understood": "Entendido"
   }
 } 

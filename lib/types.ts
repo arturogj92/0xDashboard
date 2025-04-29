@@ -4,6 +4,8 @@ export interface Media {
     url: string;
     description: string;
     is_active: boolean;
+    is_draft?: boolean;
+    created_at?: string;
     media_type: 'reel' | 'story';
     keywords?: Keyword[];
     responses?: Response[];
