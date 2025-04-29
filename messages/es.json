@@ -75,7 +75,8 @@
     "googleLoading": "Verificando con Google...",
     "googleLogin": "Iniciar sesión con Google",
     "noAccount": "¿No tienes una cuenta? ",
-    "register": "Regístrate"
+    "register": "Regístrate",
+    "forgotPassword": "¿Olvidaste tu contraseña?"
   },
   "register": {
     "title": "Crea tu cuenta",

@@ -7,9 +7,11 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 export default function RegisterPage() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const tRegister = useTranslations('register');
   const router = useRouter();
   
   // Redireccionar a home si el usuario ya está autenticado
@@ -33,7 +35,7 @@ export default function RegisterPage() {
     setError(null);
 
     if (!username || !email || !password) {
-      setError('Por favor, completa todos los campos obligatorios');
+      setError(tRegister('errorRequiredFields'));
       setIsLoading(false);
       return;
     }
@@ -41,12 +43,12 @@ export default function RegisterPage() {
     try {
       const result = await register({ username, email, password, name });
       if (!result.success) {
-        setError(result.message || 'Error al registrar usuario');
+        setError(result.message || tRegister('errorRegister'));
       } else {
         router.push('/login?registered=true');
       }
     } catch (err: any) {
-      setError(err.message || 'Error al registrar usuario');
+      setError(err.message || tRegister('errorRegister'));
     } finally {
       setIsLoading(false);
     }
@@ -64,8 +66,8 @@ export default function RegisterPage() {
               height={64} 
             />
           </div>
-          <h1 className="text-3xl font-bold text-white">Crea tu cuenta</h1>
-          <p className="text-gray-400 mt-2">Comienza a automatizar tus respuestas</p>
+          <h1 className="text-3xl font-bold text-white">{tRegister('title')}</h1>
+          <p className="text-gray-400 mt-2">{tRegister('subtitle')}</p>
         </div>
 
         <div className="bg-[#120724] p-8 rounded-xl shadow-lg border border-indigo-900/30">
@@ -78,13 +80,13 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-400 mb-1">
-                Nombre de usuario <span className="text-red-400">*</span>
+                {tRegister('labelUsername')} <span className="text-red-400">*</span>
               </label>
               <Input
                 id="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="usuario123"
+                placeholder={tRegister('placeholderUsername')}
                 className="bg-[#1c1033] border-indigo-900/50 text-white"
                 disabled={isLoading}
               />
@@ -92,14 +94,14 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-1">
-                Email <span className="text-red-400">*</span>
+                {tRegister('labelEmail')} <span className="text-red-400">*</span>
               </label>
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="tu@email.com"
+                placeholder={tRegister('placeholderEmail')}
                 className="bg-[#1c1033] border-indigo-900/50 text-white"
                 disabled={isLoading}
               />
@@ -107,13 +109,13 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-1">
-                Nombre completo
+                {tRegister('labelName')}
               </label>
               <Input
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Juan Pérez"
+                placeholder={tRegister('placeholderName')}
                 className="bg-[#1c1033] border-indigo-900/50 text-white"
                 disabled={isLoading}
               />
@@ -121,14 +123,14 @@ export default function RegisterPage() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-400 mb-1">
-                Contraseña <span className="text-red-400">*</span>
+                {tRegister('labelPassword')} <span className="text-red-400">*</span>
               </label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder={tRegister('placeholderPassword')}
                 className="bg-[#1c1033] border-indigo-900/50 text-white"
                 disabled={isLoading}
               />
@@ -139,15 +141,15 @@ export default function RegisterPage() {
               className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white mt-6"
               disabled={isLoading}
             >
-              {isLoading ? 'Creando cuenta...' : 'Crear cuenta'}
+              {isLoading ? tRegister('buttonCreating') : tRegister('buttonCreate')}
             </Button>
           </form>
 
           <div className="mt-6 text-center text-sm">
             <p className="text-gray-400">
-              ¿Ya tienes una cuenta?{' '}
+              {tRegister('haveAccount')}{' '}
               <Link href="/login" className="text-indigo-400 hover:text-indigo-300">
-                Inicia sesión
+                {tRegister('loginLink')}
               </Link>
             </p>
           </div>
