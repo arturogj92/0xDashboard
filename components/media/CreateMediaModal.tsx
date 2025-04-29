@@ -304,7 +304,7 @@ export function CreateMediaModal({ open, onOpenChange, mediaType, onSuccess }: C
             {isDraft && (
               <div className="mt-3 p-3 text-xs rounded-md bg-amber-900/20 border border-amber-500/30 text-amber-300">
                 <p>
-                  {t('draftModeInfo').replace('{mediaType}', 'reel')}
+                  {(t as any)('draftModeInfo', { mediaType })}
                 </p>
               </div>
             )}

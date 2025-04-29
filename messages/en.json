@@ -65,7 +65,7 @@
     "labelPassword": "Password",
     "placeholderEmail": "your@example.com",
     "placeholderPassword": "••••••••",
-    "termsText": "By logging in, you agree to our",
+    "termsText": "By logging in, you agree to our ",
     "termsLink": "Terms of Service",
     "buttonLogin": "Log In",
     "buttonLoggingIn": "Logging in...",
@@ -74,7 +74,7 @@
     "facebookLogin": "Log in with Facebook",
     "googleLoading": "Verifying with Google...",
     "googleLogin": "Log in with Google",
-    "noAccount": "Don't have an account?",
+    "noAccount": "Don't have an account? ",
     "register": "Register",
     "forgotPassword": "Forgot your password?"
   },
@@ -208,5 +208,25 @@
       "inactive": "Inactive"
     },
     "understood": "Understood"
+  },
+  "pricing": {
+    "title": "Pricing",
+    "subtitle": "Choose the plan that best suits your needs",
+    "basicName": "Basic",
+    "basicDescription": "Essential automations",
+    "priceSuffix": "/month",
+    "basicFeatures": ["Auto-reply to comments", "Basic statistics", "Limited support"],
+    "basicButton": "Select Basic",
+    "proName": "Pro",
+    "proDescription": "For advanced professionals",
+    "proFeatures": ["Everything in Basic", "More automated comments", "Priority support"],
+    "proButton": "Select Pro",
+    "enterpriseName": "Enterprise",
+    "enterpriseDescription": "Large-scale solutions",
+    "enterpriseFeatures": ["Everything in Pro", "Custom integration", "24/7 support"],
+    "enterpriseButton": "Contact Us",
+    "mostPopular": "Most popular",
+    "customPlanPrompt": "Need a custom plan?",
+    "customPlanButton": "Contact Us"
   }
 } 
