@@ -14,7 +14,7 @@ import { CreateMediaModal } from '@/components/media/CreateMediaModal';
 import { useRouter } from 'next/navigation';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/contexts/AuthContext';
-import { PageSkeleton } from '@/components/ui/skeleton';
+import { PageSkeleton, Skeleton } from '@/components/ui/skeleton';
 import { FaInstagram, FaFacebook, FaPlug } from 'react-icons/fa';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import GlobalStatsModal from '@/components/dialogs/GlobalStatsModal';
@@ -22,6 +22,7 @@ import { useTranslations } from 'next-intl';
 import { Pagination } from '@/components/ui/Pagination';
 import { SortingDropdown } from '@/components/ui/SortingDropdown';
 import { ArrowUpWideNarrow, ArrowDownWideNarrow } from 'lucide-react';
+import { HideFiltersDropdown } from '@/components/ui/HideFiltersDropdown';
 
 export default function Home() {
   const tHome = useTranslations('home');
@@ -36,7 +37,8 @@ export default function Home() {
   const {
     reels,
     stories,
-    loading,
+    reelsLoading,
+    storiesLoading,
     error,
     deleteLoading,
     deleteDialogOpen,
@@ -54,11 +56,19 @@ export default function Home() {
     openStatsDialog,
     reelsPagination,
     storiesPagination,
-    sortField,
-    sortOrder,
-    changeSorting,
+
     handleReelsPageChange,
-    handleStoriesPageChange
+    handleStoriesPageChange,
+    reelsHide,
+    changeReelsHide,
+    storiesHide,
+    changeStoriesHide,
+    reelsSortField,
+    reelsSortOrder,
+    changeReelsSorting,
+    storiesSortField,
+    storiesSortOrder,
+    changeStoriesSorting
   } = useReels();
 
   // Usar el contexto de autenticación
@@ -293,14 +303,6 @@ export default function Home() {
     { period: '28d'|'7d'|'yesterday'|'today'; mediaType: 'reel'|'story' } | null
   >(null);
 
-  if (loading) {
-    return (
-      <ProtectedRoute>
-        <PageSkeleton />
-      </ProtectedRoute>
-    );
-  }
-
   if (error) {
     return (
       <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded relative" role="alert">
@@ -505,17 +507,22 @@ export default function Home() {
               <h2 className="text-xl font-semibold text-white">{t('reels.title')}</h2>
             </div>
             <div className="flex items-center space-x-2">
+              <HideFiltersDropdown
+                mediaType="reel"
+                filters={reelsHide}
+                onChange={changeReelsHide}
+              />
               <SortingDropdown
-                sortField={sortField}
-                sortOrder={sortOrder}
-                changeSorting={changeSorting}
+                sortField={reelsSortField}
+                sortOrder={reelsSortOrder}
+                changeSorting={changeReelsSorting}
               />
               <Button
                 variant="outline"
                 className="p-2"
-                onClick={() => changeSorting(sortField, sortOrder === 'asc' ? 'desc' : 'asc')}
+                onClick={() => changeReelsSorting(reelsSortField, reelsSortOrder === 'asc' ? 'desc' : 'asc')}
               >
-                {sortOrder === 'asc' ? (
+                {reelsSortOrder === 'asc' ? (
                   <ArrowUpWideNarrow className="w-5 h-5" />
                 ) : (
                   <ArrowDownWideNarrow className="w-5 h-5" />
@@ -541,7 +548,13 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {fixedReels.map((reel) => (
+            {reelsLoading && (
+              <>
+                <Skeleton className="h-[150px] w-full rounded-xl" />
+                <Skeleton className="h-[150px] w-full rounded-xl" />
+              </>
+            )}
+            {!reelsLoading && fixedReels.map((reel) => (
               <MediaCard
                 key={reel.id}
                 media={reel}
@@ -552,7 +565,7 @@ export default function Home() {
               />
             ))}
             
-            {fixedReels.length === 0 && (
+            {!reelsLoading && fixedReels.length === 0 && (
               <div className="col-span-full bg-[#1a0e35] p-8 rounded-lg border border-indigo-900/30 text-center">
                 <div className="flex flex-col items-center">
                   <Image
@@ -578,7 +591,7 @@ export default function Home() {
           </div>
 
           {/* Paginación reels */}
-          {reelsPagination && reelsPagination.totalPages >= 1 && (
+          {!reelsLoading && reelsPagination && reelsPagination.totalPages >= 1 && (
             <Pagination
               page={reelsPagination.page}
               totalPages={reelsPagination.totalPages}
@@ -659,17 +672,22 @@ export default function Home() {
               <h2 className="text-xl font-semibold text-white">{t('stories.title')}</h2>
             </div>
             <div className="flex items-center space-x-2">
+              <HideFiltersDropdown
+                mediaType="story"
+                filters={storiesHide}
+                onChange={changeStoriesHide}
+              />
               <SortingDropdown
-                sortField={sortField}
-                sortOrder={sortOrder}
-                changeSorting={changeSorting}
+                sortField={storiesSortField}
+                sortOrder={storiesSortOrder}
+                changeSorting={changeStoriesSorting}
               />
               <Button
                 variant="outline"
                 className="p-2"
-                onClick={() => changeSorting(sortField, sortOrder === 'asc' ? 'desc' : 'asc')}
+                onClick={() => changeStoriesSorting(storiesSortField, storiesSortOrder === 'asc' ? 'desc' : 'asc')}
               >
-                {sortOrder === 'asc' ? (
+                {storiesSortOrder === 'asc' ? (
                   <ArrowUpWideNarrow className="w-5 h-5" />
                 ) : (
                   <ArrowDownWideNarrow className="w-5 h-5" />
@@ -695,7 +713,13 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {fixedStories.map((story) => (
+            {storiesLoading && (
+              <>
+                <Skeleton className="h-[150px] w-full rounded-xl" />
+                <Skeleton className="h-[150px] w-full rounded-xl" />
+              </>
+            )}
+            {!storiesLoading && fixedStories.map((story) => (
               <MediaCard
                 key={story.id}
                 media={story}
@@ -706,7 +730,7 @@ export default function Home() {
               />
             ))}
             
-            {fixedStories.length === 0 && (
+            {!storiesLoading && fixedStories.length === 0 && (
               <div className="col-span-full bg-[#1a0e35] p-8 rounded-lg border border-indigo-900/30 text-center">
                 <div className="flex flex-col items-center">
                   <Image
@@ -732,7 +756,7 @@ export default function Home() {
           </div>
 
           {/* Paginación stories */}
-          {storiesPagination && (
+          {!storiesLoading && storiesPagination && (
             <Pagination
               page={storiesPagination.page}
               totalPages={storiesPagination.totalPages}

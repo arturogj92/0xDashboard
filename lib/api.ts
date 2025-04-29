@@ -143,6 +143,9 @@ interface PaginationQuery {
   limit?: number;
   sort?: 'date' | 'visits';
   order?: 'asc' | 'desc';
+  hide_draft?: boolean;
+  hide_active?: boolean;
+  hide_inactive?: boolean;
 }
 
 export const getReels = async (options: PaginationQuery = {}): Promise<ApiResponse<Media[]> & { pagination?: any }> => {
@@ -151,6 +154,9 @@ export const getReels = async (options: PaginationQuery = {}): Promise<ApiRespon
     if (options.limit) params.append('limit', String(options.limit));
     if (options.sort) params.append('sort', options.sort);
     if (options.order) params.append('order', options.order);
+    if (options.hide_draft !== undefined) params.append('hide_draft', String(options.hide_draft));
+    if (options.hide_active !== undefined) params.append('hide_active', String(options.hide_active));
+    if (options.hide_inactive !== undefined) params.append('hide_inactive', String(options.hide_inactive));
 
     const response = await fetch(`${API_URL}/api/reels?${params.toString()}`, {
         headers: createAuthHeaders()
@@ -388,6 +394,8 @@ export const getStories = async (options: PaginationQuery = {}): Promise<ApiResp
     if (options.limit) params.append('limit', String(options.limit));
     if (options.sort) params.append('sort', options.sort);
     if (options.order) params.append('order', options.order);
+    if (options.hide_active !== undefined) params.append('hide_active', String(options.hide_active));
+    if (options.hide_inactive !== undefined) params.append('hide_inactive', String(options.hide_inactive));
 
     const response = await fetch(`${API_URL}/api/stories?${params.toString()}`, {
         headers: createAuthHeaders()

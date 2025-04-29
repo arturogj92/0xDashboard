@@ -43,7 +43,7 @@ export function StatsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl bg-black/90 border border-gray-700 text-gray-200 backdrop-blur-sm">
+      <DialogContent className="sm:max-w-3xl bg-black/90 border border-gray-700 text-gray-200 backdrop-blur-sm !z-[200]">
         <DialogHeader>
           <DialogTitle className="text-xl text-gray-100">Estadísticas de Mensajes</DialogTitle>
           <DialogDescription className="text-gray-400">

@@ -38,7 +38,8 @@ export type SortOrder = 'asc' | 'desc';
 export function useReels() {
   const [reels, setReels] = useState<ReelWithStats[]>([]);
   const [stories, setStories] = useState<StoryWithStats[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [reelsLoading, setReelsLoading] = useState(true);
+  const [storiesLoading, setStoriesLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleteLoading, setDeleteLoading] = useState<number | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -53,9 +54,22 @@ export function useReels() {
   const [reelsPagination, setReelsPagination] = useState<{ page: number; totalPages: number } | null>(null);
   const [storiesPagination, setStoriesPagination] = useState<{ page: number; totalPages: number } | null>(null);
 
-  // Estado de ordenación
-  const [sortField, setSortField] = useState<SortField>('visits');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+  // Estados de ordenación independientes para Reels y Stories
+  const [reelsSortField, setReelsSortField] = useState<SortField>('visits');
+  const [reelsSortOrder, setReelsSortOrder] = useState<SortOrder>('desc');
+  const [storiesSortField, setStoriesSortField] = useState<SortField>('visits');
+  const [storiesSortOrder, setStoriesSortOrder] = useState<SortOrder>('desc');
+
+  // Filtros de ocultar
+  const [reelsHide, setReelsHide] = useState<{ draft: boolean; active: boolean; inactive: boolean }>({
+    draft: false,
+    active: false,
+    inactive: false
+  });
+  const [storiesHide, setStoriesHide] = useState<{ active: boolean; inactive: boolean }>({
+    active: false,
+    inactive: false
+  });
 
   // Paginación independiente
   const extractInstagramReelId = (url: string) => {
@@ -74,12 +88,20 @@ export function useReels() {
     return null;
   };
 
-  const fetchReelsPage = async (pageNumber: number, sField: SortField = sortField, sOrder: SortOrder = sortOrder) => {
-    setLoading(true);
+  const fetchReelsPage = async (pageNumber: number, sField: SortField = reelsSortField, sOrder: SortOrder = reelsSortOrder) => {
+    setReelsLoading(true);
     const apiSort = sField === 'draft' ? undefined : sField;
     const apiOrder = sOrder;
     try {
-      const reelsResponse = await getReels({ page: pageNumber, limit: 6, sort: apiSort, order: apiOrder });
+      const reelsResponse = await getReels({
+        page: pageNumber,
+        limit: 6,
+        sort: apiSort,
+        order: apiOrder,
+        hide_draft: reelsHide.draft,
+        hide_active: reelsHide.active,
+        hide_inactive: reelsHide.inactive
+      });
 
       // Asegurar que la paginación se establezca incluso si solo hay 1 página
       if (reelsResponse.success) {
@@ -119,16 +141,23 @@ export function useReels() {
     } catch (err) {
       setError('Error al cargar los reels');
     } finally {
-      setLoading(false);
+      setReelsLoading(false);
     }
   };
 
-  const fetchStoriesPage = async (pageNumber: number, sField: SortField = sortField, sOrder: SortOrder = sortOrder) => {
-    setLoading(true);
+  const fetchStoriesPage = async (pageNumber: number, sField: SortField = storiesSortField, sOrder: SortOrder = storiesSortOrder) => {
+    setStoriesLoading(true);
     const apiSort = sField === 'draft' ? undefined : sField;
     const apiOrder = sOrder;
     try {
-      const storiesResponse = await getStories({ page: pageNumber, limit: 6, sort: apiSort, order: apiOrder });
+      const storiesResponse = await getStories({
+        page: pageNumber,
+        limit: 6,
+        sort: apiSort,
+        order: apiOrder,
+        hide_active: storiesHide.active,
+        hide_inactive: storiesHide.inactive
+      });
 
       // Asegurar que la paginación se establezca incluso si solo hay 1 página
       if (storiesResponse.success) {
@@ -163,7 +192,7 @@ export function useReels() {
     } catch (err) {
       setError('Error al cargar las historias');
     } finally {
-      setLoading(false);
+      setStoriesLoading(false);
     }
   };
 
@@ -178,13 +207,37 @@ export function useReels() {
     fetchStoriesPage(1);
   }, []);
 
-  // Cambiar criterio de ordenación y recargar ambas listas en página 1
-  const changeSorting = (field: SortField, order: SortOrder) => {
-    setSortField(field);
-    setSortOrder(order);
+  // Cambiar criterio de ordenación de Reels
+  const changeReelsSorting = (field: SortField, order: SortOrder) => {
+    setReelsSortField(field);
+    setReelsSortOrder(order);
     fetchReelsPage(1, field, order);
+  };
+
+  // Cambiar criterio de ordenación de Stories
+  const changeStoriesSorting = (field: SortField, order: SortOrder) => {
+    setStoriesSortField(field);
+    setStoriesSortOrder(order);
     fetchStoriesPage(1, field, order);
   };
+
+  // Cambiar filtros de ocultar y recargar
+  const changeReelsHide = (updates: Partial<{ draft: boolean; active: boolean; inactive: boolean }>) => {
+    setReelsHide(prev => ({ ...prev, ...updates }));
+  };
+
+  const changeStoriesHide = (updates: Partial<{ active: boolean; inactive: boolean }>) => {
+    setStoriesHide(prev => ({ ...prev, ...updates }));
+  };
+
+  // Refrescar cuando cambian los filtros
+  useEffect(() => {
+    fetchReelsPage(1, reelsSortField, reelsSortOrder);
+  }, [reelsHide]);
+
+  useEffect(() => {
+    fetchStoriesPage(1, storiesSortField, storiesSortOrder);
+  }, [storiesHide]);
 
   const openDeleteDialog = (id: number) => {
     setReelToDelete(id);
@@ -284,7 +337,8 @@ export function useReels() {
   return {
     reels,
     stories,
-    loading,
+    reelsLoading,
+    storiesLoading,
     error,
     deleteLoading,
     deleteDialogOpen,
@@ -302,10 +356,17 @@ export function useReels() {
     openStatsDialog,
     reelsPagination,
     storiesPagination,
-    sortField,
-    sortOrder,
-    changeSorting,
     handleReelsPageChange,
-    handleStoriesPageChange
+    handleStoriesPageChange,
+    reelsSortField,
+    reelsSortOrder,
+    changeReelsSorting,
+    storiesSortField,
+    storiesSortOrder,
+    changeStoriesSorting,
+    reelsHide,
+    storiesHide,
+    changeReelsHide,
+    changeStoriesHide
   };
 } 
