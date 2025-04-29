@@ -206,6 +206,12 @@
       "draftDesc": "Borradores (primero)",
       "draftAsc": "Borradores (después)"
     },
+    "hide": {
+      "label": "Ocultar",
+      "draft": "Borradores",
+      "active": "Activos",
+      "inactive": "Inactivos"
+    },
     "understood": "Entendido"
   }
 } 
