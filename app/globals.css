@@ -82,12 +82,11 @@ div[style*="display: inline-block"] {
 .bg-grid-background {
   background-color: var(--background);
   background-image:
-    linear-gradient(to bottom, var(--background) 0%, rgba(3, 0, 8, 0) 40%),
-    linear-gradient(to top, var(--background) 0%, rgba(3, 0, 8, 0) 25%),
     linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
-    url('/images/background/diagonal-grid.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
+    repeating-linear-gradient(to right, hsl(0, 0%, 36%) 0, hsl(0, 0%, 36%) 1px, transparent 1px, transparent 40px),
+    repeating-linear-gradient(to bottom, hsl(0, 0%, 36%) 0, hsl(0, 0%, 36%) 1px, transparent 1px, transparent 40px);
+  background-repeat: repeat;
+  background-size: auto;
   background-position: center;
   background-attachment: fixed;
 }
@@ -95,12 +94,11 @@ div[style*="display: inline-block"] {
 /* Fallback para dispositivos táctiles: desactivar attachment fixed */
 @media (hover: none) and (pointer: coarse) {
   .bg-grid-background {
-    /* Mantener el mismo linear-gradient para dispositivos táctiles */
+    background-color: var(--background);
     background-image:
-      linear-gradient(to bottom, var(--background) 0%, rgba(3, 0, 8, 0) 10%),
-      linear-gradient(to top, var(--background) 0%, rgba(3, 0, 8, 0) 10%),
       linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
-      url('/images/background/diagonal-grid.jpg');
+      repeating-linear-gradient(to right, hsl(0, 0%, 36%) 0, hsl(0, 0%, 36%) 1px, transparent 1px, transparent 40px),
+      repeating-linear-gradient(to bottom, hsl(0, 0%, 36%) 0, hsl(0, 0%, 36%) 1px, transparent 1px, transparent 40px);
     background-attachment: scroll;
     background-repeat: repeat;
     background-size: auto;
@@ -110,23 +108,25 @@ div[style*="display: inline-block"] {
 /* Ajuste responsive para móvil: reducir tamaño de la grid */
 @media (max-width: 768px) {
   .bg-grid-background {
+    background-color: var(--background);
     background-image:
-    linear-gradient(to bottom, var(--background) 0%, rgba(3, 0, 8, 0) 10%),
-    linear-gradient(to top, var(--background) 0%, rgba(3, 0, 8, 0) 10%),
-    linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
-    url('/images/background/diagonal-grid.jpg');
-    background-size: 200% auto;
+      linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
+      repeating-linear-gradient(to right, hsl(0, 0%, 36%) 0, hsl(0, 0%, 36%) 1px, transparent 1px, transparent 40px),
+      repeating-linear-gradient(to bottom, hsl(0, 0%, 36%) 0, hsl(0, 0%, 36%) 1px, transparent 1px, transparent 40px);
+    background-repeat: repeat;
+    background-size: auto;
   }
 }
 
 /* Tamaño adecuado del patrón para móviles en apaisado */
 @media (hover: none) and (pointer: coarse) and (orientation: landscape) {
   .bg-grid-background {
+    background-color: var(--background);
     background-image:
-    linear-gradient(to bottom, var(--background) 0%, rgba(3, 0, 8, 0) 10%),
-    linear-gradient(to top, var(--background) 0%, rgba(3, 0, 8, 0) 10%),
-    linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
-    url('/images/background/diagonal-grid.jpg');
-    background-size: 150% auto;
+      linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
+      repeating-linear-gradient(to right, hsl(0, 0%, 36%) 0, hsl(0, 0%, 36%) 1px, transparent 1px, transparent 40px),
+      repeating-linear-gradient(to bottom, hsl(0, 0%, 36%) 0, hsl(0, 0%, 36%) 1px, transparent 1px, transparent 40px);
+    background-repeat: repeat;
+    background-size: auto;
   }
 }
