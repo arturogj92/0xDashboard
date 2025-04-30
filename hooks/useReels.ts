@@ -196,9 +196,14 @@ export function useReels() {
     }
   };
 
-  const handlePageChange = (pageNumber: number) => {
+  const handleReelsPageChange = (pageNumber: number) => {
     if (reelsPagination && pageNumber === reelsPagination.page) return;
     fetchReelsPage(pageNumber);
+  };
+
+  const handleStoriesPageChange = (pageNumber: number) => {
+    if (storiesPagination && pageNumber === storiesPagination.page) return;
+    fetchStoriesPage(pageNumber);
   };
 
   // Carga inicial de datos (reels y stories)
@@ -322,16 +327,6 @@ export function useReels() {
     } finally {
       setLoadingStats(false);
     }
-  };
-
-  const handleReelsPageChange = (pageNumber: number) => {
-    if (reelsPagination && pageNumber === reelsPagination.page) return;
-    fetchReelsPage(pageNumber);
-  };
-
-  const handleStoriesPageChange = (pageNumber: number) => {
-    if (storiesPagination && pageNumber === storiesPagination.page) return;
-    fetchStoriesPage(pageNumber);
   };
 
   return {
