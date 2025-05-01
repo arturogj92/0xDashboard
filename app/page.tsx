@@ -23,6 +23,7 @@ import { Pagination } from '@/components/ui/Pagination';
 import { SortingDropdown } from '@/components/ui/SortingDropdown';
 import { ArrowUpWideNarrow, ArrowDownWideNarrow } from 'lucide-react';
 import { HideFiltersDropdown } from '@/components/ui/HideFiltersDropdown';
+import React from 'react';
 
 export default function Home() {
   const tHome = useTranslations('home');
@@ -33,6 +34,10 @@ export default function Home() {
   const [reelModalOpen, setReelModalOpen] = useState(false);
   const [storyModalOpen, setStoryModalOpen] = useState(false);
   const [infoModalOpen, setInfoModalOpen] = useState(false);
+  
+  // Referencias para las secciones de reels y stories
+  const reelsSectionRef = React.useRef<HTMLDivElement>(null);
+  const storiesSectionRef = React.useRef<HTMLDivElement>(null);
   
   const {
     reels,
@@ -494,7 +499,7 @@ export default function Home() {
         )}
 
         {/* Sección de Reels */}
-        <div className="mb-16 relative bg-[#120724] rounded-xl p-6 shadow-md mx-4 md:mx-6">
+        <div className="mb-16 relative bg-[#120724] rounded-xl p-6 shadow-md mx-4 md:mx-6" ref={reelsSectionRef}>
           <div className="relative flex items-center justify-between mb-6">
             <div className="flex items-center">
               <Image
@@ -595,7 +600,13 @@ export default function Home() {
             <Pagination
               page={reelsPagination.page}
               totalPages={reelsPagination.totalPages}
-              onPageChange={handleReelsPageChange}
+              onPageChange={(page) => {
+                handleReelsPageChange(page);
+                // Hacer scroll al inicio de la sección de reels
+                if (reelsSectionRef.current) {
+                  reelsSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
             />
           )}
         </div>
@@ -659,7 +670,7 @@ export default function Home() {
         )}
 
         {/* Sección de Historias */}
-        <div className="mb-8 bg-[#120724] rounded-xl p-6 shadow-md mx-4 md:mx-6">
+        <div className="mb-8 bg-[#120724] rounded-xl p-6 shadow-md mx-4 md:mx-6" ref={storiesSectionRef}>
           <div className="relative flex items-center justify-between mb-6">
             <div className="flex items-center">
               <Image
@@ -760,7 +771,13 @@ export default function Home() {
             <Pagination
               page={storiesPagination.page}
               totalPages={storiesPagination.totalPages}
-              onPageChange={handleStoriesPageChange}
+              onPageChange={(page) => {
+                handleStoriesPageChange(page);
+                // Hacer scroll al inicio de la sección de stories
+                if (storiesSectionRef.current) {
+                  storiesSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
             />
           )}
         </div>
