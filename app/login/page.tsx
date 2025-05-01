@@ -68,12 +68,19 @@ export default function LoginPage() {
   // Flags para mostrar banners tras registro o confirmación
   const [registered, setRegistered] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState<string | null>(null);
-  
+  // Estado para almacenar el motivo de error de confirmación de email
+  const [confirmationErrorReason, setConfirmationErrorReason] = useState<string | null>(null);
+
   // Leer parámetros de URL manualmente en cliente
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    setRegistered(params.get('registered'));
-    setConfirmed(params.get('confirmed'));
+    const reg = params.get('registered');
+    const conf = params.get('confirmed');
+    const errReason = params.get('error');
+    setRegistered(reg);
+    setConfirmed(conf);
+    setConfirmationErrorReason(errReason);
+    console.log('Email Confirmation Params:', { registered: reg, confirmed: conf, error: errReason });
   }, []);
 
   const [email, setEmail] = useState('');
@@ -423,6 +430,11 @@ export default function LoginPage() {
             {confirmed === 'false' && (
               <div className="mb-4 p-3 bg-red-900/30 border border-red-500/50 rounded-md text-red-200 text-sm">
                 {tLogin('emailConfirmationError')}
+                {confirmationErrorReason && (
+                  <div className="mt-1 text-xs text-gray-400">
+                    Detalle del error: {confirmationErrorReason}
+                  </div>
+                )}
               </div>
             )}
 
