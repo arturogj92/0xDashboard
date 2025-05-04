@@ -4,11 +4,13 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { validateResetToken, resetPassword } from '@/lib/api';
+import { useTranslations } from 'next-intl';
 
 // Componente cliente interno que usa useSearchParams
 function ResetPasswordForm() {
   const params = useSearchParams();
   const router = useRouter();
+  const tReset = useTranslations('resetPassword');
   const token = params.get('token') || '';
   const [valid, setValid] = useState<boolean | null>(null);
   const [pwd1, setPwd1] = useState('');
@@ -24,7 +26,7 @@ function ResetPasswordForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (pwd1 !== pwd2) return alert('Las contraseñas no coinciden');
+    if (pwd1 !== pwd2) return alert(tReset('passwordMismatch'));
     setLoading(true);
     try {
       const res = await resetPassword(token, pwd1);
@@ -37,19 +39,19 @@ function ResetPasswordForm() {
     }
   };
 
-  if (valid === null) return <p className="text-center mt-10 text-gray-300">Comprobando enlace…</p>;
-  if (!valid) return <p className="text-center mt-10 text-red-500">Enlace inválido o expirado.</p>;
+  if (valid === null) return <p className="text-center mt-10 text-gray-300">{tReset('checkingLink')}</p>;
+  if (!valid) return <p className="text-center mt-10 text-red-500">{tReset('invalidLink')}</p>;
 
   return (
     <div className="max-w-md mx-auto mt-16 bg-[#120724] p-8 rounded-lg shadow-lg border border-indigo-900/50">
       {done ? (
-        <p className="text-center text-green-400">¡Contraseña cambiada! Redirigiendo…</p>
+        <p className="text-center text-green-400">{tReset('successMessage')}</p>
       ) : (
         <form onSubmit={handleSubmit}>
-          <h1 className="text-2xl font-bold text-center text-white mb-6">Nueva contraseña</h1>
+          <h1 className="text-2xl font-bold text-center text-white mb-6">{tReset('newPassword')}</h1>
           <Input
             type="password"
-            placeholder="Contraseña"
+            placeholder={tReset('placeholderPassword')}
             value={pwd1}
             onChange={e => setPwd1(e.target.value)}
             className="bg-[#1c1033] border-indigo-900/50 text-white mb-4"
@@ -57,14 +59,14 @@ function ResetPasswordForm() {
           />
           <Input
             type="password"
-            placeholder="Confirmar contraseña"
+            placeholder={tReset('placeholderConfirmPassword')}
             value={pwd2}
             onChange={e => setPwd2(e.target.value)}
             className="bg-[#1c1033] border-indigo-900/50 text-white mb-4"
             required
           />
           <Button disabled={loading} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
-            {loading ? 'Guardando…' : 'Guardar'}
+            {loading ? tReset('buttonSaving') : tReset('buttonSave')}
           </Button>
         </form>
       )}
@@ -75,7 +77,7 @@ function ResetPasswordForm() {
 // Componente principal envuelto en Suspense
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<p className="text-center mt-10 text-gray-300">Cargando...</p>}>
+    <Suspense fallback={<p className="text-center mt-10 text-gray-300">{useTranslations('resetPassword')('loading')}</p>}>
       <ResetPasswordForm />
     </Suspense>
   );

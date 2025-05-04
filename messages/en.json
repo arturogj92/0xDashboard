@@ -104,6 +104,18 @@
     "buttonSendLink": "Send link",
     "buttonSending": "Sending…"
   },
+  "resetPassword": {
+    "loading": "Loading…",
+    "checkingLink": "Checking link…",
+    "invalidLink": "Invalid or expired link.",
+    "newPassword": "New password",
+    "placeholderPassword": "Password",
+    "placeholderConfirmPassword": "Confirm password",
+    "buttonSave": "Save",
+    "buttonSaving": "Saving…",
+    "successMessage": "Password changed! Redirecting…",
+    "passwordMismatch": "Passwords do not match"
+  },
   "components": {
     "createMediaModal": {
       "titleReel": "New Reel Automation",
