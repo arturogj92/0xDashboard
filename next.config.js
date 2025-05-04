@@ -53,7 +53,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '*.xx.fbcdn.net',
+        hostname: '**.fbcdn.net',
       },
     ],
   },
