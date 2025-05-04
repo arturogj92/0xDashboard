@@ -77,6 +77,7 @@ export interface User {
     instagram_username?: string;
     instagram_profile_pic_url?: string;
     locale?: 'es' | 'en';
+    language?: 'es' | 'en';
 }
 
 export interface AuthResponse {

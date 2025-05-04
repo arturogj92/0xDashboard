@@ -13,6 +13,7 @@ import { InstagramConnect } from '@/components/auth/InstagramConnect';
 import { FaInstagram, FaPlug } from 'react-icons/fa';
 import { useLocale } from '@/contexts/I18nContext';
 import { useTranslations } from 'next-intl';
+import { updatePreference } from '@/lib/api';
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
@@ -95,7 +96,16 @@ export default function ProfilePage() {
                 <h3 className="text-lg font-medium text-white mb-3">{t('language')}</h3>
                 <select
                   value={locale}
-                  onChange={(e) => setLocale(e.target.value as 'es' | 'en')}
+                  onChange={async (e) => {
+                    const newLocale = e.target.value as 'es' | 'en';
+                    setLocale(newLocale);
+                    try {
+                      const success = await updatePreference('language', newLocale);
+                      if (!success) console.error('Error guardando preferencia de idioma');
+                    } catch (err) {
+                      console.error('Error calling updatePreference:', err);
+                    }
+                  }}
                   className="p-3 bg-[#1c1033] border border-indigo-900/50 rounded-md text-white w-full"
                 >
                   <option value="es">{t('languageSpanish')}</option>

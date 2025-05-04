@@ -32,8 +32,8 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       }
     }
   }
-  if (user?.locale === 'en' || user?.locale === 'es') {
-    initialLocale = user.locale as SupportedLocale;
+  if (user?.language === 'en' || user?.language === 'es') {
+    initialLocale = user.language as SupportedLocale;
   }
 
   const [locale, setLocaleState] = useState<SupportedLocale>(initialLocale);
