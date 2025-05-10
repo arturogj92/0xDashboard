@@ -284,6 +284,8 @@
     "twitterModeThread": "Thread",
     "twitterCharLabel": "Tweet length (max 280)",
     "threadCountLabel": "Number of tweets (max 10)",
-    "threadPreviewTitle": "Thread preview"
+    "threadPreviewTitle": "Thread preview",
+    "includeMentionButton": "Include mention",
+    "mentionInputPlaceholder": "This is the @username to mention"
   }
 } 

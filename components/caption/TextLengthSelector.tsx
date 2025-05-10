@@ -65,9 +65,21 @@ export default function TextLengthSelector({ value, onChange, min = DEFAULT_MIN,
             {labelKey ? t(labelKey) : t('lengthSliderLabel')}
           </label>
         </div>
-        <span className="text-yellow-400 font-semibold">
-          {value} {t(countLabelKey || 'characters')}
-        </span>
+        <div className="flex items-baseline text-yellow-400 font-semibold">
+          <AnimatePresence initial={false} mode="popLayout">
+            <motion.span
+              key={value}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="inline-block"
+            >
+              {value}
+            </motion.span>
+          </AnimatePresence>
+          <span className="ml-1">{t(countLabelKey || 'characters')}</span>
+        </div>
       </div>
 
       {/* Slider */}

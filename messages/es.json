@@ -292,6 +292,8 @@
     "twitterModeThread": "Hilo",
     "twitterCharLabel": "Longitud del tweet (280 máx)",
     "threadCountLabel": "Número de tweets (máx 10)",
-    "threadPreviewTitle": "Vista previa del hilo"
+    "threadPreviewTitle": "Vista previa del hilo",
+    "includeMentionButton": "Incluir mención",
+    "mentionInputPlaceholder": "Introduce la cuenta (@usuario) a mencionar"
   }
 } 

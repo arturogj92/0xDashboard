@@ -9,7 +9,7 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { InstagramAutomationWarning } from '@/components/auth/InstagramAutomationWarning';
 import Link from 'next/link';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { SparklesIcon, ArrowUpTrayIcon, CheckCircleIcon, XMarkIcon, ArrowPathIcon, ArrowRightIcon, Bars3CenterLeftIcon, ClockIcon, InformationCircleIcon, FaceSmileIcon, LinkIcon } from '@heroicons/react/24/outline';
+import { SparklesIcon, ArrowUpTrayIcon, CheckCircleIcon, XMarkIcon, ArrowPathIcon, ArrowRightIcon, Bars3CenterLeftIcon, ClockIcon, InformationCircleIcon, FaceSmileIcon, LinkIcon, AtSymbolIcon } from '@heroicons/react/24/outline';
 import { FileText } from 'lucide-react';
 import Image from 'next/image';
 import TextLengthSelector from '@/components/caption/TextLengthSelector';
@@ -29,6 +29,8 @@ export default function CaptionGeneratorPage() {
   const [youtubeChars, setYoutubeChars] = useState<number>(50);
   const [includeEmojis, setIncludeEmojis] = useState<boolean>(false);
   const [includeLink, setIncludeLink] = useState<boolean>(false);
+  const [includeMention, setIncludeMention] = useState<boolean>(false);
+  const [mentionText, setMentionText] = useState<string>('');
   const [customLink, setCustomLink] = useState<string>('');
   const [twitterEnabled, setTwitterEnabled] = useState<boolean>(false);
   const [isThread, setIsThread] = useState<boolean>(false);
@@ -161,9 +163,17 @@ export default function CaptionGeneratorPage() {
       <div className="mb-16 relative mx-4 md:mx-6 flex flex-col items-center">
         <div className="absolute -inset-12 bg-[radial-gradient(circle_at_top_left,_rgba(236,72,153,0.35)_0%,_rgba(168,85,247,0.3)_40%,_rgba(17,24,39,0)_100%)] opacity-40 blur-3xl pointer-events-none"></div>
         <div className="absolute -inset-12 bg-[radial-gradient(circle_at_top_right,_rgba(255,94,0,0.3)_0%,_rgba(99,102,241,0.25)_40%,_rgba(17,24,39,0)_100%)] opacity-40 blur-3xl pointer-events-none"></div>
-        <div className="relative w-full max-w-5xl overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl p-6 flex flex-col items-center">
+        <div className="relative w-full max-w-5xl overflow-hidden rounded-xl border border-white/10 bg-[#0e0b15]/70 backdrop-blur-xl shadow-2xl p-6 flex flex-col items-center">
+          {/* Warm reddish-brown glow top-left */}
+          <div className="absolute -inset-24 bg-[radial-gradient(circle_at_top_left,_rgba(176,68,51,0.70)_0%,_rgba(17,24,39,0)_75%)] blur-[800px] opacity-20 pointer-events-none"></div>
+          {/* Warm amber glow top-right */}
+          <div className="absolute -inset-24 bg-[radial-gradient(circle_at_top_right,_rgba(210,140,42,0.60)_0%,_rgba(17,24,39,0)_75%)] blur-[220px] opacity-35 pointer-events-none"></div>
+          {/* Purple glow bottom-left */}
+          <div className="absolute -inset-24 bg-[radial-gradient(circle_at_bottom_left,_rgba(107,33,168,0.60)_0%,_rgba(17,24,39,0)_75%)] blur-[220px] opacity-45 pointer-events-none"></div>
+          {/* Deep blue glow bottom-right */}
+          <div className="absolute -inset-24 bg-[radial-gradient(circle_at_bottom_right,_rgba(30,64,175,0.60)_0%,_rgba(17,24,39,0)_75%)] blur-[240px] opacity-35 pointer-events-none"></div>
           <Link href="/caption-generator/history">
-            <Button variant="outline" className="absolute top-4 right-4 rounded-full p-2 hover:bg-indigo-600/50 border-indigo-600/50 z-10">
+            <Button variant="neon" className="absolute top-4 right-4 rounded-full p-2 z-10">
               <ClockIcon className="h-5 w-5 text-yellow-400" />
             </Button>
           </Link>
@@ -280,80 +290,78 @@ export default function CaptionGeneratorPage() {
                 {/* Controles adicionales */}
                 <div className="flex items-center gap-4 mb-4">
                   <Button
-                    variant="outline"
+                    variant="neon"
                     size="sm"
-                    className={
-                      includeEmojis
-                        ? 'border-violet-500 bg-violet-600 text-white hover:bg-violet-700'
-                        : 'border-violet-500 text-violet-400 hover:bg-violet-500/20'
-                    }
-                    onClick={() => setIncludeEmojis(prev => !prev)}
-                  >
+                    className={includeEmojis ? 'bg-[rgba(255,137,6,0.15)] opacity-100' : 'opacity-60'}
+                    onClick={() => setIncludeEmojis(prev => !prev)}>
                     <FaceSmileIcon className="h-4 w-4 mr-1" />
                     {t('includeEmojisButton')}
                   </Button>
                   <Button
-                    variant="outline"
+                    variant="neon"
                     size="sm"
-                    className={
-                      includeLink
-                        ? 'border-violet-500 bg-violet-600 text-white hover:bg-violet-700'
-                        : 'border-violet-500 text-violet-400 hover:bg-violet-500/20'
-                    }
-                    onClick={() => setIncludeLink(prev => !prev)}
-                  >
+                    className={includeLink ? 'bg-[rgba(255,137,6,0.15)] opacity-100' : 'opacity-60'}
+                    onClick={() => setIncludeLink(prev => !prev)}>
                     <LinkIcon className="h-4 w-4 mr-1" />
                     {t('includeLinkButton')}
                   </Button>
                   <Button
-                    variant="outline"
+                    variant="neon"
                     size="sm"
-                    className={
-                      twitterEnabled
-                        ? 'border-violet-500 bg-violet-600 text-white hover:bg-violet-700'
-                        : 'border-violet-500 text-violet-400 hover:bg-violet-500/20'
-                    }
-                    onClick={() => setTwitterEnabled(prev => !prev)}
-                  >
+                    className={includeMention ? 'bg-[rgba(255,137,6,0.15)] opacity-100' : 'opacity-60'}
+                    onClick={() => setIncludeMention(prev => !prev)}>
+                    <AtSymbolIcon className="h-4 w-4 mr-1" />
+                    {t('includeMentionButton')}
+                  </Button>
+                  <Button
+                    variant="neon"
+                    size="sm"
+                    className={twitterEnabled ? 'bg-[rgba(255,137,6,0.15)] opacity-100' : 'opacity-60'}
+                    onClick={() => setTwitterEnabled(prev => !prev)}>
                     <span className="text-sky-500 font-bold text-sm mr-1">X</span>
                     {t('includeXButton')}
                   </Button>
                 </div>
                 {includeLink && (
-                  <Input
-                    type="url"
-                    value={customLink}
-                    onChange={(e) => setCustomLink(e.target.value)}
-                    placeholder={t('linkInputPlaceholder')}
-                    className="w-full mb-4"
-                  />
+                  <div className="relative w-full mb-4">
+                    <LinkIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted" />
+                    <Input
+                      type="url"
+                      value={customLink}
+                      onChange={(e) => setCustomLink(e.target.value)}
+                      placeholder={t('linkInputPlaceholder')}
+                      className="pl-10 pr-3 py-1 w-full mb-4"
+                    />
+                  </div>
+                )}
+                {includeMention && (
+                  <div className="relative w-full mb-4">
+                    <AtSymbolIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted" />
+                    <Input
+                      type="text"
+                      value={mentionText}
+                      onChange={(e) => setMentionText(e.target.value)}
+                      placeholder={t('mentionInputPlaceholder')}
+                      className="pl-10 pr-3 py-1 w-full mb-4"
+                    />
+                  </div>
                 )}
                 {twitterEnabled && (
                   <div className="space-y-4 mb-4 border border-indigo-700/40 p-4 rounded-lg">
                     {/* Mode selector */}
                     <div className="flex gap-2 mb-2">
                       <Button
-                        variant="outline"
+                        variant="neon"
                         size="sm"
-                        className={
-                          !isThread
-                            ? 'border-violet-500 bg-violet-600 text-white hover:bg-violet-700'
-                            : 'border-violet-500 text-violet-400 hover:bg-violet-500/20'
-                        }
-                        onClick={() => setIsThread(false)}
-                      >
+                        className={!isThread ? 'bg-[rgba(255,137,6,0.15)] opacity-100' : 'opacity-60'}
+                        onClick={() => setIsThread(false)}>
                         {t('twitterModeTweet')}
                       </Button>
                       <Button
-                        variant="outline"
+                        variant="neon"
                         size="sm"
-                        className={
-                          isThread
-                            ? 'border-violet-500 bg-violet-600 text-white hover:bg-violet-700'
-                            : 'border-violet-500 text-violet-400 hover:bg-violet-500/20'
-                        }
-                        onClick={() => setIsThread(true)}
-                      >
+                        className={isThread ? 'bg-[rgba(255,137,6,0.15)] opacity-100' : 'opacity-60'}
+                        onClick={() => setIsThread(true)}>
                         {t('twitterModeThread')}
                       </Button>
                     </div>
@@ -478,4 +486,4 @@ export default function CaptionGeneratorPage() {
       </div>
     </ProtectedRoute>
   );
-} 
+}
