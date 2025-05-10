@@ -368,7 +368,7 @@ export default function CaptionGeneratorPage() {
                         onChange={setTweetChars}
                       />
                     ) : (
-                      <motion.div layout className="space-y-2 w-full">
+                      <div className="space-y-2 w-full">
                         {/* Selector de número de tweets con slider */}
                         <div className="flex items-center justify-between text-sm text-gray-300">
                           <span>{t('threadCountLabel')}</span>
@@ -400,7 +400,7 @@ export default function CaptionGeneratorPage() {
                             ))}
                           </AnimatePresence>
                         </div>
-                      </motion.div>
+                      </div>
                     )}
                   </div>
                 )}
