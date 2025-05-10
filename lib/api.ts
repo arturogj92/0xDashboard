@@ -898,4 +898,51 @@ export async function getGlobalStoryStats(
     body: JSON.stringify({ timezone, media_type: mediaType }),
   });
   return response.json();
-} 
+}
+
+/**
+ * Sube un vídeo al generador de descripciones y obtiene el mediaId para seguimiento
+ */
+export const uploadMedia = async (file: File): Promise<ApiResponse<{ mediaId: number }>> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  // Eliminar Content-Type para que el navegador establezca el boundary
+  const headers = createAuthHeaders();
+  delete headers['Content-Type'];
+  const response = await fetch(`${API_URL}/api/caption-generator/upload`, {
+    method: 'POST',
+    headers,
+    body: formData
+  });
+  return response.json();
+};
+
+/**
+ * Consulta el estado y la transcripción de un media subido previamente
+ */
+export const getMediaStatus = async (mediaId: number): Promise<ApiResponse<{ status: string; transcript: string; captionId?: number; instagramText?: string; youtubeText?: string }>> => {
+  const response = await fetch(`${API_URL}/api/caption-generator/${mediaId}`, {
+    headers: createAuthHeaders()
+  });
+  return response.json();
+};
+
+/**
+ * Dispara la generación de descripciones para Instagram y YouTube
+ */
+export const generateCaptions = async (mediaId: number): Promise<ApiResponse<{ instagramText: string; youtubeText: string }>> => {
+  const response = await fetch(`${API_URL}/api/caption-generator/generate`, {
+    method: 'POST',
+    headers: createAuthHeaders(),
+    body: JSON.stringify({ mediaId }),
+  });
+  return response.json();
+};
+
+// Obtener historial de captions generadas por el usuario
+export const getCaptionHistory = async (): Promise<ApiResponse<Array<{ id: number; instagramText: string; youtubeText: string; createdAt: string }>>> => {
+  const response = await fetch(`${API_URL}/api/caption-generator/history`, {
+    headers: createAuthHeaders(),
+  });
+  return response.json();
+}; 
