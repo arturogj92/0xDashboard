@@ -296,6 +296,7 @@
     "threadCountLabel": "Number of tweets (max 4)",
     "threadPreviewTitle": "Thread preview",
     "includeMentionButton": "Include mention",
+    "includeHashtagsButton": "Include hashtags",
     "copyAllButton": "Copy Full Thread",
     "mentionInputPlaceholder": "This is the @username to mention"
   }

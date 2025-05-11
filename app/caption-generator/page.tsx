@@ -242,7 +242,7 @@ export default function CaptionGeneratorPage() {
         imageAlt="Caption Generator"
       />
 
-      <div className="mb-16 relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-x-hidden">
+      <div className="mb-16 relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-visible">
         <div className="relative w-full max-w-5xl rounded-xl border border-white/10 bg-[#0e0b15]/70 backdrop-blur-xl shadow-2xl p-4 sm:p-6 flex flex-col items-center">
           <Link href="/caption-generator/history">
             <Button variant="neon" className="absolute top-4 right-4 rounded-full p-2 z-10">
