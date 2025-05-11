@@ -253,6 +253,9 @@
     "description": "Sube un vídeo y genera automáticamente descripciones para Instagram y YouTube.",
     "uploadLabel": "Selecciona un archivo de vídeo",
     "uploadButton": "Subir y transcribir",
+    "uploadRequirements": "Máximo 200MB. Archivos soportados: .mov, .mkv y .mp4",
+    "fileTooLargeError": "El archivo supera el límite de 200MB",
+    "fileTooLongError": "La duración del vídeo supera los 60 segundos",
     "uploadDone": "Vídeo subido. Listo para generar descripción.",
     "uploadExplanation": "Analizaremos la transcripción del vídeo, revisaremos tus otros reels y basándonos en ello generaremos la mejor descripción.",
     "lengthSliderLabel": "Longitud del texto",
@@ -291,9 +294,11 @@
     "twitterModeTweet": "Tweet único",
     "twitterModeThread": "Hilo",
     "twitterCharLabel": "Longitud del tweet (280 máx)",
-    "threadCountLabel": "Número de tweets (máx 10)",
+    "threadCountLabel": "Número de tweets (máx 4)",
     "threadPreviewTitle": "Vista previa del hilo",
     "includeMentionButton": "Incluir mención",
+    "includeHashtagsButton": "Añadir hashtags",
+    "copyAllButton": "Copiar Hilo Completo",
     "mentionInputPlaceholder": "Introduce la cuenta (@usuario) a mencionar"
   }
 } 

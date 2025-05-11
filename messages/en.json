@@ -247,6 +247,9 @@
     "description": "Upload a video and automatically generate captions for Instagram and YouTube.",
     "uploadLabel": "Select a video file",
     "uploadButton": "Upload & Transcribe",
+    "uploadRequirements": "Max size: 200MB. Supported files: .mov, .mkv, and .mp4",
+    "fileTooLargeError": "File exceeds 200MB limit",
+    "fileTooLongError": "Video duration exceeds 60 seconds",
     "uploadDone": "Video uploaded! Ready to generate caption.",
     "uploading": "Uploading...",
     "statusUploading": "File uploaded",
@@ -283,9 +286,10 @@
     "twitterModeTweet": "Single Tweet",
     "twitterModeThread": "Thread",
     "twitterCharLabel": "Tweet length (max 280)",
-    "threadCountLabel": "Number of tweets (max 10)",
+    "threadCountLabel": "Number of tweets (max 4)",
     "threadPreviewTitle": "Thread preview",
     "includeMentionButton": "Include mention",
+    "copyAllButton": "Copy Full Thread",
     "mentionInputPlaceholder": "This is the @username to mention"
   }
 } 

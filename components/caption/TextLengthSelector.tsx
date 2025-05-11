@@ -58,10 +58,10 @@ export default function TextLengthSelector({ value, onChange, min = DEFAULT_MIN,
   return (
     <div className="w-full space-y-4">
       {/* Etiqueta y contador */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between text-xs sm:text-sm">
         <div className="flex items-center gap-1">
           {prefixIcon && <span className="flex-shrink-0">{prefixIcon}</span>}
-          <label className="text-sm font-medium text-gray-200">
+          <label className="font-medium text-gray-200">
             {labelKey ? t(labelKey) : t('lengthSliderLabel')}
           </label>
         </div>
@@ -75,10 +75,10 @@ export default function TextLengthSelector({ value, onChange, min = DEFAULT_MIN,
               transition={{ duration: 0.2 }}
               className="inline-block"
             >
-              {value}
+              <span className="text-xs align-baseline">≈</span>{value}
             </motion.span>
           </AnimatePresence>
-          <span className="ml-1">{t(countLabelKey || 'characters')}</span>
+          <span className="ml-1 text-xs sm:text-xs">{t(countLabelKey || 'characters')}</span>
         </div>
       </div>
 

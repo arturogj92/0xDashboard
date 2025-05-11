@@ -927,14 +927,26 @@ export const getMediaStatus = async (mediaId: number): Promise<ApiResponse<{ sta
   return response.json();
 };
 
-/**
- * Dispara la generación de descripciones para Instagram y YouTube
- */
-export const generateCaptions = async (mediaId: number): Promise<ApiResponse<{ instagramText: string; youtubeText: string }>> => {
+export interface CaptionGenOptions {
+  includeEmojis?: boolean;
+  link?: string;
+  mention?: string;
+  instagramMax?: number;
+  youtubeMax?: number;
+  xEnabled?: boolean;
+  xIsThread?: boolean;
+  xMaxChars?: number;
+  xThreadCount?: number;
+}
+
+export const generateCaptions = async (
+  mediaId: number,
+  options: CaptionGenOptions
+): Promise<ApiResponse<{ instagramText?: string; youtubeText?: string; xText?: string | string[] }>> => {
   const response = await fetch(`${API_URL}/api/caption-generator/generate`, {
     method: 'POST',
     headers: createAuthHeaders(),
-    body: JSON.stringify({ mediaId }),
+    body: JSON.stringify({ mediaId, options, platforms: ['instagram','youtube', options.xEnabled ? 'x' : undefined].filter(Boolean) }),
   });
   return response.json();
 };

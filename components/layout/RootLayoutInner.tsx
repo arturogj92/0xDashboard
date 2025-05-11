@@ -22,11 +22,10 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                 <Image 
                   src="/images/logo.png" 
                   alt={t('logoAlt')}
-                  width={26} 
-                  height={26} 
+                  width={120} 
+                  height={174} 
                   className="mr-1" 
                 />
-                <h1 className="text-lg font-bold bg-gradient-to-tr from-blue-300 to-purple-400 bg-clip-text text-transparent">{">"} Replyer</h1>
               </Link>
             </div>
             <div className="flex items-center space-x-2 md:space-x-4">
@@ -43,7 +42,14 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                   href="/caption-generator"
                   className="inline-flex items-center px-1.5 py-0.5 text-[10px] md:text-xs font-medium text-white hover:text-purple-300 transition-colors bg-indigo-600/50 hover:bg-indigo-700/60 rounded-full md:px-3 md:py-1"
                 >
-                  <FileText className="w-4 h-4 md:w-5 md:h-5 text-white/60 mr-1 md:mr-1.5" />
+                  <div className="relative w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-1.5">
+                    <Image 
+                      src="/images/icons/caption-generator-icon.png"
+                      alt="Caption Generator Icon"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
                   <span className="hidden md:inline">{t('captionGenerator')}</span>
                 </Link>
               )}
