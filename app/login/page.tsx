@@ -7,7 +7,6 @@ import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import Image from 'next/image';
 // Importar componentes de Google Login
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 // Importar la función de API
@@ -403,14 +402,6 @@ export default function LoginPage() {
       <div className="flex flex-col items-center justify-center px-4">
         <div className="w-full max-w-md mx-auto">
           <div className="mb-8 text-center">
-            <div className="flex justify-center mb-4">
-              <Image 
-                src="/images/logo.png" 
-                alt="0xReplyer Logo" 
-                width={64} 
-                height={64} 
-              />
-            </div>
             <h1 className="text-3xl font-bold text-white">{tLogin('title')}</h1>
             <p className="text-gray-400 mt-2">{tLogin('subtitle')}</p>
           </div>
