@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { UserNav } from "@/components/auth/UserNav";
 import { useTranslations } from 'next-intl';
 import Footer from "@/app/components/Footer";
+import { FileText } from 'lucide-react';
 
 export default function RootLayoutInner({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
@@ -21,11 +22,10 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                 <Image 
                   src="/images/logo.png" 
                   alt={t('logoAlt')}
-                  width={26} 
-                  height={26} 
+                  width={120} 
+                  height={174} 
                   className="mr-1" 
                 />
-                <h1 className="text-lg font-bold bg-gradient-to-tr from-blue-300 to-purple-400 bg-clip-text text-transparent">{">"} Replyer</h1>
               </Link>
             </div>
             <div className="flex items-center space-x-2 md:space-x-4">
@@ -35,6 +35,22 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                   className="flex items-center px-2 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-500 hover:to-purple-500 transition-colors shadow-md shadow-indigo-900/30"
                 >
                   {t('pricing')}
+                </Link>
+              )}
+              {isAuthenticated && (
+                <Link
+                  href="/caption-generator"
+                  className="inline-flex items-center px-1.5 py-0.5 text-[10px] md:text-xs font-medium text-white hover:text-purple-300 transition-colors bg-indigo-600/50 hover:bg-indigo-700/60 rounded-full md:px-3 md:py-1"
+                >
+                  <div className="relative w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-1.5">
+                    <Image 
+                      src="/images/icons/caption-generator-icon.png"
+                      alt="Caption Generator Icon"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                  <span className="hidden md:inline">{t('captionGenerator')}</span>
                 </Link>
               )}
               <UserNav />
