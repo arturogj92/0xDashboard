@@ -289,7 +289,14 @@
     "copiedMessage": "Copiado",
     "viewHistory": "Ver historial",
     "historyTitle": "Historial de descripciones",
+    "historyDescription": "Accede a todas tus descripciones generadas anteriormente.",
     "noHistory": "No has generado ninguna descripción todavía.",
+    "createFirstCaption": "Crear primera descripción",
+    "backButton": "Volver",
+    "previousPage": "Anterior",
+    "nextPage": "Siguiente",
+    "page": "Página",
+    "of": "de",
     "includeXButton": "Generar para X",
     "twitterModeTweet": "Tweet único",
     "twitterModeThread": "Hilo",
@@ -297,7 +304,7 @@
     "threadCountLabel": "Número de tweets (máx 4)",
     "threadPreviewTitle": "Vista previa del hilo",
     "includeMentionButton": "Incluir mención",
-    "includeHashtagsButton": "Añadir hashtags",
+    "includeHashtagsButton": "Incluir hashtags",
     "copyAllButton": "Copiar Hilo Completo",
     "mentionInputPlaceholder": "Introduce la cuenta (@usuario) a mencionar"
   }

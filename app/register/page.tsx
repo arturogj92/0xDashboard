@@ -6,7 +6,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 
 export default function RegisterPage() {
@@ -58,14 +57,6 @@ export default function RegisterPage() {
     <div className="flex flex-col items-center justify-center min-h-[80vh] px-4">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="flex justify-center mb-4">
-            <Image 
-              src="/images/logo.png" 
-              alt="0xReplyer Logo" 
-              width={64} 
-              height={64} 
-            />
-          </div>
           <h1 className="text-3xl font-bold text-white">{tRegister('title')}</h1>
           <p className="text-gray-400 mt-2">{tRegister('subtitle')}</p>
         </div>
