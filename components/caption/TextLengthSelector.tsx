@@ -66,18 +66,9 @@ export default function TextLengthSelector({ value, onChange, min = DEFAULT_MIN,
           </label>
         </div>
         <div className="flex items-baseline text-yellow-400 font-semibold">
-          <AnimatePresence initial={false} mode="popLayout">
-            <motion.span
-              key={value}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="inline-block"
-            >
-              <span className="text-xs align-baseline">≈</span>{value}
-            </motion.span>
-          </AnimatePresence>
+          <span className="inline-block">
+            <span className="text-xs align-baseline">≈</span>{value}
+        </span>
           <span className="ml-1 text-xs sm:text-xs">{t(countLabelKey || 'characters')}</span>
         </div>
       </div>

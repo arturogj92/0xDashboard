@@ -306,6 +306,7 @@
     "includeMentionButton": "Incluir mención",
     "includeHashtagsButton": "Incluir hashtags",
     "copyAllButton": "Copiar Hilo Completo",
-    "mentionInputPlaceholder": "Introduce la cuenta (@usuario) a mencionar"
+    "mentionInputPlaceholder": "Introduce la cuenta (@usuario) a mencionar",
+    "noVoiceMessage": "El vídeo parece ser musical y no contiene voz, por lo que no se generaron descripciones."
   }
 } 
