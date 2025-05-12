@@ -298,6 +298,7 @@
     "includeMentionButton": "Include mention",
     "includeHashtagsButton": "Include hashtags",
     "copyAllButton": "Copy Full Thread",
-    "mentionInputPlaceholder": "This is the @username to mention"
+    "mentionInputPlaceholder": "This is the @username to mention",
+    "noVoiceMessage": "The video appears to be musical-only and doesn't contain speech, so no captions were generated."
   }
 } 

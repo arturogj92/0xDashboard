@@ -44,6 +44,7 @@ export default function CaptionGeneratorPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [copyMessage, setCopyMessage] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [noVoice, setNoVoice] = useState<boolean>(false);
   const pollInterval = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const instagramRef = useRef<HTMLTextAreaElement | null>(null);
@@ -125,8 +126,11 @@ export default function CaptionGeneratorPage() {
 
                   const capRes = await generateCaptions(id, options);
                   if (capRes.success) {
-                    setInstagramCaption(capRes.data.instagramText ?? '');
-                    setYoutubeCaption(capRes.data.youtubeText ?? '');
+                    const igText = capRes.data.instagramText ?? '';
+                    const ytText = capRes.data.youtubeText ?? '';
+                    setInstagramCaption(igText);
+                    setYoutubeCaption(ytText);
+
                     if (capRes.data.xText) {
                       if (Array.isArray(capRes.data.xText)) {
                         setTwitterTweets(capRes.data.xText);
@@ -136,9 +140,19 @@ export default function CaptionGeneratorPage() {
                         setTwitterTweets([capRes.data.xText]);
                       }
                     }
+
+                    // Detectar caso sin transcripción / sin captions generadas
+                    const hasAnyText = igText.length > 0 || ytText.length > 0 || (capRes.data.xText && (Array.isArray(capRes.data.xText) ? capRes.data.xText.length > 0 : capRes.data.xText.length > 0));
+                    setNoVoice(!hasAnyText);
                     setStatus('');
                   } else {
-                    setStatus(capRes.message || t('statusError'));
+                    // Si el backend indica que no se detectó voz, mostramos mensaje específico
+                    if (capRes.message?.toLowerCase().includes('no se detectó voz')) {
+                      setNoVoice(true);
+                      setStatus('');
+                    } else {
+                      setStatus(capRes.message || t('statusError'));
+                    }
                   }
                 } catch (err) {
                   console.error(err);
@@ -220,6 +234,13 @@ export default function CaptionGeneratorPage() {
       resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [isProcessing]);
+
+  // Scroll cuando se detecte vídeo musical sin voz
+  useEffect(() => {
+    if (!isProcessing && noVoice) {
+      resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [noVoice, isProcessing]);
 
   return (
     <ProtectedRoute>
@@ -341,7 +362,7 @@ export default function CaptionGeneratorPage() {
                           <p className="text-lg font-semibold text-white truncate max-w-full mb-1">
                             {t('uploadDone')}
                           </p>
-                          <p className="text-sm text-gray-300">{file.name}</p>
+                          <p className="text-sm text-gray-300 max-w-[240px] truncate" title={file.name}>{file.name}</p>
                         </>
                       ) : (
                         <>
@@ -555,8 +576,13 @@ export default function CaptionGeneratorPage() {
                   </div>
                 )}
 
-              {(instagramCaption || youtubeCaption) && (
+              {(instagramCaption || youtubeCaption || noVoice) && (
                 <div ref={resultsRef} className="space-y-6">
+                  {noVoice && (
+                    <div className="bg-[#120724] p-6 rounded-lg border border-indigo-900/30 text-center text-gray-300">
+                      {t('noVoiceMessage')}
+                    </div>
+                  )}
                   {instagramCaption && (
                     <div className="space-y-2 bg-[#120724] p-4 rounded-lg border border-indigo-900/30 text-white">
                       <div className="flex items-center gap-2">
