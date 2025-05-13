@@ -153,7 +153,15 @@
       "intervalDay": "día",
       "intervalHour": "hora",
       "errorLoadingMessage": "Error cargando estadísticas globales",
-      "buttonClose": "Cerrar"
+      "buttonClose": "Cerrar",
+      "legendHint": "Haz clic en un día para resaltarlo",
+      "daySunday": "Dom",
+      "dayMonday": "Lun",
+      "dayTuesday": "Mar",
+      "dayWednesday": "Mié",
+      "dayThursday": "Jue",
+      "dayFriday": "Vie",
+      "daySaturday": "Sáb"
     },
     "instagramReelsList": {
       "errorFetching": "Error al obtener los reels",
@@ -309,4 +317,4 @@
     "mentionInputPlaceholder": "Introduce la cuenta (@usuario) a mencionar",
     "noVoiceMessage": "El vídeo parece ser musical y no contiene voz, por lo que no se generaron descripciones."
   }
-} 
+}
