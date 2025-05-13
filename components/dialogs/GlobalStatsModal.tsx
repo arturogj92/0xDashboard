@@ -44,6 +44,9 @@ export default function GlobalStatsModal({ open, onOpenChange, period, mediaType
   const [error, setError] = useState<string | null>(null);
   const [dailyData, setDailyData] = useState<Array<{ date: string; count: number }>>([]);
   const [hourlyData, setHourlyData] = useState<Array<{ hour: string; count: number }>>([]);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const dayColors = ['#F87171','#A78BFA','#34D399','#FBBF24','#60A5FA','#F472B6','#10B981'];
+  const handleLegendClick = (dayIndex: number) => setSelectedDay(prev => prev === dayIndex ? null : dayIndex);
 
   useEffect(() => {
     // Ejecutar fetchData solo la primera vez que open pasa a true
@@ -147,10 +150,18 @@ export default function GlobalStatsModal({ open, onOpenChange, period, mediaType
                     fontSize={11}
                   />
                   <YAxis />
-                  <Bar dataKey="count" fill="var(--primary)">
-                    {(period === '28d' || period === '7d' ? dailyData : displayHourlyData).map((entry, idx) => (
-                      <Cell key={`cell-${idx}`} fill="var(--accent)" />
-                    ))}
+                  <Bar dataKey="count">
+                    {(period === '28d' || period === '7d' ? dailyData : displayHourlyData).map((entry, idx) => {
+                      let fill = 'var(--accent)';
+                      let opacity = 1;
+                      if (period === '28d') {
+                        const d = new Date((entry as any).date);
+                        const dayIndex = d.getDay();
+                        fill = dayColors[dayIndex];
+                        opacity = selectedDay === null || selectedDay === dayIndex ? 1 : 0.3;
+                      }
+                      return <Cell key={`cell-${idx}`} fill={fill} fillOpacity={opacity} />;
+                    })}
                   </Bar>
                   <RechartsTooltip
                     content={<CustomTooltip />}
@@ -159,6 +170,20 @@ export default function GlobalStatsModal({ open, onOpenChange, period, mediaType
                   />
                 </BarChart>
               </ResponsiveContainer>
+              {period === '28d' && (
+                <div className="flex justify-center flex-wrap gap-4 mt-2">
+                  {['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'].map((label, idx) => (
+                    <div
+                      key={label}
+                      onClick={() => handleLegendClick(idx)}
+                      className={`flex items-center gap-1 cursor-pointer ${selectedDay !== null && selectedDay !== idx ? 'opacity-50' : 'opacity-100'} ${selectedDay === idx ? 'font-medium' : ''}`}
+                    >
+                      <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: dayColors[idx] }} />
+                      <span className="text-xs">{label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
