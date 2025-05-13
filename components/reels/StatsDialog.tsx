@@ -135,33 +135,40 @@ export function StatsDialog({
                 <p className="text-xs text-gray-500 text-right">* Mostrando las últimas 24 horas</p>
               </div>
               
-              <h3 className="text-lg font-medium mb-2">Mensajes últimos 7 días</h3>
+              <h3 className="text-lg font-medium mb-2">
+                {weeklyStats.length === 28 ? 'Mensajes últimos 28 días' : 'Mensajes últimos 7 días'}
+              </h3>
               <div className="w-full mb-4">
                 <ResponsiveContainer width="100%" height={200}>
                   <BarChart data={weeklyStats}>
                     <CartesianGrid stroke="none" />
-                    <XAxis 
-                      dataKey="day" 
+                    <XAxis
+                      dataKey="day"
                       tickFormatter={(val) => {
                         const d = new Date(val);
-                        return d.toLocaleDateString("es-ES", {
-                          month: "short",
-                          day: "numeric",
-                        });
+                        return d.toLocaleDateString('es-ES', { month: 'short', day: 'numeric' });
                       }}
                     />
                     <YAxis />
-                    <RechartsTooltip content={<CustomTooltip />} cursor={{fill: "gray", fillOpacity: 0.5}} />
+                    <RechartsTooltip content={<CustomTooltip />} cursor={{ fill: 'gray', fillOpacity: 0.5 }} />
                     <Bar dataKey="count">
-                      {weeklyStats.map((entry, index) => (
-                        <Cell 
-                          key={`cell-day-${index}`} 
-                          fill="var(--accent)"
-                        />
-                      ))}
+                      {weeklyStats.map((entry, index) => {
+                        const d = new Date(entry.day);
+                        const dayIndex = d.getDay(); // 0=Dom,1=Lun,...6=Sáb
+                        const colors = ['#F87171','#60A5FA','#34D399','#FBBF24','#A78BFA','#F472B6','#38BDF8'];
+                        return <Cell key={`cell-day-${index}`} fill={colors[dayIndex]} />;
+                      })}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
+                <div className="flex flex-wrap gap-4 mt-2">
+                  {['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'].map((label, idx) => (
+                    <div key={label} className="flex items-center gap-1">
+                      <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: ['#F87171','#60A5FA','#34D399','#FBBF24','#A78BFA','#F472B6','#38BDF8'][idx] }} />
+                      <span className="text-xs">{label}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </>
           )}

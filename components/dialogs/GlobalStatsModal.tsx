@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Cell } from 'recharts';
@@ -44,6 +44,20 @@ export default function GlobalStatsModal({ open, onOpenChange, period, mediaType
   const [error, setError] = useState<string | null>(null);
   const [dailyData, setDailyData] = useState<Array<{ date: string; count: number }>>([]);
   const [hourlyData, setHourlyData] = useState<Array<{ hour: string; count: number }>>([]);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const dayColors = ['#F87171','#A78BFA','#34D399','#FBBF24','#60A5FA','#F472B6','#10B981'];
+  const dayKeys = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const handleLegendClick = (dayIndex: number) => setSelectedDay(prev => prev === dayIndex ? null : dayIndex);
+  const dayTotals = useMemo<number[]>(() => {
+    const totals = Array(7).fill(0);
+    if (period === '28d') {
+      dailyData.forEach(({ date, count }) => {
+        const d = new Date((date as string));
+        totals[d.getDay()] += count;
+      });
+    }
+    return totals;
+  }, [dailyData, period]);
 
   useEffect(() => {
     // Ejecutar fetchData solo la primera vez que open pasa a true
@@ -147,10 +161,18 @@ export default function GlobalStatsModal({ open, onOpenChange, period, mediaType
                     fontSize={11}
                   />
                   <YAxis />
-                  <Bar dataKey="count" fill="var(--primary)">
-                    {(period === '28d' || period === '7d' ? dailyData : displayHourlyData).map((entry, idx) => (
-                      <Cell key={`cell-${idx}`} fill="var(--accent)" />
-                    ))}
+                  <Bar dataKey="count">
+                    {(period === '28d' || period === '7d' ? dailyData : displayHourlyData).map((entry, idx) => {
+                      let fill = 'var(--accent)';
+                      let opacity = 1;
+                      if (period === '28d') {
+                        const d = new Date((entry as any).date);
+                        const dayIndex = d.getDay();
+                        fill = dayColors[dayIndex];
+                        opacity = selectedDay === null || selectedDay === dayIndex ? 1 : 0.3;
+                      }
+                      return <Cell key={`cell-${idx}`} fill={fill} fillOpacity={opacity} />;
+                    })}
                   </Bar>
                   <RechartsTooltip
                     content={<CustomTooltip />}
@@ -159,6 +181,23 @@ export default function GlobalStatsModal({ open, onOpenChange, period, mediaType
                   />
                 </BarChart>
               </ResponsiveContainer>
+              {period === '28d' && (
+                <>
+                  <p className="text-center text-xs text-gray-400 mt-2">{t('legendHint')}</p>
+                  <div className="flex justify-center flex-wrap gap-4 mt-2">
+                    {dayKeys.map((key, idx) => (
+                      <div
+                        key={key}
+                        onClick={() => handleLegendClick(idx)}
+                        className={`flex items-center gap-1 cursor-pointer ${selectedDay !== null && selectedDay !== idx ? 'opacity-50' : 'opacity-100'} ${selectedDay === idx ? 'font-medium' : ''}`}
+                      >
+                        <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: dayColors[idx] }} />
+                        <span className="text-xs">{`${t(`day${key}`)}: ${dayTotals[idx].toLocaleString()}`}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           )}
         </div>

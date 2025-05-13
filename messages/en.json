@@ -153,7 +153,15 @@
       "intervalDay": "day",
       "intervalHour": "hour",
       "errorLoadingMessage": "Error loading global statistics",
-      "buttonClose": "Close"
+      "buttonClose": "Close",
+      "legendHint": "Click a day to highlight it",
+      "daySunday": "Sun",
+      "dayMonday": "Mon",
+      "dayTuesday": "Tue",
+      "dayWednesday": "Wed",
+      "dayThursday": "Thu",
+      "dayFriday": "Fri",
+      "daySaturday": "Sat"
     },
     "instagramReelsList": {
       "errorFetching": "Error fetching reels",
@@ -276,7 +284,7 @@
     "generateCaptionButton": "Generate Caption",
     "generatingCaption": "Generating caption...",
     "instagramCaptionLabel": "Instagram Caption",
-    "youtubeCaptionLabel": "YouTube Caption",
+    "youtubeCaptionLabel": "Youtube Shorts caption",
     "copyButton": "Copy",
     "copiedMessage": "Copied",
     "viewHistory": "View history",
@@ -301,4 +309,4 @@
     "mentionInputPlaceholder": "This is the @username to mention",
     "noVoiceMessage": "The video appears to be musical-only and doesn't contain speech, so no captions were generated."
   }
-} 
+}
