@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "0xreplyer-frontend",
+			"path": ".."
+		},
+		{
+			"name": "0xreplyer-backend",
+			"path": "../../0xreplyer-backend"
+		}
+	],
+	"settings": {}
+}

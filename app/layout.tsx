@@ -16,7 +16,7 @@ import { I18nProvider } from '@/contexts/I18nContext';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: '0xReplyer Dashboard',
+  title: 'Creator0x',
   description: 'Panel de administración para gestionar respuestas automáticas de Instagram',
 };
 
