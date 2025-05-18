@@ -354,6 +354,11 @@
     "descriptionHelper": "Max 50 characters",
     "continue": "Continue",
     "namePlaceholder": "My brand",
-    "descriptionPlaceholder": "I teach you how to cook! 🍳"
+    "descriptionPlaceholder": "Small description",
+    "stepConfigure": "Set up your landing",
+    "stepLinks": "Add links",
+    "stepSections": "Add sections",
+    "stepSocial": "Add socials",
+    "stepStats": "View stats"
   }
 }

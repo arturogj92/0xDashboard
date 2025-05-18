@@ -53,6 +53,15 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                   <span className="hidden md:inline">{t('captionGenerator')}</span>
                 </Link>
               )}
+              {isAuthenticated && (
+                <Link
+                  href="/landing"
+                  className="inline-flex items-center px-1.5 py-0.5 text-[10px] md:text-xs font-medium text-white hover:text-purple-300 transition-colors bg-indigo-600/50 hover:bg-indigo-700/60 rounded-full md:px-3 md:py-1"
+                >
+                  <FileText className="w-4 h-4 md:w-5 md:h-5 mr-1" />
+                  <span className="hidden md:inline">{t('myLanding')}</span>
+                </Link>
+              )}
               <UserNav />
             </div>
           </div>
