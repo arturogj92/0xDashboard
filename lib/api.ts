@@ -1,6 +1,6 @@
 import { Reel, Keyword, PublicComment, Response, ApiResponse, DmLog, Media, Story, LoginCredentials, RegisterCredentials, AuthResponse, User } from './types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 // Función auxiliar para obtener el token
 const getAuthToken = () => {
@@ -18,7 +18,7 @@ const getAuthToken = () => {
 };
 
 // Función para crear headers con autenticación
-const createAuthHeaders = () => {
+export const createAuthHeaders = () => {
   const token = getAuthToken();
   const headers: Record<string, string> = {
     'Content-Type': 'application/json'

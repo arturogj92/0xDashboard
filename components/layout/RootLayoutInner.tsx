@@ -23,8 +23,9 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                   src="/images/logo.png" 
                   alt={t('logoAlt')}
                   width={120} 
-                  height={174} 
-                  className="mr-1" 
+                  height={40} 
+                  className="mr-1 max-h-8 w-auto" 
+                  priority
                 />
               </Link>
             </div>
@@ -67,7 +68,7 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
           </div>
         </div>
       </nav>
-      <main className="flex-grow max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 w-full">
+      <main className="flex-grow w-full py-6 sm:px-6 lg:px-8">
         {children}
       </main>
       <Footer />
