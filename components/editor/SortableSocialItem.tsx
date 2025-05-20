@@ -46,7 +46,10 @@ export function SortableSocialItem({id, data, onToggleVisibility, onUrlChange}: 
         transform,
         transition,
         isDragging,
-    } = useSortable({id}); 
+    } = useSortable({
+        id,
+        animateLayoutChanges: () => false, // Previene animaciones adicionales durante cambios de layout
+    }); 
 
     // Estado local de URL editable
     const [draftUrl, setDraftUrl] = useState<string>(data.url);
@@ -58,9 +61,15 @@ export function SortableSocialItem({id, data, onToggleVisibility, onUrlChange}: 
         : `https://${trimmedUrl}`;
     const isValidUrl = trimmedUrl !== "" && (() => { try { new URL(normalizedUrl); return true; } catch { return false; } })();
 
+    // Estilos específicos para el arrastre con mejor rendimiento
     const style = {
         transform: CSS.Transform.toString(transform),
-        transition,
+        transition: isDragging 
+            ? undefined // Sin transición durante el arrastre para mayor fluidez
+            : transition || 'transform 150ms cubic-bezier(0.2, 0, 0, 1)', // Transición más rápida y con curva mejorada
+        willChange: isDragging ? 'transform' : undefined, // Solo aplicar willChange cuando sea necesario
+        zIndex: isDragging ? 1000 : 1,
+        touchAction: 'none', // Deshabilitar comportamientos táctiles del navegador
     };
 
     const SocialIcon = getSocialIcon(data.name);
@@ -69,13 +78,13 @@ export function SortableSocialItem({id, data, onToggleVisibility, onUrlChange}: 
         <li
             ref={setNodeRef}
             style={style}
-            className={`list-none flex items-center gap-3 p-3 rounded-lg text-card-foreground transition-all duration-150 ease-in-out
-                        ${isDragging ? 'bg-muted ring-2 ring-primary opacity-90 shadow-lg' : 'hover:bg-muted/50'}`}
+            className={`list-none flex items-center gap-3 p-3 rounded-lg text-card-foreground will-change-transform
+                        ${isDragging ? 'bg-muted ring-2 ring-primary shadow-md opacity-95 scale-[1.01]' : 'hover:bg-muted/50 transition-colors duration-150'}`}
         >
             <div
                 {...attributes}
                 {...listeners}
-                className="cursor-grab p-1 text-muted-foreground hover:text-foreground"
+                className="cursor-grab p-1 text-muted-foreground hover:text-foreground active:cursor-grabbing"
                 aria-label="Arrastrar para reordenar"
             >
                 <Bars2Icon className="h-5 w-5" />

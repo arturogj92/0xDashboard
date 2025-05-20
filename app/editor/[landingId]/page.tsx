@@ -124,25 +124,30 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen">
+    <div className="flex flex-col md:flex-row min-h-screen relative">
+      {/* Efectos de gradiente - Solo en el 50% izquierdo */}
+      <div className="hidden md:block fixed left-0 top-0 bottom-0 w-1/2 overflow-hidden pointer-events-none">
+        <div className="absolute left-1/4 -top-24 -bottom-24 right-1/4 bg-[radial-gradient(circle,_rgba(88,28,135,0.45)_0%,_rgba(17,24,39,0)_80%)] blur-[250px] pointer-events-none"></div>
+        <div className="absolute left-1/4 -top-32 -bottom-32 right-1/4 bg-[radial-gradient(circle,_rgba(17,24,39,0)_60%,_rgba(88,28,135,0.35)_100%)] blur-[300px] opacity-50 pointer-events-none"></div>
+      </div>
       {/* Previsualización */}
-      <div className="order-first md:order-last w-full md:w-1/2 p-6 bg-transparent md:fixed md:top-12 md:right-0 md:bottom-0 flex flex-col items-center justify-center overflow-y-auto">
+      <div className="order-first md:order-last w-full md:w-1/2 p-4 md:p-8 bg-transparent md:fixed md:top-0 md:right-0 md:bottom-0 flex flex-col items-center justify-center overflow-y-auto">
         <div className="text-white p-2 rounded mb-4 w-full text-center">
-          <p className="font-bold">PREVIEW</p>
+          <p className="font-bold text-lg md:text-xl">VISTA PREVIA</p>
         </div>
-        <div className="relative w-[200px] h-[400px]">
+        <div className="relative w-[280px] h-[580px] md:w-[320px] md:h-[650px] lg:w-[380px] lg:h-[750px] xl:w-[420px] xl:h-[850px]">
           <img
             src="/images/iphone16-frame.png"
             alt="iPhone frame"
-            className="absolute w-full h-full z-20 pointer-events-none"
+            className="absolute w-full h-full z-20 pointer-events-none object-contain"
           />
-          <div className="absolute top-[5px] left-0 w-full h-full z-10 pt-4 pb-4 overflow-y-auto bg-transparent rounded-[80px]">
-            {/* Contenido de preview eliminado por ahora */}
+          <div className="absolute top-[8px] left-0 w-full h-[calc(100%-16px)] z-10 pt-6 pb-6 overflow-y-auto bg-transparent rounded-[80px] md:rounded-[90px] lg:rounded-[100px]">
+            {/* Contenido de preview */}
           </div>
         </div>
       </div>
       {/* Panel de edición */}
-      <div className="relative w-full md:w-1/2 order-last md:order-first max-w-5xl rounded-xl border border-white/10 bg-[#0e0b15]/70 backdrop-blur-xl shadow-2xl p-4 sm:p-6 overflow-y-auto flex flex-col items-center">
+      <div className="relative w-full md:w-1/2 order-last md:order-first rounded-xl border border-white/10 bg-[#0e0b15]/70 backdrop-blur-xl shadow-2xl p-4 sm:p-6 overflow-y-auto flex flex-col items-center">
         <h2 className="font-bold mb-4">Edición</h2>
         <div className="w-full">
           <MultiSectionsBoard

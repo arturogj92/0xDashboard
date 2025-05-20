@@ -99,7 +99,20 @@ export default function SocialLinksPanel({landingId, onReorder}: SocialLinksPane
         }
     }
 
-    const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor));
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            // Configuraciones para mejorar la sensibilidad y fluidez
+            activationConstraint: {
+                // El puntero debe moverse 4px antes de activar el drag (valor más bajo para mayor sensibilidad)
+                distance: 4,
+                // Añadir delay para prevenir activaciones accidentales
+                delay: 50,
+                // Tolerar pequeños movimientos no intencionales
+                tolerance: 5,
+            },
+        }),
+        useSensor(KeyboardSensor)
+    );
 
     async function handleDragEnd(event: DragEndEvent) {
         const { active, over } = event;
@@ -136,12 +149,14 @@ export default function SocialLinksPanel({landingId, onReorder}: SocialLinksPane
                 sensors={sensors}
                 collisionDetection={closestCenter}
                 onDragEnd={handleDragEnd}
+                // Habilitar scroll automático durante el arrastre
+                autoScroll={true}
             >
                 <SortableContext
                     items={socialLinks.map((s) => s.id)}
                     strategy={verticalListSortingStrategy}
                 >
-                    <div className="space-y-2">
+                    <div className="space-y-2" style={{ position: 'relative' }}>
                         {socialLinks.map((item) => (
                             <SortableSocialItem
                                 key={item.id}

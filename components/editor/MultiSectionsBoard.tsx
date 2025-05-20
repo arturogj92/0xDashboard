@@ -64,7 +64,7 @@ export default function MultiSectionsBoard({
             return { id: sec.id, items: secItems };
         });
 
-        setContainers([{id: "no-section", items: noSectionItems}, ...sectionContainers]);
+        setContainers([...sectionContainers, {id: "no-section", items: noSectionItems}]);
     }, [links, sections]);
 
     const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor));
