@@ -130,3 +130,7 @@ div[style*="display: inline-block"] {
     background-size: auto;
   }
 }
+
+html {
+  overflow-y: scroll;
+}
