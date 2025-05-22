@@ -222,15 +222,15 @@ export default function MultiSectionsItem({
         highlight(sec);
       }}
       onDragEnd={() => {
-        // Use last highlighted section as drop target
+        // Calculate drop target before clearing
         const targetSec = prevHighlight.current;
-        // Clear highlight visual
         highlight(null);
+        // Always commit reorder first
+        onDragFinish();
+        // Then move to new section if needed
         const targetId = targetSec?.getAttribute("data-section-id");
         if (targetId && targetId !== (link.section_id ?? "no-section")) {
           onDropLink(link.id, targetId);
-        } else {
-          onDragFinish();
         }
       }}
     >
