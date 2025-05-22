@@ -24,7 +24,7 @@ import {
   YAxis,
 } from "recharts";
 
-/* ═════════ ICONOS (SVGs completos) ═════════ */
+/* ═════════ ICONOS COMPLETOS ═════════ */
 function HandleIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 25 25" fill="none" stroke="white">
@@ -81,7 +81,7 @@ function TrashIcon() {
   return (
     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round"
-            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673A2.25 2.25 0 0 1 15.916 21H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a47.99 47.99 0 0 0-3.478-.397M4.75 5.75h14.5"/>
+            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673A2.25 2.25 0 0 1 15.916 21H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.1 48.1 0 0 0-3.478-.397M4.75 5.75h14.5"/>
     </svg>
   );
 }
@@ -93,14 +93,12 @@ function CloseIcon() {
   );
 }
 
-/* ═════════ BANDERAS ═════════ */
+/* ═════════ BANDERAS, TIPOS, HELPERS ═════════ */
 const countryFlags: Record<string, string> = {
   US:"🇺🇸", RU:"🇷🇺", ES:"🇪🇸", MX:"🇲🇽", PL:"🇵🇱", KR:"🇰🇷", VN:"🇻🇳", IE:"🇮🇪",
   AR:"🇦🇷", TW:"🇹🇼", FR:"🇫🇷", DK:"🇩🇰", CO:"🇨🇴", VE:"🇻🇪", PE:"🇵🇪", SE:"🇸🇪",
   PT:"🇵🇹", IT:"🇮🇹", SG:"🇸🇬", RO:"🇷🇴", BO:"🇧🇴",
 };
-
-/* ═════════ TIPOS ═════════ */
 interface DailyStat{date:string;count:number;countries:Record<string,number>; }
 interface StatsData{selected:number;global:number;variation:number;dailyStats:DailyStat[];byCountry:Record<string,number>; }
 interface TooltipItem{name:string;value:number;color:string;payload:{date:string;count:number;countries:Record<string,number>;}; }
@@ -111,26 +109,33 @@ interface Props{
   onDropLink:(id:string,newSectionId:string)=>void;
   onDragFinish:()=>void;
 }
-
-/* ═════════ HELPERS ═════════ */
 const fileName=(url:string)=>{try{return url.split("/").pop()??"";}catch{return"";}};
-
 function CustomTooltip({active,payload,label}:{active?:boolean;payload?:TooltipItem[];label?:string;}){
   if(active&&payload&&payload.length){
     const d=new Date(label!);
-    return (
+    return(
       <div style={{background:"black",padding:"6px 8px",borderRadius:4,color:"white",fontSize:"0.8rem"}}>
-        <p className="mb-1">
-          {d.toLocaleDateString("es-ES",{day:"numeric",month:"short",year:"numeric"})}
-        </p>
+        <p className="mb-1">{d.toLocaleDateString("es-ES",{day:"numeric",month:"short",year:"numeric"})}</p>
         <div className="flex items-center gap-2">
           <span style={{background:"hsl(var(--chart-1))",width:8,height:8,display:"inline-block"}}/>
           <span>Page Views: {payload[0].value}</span>
         </div>
       </div>
     );
+  } return null;
+}
+/* util para elegir la sección bajo el puntero */
+function getSectionUnderPointer(x:number,y:number):HTMLElement|null{
+  const secs=[...document.querySelectorAll<HTMLElement>("[data-section-id]")];
+  let best:null|HTMLElement=null, min=Infinity;
+  for(const sec of secs){
+    const r=sec.getBoundingClientRect();
+    if(x>=r.left && x<=r.right && y>=r.top && y<=r.bottom){
+      const d=Math.abs((r.top+r.bottom)/2 - y);
+      if(d<min){min=d;best=sec;}
+    }
   }
-  return null;
+  return best;
 }
 
 /* ═════════ COMPONENTE ═════════ */
@@ -138,28 +143,33 @@ export default function MultiSectionsItem({
   link,onUpdateLink,onDeleteLink,onDropLink,onDragFinish,
 }:Props){
 
-  /* ---------- Estados editables ---------- */
   const [title,setTitle]=useState(link.title);
   const [url,setUrl]=useState(link.url);
   const [image,setImage]=useState(link.image??"");
   const [urlId,setUrlId]=useState<number|null>(link.url_link_id??null);
 
-  /* ---------- Stats ---------- */
   const [stats7,setStats7]=useState<StatsData|null>(null);
   const [stats28,setStats28]=useState<StatsData|null>(null);
   const [statsModal,setStatsModal]=useState(false);
   const [loadingStats,setLoadingStats]=useState(false);
   const [statsErr,setStatsErr]=useState<string|null>(null);
 
-  /* ---------- Drag refs ---------- */
-  const dragPos=useRef<{x:number;y:number}>({x:0,y:0});
-  const prevHighlight=useRef<HTMLElement|null>(null);
-
-  /* ---------- Otros ---------- */
   const fileRef=useRef<HTMLInputElement>(null);
-  const upd=(u:Partial<LinkData>)=>onUpdateLink(link.id,u);
+  const prevHighlight=useRef<HTMLElement|null>(null);
+  const originSection=useRef<string>(link.section_id??"no-section");
+  useEffect(()=>{originSection.current=link.section_id??"no-section";},[link.section_id]);
 
-  /* ---------- Imagen ---------- */
+  const upd=(u:Partial<LinkData>)=>onUpdateLink(link.id,u);
+  const highlight=(sec:HTMLElement|null)=>{
+    if(prevHighlight.current&&prevHighlight.current!==sec){
+      prevHighlight.current.classList.remove("ring-2","ring-purple-600");
+    }
+    if(sec&&sec!==prevHighlight.current){
+      sec.classList.add("ring-2","ring-purple-600");
+    }
+    prevHighlight.current=sec;
+  };
+
   async function selectFile(e:React.ChangeEvent<HTMLInputElement>){
     if(!e.target.files?.length) return;
     const reader=new FileReader();
@@ -172,11 +182,10 @@ export default function MultiSectionsItem({
     reader.readAsDataURL(e.target.files[0]);
   }
   async function removeImg(){
-    if(image) await fetch(`/api/images?fileName=${fileName(image)}`,{method:"DELETE"}).catch(console.error);
+    if(image) await fetch(`/api/images?fileName=${fileName(image)}`,{method:"DELETE"});
     setImage(""); upd({image:""});
   }
 
-  /* ---------- Stats ---------- */
   async function openStats(){
     if(!urlId){setStatsErr("Sin url_link_id");setStatsModal(true);return;}
     setStatsModal(true); setLoadingStats(true); setStatsErr(null);
@@ -184,81 +193,55 @@ export default function MultiSectionsItem({
       const s7=await(await fetch(`https://www.art0x.link/api/url/visitStats?url_id=${urlId}&range=7d`)).json();
       const s28=await(await fetch(`https://www.art0x.link/api/url/visitStats?url_id=${urlId}&range=28d`)).json();
       setStats7(s7.stats); setStats28(s28.stats);
-    }catch{ setStatsErr("Error obteniendo stats"); }
-    finally{ setLoadingStats(false); }
+    }catch{setStatsErr("Error obteniendo stats");}
+    finally{setLoadingStats(false);}
   }
 
-  /* ---------- Highlight secciones ---------- */
-  function highlight(sec:HTMLElement|null){
-    if(prevHighlight.current&&prevHighlight.current!==sec){
-      prevHighlight.current.classList.remove("ring-2","ring-purple-600");
-    }
-    if(sec && sec!==prevHighlight.current){
-      sec.classList.add("ring-2","ring-purple-600");
-    }
-    prevHighlight.current=sec;
-  }
-
-  /* ---------- Render ---------- */
   return(
     <Reorder.Item
       value={link.id}
       as="li"
-      whileDrag={{ zIndex:50, pointerEvents:"none" }}
+      whileDrag={{ zIndex:50 }}
       className="list-none"
-      onDrag={(e: MouseEvent | TouchEvent, info: PanInfo) => {
-        // Use pointer coords for highlight, fallback to info.point
-        let x: number, y: number;
-        if ('clientX' in e && 'clientY' in e) {
-          x = e.clientX; y = e.clientY;
-        } else if ('changedTouches' in e && e.changedTouches.length > 0) {
-          x = e.changedTouches[0].clientX; y = e.changedTouches[0].clientY;
-        } else {
-          x = info.point.x; y = info.point.y;
-        }
-        const sec = document.elementsFromPoint(x, y)
-          .find(el => el.closest("[data-section-id]"))
-          ?.closest("[data-section-id]") as HTMLElement | null;
-        highlight(sec);
+      onDrag={(e:MouseEvent|TouchEvent,info:PanInfo)=>{
+        const x='clientX' in e?e.clientX:('changedTouches' in e && e.changedTouches[0]?.clientX)||info.point.x;
+        const y='clientY' in e?e.clientY:('changedTouches' in e && e.changedTouches[0]?.clientY)||info.point.y;
+        highlight(getSectionUnderPointer(x,y));
       }}
-      onDragEnd={() => {
-        // Calculate drop target before clearing
-        const targetSec = prevHighlight.current;
+      onDragEnd={(e)=>{
+        const x='clientX' in e?e.clientX:('changedTouches' in e && e.changedTouches[0]?.clientX)||0;
+        const y='clientY' in e?e.clientY:('changedTouches' in e && e.changedTouches[0]?.clientY)||0;
+        const sec=getSectionUnderPointer(x,y);
+        const targetId=sec?.getAttribute("data-section-id")||"no-section";
         highlight(null);
-        // Always commit reorder first
-        onDragFinish();
-        // Then move to new section if needed
-        const targetId = targetSec?.getAttribute("data-section-id");
-        if (targetId && targetId !== (link.section_id ?? "no-section")) {
-          onDropLink(link.id, targetId);
+
+        if(targetId===originSection.current){
+          onDragFinish();
+        }else{
+          onDropLink(link.id,targetId);
+          originSection.current=targetId;
         }
       }}
     >
       <div className="relative border border-gray-500 p-4 rounded-2xl bg-black text-white min-h-[5rem]">
-        {/* drag handle */}
         <div className="absolute top-2 left-2 px-2 cursor-grab"><HandleIcon/></div>
-
-        {/* botones */}
         <div className="absolute top-2 right-2 flex items-center gap-2">
           <Button variant="destructive" className="text-xs px-2 py-1 hover:bg-purple-900" onClick={openStats}><StatsIcon/></Button>
           <Button variant="destructive" className="text-xs px-2 py-1 hover:bg-purple-900" onClick={()=>onDeleteLink(link.id)}><TrashIcon/></Button>
-          <Toggle className="w-12 h-6 flex items-center justify-center hover:bg-purple-900"
-                  pressed={link.visible} onPressedChange={v=>upd({visible:v})}>
+          <Toggle pressed={link.visible} onPressedChange={v=>upd({visible:v})}
+                  className="w-12 h-6 flex items-center justify-center hover:bg-purple-900">
             {link.visible?<EyeIcon/>:<EyeSlashIcon/>}
           </Toggle>
         </div>
 
-        {/* inputs */}
         <div className="mt-5 flex items-start justify-between gap-4">
           <div className="flex flex-col gap-2 flex-1">
-            {/* título */}
             <div className="relative">
               <span className="absolute inset-y-0 left-2 flex items-center pointer-events-none"><TitleIcon/></span>
               <Input value={title} onChange={e=>{setTitle(e.target.value);upd({title:e.target.value});}}
                      placeholder="Título"
                      className="w-full text-sm pl-8 pr-2 py-1 rounded-[100px] hover:bg-purple-950/40 focus:bg-purple-950/40 bg-black/50 border-gray-400"/>
             </div>
-            {/* url + id */}
             <div className="flex items-center gap-2">
               <div className="relative w-full">
                 <span className="absolute inset-y-0 left-2 flex items-center pointer-events-none"><LinkIcon/></span>
@@ -275,12 +258,12 @@ export default function MultiSectionsItem({
             </div>
           </div>
 
-          {/* imagen */}
           <div className="relative w-20 h-20 flex-shrink-0">
             {image?(
               <>
                 <img src={image} alt={title} className="w-full h-full object-cover rounded-xl"/>
-                <button onClick={removeImg} className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1 hover:bg-black/80"><CloseIcon/></button>
+                <button onClick={removeImg}
+                        className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1 hover:bg-black/80"><CloseIcon/></button>
               </>
             ):(
               <div className="w-full h-full border-2 border-gray-400 border-dashed rounded-xl flex flex-col items-center justify-center text-xs text-gray-500 gap-1">
@@ -288,15 +271,15 @@ export default function MultiSectionsItem({
                 <button onClick={()=>fileRef.current?.click()} className="text-[10px] bg-white/10 px-2 py-1 rounded hover:bg-white/20">Subir</button>
               </div>
             )}
-            <input type="file" accept="image/*" ref={fileRef} onChange={selectFile} className="hidden"/>
+            <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={selectFile}/>
           </div>
         </div>
 
-        {/* ───────── Modal Stats ───────── */}
+        {/* ───────── Modal Stats (sin recortes) ───────── */}
         {statsModal&&(
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
-               onClick={(e)=>e.target===e.currentTarget&&setStatsModal(false)}>
-            <Card className="relative w-full max-w-screen-xl max-h-[85vh] overflow-y-auto" onClick={(e)=>e.stopPropagation()}>
+               onClick={e=>e.target===e.currentTarget&&setStatsModal(false)}>
+            <Card className="relative w-full max-w-screen-xl max-h-[85vh] overflow-y-auto" onClick={e=>e.stopPropagation()}>
               <button onClick={()=>setStatsModal(false)}
                       className="absolute top-2 right-2 text-black dark:text-white text-xl">&times;</button>
               <CardHeader>
@@ -320,8 +303,7 @@ export default function MultiSectionsItem({
                       <ResponsiveContainer width="100%" height={320}>
                         <BarChart data={stats28.dailyStats}>
                           <CartesianGrid stroke="none"/>
-                          <XAxis dataKey="date"
-                                 tickFormatter={v=>new Date(v).toLocaleDateString("es-ES",{month:"short",day:"numeric"})}/>
+                          <XAxis dataKey="date" tickFormatter={v=>new Date(v).toLocaleDateString("es-ES",{month:"short",day:"numeric"})}/>
                           <YAxis/>
                           <RechartsTooltip content={<CustomTooltip/>} cursor={{fill:"gray",fillOpacity:0.5}}/>
                           <Bar dataKey="count">
