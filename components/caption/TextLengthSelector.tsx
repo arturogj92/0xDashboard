@@ -98,13 +98,16 @@ export default function TextLengthSelector({ value, onChange, min = DEFAULT_MIN,
                   return (
                     <motion.div
                       key={segmentGlobalIndex}
-                      className="h-3 bg-gray-500/60 rounded flex-shrink-0"
-                      style={{ width: `calc(25% - 4px + ${randomFactor}%)`, transformOrigin: 'left' }}
                       initial={segmentGlobalIndex < staticSegmentsCount ? false : { scaleX: 0, opacity: 0 }}
                       animate={{ scaleX: 1, opacity: 1 }}
                       exit={{ scaleX: 0, opacity: 0 }}
                       transition={{ duration: 0.1, ease: 'easeInOut' }}
-                    />
+                    >
+                      <div
+                        className="h-3 bg-gray-500/60 rounded flex-shrink-0"
+                        style={{ width: `calc(25% - 4px + ${randomFactor}%)`, transformOrigin: 'left' }}
+                      />
+                    </motion.div>
                   );
                 })}
               </AnimatePresence>

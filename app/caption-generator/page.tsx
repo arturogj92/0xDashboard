@@ -564,9 +564,10 @@ export default function CaptionGeneratorPage() {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: 10 }}
                                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                                className="bg-[#1c1033] p-2 rounded text-gray-500 text-sm"
                               >
-                                {`Tweet ${idx + 1}/${threadCount}...`}
+                                <div className="bg-[#1c1033] p-2 rounded text-gray-500 text-sm">
+                                  {`Tweet ${idx + 1}/${threadCount}...`}
+                                </div>
                               </motion.div>
                             ))}
                           </AnimatePresence>

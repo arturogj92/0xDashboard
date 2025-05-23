@@ -111,52 +111,53 @@ const PricingCard = ({ plan, i, parallaxY }: { plan: ReturnType<typeof usePlans>
             }
           }
         }}
-        className={`will-change-transform h-full`}
       >
-        <Card className={`h-full flex flex-col border ${
-          plan.popular 
-            ? "border-indigo-500 bg-gradient-to-b from-indigo-950/40 to-indigo-900/10" 
-            : "border-gray-700 bg-[#120724]"
-        }`}>
-          {plan.popular && (
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-indigo-600 text-white px-4 py-1 rounded-full text-sm font-medium">
-              {t('mostPopular')}
-            </div>
-          )}
-          <CardHeader className={`pb-8 ${plan.popular ? "pt-8" : "pt-6"}`}>
-            <CardTitle className="text-2xl font-bold text-white">{plan.name}</CardTitle>
-            <CardDescription className="text-gray-400 mt-2">{plan.description}</CardDescription>
-            <div className="mt-4">
-              <span className="text-4xl font-bold text-white">{plan.price}</span>
-              <span className="text-gray-400 ml-2">{plan.priceDescription}</span>
-            </div>
-          </CardHeader>
-          <CardContent className="flex-grow">
-            <ul className="space-y-3">
-              {plan.features && Array.isArray(plan.features) && plan.features.map((feature: string, index: number) => (
-                <li key={index} className="flex items-start">
-                  <div className="flex-shrink-0 h-5 w-5 text-indigo-400 mt-0.5">
-                    <CheckIcon />
-                  </div>
-                  <span className="ml-3 text-base text-gray-300">{feature}</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-          <CardFooter className="pt-6 pb-8">
-            <Button 
-              variant={plan.popular ? "default" : "outline"} 
-              size="lg" 
-              className={`w-full ${
-                plan.popular 
-                  ? "bg-indigo-600 hover:bg-indigo-700 text-white" 
-                  : "border-indigo-500 text-indigo-400 hover:bg-indigo-950/50"
-              }`}
-            >
-              {plan.buttonText}
-            </Button>
-          </CardFooter>
-        </Card>
+        <div className="will-change-transform h-full">
+          <Card className={`h-full flex flex-col border ${
+            plan.popular 
+              ? "border-indigo-500 bg-gradient-to-b from-indigo-950/40 to-indigo-900/10" 
+              : "border-gray-700 bg-[#120724]"
+          }`}>
+            {plan.popular && (
+              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-indigo-600 text-white px-4 py-1 rounded-full text-sm font-medium">
+                {t('mostPopular')}
+              </div>
+            )}
+            <CardHeader className={`pb-8 ${plan.popular ? "pt-8" : "pt-6"}`}>
+              <CardTitle className="text-2xl font-bold text-white">{plan.name}</CardTitle>
+              <CardDescription className="text-gray-400 mt-2">{plan.description}</CardDescription>
+              <div className="mt-4">
+                <span className="text-4xl font-bold text-white">{plan.price}</span>
+                <span className="text-gray-400 ml-2">{plan.priceDescription}</span>
+              </div>
+            </CardHeader>
+            <CardContent className="flex-grow">
+              <ul className="space-y-3">
+                {plan.features && Array.isArray(plan.features) && plan.features.map((feature: string, index: number) => (
+                  <li key={index} className="flex items-start">
+                    <div className="flex-shrink-0 h-5 w-5 text-indigo-400 mt-0.5">
+                      <CheckIcon />
+                    </div>
+                    <span className="ml-3 text-base text-gray-300">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+            <CardFooter className="pt-6 pb-8">
+              <Button 
+                variant={plan.popular ? "default" : "outline"} 
+                size="lg" 
+                className={`w-full ${
+                  plan.popular 
+                    ? "bg-indigo-600 hover:bg-indigo-700 text-white" 
+                    : "border-indigo-500 text-indigo-400 hover:bg-indigo-950/50"
+                }`}
+              >
+                {plan.buttonText}
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
       </motion.div>
     </div>
   );
@@ -212,22 +213,24 @@ export default function PreciosPage() {
   return (
     <div className="py-12" ref={containerRef}>
       <div className="text-center mb-16">
-        <motion.h1 
-          className="text-4xl font-bold mb-4 bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent"
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          {t('title')}
-        </motion.h1>
-        <motion.p 
-          className="text-lg text-gray-400 max-w-2xl mx-auto"
+          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
+            {t('title')}
+          </h1>
+        </motion.div>
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.2 }}
         >
-          {t('subtitle')}
-        </motion.p>
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+            {t('subtitle')}
+          </p>
+        </motion.div>
       </div>
 
       <div className="grid gap-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:grid-cols-3">
@@ -243,14 +246,15 @@ export default function PreciosPage() {
       </div>
 
       <div className="mt-16 text-center">
-        <motion.p 
-          className="text-gray-400 max-w-2xl mx-auto mb-6"
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
         >
-          {t('customPlanPrompt')}
-        </motion.p>
+          <p className="text-gray-400 max-w-2xl mx-auto mb-6">
+            {t('customPlanPrompt')}
+          </p>
+        </motion.div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
