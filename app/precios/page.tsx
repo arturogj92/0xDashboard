@@ -213,22 +213,24 @@ export default function PreciosPage() {
   return (
     <div className="py-12" ref={containerRef}>
       <div className="text-center mb-16">
-        <motion.h1 
-          className="text-4xl font-bold mb-4 bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent"
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          {t('title')}
-        </motion.h1>
-        <motion.p 
-          className="text-lg text-gray-400 max-w-2xl mx-auto"
+          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
+            {t('title')}
+          </h1>
+        </motion.div>
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.2 }}
         >
-          {t('subtitle')}
-        </motion.p>
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+            {t('subtitle')}
+          </p>
+        </motion.div>
       </div>
 
       <div className="grid gap-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:grid-cols-3">
