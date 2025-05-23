@@ -125,6 +125,7 @@ export default function MultiSectionsBoard({
         }),
       });
 
+      //reorder
       onLinksReordered?.();
       /* 👉 NO hace falta forzar rebuild: containers viene de useMemo y recibirá el nuevo `links` en el próximo render */
     },
