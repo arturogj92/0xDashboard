@@ -221,7 +221,7 @@ export default function MultiSectionsItem({
         const y='clientY' in e?e.clientY:('changedTouches' in e && e.changedTouches[0]?.clientY)||info.point.y;
         highlight(getSectionUnderPointer(x,y));
       }}
-      onDragEnd={(e)=>{
+      onDragEnd={(e: MouseEvent | TouchEvent, _info: PanInfo)=>{
         const x='clientX' in e?e.clientX:('changedTouches' in e && e.changedTouches[0]?.clientX)||0;
         const y='clientY' in e?e.clientY:('changedTouches' in e && e.changedTouches[0]?.clientY)||0;
         const sec=getSectionUnderPointer(x,y);
