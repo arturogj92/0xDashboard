@@ -213,9 +213,9 @@ export default function MultiSectionsItem({
     <Reorder.Item data-section-item-id={link.id}
       value={link.id}
       as="li"
-      whileDrag={{ zIndex:50 }}
+      whileDrag={{ zIndex: 1000 }}
       layout
-      className="list-none"
+      className="relative list-none"
       onDrag={(e:MouseEvent|TouchEvent,info:PanInfo)=>{
         const x='clientX' in e?e.clientX:('changedTouches' in e && e.changedTouches[0]?.clientX)||info.point.x;
         const y='clientY' in e?e.clientY:('changedTouches' in e && e.changedTouches[0]?.clientY)||info.point.y;
