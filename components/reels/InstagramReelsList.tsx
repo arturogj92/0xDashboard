@@ -194,28 +194,31 @@ export const InstagramReelsList = ({ onSelectReel }: InstagramReelsListProps) =>
             key={reel.id}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}
-            className="relative aspect-[9/16] bg-gray-100 rounded-lg overflow-hidden cursor-pointer"
-            onClick={(e) => {
-              e.stopPropagation();
-              onSelectReel(reel.permalink, reel.thumbnail_url || '', reel.caption || 'Reel de Instagram');
-            }}
           >
-            {reel.thumbnail_url ? (
-              <Image
-                src={reel.thumbnail_url}
-                alt={reel.caption || 'Instagram Reel'}
-                fill
-                className="object-cover"
-              />
-            ) : (
-              <div className="flex items-center justify-center h-full">
-                <span className="text-gray-500 text-sm">Sin vista previa</span>
+            <div
+              className="relative aspect-[9/16] bg-gray-100 rounded-lg overflow-hidden cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelectReel(reel.permalink, reel.thumbnail_url || '', reel.caption || 'Reel de Instagram');
+              }}
+            >
+              {reel.thumbnail_url ? (
+                <Image
+                  src={reel.thumbnail_url}
+                  alt={reel.caption || 'Instagram Reel'}
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <span className="text-gray-500 text-sm">Sin vista previa</span>
+                </div>
+              )}
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+                <p className="text-white text-xs truncate">
+                  {reel.caption || 'Sin descripción'}
+                </p>
               </div>
-            )}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
-              <p className="text-white text-xs truncate">
-                {reel.caption || 'Sin descripción'}
-              </p>
             </div>
           </motion.div>
         ))}
