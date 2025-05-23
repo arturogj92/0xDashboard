@@ -121,7 +121,7 @@ export default function MultiSectionsContainer({
         )}
       </div>
 
-      <Reorder.Group axis="y" values={order} onReorder={setOrder} className="flex flex-col gap-2">
+      <Reorder.Group<string> axis="y" values={order} onReorder={setOrder} as="div" className="flex flex-col gap-2">
         {order.map(id=>{
           const link=links.find(l=>l.id===id); if(!link) return null;
           return(
