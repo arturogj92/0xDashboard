@@ -64,6 +64,9 @@ const nextConfig = {
     ],
   },
   output: 'standalone',
+  experimental: {
+    allowedDevOrigins: ['https://mongoose-lenient-trivially.ngrok-free.app'],
+  },
 };
 
 module.exports = nextConfig; 

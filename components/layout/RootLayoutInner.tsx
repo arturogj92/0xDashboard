@@ -23,8 +23,9 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                   src="/images/logo.png" 
                   alt={t('logoAlt')}
                   width={120} 
-                  height={174} 
-                  className="mr-1" 
+                  height={40} 
+                  className="mr-1 max-h-8 w-auto" 
+                  priority
                 />
               </Link>
             </div>
@@ -53,12 +54,21 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                   <span className="hidden md:inline">{t('captionGenerator')}</span>
                 </Link>
               )}
+              {isAuthenticated && (
+                <Link
+                  href="/landing"
+                  className="inline-flex items-center px-1.5 py-0.5 text-[10px] md:text-xs font-medium text-white hover:text-purple-300 transition-colors bg-indigo-600/50 hover:bg-indigo-700/60 rounded-full md:px-3 md:py-1"
+                >
+                  <FileText className="w-4 h-4 md:w-5 md:h-5 mr-1" />
+                  <span className="hidden md:inline">{t('myLanding')}</span>
+                </Link>
+              )}
               <UserNav />
             </div>
           </div>
         </div>
       </nav>
-      <main className="flex-grow max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 w-full">
+      <main className="flex-grow w-full py-6 sm:px-6 lg:px-8">
         {children}
       </main>
       <Footer />

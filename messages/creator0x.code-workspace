@@ -7,6 +7,12 @@
 		{
 			"name": "0xreplyer-backend",
 			"path": "../../0xreplyer-backend"
+		},
+		{
+			"path": "../../art0xdev-landing"
+		},
+		{
+			"path": "../../0xlanding"
 		}
 	],
 	"settings": {}
