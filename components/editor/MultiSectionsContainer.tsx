@@ -121,16 +121,18 @@ export default function MultiSectionsContainer({
         )}
       </div>
 
-      <Reorder.Group<string> axis="y" values={order} onReorder={setOrder} as="div" className="flex flex-col gap-2">
-        {order.map(id=>{
-          const link=links.find(l=>l.id===id); if(!link) return null;
-          return(
-            <MultiSectionsItem key={link.id} link={link}
-              onUpdateLink={onUpdateLink} onDeleteLink={onDeleteLink}
-              onDropLink={onDropLink} onDragFinish={commit}/>
-          );
-        })}
-      </Reorder.Group>
+      <div className="flex flex-col gap-2">
+        <Reorder.Group<string> axis="y" values={order} onReorder={setOrder} as="div">
+          {order.map(id=>{
+            const link=links.find(l=>l.id===id); if(!link) return null;
+            return(
+              <MultiSectionsItem key={link.id} link={link}
+                onUpdateLink={onUpdateLink} onDeleteLink={onDeleteLink}
+                onDropLink={onDropLink} onDragFinish={commit}/>
+            );
+          })}
+        </Reorder.Group>
+      </div>
 
       {order.length===0&&<p className="text-sm text-gray-400">Arrastra aquí enlaces para asignar</p>}
     </div>
