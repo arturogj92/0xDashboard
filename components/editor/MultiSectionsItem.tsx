@@ -103,12 +103,24 @@ interface DailyStat{date:string;count:number;countries:Record<string,number>; }
 interface StatsData{selected:number;global:number;variation:number;dailyStats:DailyStat[];byCountry:Record<string,number>; }
 interface TooltipItem{name:string;value:number;color:string;payload:{date:string;count:number;countries:Record<string,number>;}; }
 interface Props{
-  link:LinkData;
-  onUpdateLink:(id:string,u:Partial<LinkData>)=>void;
-  onDeleteLink:(id:string)=>void;
-  onDropLink:(id:string,newSectionId:string)=>void;
-  onDragFinish:()=>void;
+  link: LinkData;
+  onUpdateLink: (id: string, u: Partial<LinkData>) => void;
+  onDeleteLink: (id: string) => void;
+  /** id, nueva sección, índice destino */
+  onDropLink: (id: string, newSectionId: string, pos: number) => void;
+  onDragFinish: () => void;
 }
+
+/* ─────────── Util para calcular índice de inserción en sección ─────────── */
+function getInsertIndex(sec:HTMLElement,y:number):number{
+  const items=Array.from(sec.querySelectorAll<HTMLElement>('[data-section-item-id]'));
+  for(let i=0;i<items.length;i++){
+    const {top,height}=items[i].getBoundingClientRect();
+    if(y<top+height/2) return i;
+  }
+  return items.length;
+}
+
 const fileName=(url:string)=>{try{return url.split("/").pop()??"";}catch{return"";}};
 function CustomTooltip({active,payload,label}:{active?:boolean;payload?:TooltipItem[];label?:string;}){
   if(active&&payload&&payload.length){
@@ -198,10 +210,11 @@ export default function MultiSectionsItem({
   }
 
   return(
-    <Reorder.Item
+    <Reorder.Item data-section-item-id={link.id}
       value={link.id}
       as="li"
       whileDrag={{ zIndex:50 }}
+      layout
       className="list-none"
       onDrag={(e:MouseEvent|TouchEvent,info:PanInfo)=>{
         const x='clientX' in e?e.clientX:('changedTouches' in e && e.changedTouches[0]?.clientX)||info.point.x;
@@ -215,11 +228,17 @@ export default function MultiSectionsItem({
         const targetId=sec?.getAttribute("data-section-id")||"no-section";
         highlight(null);
 
-        if(targetId===originSection.current){
+        if (targetId === originSection.current) {
           onDragFinish();
-        }else{
-          onDropLink(link.id,targetId);
-          originSection.current=targetId;
+        } else {
+          // Índice donde insertar
+          const pos = getInsertIndex(sec!, y);
+          console.log(`Drop a sección ${targetId} en índice ${pos}`);
+          // Animar contenedor destino
+          sec?.classList.add('animate-pulse');
+          setTimeout(() => sec?.classList.remove('animate-pulse'), 300);
+          onDropLink(link.id, targetId, pos);
+          originSection.current = targetId;
         }
       }}
     >

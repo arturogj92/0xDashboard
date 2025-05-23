@@ -67,7 +67,8 @@ interface Props{
   onUpdateSection:(id:string,u:Partial<SectionData>)=>void;
   onDeleteSection:(id:string)=>void;
   reorderLinksInContainer:(ids:string[])=>void;
-  onDropLink:(id:string,newSectionId:string)=>void;
+  /** id, nueva sección, índice destino */
+  onDropLink:(id:string,newSectionId:string,pos:number)=>void;
 }
 
 export default function MultiSectionsContainer({

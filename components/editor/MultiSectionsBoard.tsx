@@ -79,7 +79,7 @@ export default function MultiSectionsBoard({
 
   /* ─────────── Mover link a OTRA sección ─────────── */
   const handleDrop = useCallback(
-    async (id: string, newSectionId: string) => {
+    async (id: string, newSectionId: string, pos: number) => {
       setLinks((prev) => {
         const nl = structuredClone(prev);
         const link = nl.find((l) => l.id === id)!;
@@ -87,9 +87,10 @@ export default function MultiSectionsBoard({
         const oldSectionId = link.section_id ?? "no-section";
         const targetId = newSectionId === "no-section" ? null : newSectionId;
 
+        // asignar nueva sección
         link.section_id = targetId;
 
-        /* Reindex origen */
+        /* ── Reindex origen ── */
         nl
           .filter(
             (l) => (l.section_id ?? "no-section") === oldSectionId && l.id !== id
@@ -99,11 +100,17 @@ export default function MultiSectionsBoard({
             l.position = i;
           });
 
-        /* Reindex destino (lo añadimos al final) */
-        const dest = nl.filter(
-          (l) => (l.section_id ?? "no-section") === newSectionId && l.id !== id
-        );
-        link.position = dest.length;
+        /* ── Reindex destino con inserción en posición pos ── */
+        const destWithout = nl
+          .filter((l) => (l.section_id ?? "no-section") === newSectionId && l.id !== id)
+          .sort((a, b) => a.position - b.position);
+        const destItems: typeof destWithout = [];
+        for (let i = 0; i < destWithout.length + 1; i++) {
+          if (i < pos) destItems.push(destWithout[i]);
+          else if (i === pos) destItems.push(link);
+          else destItems.push(destWithout[i - 1]);
+        }
+        destItems.forEach((l, i) => (l.position = i));
 
         return nl;
       });
@@ -114,6 +121,7 @@ export default function MultiSectionsBoard({
         body: JSON.stringify({
           id,
           section_id: newSectionId === "no-section" ? null : newSectionId,
+          position: pos,
         }),
       });
 
