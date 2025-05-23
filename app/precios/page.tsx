@@ -246,14 +246,15 @@ export default function PreciosPage() {
       </div>
 
       <div className="mt-16 text-center">
-        <motion.p 
-          className="text-gray-400 max-w-2xl mx-auto mb-6"
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
         >
-          {t('customPlanPrompt')}
-        </motion.p>
+          <p className="text-gray-400 max-w-2xl mx-auto mb-6">
+            {t('customPlanPrompt')}
+          </p>
+        </motion.div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
