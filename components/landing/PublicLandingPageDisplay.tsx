@@ -11,6 +11,9 @@ export interface PublicLandingPageDisplayProps {
     description: string;
     settings: any;
     slug: string;
+    links?: LinkData[];
+    sections?: SectionData[];
+    socialLinks?: SocialLinkData[];
   };
 }
 
@@ -21,37 +24,12 @@ export default function PublicLandingPageDisplay({ landing }: PublicLandingPageD
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchLandingData = async () => {
-      try {
-        const [linksResponse, sectionsResponse, socialLinksResponse] = await Promise.all([
-          fetch(`${API_URL}/api/links/public?landingId=${landing.id}`, { cache: 'no-store' }),
-          fetch(`${API_URL}/api/sections/public?landingId=${landing.id}`, { cache: 'no-store' }),
-          fetch(`${API_URL}/api/social-links/public?landingId=${landing.id}`, { cache: 'no-store' })
-        ]);
-
-        if (linksResponse.ok) {
-          const linksData = await linksResponse.json();
-          if (Array.isArray(linksData)) setLinks(linksData);
-        }
-
-        if (sectionsResponse.ok) {
-          const sectionsData = await sectionsResponse.json();
-          if (Array.isArray(sectionsData)) setSections(sectionsData);
-        }
-
-        if (socialLinksResponse.ok) {
-          const socialLinksData = await socialLinksResponse.json();
-          if (Array.isArray(socialLinksData)) setSocialLinks(socialLinksData);
-        }
-      } catch (error) {
-        console.error('Error fetching landing data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchLandingData();
-  }, [landing.id]);
+    // Los datos ya vienen incluidos desde el endpoint /api/landings/slug/${slug}
+    if (landing.links) setLinks(landing.links);
+    if (landing.sections) setSections(landing.sections);
+    if (landing.socialLinks) setSocialLinks(landing.socialLinks);
+    setLoading(false);
+  }, [landing]);
 
   if (loading) {
     return (
