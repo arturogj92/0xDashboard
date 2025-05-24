@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { Reorder, PanInfo } from "framer-motion";
+import React, { useRef, useState } from "react";
+import { Reorder } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Toggle } from "@/components/ui/toggle";
@@ -25,18 +26,6 @@ import {
 } from "recharts";
 
 /* ═════════ ICONOS COMPLETOS ═════════ */
-function HandleIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 25 25" fill="none" stroke="white">
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M9.5 8c.828 0 1.5-.672 1.5-1.5S10.328 5 9.5 5 8 5.672 8 6.5 8.672 8 9.5 8Zm0 6c.828 0 1.5-.672 1.5-1.5S10.328 11 9.5 11 8 11.672 8 12.5 8.672 14 9.5 14Zm1.5 4.5c0 .828-.672 1.5-1.5 1.5S8 19.328 8 18.5 8.672 17 9.5 17s1.5.672 1.5 1.5ZM15.5 8c.828 0 1.5-.672 1.5-1.5S16.328 5 15.5 5 14 5.672 14 6.5s.672 1.5 1.5 1.5ZM17 12.5c0 .828-.672 1.5-1.5 1.5S14 13.328 14 12.5s.672-1.5 1.5-1.5 1.5.672 1.5 1.5Zm-1.5 7.5c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5S14 17.672 14 18.5s.672 1.5 1.5 1.5Z"
-        fill="#121923"
-      />
-    </svg>
-  );
-}
 function StatsIcon() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5">
@@ -92,6 +81,14 @@ function CloseIcon() {
     </svg>
   );
 }
+function MoveIcon() {
+  return (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round"
+            d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/>
+    </svg>
+  );
+}
 
 /* ═════════ BANDERAS, TIPOS, HELPERS ═════════ */
 const countryFlags: Record<string, string> = {
@@ -106,19 +103,9 @@ interface Props{
   link: LinkData;
   onUpdateLink: (id: string, u: Partial<LinkData>) => void;
   onDeleteLink: (id: string) => void;
-  /** id, nueva sección, índice destino */
-  onDropLink: (id: string, newSectionId: string, pos: number) => void;
-  onDragFinish: () => void;
-}
-
-/* ─────────── Util para calcular índice de inserción en sección ─────────── */
-function getInsertIndex(sec:HTMLElement,y:number):number{
-  const items=Array.from(sec.querySelectorAll<HTMLElement>('[data-section-item-id]'));
-  for(let i=0;i<items.length;i++){
-    const {top,height}=items[i].getBoundingClientRect();
-    if(y<top+height/2) return i;
-  }
-  return items.length;
+  onMoveToSection: (id: string, newSectionId: string) => void;
+  availableSections: Array<{id: string; name: string}>;
+  isTransitioning?: boolean;
 }
 
 const fileName=(url:string)=>{try{return url.split("/").pop()??"";}catch{return"";}};
@@ -136,25 +123,14 @@ function CustomTooltip({active,payload,label}:{active?:boolean;payload?:TooltipI
     );
   } return null;
 }
-/* util para elegir la sección bajo el puntero */
-function getSectionUnderPointer(x:number,y:number):HTMLElement|null{
-  const secs=[...document.querySelectorAll<HTMLElement>("[data-section-id]")];
-  let best:null|HTMLElement=null, min=Infinity;
-  for(const sec of secs){
-    const r=sec.getBoundingClientRect();
-    if(x>=r.left && x<=r.right && y>=r.top && y<=r.bottom){
-      const d=Math.abs((r.top+r.bottom)/2 - y);
-      if(d<min){min=d;best=sec;}
-    }
-  }
-  return best;
-}
 
 /* ═════════ COMPONENTE ═════════ */
 export default function MultiSectionsItem({
-  link,onUpdateLink,onDeleteLink,onDropLink,onDragFinish,
+  link,onUpdateLink,onDeleteLink,onMoveToSection,availableSections,isTransitioning = false,
 }:Props){
 
+  const t = useTranslations('linkItem');
+  
   const [title,setTitle]=useState(link.title);
   const [url,setUrl]=useState(link.url);
   const [image,setImage]=useState(link.image??"");
@@ -167,20 +143,11 @@ export default function MultiSectionsItem({
   const [statsErr,setStatsErr]=useState<string|null>(null);
 
   const fileRef=useRef<HTMLInputElement>(null);
-  const prevHighlight=useRef<HTMLElement|null>(null);
-  const originSection=useRef<string>(link.section_id??"no-section");
-  useEffect(()=>{originSection.current=link.section_id??"no-section";},[link.section_id]);
-
+  const [showSectionDropdown, setShowSectionDropdown] = useState(false);
+  
   const upd=(u:Partial<LinkData>)=>onUpdateLink(link.id,u);
-  const highlight=(sec:HTMLElement|null)=>{
-    if(prevHighlight.current&&prevHighlight.current!==sec){
-      prevHighlight.current.classList.remove("ring-2","ring-purple-600");
-    }
-    if(sec&&sec!==prevHighlight.current){
-      sec.classList.add("ring-2","ring-purple-600");
-    }
-    prevHighlight.current=sec;
-  };
+  
+  const otherSections = availableSections.filter(s => s.id !== (link.section_id ?? "no-section"));
 
   async function selectFile(e:React.ChangeEvent<HTMLInputElement>){
     if(!e.target.files?.length) return;
@@ -209,51 +176,34 @@ export default function MultiSectionsItem({
     finally{setLoadingStats(false);}
   }
 
+  const handleMoveToSection = (sectionId: string) => {
+    onMoveToSection(link.id, sectionId);
+    setShowSectionDropdown(false);
+  };
+
   return(
     <Reorder.Item data-section-item-id={link.id}
       value={link.id}
       as="li"
-      whileDrag={{ zIndex: 1000 }}
-      layout
-      className="relative list-none"
-      onDrag={(e:MouseEvent|TouchEvent,info:PanInfo)=>{
-        const x='clientX' in e?e.clientX:('changedTouches' in e && e.changedTouches[0]?.clientX)||info.point.x;
-        const y='clientY' in e?e.clientY:('changedTouches' in e && e.changedTouches[0]?.clientY)||info.point.y;
-        highlight(getSectionUnderPointer(x,y));
+      whileDrag={{ 
+        zIndex: 1000,
+        scale: 1.02,
+        transition: { duration: 0.2 }
       }}
-      onDragEnd={(e: MouseEvent | TouchEvent, _info: PanInfo)=>{
-        const x='clientX' in e?e.clientX:('changedTouches' in e && e.changedTouches[0]?.clientX)||0;
-        const y='clientY' in e?e.clientY:('changedTouches' in e && e.changedTouches[0]?.clientY)||0;
-        const sec=getSectionUnderPointer(x,y);
-        const targetId=sec?.getAttribute("data-section-id")||"no-section";
-        highlight(null);
-
-        if (targetId === originSection.current) {
-          onDragFinish();
-        } else {
-          // Índice donde insertar
-          const pos = getInsertIndex(sec!, y);
-          console.log(`Drop a sección ${targetId} en índice ${pos}`);
-          // Animar contenedor destino
-          sec?.classList.add('animate-pulse');
-          setTimeout(() => sec?.classList.remove('animate-pulse'), 300);
-          onDropLink(link.id, targetId, pos);
-          originSection.current = targetId;
-        }
+      layout
+      layoutId={`link-${link.id}`}
+      className="relative list-none"
+      animate={{
+        opacity: isTransitioning ? 0.7 : 1,
+        scale: isTransitioning ? 0.98 : 1,
+      }}
+      transition={{
+        duration: 0.25,
+        ease: "easeOut"
       }}
     >
-      <div className="relative border border-gray-500 p-4 rounded-2xl bg-black text-white min-h-[5rem]">
-        <div className="absolute top-2 left-2 px-2 cursor-grab"><HandleIcon/></div>
-        <div className="absolute top-2 right-2 flex items-center gap-2">
-          <Button variant="destructive" className="text-xs px-2 py-1 hover:bg-purple-900" onClick={openStats}><StatsIcon/></Button>
-          <Button variant="destructive" className="text-xs px-2 py-1 hover:bg-purple-900" onClick={()=>onDeleteLink(link.id)}><TrashIcon/></Button>
-          <Toggle pressed={link.visible} onPressedChange={v=>upd({visible:v})}
-                  className="w-12 h-6 flex items-center justify-center hover:bg-purple-900">
-            {link.visible?<EyeIcon/>:<EyeSlashIcon/>}
-          </Toggle>
-        </div>
-
-        <div className="mt-5 flex items-start justify-between gap-4">
+      <div className="relative border border-gray-500 p-4 rounded-2xl bg-black text-white min-h-[5rem] cursor-grab">
+        <div className="flex items-center gap-4">
           <div className="flex flex-col gap-2 flex-1">
             <div className="relative">
               <span className="absolute inset-y-0 left-2 flex items-center pointer-events-none"><TitleIcon/></span>
@@ -262,22 +212,22 @@ export default function MultiSectionsItem({
                      className="w-full text-sm pl-8 pr-2 py-1 rounded-[100px] hover:bg-purple-950/40 focus:bg-purple-950/40 bg-black/50 border-gray-400"/>
             </div>
             <div className="flex items-center gap-2">
-              <div className="relative w-full">
+              <div className="relative flex-1">
                 <span className="absolute inset-y-0 left-2 flex items-center pointer-events-none"><LinkIcon/></span>
                 <Input value={url} onChange={e=>{setUrl(e.target.value);upd({url:e.target.value});}}
                        placeholder="URL"
                        className="w-full text-sm pl-8 pr-2 py-1 rounded-[100px] hover:bg-purple-950/40 focus:bg-purple-950/40 bg-black/50 border-gray-400"/>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 flex-shrink-0">
                 <span className="text-xs text-gray-300">ID:</span>
                 <Input type="number" value={urlId??""} onChange={e=>{const n=parseInt(e.target.value,10);const id=isNaN(n)?null:n;setUrlId(id);upd({url_link_id:id});}}
                        placeholder="LinkID"
-                       className="w-16 text-sm rounded-[100px] hover:bg-purple-950/40 focus:bg-purple-950/40 bg-black/50 border-gray-400"/>
+                       className="w-20 text-sm rounded-[100px] hover:bg-purple-950/40 focus:bg-purple-950/40 bg-black/50 border-gray-400"/>
               </div>
             </div>
           </div>
 
-          <div className="relative w-20 h-20 flex-shrink-0">
+          <div className="relative w-16 h-16 flex-shrink-0">
             {image?(
               <>
                 <img src={image} alt={title} className="w-full h-full object-cover rounded-xl"/>
@@ -285,12 +235,71 @@ export default function MultiSectionsItem({
                         className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1 hover:bg-black/80"><CloseIcon/></button>
               </>
             ):(
-              <div className="w-full h-full border-2 border-gray-400 border-dashed rounded-xl flex flex-col items-center justify-center text-xs text-gray-500 gap-1">
-                <span>Sin imagen</span>
-                <button onClick={()=>fileRef.current?.click()} className="text-[10px] bg-white/10 px-2 py-1 rounded hover:bg-white/20">Subir</button>
+              <div className="w-full h-full border-2 border-gray-400 border-dashed rounded-xl flex flex-col items-center justify-center text-xs text-gray-500 gap-1 cursor-pointer hover:border-gray-300 transition-colors"
+                   onClick={()=>fileRef.current?.click()}>
+                <div className="text-center">
+                  <div className="text-xs font-medium">{t('noImage')}</div>
+                  <div className="text-[10px] text-gray-400 mt-1">{t('uploadImage')}</div>
+                </div>
               </div>
             )}
             <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={selectFile}/>
+          </div>
+
+          {/* Panel de iconos en matriz 2x2 */}
+          <div className="grid grid-cols-2 gap-1">
+            <div className="relative">
+              <Button 
+                variant="destructive" 
+                className="text-xs p-1 w-8 h-8 hover:bg-purple-900" 
+                onClick={() => setShowSectionDropdown(!showSectionDropdown)}
+              >
+                <MoveIcon/>
+              </Button>
+              
+              {showSectionDropdown && (
+                <div className="absolute top-full right-0 mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-50 min-w-48">
+                  <div className="p-2">
+                    <div className="text-xs text-gray-400 mb-2 text-center">Mover a sección:</div>
+                    {otherSections.length > 0 ? (
+                      otherSections.map(section => (
+                        <button
+                          key={section.id}
+                          onClick={() => handleMoveToSection(section.id)}
+                          className="w-full text-center px-3 py-2 text-sm rounded hover:bg-gray-700 transition-colors"
+                        >
+                          {section.name}
+                        </button>
+                      ))
+                    ) : (
+                      <div className="px-3 py-2 text-sm text-gray-500 text-center">
+                        No hay otras secciones disponibles
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              {showSectionDropdown && (
+                <div 
+                  className="fixed inset-0 z-40"
+                  onClick={() => setShowSectionDropdown(false)}
+                />
+              )}
+            </div>
+            
+            <Button variant="destructive" className="text-xs p-1 w-8 h-8 hover:bg-purple-900" onClick={openStats}>
+              <StatsIcon/>
+            </Button>
+            
+            <Button variant="destructive" className="text-xs p-1 w-8 h-8 hover:bg-purple-900" onClick={()=>onDeleteLink(link.id)}>
+              <TrashIcon/>
+            </Button>
+            
+            <Toggle pressed={link.visible} onPressedChange={v=>upd({visible:v})}
+                    className="w-8 h-8 flex items-center justify-center hover:bg-purple-900">
+              {link.visible?<EyeIcon/>:<EyeSlashIcon/>}
+            </Toggle>
           </div>
         </div>
 

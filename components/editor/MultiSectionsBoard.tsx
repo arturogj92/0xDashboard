@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LinkData, SectionData } from "./types";
 import MultiSectionsContainer from "./MultiSectionsContainer";
@@ -77,62 +77,176 @@ export default function MultiSectionsBoard({
     [landingId, setLinks, onLinksReordered]
   );
 
+  /* ─────────── Estado para transiciones progresivas ─────────── */
+  const [transitioningLinks, setTransitioningLinks] = useState<Set<string>>(new Set());
+
   /* ─────────── Mover link a OTRA sección ─────────── */
-  const handleDrop = useCallback(
-    async (id: string, newSectionId: string, pos: number) => {
-      setLinks((prev) => {
-        const nl = structuredClone(prev);
-        const link = nl.find((l) => l.id === id)!;
+  const handleMoveToSection = useCallback(
+    async (id: string, newSectionId: string) => {
+      const targetId = newSectionId === "no-section" ? null : newSectionId;
+      
+      const currentLink = links.find(l => l.id === id);
+      if (!currentLink) return;
+      
+      const oldSectionId = currentLink.section_id ?? "no-section";
+      
+      // Si no hay cambio real, no hacer nada
+      if (oldSectionId === newSectionId) {
+        return;
+      }
+      
+      // Calcular posición al final de la sección destino
+      const destSectionLinks = links.filter(l => 
+        l.id !== id && (l.section_id ?? "no-section") === newSectionId
+      );
+      const pos = destSectionLinks.length;
 
-        const oldSectionId = link.section_id ?? "no-section";
-        const targetId = newSectionId === "no-section" ? null : newSectionId;
+      // Marcar como en transición para efectos visuales
+      setTransitioningLinks((prev: Set<string>) => new Set(prev).add(id));
 
-        // asignar nueva sección
-        link.section_id = targetId;
+      // Usar una sola actualización fluida para evitar choppy animations
+      const animateReorganization = async () => {
+        // Primera actualización: mover el elemento y hacer reindexación completa suavemente
+        await new Promise(resolve => requestAnimationFrame(() => {
+          setLinks((prev) => {
+            const nl = [...prev];
+            const linkIndex = nl.findIndex((l) => l.id === id);
+            if (linkIndex === -1) return prev;
+            
+            const link = { ...nl[linkIndex] };
+            
+            // Actualizar el elemento movido
+            link.section_id = targetId;
+            link.position = pos;
+            nl[linkIndex] = link;
+            
+            // Reindexar inmediatamente pero de forma que framer-motion pueda animar suavemente
+            // Sección destino: primero obtener todos los elementos actuales (sin el movido)
+            const destSectionLinksExcludeMoved = nl.filter(l => 
+              l.id !== id && (l.section_id ?? "no-section") === newSectionId
+            ).sort((a, b) => a.position - b.position);
+            
+            // Ajustar posiciones de elementos existentes para hacer espacio
+            destSectionLinksExcludeMoved.forEach((destLink, idx) => {
+              const linkInArray = nl.find(l => l.id === destLink.id);
+              if (linkInArray) {
+                // Si el índice actual es >= pos, desplazar hacia adelante
+                const newPos = idx >= pos ? idx + 1 : idx;
+                linkInArray.position = newPos;
+              }
+            });
+            
+            // Sección origen si es diferente
+            if (oldSectionId !== newSectionId) {
+              const originSectionLinks = nl.filter(l => 
+                l.id !== id && (l.section_id ?? "no-section") === oldSectionId
+              ).sort((a, b) => a.position - b.position);
+              
+              originSectionLinks.forEach((originLink, idx) => {
+                const linkInArray = nl.find(l => l.id === originLink.id);
+                if (linkInArray && linkInArray.position !== idx) {
+                  linkInArray.position = idx;
+                }
+              });
+            }
+            
+            return [...nl];
+          });
+          resolve(undefined);
+        }));
 
-        /* ── Reindex origen ── */
-        nl
-          .filter(
-            (l) => (l.section_id ?? "no-section") === oldSectionId && l.id !== id
-          )
-          .sort((a, b) => a.position - b.position)
-          .forEach((l, i) => {
-            l.position = i;
+        // Esperar que las animaciones de framer-motion se estabilicen (más rápido)
+        await new Promise(resolve => setTimeout(resolve, 120));
+
+        // Remover estado de transición
+        setTransitioningLinks((prev: Set<string>) => {
+          const newSet = new Set(prev);
+          newSet.delete(id);
+          return newSet;
+        });
+      };
+
+      animateReorganization();
+
+      // Hacer la actualización en el servidor después de completar las animaciones
+      setTimeout(async () => {
+        try {
+          // Obtener el estado final después de todas las reindexaciones
+          setLinks((currentLinks) => {
+            const nl = [...currentLinks];
+            
+            // Recolectar todos los elementos que necesitan actualización
+            const updatesToSend: Array<{id: string, position: number, section_id: string | null}> = [];
+            
+            // Reindexar correctamente la sección destino
+            const destSectionLinks = nl.filter(l => 
+              (l.section_id ?? "no-section") === newSectionId
+            ).sort((a, b) => a.position - b.position);
+            
+            // Reindexar correctamente: cada elemento debe tener posición secuencial
+            destSectionLinks.forEach((destLink, idx) => {
+              const linkInArray = nl.find(l => l.id === destLink.id);
+              if (linkInArray) {
+                linkInArray.position = idx;
+                updatesToSend.push({
+                  id: linkInArray.id,
+                  position: idx,
+                  section_id: linkInArray.section_id ?? null
+                });
+              }
+            });
+            
+            // Reindexar y recolectar cambios para la sección origen si es diferente
+            if (oldSectionId !== newSectionId) {
+              const originSectionLinks = nl.filter(l => 
+                l.id !== id && (l.section_id ?? "no-section") === oldSectionId
+              ).sort((a, b) => a.position - b.position);
+              
+              originSectionLinks.forEach((originLink, idx) => {
+                const linkInArray = nl.find(l => l.id === originLink.id);
+                if (linkInArray) {
+                  linkInArray.position = idx;
+                  updatesToSend.push({
+                    id: linkInArray.id,
+                    position: idx,
+                    section_id: linkInArray.section_id ?? null
+                  });
+                }
+              });
+            }
+            
+            // Enviar todas las actualizaciones al servidor
+            if (updatesToSend.length > 0) {
+              fetch(`${API_URL}/api/links?landingId=${landingId}`, {
+                method: "PATCH",
+                headers: createAuthHeaders(),
+                body: JSON.stringify(updatesToSend),
+              }).catch(error => {
+                console.error("Error updating links:", error);
+              });
+            }
+            
+            return [...nl];
           });
 
-        /* ── Reindex destino con inserción en posición pos ── */
-        const destWithout = nl
-          .filter((l) => (l.section_id ?? "no-section") === newSectionId && l.id !== id)
-          .sort((a, b) => a.position - b.position);
-        const destItems: typeof destWithout = [];
-        for (let i = 0; i < destWithout.length + 1; i++) {
-          if (i < pos) destItems.push(destWithout[i]);
-          else if (i === pos) destItems.push(link);
-          else destItems.push(destWithout[i - 1]);
+          onLinksReordered?.();
+        } catch (error) {
+          console.error("Error in final server update:", error);
         }
-        destItems.forEach((l, i) => (l.position = i));
-
-        return nl;
-      });
-
-      await fetch(`${API_URL}/api/links?landingId=${landingId}`, {
-        method: "PATCH",
-        headers: createAuthHeaders(),
-        body: JSON.stringify({
-          id,
-          section_id: newSectionId === "no-section" ? null : newSectionId,
-          position: pos,
-        }),
-      });
-
-      //reorder
-      onLinksReordered?.();
-      /* 👉 NO hace falta forzar rebuild: containers viene de useMemo y recibirá el nuevo `links` en el próximo render */
+      }, 140); // Esperar a que terminen las animaciones (más rápido)
     },
-    [landingId, setLinks, onLinksReordered]
+    [landingId, setLinks, onLinksReordered, links]
   );
 
   /* ─────────── Mover secciones arriba / abajo ─────────── */
+  const patchSections = useCallback(async (arr: SectionData[]) => {
+    await fetch(`${API_URL}/api/sections?landingId=${landingId}`, {
+      method: "PATCH",
+      headers: createAuthHeaders(),
+      body: JSON.stringify(arr.map((s) => ({ id: s.id, position: s.position }))),
+    });
+  }, [landingId]);
+
   const moveSection = useCallback(
     (dir: "up" | "down", id: string) => {
       setSections((prev) => {
@@ -152,16 +266,9 @@ export default function MultiSectionsBoard({
         return arr;
       });
     },
-    [setSections, onLinksReordered]
+    [setSections, onLinksReordered, patchSections]
   );
 
-  async function patchSections(arr: SectionData[]) {
-    await fetch(`${API_URL}/api/sections?landingId=${landingId}`, {
-      method: "PATCH",
-      headers: createAuthHeaders(),
-      body: JSON.stringify(arr.map((s) => ({ id: s.id, position: s.position }))),
-    });
-  }
 
   /* ─────────── Crear link nuevo ─────────── */
   const createLinkInSection = useCallback(
@@ -193,7 +300,10 @@ export default function MultiSectionsBoard({
 
   /* ─────────── Render ─────────── */
   return (
-    <div className="flex flex-col gap-6">
+    <div className="relative flex flex-col gap-6">
+      {/* Efecto de sombra degradada radial */}
+      <div className="absolute -inset-24 bg-[radial-gradient(circle,_rgba(88,28,135,0.45)_0%,_rgba(17,24,39,0)_80%)] blur-[250px] pointer-events-none"></div>
+      
       <AnimatePresence>
         {containers.map((c, idx) => (
           <motion.div
@@ -219,7 +329,8 @@ export default function MultiSectionsBoard({
               onUpdateSection={onUpdateSection}
               onDeleteSection={onDeleteSection}
               reorderLinksInContainer={reorderLinks}
-              onDropLink={handleDrop}
+              onMoveToSection={handleMoveToSection}
+              transitioningLinks={transitioningLinks}
             />
           </motion.div>
         ))}

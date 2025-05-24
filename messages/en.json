@@ -360,5 +360,9 @@
     "stepSections": "Add sections",
     "stepSocial": "Add socials",
     "stepStats": "View stats"
+  },
+  "linkItem": {
+    "noImage": "No image",
+    "uploadImage": "Upload image"
   }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { API_URL, createAuthHeaders } from "@/lib/api";
 import MultiSectionsBoard from "@/components/editor/MultiSectionsBoard";
 import SocialLinksPanel from "@/components/editor/SocialLinksPanel";
@@ -15,6 +15,8 @@ export default function AdminPage() {
   const [sections, setSections] = useState<SectionData[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>([]);
   const [_, setRefreshing] = useState(0);
+  const [previewPosition, setPreviewPosition] = useState('fixed');
+  const previewRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     // Guardar landingId en closure
     const lid = params.landingId;
@@ -29,6 +31,32 @@ export default function AdminPage() {
         .catch(err => console.error('Error cargando enlaces:', err));
     }
   }, [params.landingId]);
+
+  // Detectar posición del scroll para ajustar el preview
+  useEffect(() => {
+    const handleScroll = () => {
+      const footer = document.querySelector('footer');
+      const preview = previewRef.current;
+      
+      if (!footer || !preview) return;
+      
+      const footerRect = footer.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const previewHeight = 700; // Altura aproximada del preview
+      
+      // Si el footer está visible y el preview se solaparía
+      if (footerRect.top < viewportHeight && footerRect.top < viewportHeight - previewHeight/2) {
+        setPreviewPosition('absolute');
+      } else {
+        setPreviewPosition('fixed');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Ejecutar una vez al cargar
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   // Validar landingId después de hooks
   if (!params.landingId || Array.isArray(params.landingId)) {
     return <div>Error: landingId inválido</div>;
@@ -131,7 +159,17 @@ export default function AdminPage() {
         <div className="absolute left-1/4 -top-32 -bottom-32 right-1/4 bg-[radial-gradient(circle,_rgba(17,24,39,0)_60%,_rgba(88,28,135,0.35)_100%)] blur-[300px] opacity-50 pointer-events-none"></div>
       </div>
       {/* Previsualización */}
-      <div className="order-first md:order-last w-full md:w-1/2 p-4 md:p-8 bg-transparent md:fixed md:top-0 md:right-0 md:bottom-0 flex flex-col items-center justify-center overflow-y-auto">
+      <div 
+        ref={previewRef}
+        className={`order-first md:order-last w-full md:w-1/2 p-4 md:p-8 bg-transparent flex flex-col items-center justify-center overflow-y-auto z-0 transition-all duration-300 ${
+          previewPosition === 'fixed' 
+            ? 'md:fixed md:top-16 md:right-0 md:bottom-16' 
+            : 'md:absolute md:top-0 md:right-0 md:h-screen'
+        }`}
+        style={previewPosition === 'absolute' ? {
+          transform: 'translateY(-100px)',
+        } : {}}
+      >
         <div className="text-white p-2 rounded mb-4 w-full text-center">
           <p className="font-bold text-lg md:text-xl">VISTA PREVIA</p>
         </div>

@@ -14,7 +14,7 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
   
   return (
     <div className="min-h-screen bg-transparent flex flex-col">
-      <nav className="mt-2 bg-navbar shadow-sm flex items-center h-12">
+      <nav className="mt-2 bg-navbar shadow-sm flex items-center h-12 relative z-50">
         <Link href="/" className="flex-shrink-0 flex items-center px-4 sm:px-6 lg:px-8">
           <Image 
             src="/images/logo.png" 

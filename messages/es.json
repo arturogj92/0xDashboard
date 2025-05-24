@@ -361,5 +361,9 @@
     "continue": "Continuar",
     "namePlaceholder": "Mi marca",
     "descriptionPlaceholder": "Descripción corta"
+  },
+  "linkItem": {
+    "noImage": "Sin imagen",
+    "uploadImage": "Subir imagen"
   }
 }

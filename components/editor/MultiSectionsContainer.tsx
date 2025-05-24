@@ -67,14 +67,14 @@ interface Props{
   onUpdateSection:(id:string,u:Partial<SectionData>)=>void;
   onDeleteSection:(id:string)=>void;
   reorderLinksInContainer:(ids:string[])=>void;
-  /** id, nueva sección, índice destino */
-  onDropLink:(id:string,newSectionId:string,pos:number)=>void;
+  onMoveToSection:(id:string,newSectionId:string)=>void;
+  transitioningLinks:Set<string>;
 }
 
 export default function MultiSectionsContainer({
   containerId,items,links,sections,moveSectionUp,moveSectionDown,idx,total,
   onUpdateLink,onDeleteLink,onCreateLinkInSection,onUpdateSection,onDeleteSection,
-  reorderLinksInContainer,onDropLink,
+  reorderLinksInContainer,onMoveToSection,transitioningLinks,
 }:Props){
 
   const sec=sections.find(s=>s.id===containerId);
@@ -85,12 +85,27 @@ export default function MultiSectionsContainer({
   const [title,setTitle]=useState(sec?.title??"");
   const timer=useRef<NodeJS.Timeout|null>(null);
 
-  /* orden local */
+  /* orden local con referencia estable */
   const [order,setOrder]=useState(items);
-  useEffect(()=>setOrder(items),[items]);
+  const [lastItemsRef, setLastItemsRef] = useState(items);
+  
+  useEffect(() => {
+    // Solo actualizar si realmente han cambiado los items
+    if (JSON.stringify(items) !== JSON.stringify(lastItemsRef)) {
+      setOrder(items);
+      setLastItemsRef(items);
+    }
+  }, [items, lastItemsRef]);
 
   /* commit reorden */
   function commit(){ reorderLinksInContainer(order); }
+  
+  /* preparar secciones disponibles para los items */
+  const availableSections = sections.map(s => ({id: s.id, name: s.title}));
+  // Agregar la sección "no-section" si no existe
+  if (!availableSections.find(s => s.id === "no-section")) {
+    availableSections.push({id: "no-section", name: "Sin sección"});
+  }
 
   return(
     <div data-section-id={containerId}
@@ -122,13 +137,27 @@ export default function MultiSectionsContainer({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Reorder.Group<string> axis="y" values={order} onReorder={setOrder} as="div" className="flex flex-col gap-4">
+        <Reorder.Group<string> 
+          axis="y" 
+          values={order} 
+          onReorder={setOrder} 
+          as="div" 
+          className="flex flex-col gap-4" 
+          role="group"
+          layoutScroll
+        >
           {order.map(id=>{
             const link=links.find(l=>l.id===id); if(!link) return null;
             return(
-              <MultiSectionsItem key={link.id} link={link}
-                onUpdateLink={onUpdateLink} onDeleteLink={onDeleteLink}
-                onDropLink={onDropLink} onDragFinish={commit}/>
+              <MultiSectionsItem 
+                key={`${link.id}-${link.section_id || 'no-section'}`} 
+                link={link}
+                onUpdateLink={onUpdateLink} 
+                onDeleteLink={onDeleteLink}
+                onMoveToSection={onMoveToSection}
+                availableSections={availableSections}
+                isTransitioning={transitioningLinks.has(link.id)}
+              />
             );
           })}
         </Reorder.Group>
