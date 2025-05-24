@@ -14,6 +14,8 @@ import {arrayMove, SortableContext, verticalListSortingStrategy,} from "@dnd-kit
 import {SocialLinkData} from "./types";
 import {SortableSocialItem} from "./SortableSocialItem";
 import { API_URL, createAuthHeaders } from "@/lib/api";
+import { useTranslations } from 'next-intl';
+import { ShareIcon } from '@heroicons/react/24/outline';
 
 const SUPPORTED_SOCIALS: SocialLinkData["name"][] = [
     "youtube",
@@ -39,6 +41,7 @@ interface SocialLinksPanelProps {
 }
 
 export default function SocialLinksPanel({landingId, onReorder}: SocialLinksPanelProps) {
+    const t = useTranslations('social');
     const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>(initialPlaceholders);
 
     useEffect(() => {
@@ -143,8 +146,18 @@ export default function SocialLinksPanel({landingId, onReorder}: SocialLinksPane
     }
 
     return (
-        <div className="border p-4 my-8 border-blue-900 border-dashed">
-            <h2 className="text-lg font-semibold">Social Accounts </h2>
+        <div className="border border-indigo-900/30 p-4 my-8 border-dashed rounded-md bg-[#120724] hover:bg-indigo-950/20">
+            <div className="text-center mb-4 w-full">
+                <div className="flex items-center justify-center gap-3 mb-2">
+                    <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-lg shadow-lg">
+                        <ShareIcon className="h-5 w-5 md:h-6 md:w-6 text-white" />
+                    </div>
+                    <h2 className="text-xl md:text-2xl font-bold text-white">{t('title')}</h2>
+                </div>
+                <p className="text-sm text-gray-400 max-w-xl mx-auto leading-relaxed">
+                    {t('description')}
+                </p>
+            </div>
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}

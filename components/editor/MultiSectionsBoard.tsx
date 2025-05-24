@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useCallback, useState } from "react";
+import React, { useMemo, useCallback, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LinkData, SectionData } from "./types";
 import MultiSectionsContainer from "./MultiSectionsContainer";
 import { API_URL, createAuthHeaders } from "@/lib/api";
+import { useTranslations } from 'next-intl';
 
 interface Props {
   landingId: string;
@@ -16,6 +17,7 @@ interface Props {
   onDeleteLink: (id: string) => void;
   onUpdateSection: (id: string, u: Partial<SectionData>) => void;
   onDeleteSection: (id: string) => void;
+  onCreateSection: () => void;
   onLinksReordered?: () => void;
 }
 
@@ -33,8 +35,10 @@ export default function MultiSectionsBoard({
   onDeleteLink,
   onUpdateSection,
   onDeleteSection,
+  onCreateSection,
   onLinksReordered,
 }: Props) {
+  const t = useTranslations('editor');
   /* containers SIEMPRE se recalculan a partir de links/sections.
      Con useMemo el cálculo es barato y se sincroniza en el mismo render,
      por lo que el cambio de sección se ve inmediatamente.               */
@@ -305,35 +309,63 @@ export default function MultiSectionsBoard({
       <div className="absolute -inset-24 bg-[radial-gradient(circle,_rgba(88,28,135,0.45)_0%,_rgba(17,24,39,0)_80%)] blur-[250px] pointer-events-none"></div>
       
       <AnimatePresence>
-        {containers.map((c, idx) => (
-          <motion.div
-            key={c.id}
-            layout
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-          >
-            <MultiSectionsContainer
-              containerId={c.id}
-              items={c.items}
-              links={links}
-              sections={sections}
-              moveSectionUp={(id) => moveSection("up", id)}
-              moveSectionDown={(id) => moveSection("down", id)}
-              idx={idx}
-              total={containers.length}
-              onUpdateLink={onUpdateLink}
-              onDeleteLink={onDeleteLink}
-              onCreateLinkInSection={createLinkInSection}
-              onUpdateSection={onUpdateSection}
-              onDeleteSection={onDeleteSection}
-              reorderLinksInContainer={reorderLinks}
-              onMoveToSection={handleMoveToSection}
-              transitioningLinks={transitioningLinks}
-            />
-          </motion.div>
-        ))}
+        {containers.map((c, idx) => {
+          // Renderizar secciones normales y botón de crear antes de la sección "no-section"
+          const isNoSection = c.id === "no-section";
+          const isLastRealSection = idx === containers.length - 2; // Penúltima posición (antes de no-section)
+          
+          return (
+            <React.Fragment key={c.id}>
+              <motion.div
+                layout
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+              >
+                <MultiSectionsContainer
+                  containerId={c.id}
+                  items={c.items}
+                  links={links}
+                  sections={sections}
+                  moveSectionUp={(id) => moveSection("up", id)}
+                  moveSectionDown={(id) => moveSection("down", id)}
+                  idx={idx}
+                  total={containers.length}
+                  onUpdateLink={onUpdateLink}
+                  onDeleteLink={onDeleteLink}
+                  onCreateLinkInSection={createLinkInSection}
+                  onUpdateSection={onUpdateSection}
+                  onDeleteSection={onDeleteSection}
+                  reorderLinksInContainer={reorderLinks}
+                  onMoveToSection={handleMoveToSection}
+                  transitioningLinks={transitioningLinks}
+                />
+              </motion.div>
+              
+              {/* Botón para crear nueva sección después de la última sección real */}
+              {isLastRealSection && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
+                  className="flex justify-center"
+                >
+                  <button
+                    onClick={onCreateSection}
+                    className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium shadow-lg transition-all duration-200 flex items-center gap-2"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+{t('newSection')}
+                  </button>
+                </motion.div>
+              )}
+            </React.Fragment>
+          );
+        })}
       </AnimatePresence>
     </div>
   );

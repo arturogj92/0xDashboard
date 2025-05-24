@@ -7,8 +7,11 @@ import SocialLinksPanel from "@/components/editor/SocialLinksPanel";
 import { LandingPreview } from "@/components/landing/LandingPreview";
 import { LinkData, SectionData, SocialLinkData } from "@/components/editor/types";
 import { useParams } from 'next/navigation';
+import { PencilSquareIcon } from '@heroicons/react/24/outline';
+import { useTranslations } from 'next-intl';
 
 export default function AdminPage() {
+  const t = useTranslations('editor');
   const params = useParams();
   // Hooks en el orden necesario
   const [links, setLinks] = useState<LinkData[]>([]);
@@ -140,6 +143,28 @@ export default function AdminPage() {
       console.error('Error eliminando sección:', error);
     }
   };
+  const handleCreateSection = async () => {
+    try {
+      const newSection = {
+        title: "Nueva Sección",
+        position: sections.length,
+        landing_id: landingId,
+      };
+      const res = await fetch(`${API_URL}/api/sections?landingId=${landingId}`, {
+        method: 'POST',
+        headers: createAuthHeaders(),
+        body: JSON.stringify(newSection),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSections(sections => [...sections, data]);
+      } else {
+        console.error('Error creando sección:', data.error);
+      }
+    } catch (error) {
+      console.error('Error creando sección:', error);
+    }
+  };
 
   // Simulación de landing para preview
   const landingPreview = {
@@ -186,7 +211,17 @@ export default function AdminPage() {
       </div>
       {/* Panel de edición */}
       <div className="relative w-full md:w-1/2 order-last md:order-first rounded-xl border border-white/10 bg-[#0e0b15]/70 backdrop-blur-xl shadow-2xl p-4 sm:p-6 overflow-y-auto flex flex-col items-center">
-        <h2 className="font-bold mb-4">Edición</h2>
+        <div className="text-center mb-6 w-full">
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-lg shadow-lg">
+              <PencilSquareIcon className="h-6 w-6 md:h-8 md:w-8 text-white" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-white">{t('title')}</h2>
+          </div>
+          <p className="text-sm text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            {t('description')}
+          </p>
+        </div>
         <div className="w-full">
           <MultiSectionsBoard
             links={links}
@@ -197,6 +232,7 @@ export default function AdminPage() {
             onDeleteLink={handleDeleteLink}
             onUpdateSection={handleUpdateSection}
             onDeleteSection={handleDeleteSection}
+            onCreateSection={handleCreateSection}
             landingId={landingId}
           />
         </div>

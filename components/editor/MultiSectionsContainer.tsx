@@ -109,14 +109,14 @@ export default function MultiSectionsContainer({
 
   return(
     <div data-section-id={containerId}
-         className="w-full border-dashed border border-purple-900 p-4 rounded bg-black hover:bg-purple-950/10">
+         className="w-full border-dashed border border-indigo-900/30 p-4 rounded-md bg-[#120724] hover:bg-indigo-950/20">
       <div className="relative flex items-center justify-center mb-2">
         {edit&&sec?(
           <input autoFocus value={title}
                  onChange={(e)=>{setTitle(e.target.value); if(timer.current)clearTimeout(timer.current);
                    timer.current=setTimeout(()=>onUpdateSection(sec.id,{title:e.target.value}),500);}}
                  onBlur={()=>{setEdit(false); if(timer.current){clearTimeout(timer.current);} onUpdateSection(sec.id,{title});}}
-                 className="bg-transparent text-lg font-semibold border-b border-gray-300 focus:border-primary focus:outline-none py-1 px-0 text-center"/>
+                 className="bg-transparent text-lg font-semibold border-b border-indigo-500 focus:border-indigo-400 focus:outline-none py-1 px-0 text-center text-white"/>
         ):(
           <h3 className="font-semibold text-lg">
             {isNoSec?"Sin Sección (no visibles)":sec?.title}
@@ -125,13 +125,13 @@ export default function MultiSectionsContainer({
 
         {!isNoSec&&sec&&!edit&&(
           <div className="absolute right-0 flex items-center gap-2">
-            {idx!==0&&<button onClick={()=>moveSectionUp(sec.id)} className="bg-black text-white rounded p-1 hover:bg-purple-950"><ArrowUpIcon/></button>}
-            {idx!==total-1&&<button onClick={()=>moveSectionDown(sec.id)} className="bg-black text-white rounded p-1 hover:bg-purple-950"><ArrowDownIcon/></button>}
-            <button onClick={()=>onCreateLinkInSection(containerId)} className="bg-black text-white rounded p-1 flex items-center gap-1 hover:bg-purple-950">
+            {idx!==0&&<button onClick={()=>moveSectionUp(sec.id)} className="bg-[#1c1033] text-white rounded p-1 hover:bg-indigo-700 border border-indigo-900/30"><ArrowUpIcon/></button>}
+            {!isNoSec && idx !== total-2 && <button onClick={()=>moveSectionDown(sec.id)} className="bg-[#1c1033] text-white rounded p-1 hover:bg-indigo-700 border border-indigo-900/30"><ArrowDownIcon/></button>}
+            <button onClick={()=>onCreateLinkInSection(containerId)} className="bg-[#1c1033] text-white rounded p-1 flex items-center gap-1 hover:bg-indigo-700 border border-indigo-900/30">
               <AddLink/><span className="hidden sm:inline">Link</span>
             </button>
-            <button onClick={()=>setEdit(true)} className="px-1 py-1 rounded flex items-center gap-1 hover:bg-purple-950"><PencilIcon/></button>
-            <button onClick={()=>onDeleteSection(sec.id)} className="px-1 py-1 rounded flex items-center hover:bg-purple-950"><TrashIcon/></button>
+            <button onClick={()=>setEdit(true)} className="px-1 py-1 rounded flex items-center gap-1 hover:bg-indigo-700 bg-[#1c1033] border border-indigo-900/30"><PencilIcon/></button>
+            <button onClick={()=>onDeleteSection(sec.id)} className="px-1 py-1 rounded flex items-center hover:bg-red-700 bg-[#1c1033] border border-indigo-900/30"><TrashIcon/></button>
           </div>
         )}
       </div>

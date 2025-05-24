@@ -364,5 +364,14 @@
   "linkItem": {
     "noImage": "No image",
     "uploadImage": "Upload image"
+  },
+  "editor": {
+    "title": "Edit your Landing Page",
+    "description": "Create sections to organize your links. Each section can contain multiple links that you can reorder by dragging and dropping, or move between sections using the corresponding button.",
+    "newSection": "New Section"
+  },
+  "social": {
+    "title": "Social Media",
+    "description": "Add and organize your social media links. Enable the ones you want to display on your landing page and reorder them by dragging and dropping."
   }
 }

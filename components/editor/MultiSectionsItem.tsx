@@ -202,27 +202,27 @@ export default function MultiSectionsItem({
         ease: "easeOut"
       }}
     >
-      <div className="relative border border-gray-500 p-4 rounded-2xl bg-black text-white min-h-[5rem] cursor-grab">
+      <div className="relative border border-indigo-900/30 p-4 rounded-lg bg-[#120724] text-white min-h-[5rem] cursor-grab">
         <div className="flex items-center gap-4">
           <div className="flex flex-col gap-2 flex-1">
             <div className="relative">
               <span className="absolute inset-y-0 left-2 flex items-center pointer-events-none"><TitleIcon/></span>
               <Input value={title} onChange={e=>{setTitle(e.target.value);upd({title:e.target.value});}}
                      placeholder="Título"
-                     className="w-full text-sm pl-8 pr-2 py-1 rounded-[100px] hover:bg-purple-950/40 focus:bg-purple-950/40 bg-black/50 border-gray-400"/>
+                     className="w-full text-sm pl-8 pr-2 py-1 rounded-md bg-transparent text-white placeholder:text-muted-foreground hover:bg-[#1c1033]/80 focus:bg-[#1c1033] border border-slate-600/50 focus:border-indigo-500 focus:outline-none"/>
             </div>
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
                 <span className="absolute inset-y-0 left-2 flex items-center pointer-events-none"><LinkIcon/></span>
                 <Input value={url} onChange={e=>{setUrl(e.target.value);upd({url:e.target.value});}}
                        placeholder="URL"
-                       className="w-full text-sm pl-8 pr-2 py-1 rounded-[100px] hover:bg-purple-950/40 focus:bg-purple-950/40 bg-black/50 border-gray-400"/>
+                       className="w-full text-sm pl-8 pr-2 py-1 rounded-md bg-transparent text-white placeholder:text-muted-foreground hover:bg-[#1c1033]/80 focus:bg-[#1c1033] border border-slate-600/50 focus:border-indigo-500 focus:outline-none"/>
               </div>
               <div className="flex items-center gap-1 flex-shrink-0">
                 <span className="text-xs text-gray-300">ID:</span>
                 <Input type="number" value={urlId??""} onChange={e=>{const n=parseInt(e.target.value,10);const id=isNaN(n)?null:n;setUrlId(id);upd({url_link_id:id});}}
                        placeholder="LinkID"
-                       className="w-20 text-sm rounded-[100px] hover:bg-purple-950/40 focus:bg-purple-950/40 bg-black/50 border-gray-400"/>
+                       className="w-20 text-sm rounded-md bg-transparent text-white placeholder:text-muted-foreground hover:bg-[#1c1033]/80 focus:bg-[#1c1033] border border-slate-600/50 focus:border-indigo-500 focus:outline-none"/>
               </div>
             </div>
           </div>
@@ -230,12 +230,12 @@ export default function MultiSectionsItem({
           <div className="relative w-16 h-16 flex-shrink-0">
             {image?(
               <>
-                <img src={image} alt={title} className="w-full h-full object-cover rounded-xl"/>
+                <img src={image} alt={title} className="w-full h-full object-cover rounded-md"/>
                 <button onClick={removeImg}
                         className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1 hover:bg-black/80"><CloseIcon/></button>
               </>
             ):(
-              <div className="w-full h-full border-2 border-gray-400 border-dashed rounded-xl flex flex-col items-center justify-center text-xs text-gray-500 gap-1 cursor-pointer hover:border-gray-300 transition-colors"
+              <div className="w-full h-full border-2 border-indigo-600/40 border-dashed rounded-md flex flex-col items-center justify-center text-xs text-gray-500 gap-1 cursor-pointer hover:border-indigo-400 transition-colors bg-[#1c1033]/40"
                    onClick={()=>fileRef.current?.click()}>
                 <div className="text-center">
                   <div className="text-xs font-medium">{t('noImage')}</div>
@@ -258,7 +258,7 @@ export default function MultiSectionsItem({
               </Button>
               
               {showSectionDropdown && (
-                <div className="absolute top-full right-0 mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-50 min-w-48">
+                <div className="absolute top-full right-0 mt-1 bg-gray-800 border border-gray-600 rounded-md shadow-lg z-50 min-w-48">
                   <div className="p-2">
                     <div className="text-xs text-gray-400 mb-2 text-center">Mover a sección:</div>
                     {otherSections.length > 0 ? (
@@ -266,7 +266,7 @@ export default function MultiSectionsItem({
                         <button
                           key={section.id}
                           onClick={() => handleMoveToSection(section.id)}
-                          className="w-full text-center px-3 py-2 text-sm rounded hover:bg-gray-700 transition-colors"
+                          className="w-full text-center px-3 py-2 text-sm rounded-sm hover:bg-gray-700 transition-colors"
                         >
                           {section.name}
                         </button>

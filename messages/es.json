@@ -365,5 +365,14 @@
   "linkItem": {
     "noImage": "Sin imagen",
     "uploadImage": "Subir imagen"
+  },
+  "editor": {
+    "title": "Edita tu Landing Page",
+    "description": "Crea secciones para organizar tus enlaces. Cada sección puede contener múltiples enlaces que puedes reordenar arrastrando y soltando, o mover entre secciones usando el botón correspondiente.",
+    "newSection": "Nueva Sección"
+  },
+  "social": {
+    "title": "Redes Sociales",
+    "description": "Agrega y organiza los enlaces a tus redes sociales. Activa las que quieras mostrar en tu landing page y reordénalas arrastrando y soltando."
   }
 }
