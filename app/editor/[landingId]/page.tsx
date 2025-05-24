@@ -250,7 +250,7 @@ export default function AdminPage() {
           <SocialLinksPanel
             landingId={landingId}
             onReorder={() => setRefreshing((r) => r + 1)}
-            onUpdate={(updatedSocialLinks) => setSocialLinks(updatedSocialLinks)}
+            onUpdate={setSocialLinks}
           />
         </div>
       </div>

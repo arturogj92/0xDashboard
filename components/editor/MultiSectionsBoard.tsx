@@ -448,7 +448,6 @@ export default function MultiSectionsBoard({
           style={{ display: 'flex', justifyContent: 'center' }}
         >
           <motion.button
-            onClick={onCreateSection}
             whileHover={{ 
               scale: 1.02,
               transition: { duration: 0.2 }
@@ -468,6 +467,7 @@ export default function MultiSectionsBoard({
               cursor: 'pointer',
               transition: 'all 0.2s'
             }}
+            onClick={onCreateSection}
           >
             <motion.svg 
               xmlns="http://www.w3.org/2000/svg" 

@@ -1,8 +1,8 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Youtube, PlayCircle, Instagram, TwitterIcon, ExternalLink } from "lucide-react";
+import { User, Youtube, PlayCircle, Instagram, TwitterIcon, ExternalLink, Github, Linkedin, Facebook, Globe } from "lucide-react";
 import { useTranslations } from 'next-intl';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { LinkData, SectionData, SocialLinkData } from '@/components/editor/types';
 
 interface LandingPreviewProps {
@@ -13,14 +13,27 @@ interface LandingPreviewProps {
   socialLinks?: SocialLinkData[];
 }
 
+// Icono personalizado de TikTok
+const TikTokIcon = () => (
+  <svg className="w-3 h-3 md:w-4 md:h-4 lg:w-4 lg:h-4" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-.88-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
+  </svg>
+);
+
 const socialIcons = {
   youtube: Youtube,
   instagram: Instagram,
   twitter: TwitterIcon,
+  tiktok: TikTokIcon,
+  github: Github,
+  linkedin: Linkedin,
+  facebook: Facebook,
+  website: Globe,
+  web: Globe,
   default: ExternalLink
 };
 
-export function LandingPreview({ 
+export const LandingPreview = React.memo(function LandingPreview({ 
   name, 
   description, 
   links = [], 
@@ -29,18 +42,21 @@ export function LandingPreview({
 }: LandingPreviewProps) {
   const t = useTranslations('landing');
   
-  // Filtrar y ordenar links visibles por sección
-  const visibleLinks = links.filter(link => link.visible).sort((a, b) => a.position - b.position);
-  const visibleSocialLinks = socialLinks.filter(link => link.visible).sort((a, b) => a.position - b.position);
+  // Memorizar cálculos para optimizar rendimiento
+  const { visibleLinks, visibleSocialLinks, linksBySection } = useMemo(() => {
+    const visibleLinks = links.filter(link => link.visible).sort((a, b) => a.position - b.position);
+    const visibleSocialLinks = socialLinks.filter(link => link.visible).sort((a, b) => a.position - b.position);
+    
+    const linksBySection = sections.reduce((acc, section) => {
+      acc[section.id] = visibleLinks.filter(link => link.section_id === section.id);
+      return acc;
+    }, {} as Record<string, LinkData[]>);
+    
+    return { visibleLinks, visibleSocialLinks, linksBySection };
+  }, [links, sections, socialLinks]);
   
-  // Agrupar links por sección
-  const linksBySection = sections.reduce((acc, section) => {
-    acc[section.id] = visibleLinks.filter(link => link.section_id === section.id);
-    return acc;
-  }, {} as Record<string, LinkData[]>);
-  
-  // Links sin sección
-  const linksWithoutSection = visibleLinks.filter(link => !link.section_id);
+  // Links sin sección (no se mostrarán en la vista previa)
+  // const linksWithoutSection = visibleLinks.filter(link => !link.section_id);
 
   return (
     <div className="flex flex-col items-center pt-10 md:pt-12 px-3 overflow-hidden bg-gradient-to-b from-[#230447] to-black h-full">
@@ -64,26 +80,6 @@ export function LandingPreview({
 
       {/* Links organizados por sección */}
       <div className="w-full space-y-2 mt-2 flex-1 overflow-y-auto">
-        {/* Links sin sección */}
-        {linksWithoutSection.map((link, index) => (
-          <React.Fragment key={link.id}>
-            <a
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full h-3 md:h-4 lg:h-4 bg-orange-500/80 rounded border border-orange-300/40 hover:bg-orange-500 transition-colors"
-              title={link.title}
-            />
-            {index < linksWithoutSection.length - 1 && (
-              <div className="w-full h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
-            )}
-          </React.Fragment>
-        ))}
-        
-        {/* Separador si hay tanto links sin sección como secciones */}
-        {linksWithoutSection.length > 0 && sections.length > 0 && (
-          <div className="w-full h-px bg-white/20 my-3" />
-        )}
         
         {/* Secciones con sus links */}
         {sections.sort((a, b) => a.position - b.position).map((section, sectionIndex) => {
@@ -104,9 +100,11 @@ export function LandingPreview({
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block w-full h-3 md:h-4 lg:h-4 bg-orange-500/80 rounded border border-orange-300/40 hover:bg-orange-500 transition-colors"
+                    className="block w-full min-h-[12px] md:min-h-[16px] lg:min-h-[16px] p-1.5 md:p-2 bg-gradient-to-r from-orange-500/90 to-orange-600/90 rounded border border-orange-300/40 hover:from-orange-500 hover:to-orange-600 transition-all duration-200 text-white text-[8px] md:text-[10px] lg:text-xs font-medium text-center flex items-center justify-center"
                     title={link.title}
-                  />
+                  >
+                    <span className="truncate px-1">{link.title || 'Untitled Link'}</span>
+                  </a>
                   {linkIndex < sectionLinks.length - 1 && (
                     <div className="w-full h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
                   )}
@@ -121,16 +119,11 @@ export function LandingPreview({
           );
         })}
         
-        {/* Mostrar placeholders si no hay contenido */}
-        {visibleLinks.length === 0 && (
-          Array.from({ length: 3 }).map((_, i) => (
-            <React.Fragment key={i}>
-              <div className="w-full h-3 md:h-4 lg:h-4 bg-orange-500/80 rounded border border-orange-300/40 animate-pulse" />
-              {i < 2 && (
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
-              )}
-            </React.Fragment>
-          ))
+        {/* Mostrar placeholders si no hay secciones con contenido */}
+        {sections.length === 0 && (
+          <div className="text-center text-gray-400 text-xs py-4">
+            Crea secciones para organizar tus enlaces
+          </div>
         )}
       </div>
 
@@ -167,4 +160,4 @@ export function LandingPreview({
       </div>
     </div>
   );
-} 
+}); 
