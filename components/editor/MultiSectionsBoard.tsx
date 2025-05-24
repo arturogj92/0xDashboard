@@ -380,7 +380,8 @@ export default function MultiSectionsBoard({
         
         {containers.map((c, idx) => {
           // Renderizar secciones normales y botón de crear antes de la sección "no-section"
-          const isLastRealSection = idx === containers.length - 2; // Penúltima posición (antes de no-section)
+          const isNoSection = c.id === "no-section";
+          const isLastRealSection = idx === containers.length - 2 && !isNoSection; // Penúltima posición (antes de no-section)
           
           return (
             <React.Fragment key={c.id}>
@@ -406,23 +407,22 @@ export default function MultiSectionsBoard({
                 />
               </div>
               
-              {/* Botón para crear nueva sección después de la última sección real */}
-              {isLastRealSection && (
-                <div className="flex justify-center opacity-100 transform translate-y-0 transition-all duration-250 ease-out">
-                  <button
-                    onClick={onCreateSection}
-                    className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium shadow-lg transition-all duration-200 flex items-center gap-2"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                    {t('newSection')}
-                  </button>
-                </div>
-              )}
             </React.Fragment>
           );
         })}
+        
+        {/* Botón para crear nueva sección - siempre al final */}
+        <div className="flex justify-center opacity-100 transform translate-y-0 transition-all duration-250 ease-out">
+          <button
+            onClick={onCreateSection}
+            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium shadow-lg transition-all duration-200 flex items-center gap-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            {t('newSection')}
+          </button>
+        </div>
       </div>
     </DndContext>
   );
