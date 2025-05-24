@@ -32,6 +32,10 @@ export default function AdminPage() {
         .then(res => res.json())
         .then(data => { if (Array.isArray(data)) setLinks(data); })
         .catch(err => console.error('Error cargando enlaces:', err));
+      fetch(`${API_URL}/api/social-links?landingId=${lid}`, { headers: createAuthHeaders() })
+        .then(res => res.json())
+        .then(data => { if (Array.isArray(data)) setSocialLinks(data); })
+        .catch(err => console.error('Error cargando social links:', err));
     }
   }, [params.landingId]);
 
@@ -204,8 +208,14 @@ export default function AdminPage() {
             alt="iPhone frame"
             className="absolute w-full h-full z-20 pointer-events-none object-contain"
           />
-          <div className="absolute top-[8px] left-0 w-full h-[calc(100%-16px)] z-10 pt-6 pb-6 overflow-y-auto bg-transparent rounded-[80px] md:rounded-[90px] lg:rounded-[100px]">
-            {/* Contenido de preview */}
+          <div className="absolute top-[8px] left-0 w-full h-[calc(100%-16px)] z-10 rounded-[80px] md:rounded-[90px] lg:rounded-[100px] overflow-hidden">
+            <LandingPreview 
+              name={landingPreview.name}
+              description={landingPreview.description}
+              links={links}
+              sections={sections}
+              socialLinks={socialLinks}
+            />
           </div>
         </div>
       </div>
@@ -240,6 +250,7 @@ export default function AdminPage() {
           <SocialLinksPanel
             landingId={landingId}
             onReorder={() => setRefreshing((r) => r + 1)}
+            onUpdate={(updatedSocialLinks) => setSocialLinks(updatedSocialLinks)}
           />
         </div>
       </div>
