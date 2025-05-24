@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useCallback, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   DndContext,
   DragEndEvent,
@@ -378,14 +379,43 @@ export default function MultiSectionsBoard({
         {/* Efecto de sombra degradada radial */}
         <div className="absolute -inset-24 bg-[radial-gradient(circle,_rgba(88,28,135,0.45)_0%,_rgba(17,24,39,0)_80%)] blur-[250px] pointer-events-none"></div>
         
-        {containers.map((c, idx) => {
-          // Renderizar secciones normales y botón de crear antes de la sección "no-section"
-          const isNoSection = c.id === "no-section";
-          const isLastRealSection = idx === containers.length - 2 && !isNoSection; // Penúltima posición (antes de no-section)
-          
-          return (
-            <React.Fragment key={c.id}>
-              <div className="opacity-100 transform translate-y-0 transition-all duration-250 ease-out">
+        <AnimatePresence>
+          {containers.map((c, idx) => {
+            return (
+              <motion.div
+                key={`section-${c.id}`}
+                layout
+                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                animate={{ 
+                  opacity: 1, 
+                  y: 0, 
+                  scale: 1,
+                  transition: {
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 25,
+                    duration: 0.3
+                  }
+                }}
+                exit={{ 
+                  opacity: 0, 
+                  y: -20, 
+                  scale: 0.95,
+                  transition: {
+                    duration: 0.2,
+                    ease: "easeInOut"
+                  }
+                }}
+                transition={{
+                  layout: {
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 25,
+                    duration: 0.4
+                  }
+                }}
+                style={{ position: 'relative' }}
+              >
                 <MultiSectionsContainer
                   containerId={c.id}
                   items={c.items}
@@ -405,24 +435,55 @@ export default function MultiSectionsBoard({
                   transitioningLinks={transitioningLinks}
                   activeId={activeId}
                 />
-              </div>
-              
-            </React.Fragment>
-          );
-        })}
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
         
         {/* Botón para crear nueva sección - siempre al final */}
-        <div className="flex justify-center opacity-100 transform translate-y-0 transition-all duration-250 ease-out">
-          <button
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.3, ease: "easeOut" }}
+          style={{ display: 'flex', justifyContent: 'center' }}
+        >
+          <motion.button
             onClick={onCreateSection}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium shadow-lg transition-all duration-200 flex items-center gap-2"
+            whileHover={{ 
+              scale: 1.02,
+              transition: { duration: 0.2 }
+            }}
+            whileTap={{ scale: 0.98 }}
+            style={{
+              background: 'linear-gradient(to right, #4f46e5, #7c3aed)',
+              color: 'white',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              fontWeight: '500',
+              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'all 0.2s'
+            }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+            <motion.svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              strokeWidth={2} 
+              stroke="currentColor" 
+              className="w-5 h-5"
+              whileHover={{ rotate: 90 }}
+              transition={{ duration: 0.2 }}
+            >
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
+            </motion.svg>
             {t('newSection')}
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       </div>
     </DndContext>
   );
