@@ -110,13 +110,13 @@ export default function MultiSectionsContainer({
   return(
     <div data-section-id={containerId}
          className="w-full border-dashed border border-purple-900 p-4 rounded bg-black hover:bg-purple-950/10">
-      <div className="flex items-center justify-between mb-2">
+      <div className="relative flex items-center justify-center mb-2">
         {edit&&sec?(
           <input autoFocus value={title}
                  onChange={(e)=>{setTitle(e.target.value); if(timer.current)clearTimeout(timer.current);
                    timer.current=setTimeout(()=>onUpdateSection(sec.id,{title:e.target.value}),500);}}
                  onBlur={()=>{setEdit(false); if(timer.current){clearTimeout(timer.current);} onUpdateSection(sec.id,{title});}}
-                 className="bg-transparent text-lg font-semibold border-b border-gray-300 focus:border-primary focus:outline-none py-1 px-0"/>
+                 className="bg-transparent text-lg font-semibold border-b border-gray-300 focus:border-primary focus:outline-none py-1 px-0 text-center"/>
         ):(
           <h3 className="font-semibold text-lg">
             {isNoSec?"Sin Sección (no visibles)":sec?.title}
@@ -124,7 +124,7 @@ export default function MultiSectionsContainer({
         )}
 
         {!isNoSec&&sec&&!edit&&(
-          <div className="flex items-center gap-2">
+          <div className="absolute right-0 flex items-center gap-2">
             {idx!==0&&<button onClick={()=>moveSectionUp(sec.id)} className="bg-black text-white rounded p-1 hover:bg-purple-950"><ArrowUpIcon/></button>}
             {idx!==total-1&&<button onClick={()=>moveSectionDown(sec.id)} className="bg-black text-white rounded p-1 hover:bg-purple-950"><ArrowDownIcon/></button>}
             <button onClick={()=>onCreateLinkInSection(containerId)} className="bg-black text-white rounded p-1 flex items-center gap-1 hover:bg-purple-950">
