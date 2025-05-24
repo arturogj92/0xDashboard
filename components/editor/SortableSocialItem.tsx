@@ -119,7 +119,7 @@ export function SortableSocialItem({id, data, onToggleVisibility, onUrlChange}: 
                 aria-label={data.visible ? "Ocultar enlace" : "Mostrar enlace"}
                 className="text-muted-foreground hover:text-foreground"
             >
-                {data.visible ? <HeroEyeSlashIcon className="h-5 w-5" /> : <HeroEyeIcon className="h-5 w-5" />}
+                {data.visible ? <HeroEyeIcon className="h-5 w-5" /> : <HeroEyeSlashIcon className="h-5 w-5" />}
             </Button>
         </li>
     );
