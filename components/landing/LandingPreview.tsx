@@ -15,7 +15,7 @@ interface LandingPreviewProps {
 
 // Icono personalizado de TikTok
 const TikTokIcon = () => (
-  <svg className="w-3 h-3 md:w-4 md:h-4 lg:w-4 lg:h-4" viewBox="0 0 24 24" fill="currentColor">
+  <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
     <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-.88-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
   </svg>
 );
@@ -59,27 +59,27 @@ export const LandingPreview = React.memo(function LandingPreview({
   // const linksWithoutSection = visibleLinks.filter(link => !link.section_id);
 
   return (
-    <div className="flex flex-col items-center pt-10 md:pt-12 px-3 overflow-hidden bg-gradient-to-b from-[#230447] to-black h-full">
+    <div className="flex flex-col items-center pt-6 px-2 overflow-hidden bg-gradient-to-b from-[#230447] to-black h-full">
       {/* Avatar */}
-      <div className="relative w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 flex-shrink-0">
+      <div className="relative w-8 h-8 flex-shrink-0">
         <Avatar className="w-full h-full rounded-full border-2 border-purple-500 ring-2 ring-purple-300/30">
           <AvatarFallback className="bg-gradient-to-br from-purple-600 to-indigo-800 text-white font-semibold flex items-center justify-center">
-            <User className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" />
+            <User className="w-4 h-4" />
           </AvatarFallback>
         </Avatar>
         <div className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 opacity-40 blur-sm -z-10"></div>
       </div>
 
       {/* Nombre y descripción */}
-      <h2 className="mt-2 text-xs md:text-sm lg:text-base font-semibold text-[#8ad2ff] text-center break-words">
+      <h2 className="mt-1.5 text-[10px] font-semibold text-[#8ad2ff] text-center break-words leading-tight">
         {name || 'Your Name'}
       </h2>
-      <p className="mt-1 mb-2 pb-4 text-xs text-gray-300 text-center break-words line-clamp-2">
+      <p className="mt-1 mb-1.5 text-[8px] text-gray-300 text-center break-words line-clamp-2 leading-tight px-1">
         {description || t('descriptionPlaceholder')}
       </p>
 
       {/* Links organizados por sección */}
-      <div className="w-full space-y-2 mt-2 flex-1 overflow-y-auto">
+      <div className="w-full space-y-1 mt-1 flex-1 overflow-y-auto px-1">
         
         {/* Secciones con sus links */}
         {sections.sort((a, b) => a.position - b.position).map((section, sectionIndex) => {
@@ -89,7 +89,7 @@ export const LandingPreview = React.memo(function LandingPreview({
           return (
             <React.Fragment key={section.id}>
               {/* Título de sección */}
-              <div className="text-xs text-gray-400 text-center font-medium py-1">
+              <div className="text-[8px] text-gray-400 text-center font-medium py-0.5">
                 {section.title}
               </div>
               
@@ -100,10 +100,10 @@ export const LandingPreview = React.memo(function LandingPreview({
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block w-full min-h-[12px] md:min-h-[16px] lg:min-h-[16px] p-1.5 md:p-2 bg-gradient-to-r from-orange-500/90 to-orange-600/90 rounded border border-orange-300/40 hover:from-orange-500 hover:to-orange-600 transition-all duration-200 text-white text-[8px] md:text-[10px] lg:text-xs font-medium text-center flex items-center justify-center"
+                    className="block w-full min-h-[8px] p-1 bg-gradient-to-r from-orange-500/90 to-orange-600/90 rounded border border-orange-300/40 hover:from-orange-500 hover:to-orange-600 transition-all duration-200 text-white text-[7px] font-medium text-center flex items-center justify-center"
                     title={link.title}
                   >
-                    <span className="truncate px-1">{link.title || 'Untitled Link'}</span>
+                    <span className="truncate px-0.5 leading-tight">{link.title || 'Untitled Link'}</span>
                   </a>
                   {linkIndex < sectionLinks.length - 1 && (
                     <div className="w-full h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
@@ -113,7 +113,7 @@ export const LandingPreview = React.memo(function LandingPreview({
               
               {/* Separador entre secciones */}
               {sectionIndex < sections.length - 1 && (
-                <div className="w-full h-px bg-white/20 my-3" />
+                <div className="w-full h-px bg-white/20 my-1.5" />
               )}
             </React.Fragment>
           );
@@ -128,10 +128,10 @@ export const LandingPreview = React.memo(function LandingPreview({
       </div>
 
       {/* Línea separadora */}
-      <div className="w-full h-px bg-white/20 my-3" />
+      <div className="w-full h-px bg-white/20 my-1.5" />
 
       {/* Iconos de redes sociales */}
-      <div className="flex items-center justify-center gap-2 md:gap-2.5 lg:gap-3 mb-2">
+      <div className="flex items-center justify-center gap-1.5 mb-1">
         {visibleSocialLinks.length > 0 ? (
           visibleSocialLinks.map((socialLink) => {
             const IconComponent = socialIcons[socialLink.name.toLowerCase() as keyof typeof socialIcons] || socialIcons.default;
@@ -144,17 +144,17 @@ export const LandingPreview = React.memo(function LandingPreview({
                 className="text-orange-400 hover:text-orange-300 transition-colors"
                 title={socialLink.name}
               >
-                <IconComponent className="w-3 h-3 md:w-4 md:h-4 lg:w-4 lg:h-4" />
+                <IconComponent className="w-3 h-3" />
               </a>
             );
           })
         ) : (
           // Placeholders por defecto
           <>
-            <Youtube className="w-3 h-3 md:w-4 md:h-4 lg:w-4 lg:h-4 text-orange-400" />
-            <PlayCircle className="w-3 h-3 md:w-4 md:h-4 lg:w-4 lg:h-4 text-orange-400" />
-            <Instagram className="w-3 h-3 md:w-4 md:h-4 lg:w-4 lg:h-4 text-orange-400" />
-            <TwitterIcon className="w-3 h-3 md:w-4 md:h-4 lg:w-4 lg:h-4 text-orange-400" />
+            <Youtube className="w-3 h-3 text-orange-400" />
+            <PlayCircle className="w-3 h-3 text-orange-400" />
+            <Instagram className="w-3 h-3 text-orange-400" />
+            <TwitterIcon className="w-3 h-3 text-orange-400" />
           </>
         )}
       </div>

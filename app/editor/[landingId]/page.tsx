@@ -208,7 +208,7 @@ export default function AdminPage() {
             alt="iPhone frame"
             className="absolute w-full h-full z-20 pointer-events-none object-contain"
           />
-          <div className="absolute top-[8px] left-0 w-full h-[calc(100%-16px)] z-10 rounded-[80px] md:rounded-[90px] lg:rounded-[100px] overflow-hidden">
+          <div className="absolute top-[-0px] left-[70px] w-[calc(100%-140px)] h-[calc(100%-10px)] z-10 rounded-[20px] md:rounded-[24px] lg:rounded-[28px] xl:rounded-[32px] overflow-hidden">
             <LandingPreview 
               name={landingPreview.name}
               description={landingPreview.description}
