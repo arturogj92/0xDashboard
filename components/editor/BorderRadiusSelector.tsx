@@ -107,10 +107,10 @@ export default function BorderRadiusSelector({
 
 
   const presets = [
-    { value: 0, label: 'Cuadrado', icon: '⬜' },
-    { value: 8, label: 'Poco', icon: '▢' },
-    { value: 16, label: 'Mediano', icon: '◻️' },
-    { value: 50, label: 'Redondeado', icon: '⚪' }
+    { value: 0, label: 'Cuadrado' },
+    { value: 8, label: 'Poco' },
+    { value: 16, label: 'Mediano' },
+    { value: 50, label: 'Redondeado' }
   ];
 
   const handlePresetClick = (value: number) => {
@@ -152,7 +152,7 @@ export default function BorderRadiusSelector({
         <input
           type="range"
           min="0"
-          max="100"
+          max="50"
           value={sliderValue}
           onChange={handleSliderChange}
           onMouseDown={handleMouseDown}
@@ -163,19 +163,19 @@ export default function BorderRadiusSelector({
           style={{
             background: `linear-gradient(to right, 
               #8b5cf6 0%, 
-              #8b5cf6 ${sliderValue}%, 
-              #374151 ${sliderValue}%, 
+              #8b5cf6 ${(sliderValue/50)*100}%, 
+              #374151 ${(sliderValue/50)*100}%, 
               #374151 100%)`
           }}
         />
         
         {/* Marcadores del slider */}
         <div className="flex justify-between text-xs text-gray-500 px-1">
-          <span className={`${sliderValue <= 2 ? 'text-purple-400 font-medium' : ''}`}>0px</span>
-          <span className={`${Math.abs(sliderValue - 25) <= 2 ? 'text-purple-400 font-medium' : ''}`}>25px</span>
-          <span className={`${Math.abs(sliderValue - 50) <= 2 ? 'text-purple-400 font-medium' : ''}`}>50px</span>
-          <span className={`${Math.abs(sliderValue - 75) <= 2 ? 'text-purple-400 font-medium' : ''}`}>75px</span>
-          <span className={`${sliderValue >= 98 ? 'text-purple-400 font-medium' : ''}`}>100px</span>
+          <span className={`${sliderValue <= 1 ? 'text-purple-400 font-medium' : ''}`}>0px</span>
+          <span className={`${Math.abs(sliderValue - 12.5) <= 1 ? 'text-purple-400 font-medium' : ''}`}>12px</span>
+          <span className={`${Math.abs(sliderValue - 25) <= 1 ? 'text-purple-400 font-medium' : ''}`}>25px</span>
+          <span className={`${Math.abs(sliderValue - 37.5) <= 1 ? 'text-purple-400 font-medium' : ''}`}>37px</span>
+          <span className={`${sliderValue >= 49 ? 'text-purple-400 font-medium' : ''}`}>50px</span>
         </div>
       </div>
 
@@ -193,7 +193,17 @@ export default function BorderRadiusSelector({
                   : 'bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-gray-500 hover:text-white'
               }`}
             >
-              <span className="text-lg mb-1">{preset.icon}</span>
+              {/* Rectángulo visual que representa un link */}
+              <div 
+                className={`w-12 h-8 mb-2 border-2 ${
+                  Math.abs(sliderValue - preset.value) <= 1
+                    ? 'bg-purple-100 border-purple-400'
+                    : 'bg-white border-gray-400'
+                }`}
+                style={{
+                  borderRadius: `${preset.value}px`
+                }}
+              />
               <span className="text-xs font-medium">{preset.label}</span>
               <span className={`text-xs ${
                 Math.abs(sliderValue - preset.value) <= 1 
