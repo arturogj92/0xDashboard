@@ -109,14 +109,14 @@ export const LandingPreview = React.memo(function LandingPreview({
   return (
     <div 
       data-landing-preview
-      className={`h-full ${isPreview ? 'overflow-y-auto overflow-x-hidden' : ''}`}
+      className={`${isPreview ? 'h-full overflow-y-auto overflow-x-hidden' : 'min-h-screen'}`}
       style={{
         background: currentTheme.colors.background,
         fontFamily: `${currentTheme.typography.fontFamily}, system-ui, sans-serif`,
         color: currentTheme.colors.textPrimary,
       }}
     >
-      <div className={`flex flex-col items-center ${isPreview ? 'pt-16' : 'pt-20'} ${isPreview ? 'px-1 pb-4' : 'px-6 md:px-8 lg:px-12'} ${isPreview ? 'min-h-full' : 'overflow-y-auto overflow-x-hidden h-full'} mx-auto ${isPreview ? 'max-w-lg' : 'max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-5xl'}`}>
+      <div className={`flex flex-col items-center ${isPreview ? 'pt-16' : 'pt-20'} ${isPreview ? 'px-1 pb-4' : 'px-6 md:px-8 lg:px-12 pb-16'} ${isPreview ? 'min-h-full' : 'min-h-screen'} mx-auto ${isPreview ? 'max-w-lg' : 'max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-5xl'}`}>
       {/* Avatar */}
       <Avatar className={`${isPreview ? 'w-16 h-16 mb-4' : 'w-24 h-24 mb-6'} flex-shrink-0`} style={{ backgroundColor: 'var(--preview-link-background)' }}>
         <AvatarImage 

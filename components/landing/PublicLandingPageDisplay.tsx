@@ -37,13 +37,6 @@ export default function PublicLandingPageDisplay({ landing }: PublicLandingPageD
     if (landing.socialLinks) setSocialLinks(landing.socialLinks);
     setLoading(false);
 
-    // Ocultar scroll del body
-    document.body.style.overflow = 'hidden';
-    
-    // Cleanup cuando se desmonta el componente
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
   }, [landing]);
 
   if (loading) {
@@ -55,7 +48,10 @@ export default function PublicLandingPageDisplay({ landing }: PublicLandingPageD
   }
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
+    <div 
+      className="fixed inset-0 overflow-y-auto"
+      style={{ zIndex: 9999 }}
+    >
       <LandingPreview 
         name={landing.name} 
         description={landing.description}
