@@ -95,7 +95,7 @@ export const themes: Theme[] = [
     description: 'Degradado negro a morado con diseño compacto',
     preview: '/themes/gradient-purple-preview.jpg',
     colors: {
-      background: 'linear-gradient(135deg, #000000 0%, #2d1b69 50%, #8b5cf6 100%)',
+      background: 'linear-gradient(to bottom, #000000 0%, #4a044d 100%)',
       backgroundSecondary: 'rgba(0, 0, 0, 0.3)',
       textPrimary: '#ffffff',
       textSecondary: '#e2e8f0',
@@ -108,7 +108,7 @@ export const themes: Theme[] = [
       buttonBackground: 'rgba(139, 92, 246, 0.8)',
       buttonText: '#ffffff',
       buttonHover: 'rgba(124, 58, 237, 0.9)',
-      linkBackground: 'rgba(255, 255, 255, 0.1)',
+      linkBackground: '#000000',
       linkBorder: 'rgba(255, 255, 255, 0.2)',
       linkText: '#ffffff',
       linkHover: 'rgba(255, 255, 255, 0.2)'
