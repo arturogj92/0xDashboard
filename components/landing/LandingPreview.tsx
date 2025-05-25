@@ -241,7 +241,7 @@ export const LandingPreview = React.memo(function LandingPreview({
       </div>
 
       {/* Línea separadora */}
-      <div className="w-full h-px bg-white/20 my-3" />
+      <div className={`w-full h-px bg-white/20 ${isPreview ? 'my-12' : 'my-12'}`} />
 
       {/* Social links */}
       <div className={`flex flex-nowrap justify-center ${isPreview ? 'gap-1.5' : 'gap-1'} ${isPreview ? 'mb-4' : 'mb-6'} overflow-x-auto px-1`}>
