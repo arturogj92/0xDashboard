@@ -15,6 +15,9 @@ interface LandingPreviewProps {
   socialLinks?: SocialLinkData[];
   isPreview?: boolean;
   themeId?: string;
+  configurations?: {
+    borderRadius?: string;
+  };
 }
 
 // Iconos personalizados
@@ -62,7 +65,8 @@ export const LandingPreview = React.memo(function LandingPreview({
   sections = [], 
   socialLinks = [],
   isPreview = false,
-  themeId = 'gradient-purple'
+  themeId = 'gradient-purple',
+  configurations = {}
 }: LandingPreviewProps) {
   const t = useTranslations('landing');
   const { user } = useAuth();
@@ -86,6 +90,31 @@ export const LandingPreview = React.memo(function LandingPreview({
 
   // Obtener el tema actual
   const currentTheme = getThemeById(themeId) || getDefaultTheme();
+  
+  // Configuraciones con valores por defecto
+  const borderRadiusValue = configurations.borderRadius || 'rounded-xl';
+  
+  // Convertir borderRadius CSS a valor de píxeles para estilos inline
+  const getBorderRadiusStyle = (cssValue: string): string => {
+    if (cssValue === 'rounded-none') return '0px';
+    if (cssValue === 'rounded-sm') return '2px';
+    if (cssValue === 'rounded-md') return '6px';
+    if (cssValue === 'rounded-lg') return '8px';
+    if (cssValue === 'rounded-xl') return '12px';
+    if (cssValue === 'rounded-2xl') return '16px';
+    
+    // Extraer valor de rounded-[Npx]
+    const pxMatch = cssValue.match(/rounded-\[(\d+)px\]/);
+    if (pxMatch) return `${pxMatch[1]}px`;
+    
+    // Si es un valor en %, ignorar y usar default
+    const percentMatch = cssValue.match(/rounded-\[(\d+)%\]/);
+    if (percentMatch) return '12px'; // Convertir a px default
+    
+    return '12px'; // Default
+  };
+  
+  const borderRadiusStyle = getBorderRadiusStyle(borderRadiusValue);
 
   // Aplicar CSS variables cuando cambie el tema
   useEffect(() => {
@@ -184,12 +213,13 @@ export const LandingPreview = React.memo(function LandingPreview({
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`${isPreview ? 'min-h-[65px] w-[95%]' : 'min-h-[60px] sm:min-h-[65px] md:min-h-[80px] w-full md:w-[70%] lg:w-[60%] xl:w-[50%]'} flex items-center overflow-hidden rounded-xl transition-all duration-200 hover:scale-105 group`}
+                    className={`${isPreview ? 'min-h-[65px] w-[95%]' : 'min-h-[60px] sm:min-h-[65px] md:min-h-[80px] w-full md:w-[70%] lg:w-[60%] xl:w-[50%]'} flex items-center overflow-hidden transition-all duration-200 hover:scale-105 group`}
                     style={{
                       backgroundColor: 'var(--preview-link-background)',
                       borderColor: 'var(--preview-link-border)',
                       color: 'var(--preview-link-text)',
-                      border: '1px solid'
+                      border: '1px solid',
+                      borderRadius: borderRadiusStyle
                     }}
                   >
                     {link.image && (
@@ -259,12 +289,13 @@ export const LandingPreview = React.memo(function LandingPreview({
               href={socialLink.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${isPreview ? 'p-1.5' : 'p-1.5 sm:p-2 md:p-2.5'} rounded-md transition-all duration-200 hover:scale-105 flex-shrink-0`}
+              className={`${isPreview ? 'p-1.5' : 'p-1.5 sm:p-2 md:p-2.5'} transition-all duration-200 hover:scale-105 flex-shrink-0`}
               style={{
                 backgroundColor: 'var(--preview-link-background)',
                 borderColor: 'var(--preview-link-border)',
                 color: 'var(--preview-link-text)',
-                border: '1px solid'
+                border: '1px solid',
+                borderRadius: borderRadiusStyle
               }}
             >
               <IconComponent className={`${isPreview ? 'w-3.5 h-3.5' : 'w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4'}`} />

@@ -12,6 +12,7 @@ export interface PublicLandingPageDisplayProps {
     settings: any;
     slug: string;
     theme_id?: string;
+    configurations?: any;
     links?: LinkData[];
     sections?: SectionData[];
     socialLinks?: SocialLinkData[];
@@ -60,6 +61,7 @@ export default function PublicLandingPageDisplay({ landing }: PublicLandingPageD
         socialLinks={socialLinks}
         isPreview={false}
         themeId={landing.theme_id || 'gradient-purple'}
+        configurations={landing.configurations}
       />
     </div>
   );
