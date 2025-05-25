@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Toggle } from "@/components/ui/toggle";
 import { LinkData } from "./types";
+import { ImageCropModal } from "./ImageCropModal";
 import {
   Card,
   CardContent,
@@ -161,6 +162,8 @@ export default function MultiSectionsItem({
   const [urlId,setUrlId]=useState<number|null>(link.url_link_id??null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
 
   const [stats7,setStats7]=useState<StatsData|null>(null);
   const [stats28,setStats28]=useState<StatsData|null>(null);
@@ -202,13 +205,24 @@ export default function MultiSectionsItem({
       return;
     }
 
-    // Crear FormData para enviar la imagen
-    const formData = new FormData();
-    formData.append('image', file);
+    // Crear URL temporal para mostrar en el modal de recorte
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      setImageToCrop(result);
+      setShowCropModal(true);
+    };
+    reader.readAsDataURL(file);
+  }
 
+  async function handleCropComplete(croppedImageBlob: Blob) {
     try {
       setUploadingImage(true);
       
+      // Crear FormData con la imagen recortada
+      const formData = new FormData();
+      formData.append('image', croppedImageBlob, 'cropped-image.jpg');
+
       // Obtener token de autorización
       const token = localStorage.getItem('token');
       const headers: Record<string, string> = {};
@@ -219,7 +233,7 @@ export default function MultiSectionsItem({
       const res = await fetch("/api/images", {
         method: "POST",
         headers,
-        body: formData // No establecer Content-Type, el navegador lo hace automáticamente
+        body: formData
       });
       
       const j = await res.json();
@@ -227,7 +241,6 @@ export default function MultiSectionsItem({
       if (!res.ok) {
         setUploadError(j.error || 'Error al subir la imagen');
         console.error('Error al subir imagen:', j.error);
-        // Limpiar error después de 5 segundos
         setTimeout(() => setUploadError(null), 5000);
         return;
       }
@@ -237,12 +250,12 @@ export default function MultiSectionsItem({
     } catch (error) {
       setUploadError('Error de conexión al subir la imagen');
       console.error('Error al subir imagen:', error);
-      // Limpiar error después de 5 segundos
       setTimeout(() => setUploadError(null), 5000);
     } finally {
       setUploadingImage(false);
     }
   }
+
   async function removeImg(){
     if(image) await fetch(`/api/images?fileName=${fileName(image)}`,{method:"DELETE"});
     setImage(""); upd({image:""});
@@ -341,7 +354,7 @@ export default function MultiSectionsItem({
                   ) : (
                     <>
                       <div className="text-xs font-medium">{t('noImage')}</div>
-                      <div className="text-[10px] text-gray-400 mt-1">{t('uploadImage')}</div>
+                      <div className="text-[10px] text-gray-400 mt-1">Haz clic para subir</div>
                     </>
                   )}
                 </div>
@@ -477,6 +490,19 @@ export default function MultiSectionsItem({
               </CardContent>
             </Card>
           </div>
+        )}
+
+        {/* Modal de recorte de imagen */}
+        {showCropModal && imageToCrop && (
+          <ImageCropModal
+            isOpen={showCropModal}
+            imageSrc={imageToCrop}
+            onClose={() => {
+              setShowCropModal(false);
+              setImageToCrop(null);
+            }}
+            onCropComplete={handleCropComplete}
+          />
         )}
       </div>
     </div>
