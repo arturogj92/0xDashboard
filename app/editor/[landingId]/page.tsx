@@ -234,7 +234,7 @@ export default function AdminPage() {
       {/* Previsualización */}
       <div 
         ref={previewRef}
-        className={`order-first md:order-last w-full md:w-1/2 p-4 md:p-8 bg-transparent flex flex-col items-center justify-center overflow-y-auto z-0 transition-all duration-300 ${
+        className={`order-first md:order-last w-full md:w-1/2 p-4 md:p-8 bg-transparent flex flex-col items-center justify-center z-0 transition-all duration-300 ${
           previewPosition === 'fixed' 
             ? 'md:fixed md:top-16 md:right-0 md:bottom-16' 
             : 'md:absolute md:top-0 md:right-0 md:h-screen'
