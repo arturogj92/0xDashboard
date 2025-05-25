@@ -226,6 +226,7 @@ export default function AdminPage() {
               links={links}
               sections={sections}
               socialLinks={socialLinks}
+              isPreview={true}
             />
           </div>
         </div>
