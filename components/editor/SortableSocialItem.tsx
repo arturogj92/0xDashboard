@@ -8,7 +8,7 @@ import { SocialLinkData } from "./types";
 import { Input } from "@/components/ui/input";
 import { FaGithub, FaInstagram, FaLinkedin, FaTiktok, FaXTwitter, FaYoutube } from "react-icons/fa6";
 import { FaCheckCircle } from "react-icons/fa";
-import { Bars2Icon, EyeIcon as HeroEyeIcon, EyeSlashIcon as HeroEyeSlashIcon } from "@heroicons/react/24/outline"; // Usar Heroicons para los ojos
+import { Bars2Icon, EyeIcon as HeroEyeIcon, EyeSlashIcon as HeroEyeSlashIcon, ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/24/outline"; // Usar Heroicons para los ojos
 import { Button } from "@/components/ui/button"; // Importar Button
 
 function getSocialIcon(name: string) {
@@ -36,9 +36,13 @@ interface SortableSocialItemProps {
     data: SocialLinkData;
     onToggleVisibility: (visible: boolean) => void;
     onUrlChange: (url: string) => void;
+    onMoveUp?: (id: string) => void;
+    onMoveDown?: (id: string) => void;
+    isFirst?: boolean;
+    isLast?: boolean;
 }
 
-export function SortableSocialItem({id, data, onToggleVisibility, onUrlChange}: SortableSocialItemProps) {
+export function SortableSocialItem({id, data, onToggleVisibility, onUrlChange, onMoveUp, onMoveDown, isFirst = false, isLast = false}: SortableSocialItemProps) {
     const {
         setNodeRef,
         attributes,
@@ -109,6 +113,32 @@ export function SortableSocialItem({id, data, onToggleVisibility, onUrlChange}: 
                 {draftUrl.trim() !== "" && isValidUrl && (
                     <FaCheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500" title="URL válida" />
                 )}
+            </div>
+
+            {/* Botones de movimiento */}
+            <div className="flex flex-col gap-1">
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onMoveUp?.(id)}
+                    disabled={isFirst}
+                    aria-label="Mover arriba"
+                    className={`h-6 w-6 p-0 text-muted-foreground hover:text-foreground ${isFirst ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    title="Mover arriba"
+                >
+                    <ChevronUpIcon className="h-3 w-3" />
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onMoveDown?.(id)}
+                    disabled={isLast}
+                    aria-label="Mover abajo"
+                    className={`h-6 w-6 p-0 text-muted-foreground hover:text-foreground ${isLast ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    title="Mover abajo"
+                >
+                    <ChevronDownIcon className="h-3 w-3" />
+                </Button>
             </div>
 
             {/* Botón de Visibilidad */}

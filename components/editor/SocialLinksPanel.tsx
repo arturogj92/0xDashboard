@@ -154,6 +154,81 @@ export default function SocialLinksPanel({landingId, onReorder, onUpdate}: Socia
         onReorder?.();
     }
 
+    // Funciones para mover social links arriba/abajo
+    async function moveSocialLinkUp(id: string) {
+        const currentIndex = socialLinks.findIndex(s => s.id === id);
+        if (currentIndex <= 0) return; // Ya está en la primera posición
+
+        // Intercambiar posiciones
+        const newLinks = [...socialLinks];
+        [newLinks[currentIndex], newLinks[currentIndex - 1]] = [newLinks[currentIndex - 1], newLinks[currentIndex]];
+        
+        // Actualizar posiciones
+        newLinks.forEach((link, index) => {
+            link.position = index;
+        });
+
+        // Actualizar estado local
+        setSocialLinks(newLinks);
+        onUpdate?.(newLinks);
+
+        // Actualizar en el servidor
+        const payload = newLinks.map((item, idx) => ({ id: item.id, position: idx }));
+        try {
+            const res = await fetch(`${API_URL}/api/social-links?landingId=${landingId}`, {
+                method: "PATCH",
+                headers: {
+                    ...createAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload),
+            });
+            if(!res.ok){
+                console.error('Move up failed', res.status);
+            }
+        } catch(err){
+            console.error('Error moving social link up:', err);
+        }
+        onReorder?.();
+    }
+
+    async function moveSocialLinkDown(id: string) {
+        const currentIndex = socialLinks.findIndex(s => s.id === id);
+        if (currentIndex >= socialLinks.length - 1) return; // Ya está en la última posición
+
+        // Intercambiar posiciones
+        const newLinks = [...socialLinks];
+        [newLinks[currentIndex], newLinks[currentIndex + 1]] = [newLinks[currentIndex + 1], newLinks[currentIndex]];
+        
+        // Actualizar posiciones
+        newLinks.forEach((link, index) => {
+            link.position = index;
+        });
+
+        // Actualizar estado local
+        setSocialLinks(newLinks);
+        onUpdate?.(newLinks);
+
+        // Actualizar en el servidor
+        const payload = newLinks.map((item, idx) => ({ id: item.id, position: idx }));
+        try {
+            const res = await fetch(`${API_URL}/api/social-links?landingId=${landingId}`, {
+                method: "PATCH",
+                headers: {
+                    ...createAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload),
+            });
+            if(!res.ok){
+                console.error('Move down failed', res.status);
+            }
+        } catch(err){
+            console.error('Error moving social link down:', err);
+        }
+        onReorder?.();
+    }
+
     return (
         <div className="border border-indigo-900/30 p-4 my-8 border-dashed rounded-md bg-[#120724] hover:bg-indigo-950/20">
             <div className="text-center mb-4 w-full">
@@ -179,7 +254,7 @@ export default function SocialLinksPanel({landingId, onReorder, onUpdate}: Socia
                     strategy={verticalListSortingStrategy}
                 >
                     <div className="space-y-2" style={{ position: 'relative' }}>
-                        {socialLinks.map((item) => (
+                        {socialLinks.map((item, index) => (
                             <SortableSocialItem
                                 key={item.id}
                                 id={item.id}
@@ -188,6 +263,10 @@ export default function SocialLinksPanel({landingId, onReorder, onUpdate}: Socia
                                     handleUpdate(item.id, {visible})
                                 }
                                 onUrlChange={(url) => handleUpdate(item.id, {url})}
+                                onMoveUp={moveSocialLinkUp}
+                                onMoveDown={moveSocialLinkDown}
+                                isFirst={index === 0}
+                                isLast={index === socialLinks.length - 1}
                             />
                         ))}
                     </div>
