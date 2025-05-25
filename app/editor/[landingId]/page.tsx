@@ -186,7 +186,17 @@ export default function AdminPage() {
     }
   };
 
-  const handleConfigurationUpdate = async (newConfig: any) => {
+  const handleConfigurationUpdate = (newConfig: any) => {
+    // Actualizar estado local inmediatamente para ver cambios en tiempo real
+    const updatedConfigurations = {
+      ...landing.configurations,
+      ...newConfig
+    };
+    setLanding(prev => ({ ...prev, configurations: updatedConfigurations }));
+  };
+
+  const handleConfigurationSave = async (newConfig: any) => {
+    // Esta función se llamará con debounce para guardar en el backend
     try {
       const updatedConfigurations = {
         ...landing.configurations,
@@ -199,13 +209,11 @@ export default function AdminPage() {
         body: JSON.stringify({ configurations: updatedConfigurations }),
       });
       
-      if (res.ok) {
-        setLanding(prev => ({ ...prev, configurations: updatedConfigurations }));
-      } else {
-        console.error('Error actualizando configuracion');
+      if (!res.ok) {
+        console.error('Error guardando configuracion');
       }
     } catch (error) {
-      console.error('Error actualizando configuracion:', error);
+      console.error('Error guardando configuracion:', error);
     }
   };
 
@@ -300,6 +308,7 @@ export default function AdminPage() {
           <BorderRadiusSelector
             value={landing.configurations?.borderRadius || 'rounded-xl'}
             onChange={(borderRadius) => handleConfigurationUpdate({ borderRadius })}
+            onSave={(borderRadius) => handleConfigurationSave({ borderRadius })}
             className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
           />
         </div>

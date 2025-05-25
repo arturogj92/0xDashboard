@@ -1,9 +1,10 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface BorderRadiusSelectorProps {
   value: string;
   onChange: (borderRadius: string) => void;
+  onSave?: (borderRadius: string) => void;
   className?: string;
 }
 
@@ -36,9 +37,15 @@ const extractRadiusValue = (cssValue: string): number => {
 export default function BorderRadiusSelector({ 
   value, 
   onChange, 
+  onSave,
   className = "" 
 }: BorderRadiusSelectorProps) {
   const [sliderValue, setSliderValue] = useState(0);
+  const [pendingValue, setPendingValue] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [lastUpdateTime, setLastUpdateTime] = useState(0);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const updateThrottleRef = useRef<NodeJS.Timeout | null>(null);
 
   // Sincronizar slider con valor prop
   useEffect(() => {
@@ -46,11 +53,71 @@ export default function BorderRadiusSelector({
     setSliderValue(currentRadius);
   }, [value]);
 
+  // Limpiar timeouts al desmontar
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      if (updateThrottleRef.current) {
+        clearTimeout(updateThrottleRef.current);
+      }
+    };
+  }, []);
+
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt(e.target.value);
     setSliderValue(newValue);
+    setPendingValue(newValue);
+    
     const borderRadiusStyle = radiusToSliderValue(newValue);
-    onChange(borderRadiusStyle);
+    
+    // Throttle las actualizaciones para evitar lag
+    const now = Date.now();
+    if (now - lastUpdateTime > 16) { // ~60fps
+      onChange(borderRadiusStyle);
+      setLastUpdateTime(now);
+    } else {
+      // Si está muy rápido, programar para después
+      if (updateThrottleRef.current) {
+        clearTimeout(updateThrottleRef.current);
+      }
+      updateThrottleRef.current = setTimeout(() => {
+        onChange(borderRadiusStyle);
+        setLastUpdateTime(Date.now());
+      }, 16);
+    }
+    
+    // Cancelar cualquier timeout previo mientras se arrastra
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  };
+
+  const handleMouseDown = () => {
+    setIsDragging(true);
+    // Cancelar timeout si existe
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    
+    // Solo iniciar el countdown cuando se suelta el slider
+    if (onSave && pendingValue !== null) {
+      const borderRadiusStyle = radiusToSliderValue(pendingValue);
+      timeoutRef.current = setTimeout(() => {
+        onSave(borderRadiusStyle);
+        setPendingValue(null);
+        timeoutRef.current = null;
+      }, 1000); // Esperar 1 segundo después de soltar
+    } else if (!onSave) {
+      setPendingValue(null);
+    }
   };
 
   const getRadiusLabel = (radius: number): string => {
@@ -69,8 +136,20 @@ export default function BorderRadiusSelector({
         <label className="text-sm font-medium text-white">
           Bordes de los Links
         </label>
-        <span className="text-xs text-gray-400">
+        <span className="text-xs text-gray-400 flex items-center gap-2">
           {sliderValue}px - {getRadiusLabel(sliderValue)}
+          {isDragging && (
+            <span className="inline-flex items-center gap-1 text-blue-400">
+              <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+              Ajustando...
+            </span>
+          )}
+          {!isDragging && pendingValue !== null && (
+            <span className="inline-flex items-center gap-1 text-yellow-400">
+              <div className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse"></div>
+              Guardando...
+            </span>
+          )}
         </span>
       </div>
       
@@ -82,7 +161,11 @@ export default function BorderRadiusSelector({
           max="100"
           value={sliderValue}
           onChange={handleSliderChange}
-          className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onTouchStart={handleMouseDown}
+          onTouchEnd={handleMouseUp}
+          className="w-full h-3 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
           style={{
             background: `linear-gradient(to right, 
               #8b5cf6 0%, 
@@ -106,9 +189,10 @@ export default function BorderRadiusSelector({
       <div className="flex items-center gap-3 p-3 bg-gray-800/30 rounded-lg">
         <span className="text-xs text-gray-400">Vista previa:</span>
         <div 
-          className="w-20 h-8 bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-200"
+          className="w-20 h-8 bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-150 ease-out transform hover:scale-105"
           style={{
-            borderRadius: `${sliderValue}px`
+            borderRadius: `${sliderValue}px`,
+            boxShadow: `0 4px 12px rgba(168, 85, 247, 0.3)`
           }}
         />
         <span className="text-xs text-gray-300 ml-auto">
@@ -117,35 +201,65 @@ export default function BorderRadiusSelector({
       </div>
 
       <style jsx>{`
+        .slider {
+          will-change: background;
+        }
+
         .slider::-webkit-slider-thumb {
           appearance: none;
-          height: 18px;
-          width: 18px;
+          height: 20px;
+          width: 20px;
           border-radius: 50%;
           background: #8b5cf6;
           cursor: pointer;
-          box-shadow: 0 2px 6px rgba(139, 92, 246, 0.3);
+          box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
           border: 2px solid #ffffff;
+          will-change: transform, box-shadow;
+          transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
 
         .slider::-moz-range-thumb {
-          height: 18px;
-          width: 18px;
+          height: 20px;
+          width: 20px;
           border-radius: 50%;
           background: #8b5cf6;
           cursor: pointer;
           border: 2px solid #ffffff;
-          box-shadow: 0 2px 6px rgba(139, 92, 246, 0.3);
+          box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+          will-change: transform, box-shadow;
+          transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
 
         .slider:hover::-webkit-slider-thumb {
-          box-shadow: 0 4px 12px rgba(139, 92, 246, 0.5);
           transform: scale(1.1);
+          box-shadow: 0 4px 12px rgba(139, 92, 246, 0.5);
         }
 
         .slider:hover::-moz-range-thumb {
-          box-shadow: 0 4px 12px rgba(139, 92, 246, 0.5);
           transform: scale(1.1);
+          box-shadow: 0 4px 12px rgba(139, 92, 246, 0.5);
+        }
+
+        .slider:active::-webkit-slider-thumb {
+          transform: scale(1.15);
+        }
+
+        .slider:active::-moz-range-thumb {
+          transform: scale(1.15);
+        }
+
+        /* Track styling optimizado */
+        .slider::-webkit-slider-runnable-track {
+          height: 12px;
+          border-radius: 6px;
+          background: #374151;
+        }
+
+        .slider::-moz-range-track {
+          height: 12px;
+          border-radius: 6px;
+          background: #374151;
+          border: none;
         }
       `}</style>
     </div>
