@@ -4,6 +4,7 @@ import { User, PlayCircle, ExternalLink, Github, Linkedin, Facebook, Globe } fro
 import { useTranslations } from 'next-intl';
 import React, { useMemo } from 'react';
 import { LinkData, SectionData, SocialLinkData } from '@/components/editor/types';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface LandingPreviewProps {
   name: string;
@@ -61,6 +62,7 @@ export const LandingPreview = React.memo(function LandingPreview({
   isPreview = false
 }: LandingPreviewProps) {
   const t = useTranslations('landing');
+  const { user } = useAuth();
   
   // Memorizar cálculos para optimizar rendimiento
   const { visibleLinks, visibleSocialLinks, linksBySection } = useMemo(() => {
@@ -83,6 +85,10 @@ export const LandingPreview = React.memo(function LandingPreview({
       {/* Avatar */}
       <div className="relative w-12 h-12 flex-shrink-0">
         <Avatar className="w-full h-full rounded-full border-2 border-purple-500 ring-2 ring-purple-300/30">
+          <AvatarImage 
+            src={user?.avatar_url} 
+            alt={user?.name || user?.username || 'Avatar'} 
+          />
           <AvatarFallback className="bg-gradient-to-br from-purple-600 to-indigo-800 text-white font-semibold flex items-center justify-center">
             <User className="w-6 h-6" />
           </AvatarFallback>

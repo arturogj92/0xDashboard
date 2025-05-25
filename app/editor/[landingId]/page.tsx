@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { API_URL, createAuthHeaders } from "@/lib/api";
 import MultiSectionsBoard from "@/components/editor/MultiSectionsBoard";
 import SocialLinksPanel from "@/components/editor/SocialLinksPanel";
+import { AvatarUpload } from "@/components/editor/AvatarUpload";
 import { LandingPreview } from "@/components/landing/LandingPreview";
 import { LinkData, SectionData, SocialLinkData } from "@/components/editor/types";
 import { useParams } from 'next/navigation';
@@ -245,6 +246,11 @@ export default function AdminPage() {
           <p className="text-sm text-gray-400 max-w-2xl mx-auto leading-relaxed">
             {t('description')}
           </p>
+          
+          {/* Componente de subida de avatar */}
+          <div className="mt-6 mb-4">
+            <AvatarUpload size="lg" />
+          </div>
         </div>
         <div className="w-full">
           <MultiSectionsBoard
