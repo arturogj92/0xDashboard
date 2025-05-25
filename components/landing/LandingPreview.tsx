@@ -25,6 +25,10 @@ interface LandingPreviewProps {
       primary: string;
       secondary: string;
     };
+    linkColor?: {
+      background: string;
+      text: string;
+    };
   };
 }
 
@@ -103,6 +107,7 @@ export const LandingPreview = React.memo(function LandingPreview({
   const borderRadiusValue = configurations.borderRadius || 'rounded-xl';
   const gradientConfig = configurations.gradient || { color1: '#000000', color2: '#4a044d' };
   const fontColorConfig = configurations.fontColor || { primary: '#ffffff', secondary: '#e2e8f0' };
+  const linkColorConfig = configurations.linkColor || { background: '#000000', text: '#ffffff' };
   
   // Generar gradiente dinámico si existe configuración personalizada
   const dynamicBackground = configurations.gradient 
@@ -112,6 +117,10 @@ export const LandingPreview = React.memo(function LandingPreview({
   // Colores de fuente dinámicos
   const dynamicTextPrimary = configurations.fontColor ? fontColorConfig.primary : currentTheme.colors.textPrimary;
   const dynamicTextSecondary = configurations.fontColor ? fontColorConfig.secondary : currentTheme.colors.textSecondary;
+  
+  // Colores de links dinámicos
+  const dynamicLinkBackground = configurations.linkColor ? linkColorConfig.background : currentTheme.colors.linkBackground;
+  const dynamicLinkText = configurations.linkColor ? linkColorConfig.text : currentTheme.colors.linkText;
   
   // Convertir borderRadius CSS a valor de píxeles para estilos inline
   const getBorderRadiusStyle = (cssValue: string): string => {
@@ -234,9 +243,9 @@ export const LandingPreview = React.memo(function LandingPreview({
                     rel="noopener noreferrer"
                     className={`${isPreview ? 'min-h-[65px] w-[95%]' : 'min-h-[60px] sm:min-h-[65px] md:min-h-[80px] w-full md:w-[70%] lg:w-[60%] xl:w-[50%]'} flex items-center overflow-hidden transition-all duration-200 hover:scale-105 group`}
                     style={{
-                      backgroundColor: 'var(--preview-link-background)',
+                      backgroundColor: dynamicLinkBackground,
                       borderColor: 'var(--preview-link-border)',
-                      color: 'var(--preview-link-text)',
+                      color: dynamicLinkText,
                       border: '1px solid',
                       borderRadius: borderRadiusStyle
                     }}
@@ -259,7 +268,7 @@ export const LandingPreview = React.memo(function LandingPreview({
                       <h3 
                         className={`${isPreview ? 'text-xs' : 'text-sm'} font-medium leading-tight`}
                         style={{ 
-                          color: 'var(--preview-link-text)',
+                          color: dynamicLinkText,
                           fontFamily: `var(--preview-font-family), ${currentTheme.typography.fontFamily}, system-ui, sans-serif`
                         }}
                       >
@@ -310,9 +319,9 @@ export const LandingPreview = React.memo(function LandingPreview({
               rel="noopener noreferrer"
               className={`${isPreview ? 'p-1.5' : 'p-1.5 sm:p-2 md:p-2.5'} transition-all duration-200 hover:scale-105 flex-shrink-0`}
               style={{
-                backgroundColor: 'var(--preview-link-background)',
+                backgroundColor: dynamicLinkBackground,
                 borderColor: 'var(--preview-link-border)',
-                color: 'var(--preview-link-text)',
+                color: dynamicLinkText,
                 border: '1px solid',
                 borderRadius: borderRadiusStyle
               }}
