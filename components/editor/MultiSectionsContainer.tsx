@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { Reorder } from "framer-motion";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { useDroppable } from "@dnd-kit/core";
 import { LinkData, SectionData } from "./types";
 import MultiSectionsItem from "./MultiSectionsItem";
 import {
@@ -69,13 +73,18 @@ interface Props{
   reorderLinksInContainer:(ids:string[])=>void;
   onMoveToSection:(id:string,newSectionId:string)=>void;
   transitioningLinks:Set<string>;
+  activeId:string|null;
 }
 
 export default function MultiSectionsContainer({
   containerId,items,links,sections,moveSectionUp,moveSectionDown,idx,total,
   onUpdateLink,onDeleteLink,onCreateLinkInSection,onUpdateSection,onDeleteSection,
-  reorderLinksInContainer,onMoveToSection,transitioningLinks,
+  reorderLinksInContainer,onMoveToSection,transitioningLinks,activeId,
 }:Props){
+  
+  const { setNodeRef, isOver } = useDroppable({
+    id: containerId === 'no-section' ? 'no-section' : `section-${containerId}`,
+  });
 
   const sec=sections.find(s=>s.id===containerId);
   const isNoSec=containerId==="no-section";
@@ -108,8 +117,13 @@ export default function MultiSectionsContainer({
   }
 
   return(
-    <div data-section-id={containerId}
-         className="w-full border-dashed border border-indigo-900/30 p-4 rounded-md bg-[#120724] hover:bg-indigo-950/20">
+    <div 
+      ref={setNodeRef}
+      data-section-id={containerId}
+      className={`w-full border-dashed border border-indigo-900/30 p-4 rounded-md bg-[#120724] hover:bg-indigo-950/20 transition-colors ${
+        isOver ? 'ring-2 ring-purple-500 bg-purple-900/20' : ''
+      }`}
+    >
       <div className="relative flex items-center justify-center mb-2">
         {edit&&sec?(
           <input autoFocus value={title}
@@ -136,16 +150,8 @@ export default function MultiSectionsContainer({
         )}
       </div>
 
-      <div className="flex flex-col gap-2">
-        <Reorder.Group<string> 
-          axis="y" 
-          values={order} 
-          onReorder={setOrder} 
-          as="div" 
-          className="flex flex-col gap-4" 
-          role="group"
-          layoutScroll
-        >
+      <SortableContext items={order} strategy={verticalListSortingStrategy}>
+        <div className="flex flex-col gap-4">
           {order.map(id=>{
             const link=links.find(l=>l.id===id); if(!link) return null;
             return(
@@ -157,11 +163,12 @@ export default function MultiSectionsContainer({
                 onMoveToSection={onMoveToSection}
                 availableSections={availableSections}
                 isTransitioning={transitioningLinks.has(link.id)}
+                activeId={activeId}
               />
             );
           })}
-        </Reorder.Group>
-      </div>
+        </div>
+      </SortableContext>
 
       {order.length===0&&<p className="text-sm text-gray-400">Arrastra aquí enlaces para asignar</p>}
     </div>

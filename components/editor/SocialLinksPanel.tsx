@@ -38,9 +38,11 @@ interface SocialLinksPanelProps {
     landingId: string;
     /** Called when a social link is reordered (optional) */
     onReorder?: () => void;
+    /** Called when social links are updated (optional) */
+    onUpdate?: (socialLinks: SocialLinkData[]) => void;
 }
 
-export default function SocialLinksPanel({landingId, onReorder}: SocialLinksPanelProps) {
+export default function SocialLinksPanel({landingId, onReorder, onUpdate}: SocialLinksPanelProps) {
     const t = useTranslations('social');
     const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>(initialPlaceholders);
 
@@ -65,10 +67,12 @@ export default function SocialLinksPanel({landingId, onReorder}: SocialLinksPane
                         position: maxPos + idx + 1,
                     };
                 });
-                setSocialLinks(merged.sort((a,b)=>a.position-b.position));
+                const sortedLinks = merged.sort((a,b)=>a.position-b.position);
+                setSocialLinks(sortedLinks);
+                onUpdate?.(sortedLinks);
             })
             .catch((err) => console.error("Error fetching social links:", err));
-    }, [landingId]);
+    }, [landingId, onUpdate]);
 
     async function handleUpdate(id: string, updates: Partial<SocialLinkData>) {
         try {
@@ -94,9 +98,12 @@ export default function SocialLinksPanel({landingId, onReorder}: SocialLinksPane
             const data = await res.json();
             console.log("Social link updated:", data);
             
-            setSocialLinks((prev) =>
-                prev.map((s) => (s.id === id ? { ...s, ...data } : s))
-            );
+            setSocialLinks((prev) => {
+                const updatedSocialLinks = prev.map((s) => (s.id === id ? { ...s, ...data } : s));
+                // Notificar al componente padre de los cambios
+                onUpdate?.(updatedSocialLinks);
+                return updatedSocialLinks;
+            });
         } catch (error) {
             console.error("Error updating social link:", error);
         }
@@ -126,7 +133,9 @@ export default function SocialLinksPanel({landingId, onReorder}: SocialLinksPane
         const newOrder = arrayMove(socialLinks, oldIndex, newIndex);
         const payload = newOrder.map((item, idx) => ({ id: item.id, position: idx }));
         // Optimistic update
-        setSocialLinks(newOrder.map((s, idx)=>({...s, position: idx})));
+        const updatedLinks = newOrder.map((s, idx)=>({...s, position: idx}));
+        setSocialLinks(updatedLinks);
+        onUpdate?.(updatedLinks);
         try {
             const res = await fetch(`${API_URL}/api/social-links?landingId=${landingId}`, {
                 method: "PATCH",

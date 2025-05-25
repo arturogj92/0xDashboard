@@ -4,7 +4,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 import React, { useState, useEffect } from "react";
 import { SocialLinkData } from "./types";
-import { Switch } from "@/components/ui/switch"; // Cambiado de Toggle a Switch
+ // Cambiado de Toggle a Switch
 import { Input } from "@/components/ui/input";
 import { FaGithub, FaInstagram, FaLinkedin, FaTiktok, FaXTwitter, FaYoutube } from "react-icons/fa6";
 import { FaCheckCircle } from "react-icons/fa";
@@ -119,7 +119,7 @@ export function SortableSocialItem({id, data, onToggleVisibility, onUrlChange}: 
                 aria-label={data.visible ? "Ocultar enlace" : "Mostrar enlace"}
                 className="text-muted-foreground hover:text-foreground"
             >
-                {data.visible ? <HeroEyeSlashIcon className="h-5 w-5" /> : <HeroEyeIcon className="h-5 w-5" />}
+                {data.visible ? <HeroEyeIcon className="h-5 w-5" /> : <HeroEyeSlashIcon className="h-5 w-5" />}
             </Button>
         </li>
     );

@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { Reorder } from "framer-motion";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +35,7 @@ function StatsIcon() {
     </svg>
   );
 }
+
 function EyeIcon() {
   return (
     <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -43,6 +45,7 @@ function EyeIcon() {
     </svg>
   );
 }
+
 function EyeSlashIcon() {
   return (
     <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -51,6 +54,7 @@ function EyeSlashIcon() {
     </svg>
   );
 }
+
 function TitleIcon() {
   return (
     <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
@@ -58,6 +62,7 @@ function TitleIcon() {
     </svg>
   );
 }
+
 function LinkIcon() {
   return (
     <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
@@ -66,6 +71,7 @@ function LinkIcon() {
     </svg>
   );
 }
+
 function TrashIcon() {
   return (
     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
@@ -74,6 +80,7 @@ function TrashIcon() {
     </svg>
   );
 }
+
 function CloseIcon() {
   return (
     <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -81,6 +88,7 @@ function CloseIcon() {
     </svg>
   );
 }
+
 function MoveIcon() {
   return (
     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
@@ -96,6 +104,7 @@ const countryFlags: Record<string, string> = {
   AR:"🇦🇷", TW:"🇹🇼", FR:"🇫🇷", DK:"🇩🇰", CO:"🇨🇴", VE:"🇻🇪", PE:"🇵🇪", SE:"🇸🇪",
   PT:"🇵🇹", IT:"🇮🇹", SG:"🇸🇬", RO:"🇷🇴", BO:"🇧🇴",
 };
+
 interface DailyStat{date:string;count:number;countries:Record<string,number>; }
 interface StatsData{selected:number;global:number;variation:number;dailyStats:DailyStat[];byCountry:Record<string,number>; }
 interface TooltipItem{name:string;value:number;color:string;payload:{date:string;count:number;countries:Record<string,number>;}; }
@@ -106,6 +115,7 @@ interface Props{
   onMoveToSection: (id: string, newSectionId: string) => void;
   availableSections: Array<{id: string; name: string}>;
   isTransitioning?: boolean;
+  activeId?: string | null;
 }
 
 const fileName=(url:string)=>{try{return url.split("/").pop()??"";}catch{return"";}};
@@ -126,15 +136,31 @@ function CustomTooltip({active,payload,label}:{active?:boolean;payload?:TooltipI
 
 /* ═════════ COMPONENTE ═════════ */
 export default function MultiSectionsItem({
-  link,onUpdateLink,onDeleteLink,onMoveToSection,availableSections,isTransitioning = false,
+  link,onUpdateLink,onDeleteLink,onMoveToSection,availableSections,isTransitioning = false,activeId,
 }:Props){
 
   const t = useTranslations('linkItem');
+  
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: link.id });
+  
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
   
   const [title,setTitle]=useState(link.title);
   const [url,setUrl]=useState(link.url);
   const [image,setImage]=useState(link.image??"");
   const [urlId,setUrlId]=useState<number|null>(link.url_link_id??null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const [stats7,setStats7]=useState<StatsData|null>(null);
   const [stats28,setStats28]=useState<StatsData|null>(null);
@@ -151,14 +177,71 @@ export default function MultiSectionsItem({
 
   async function selectFile(e:React.ChangeEvent<HTMLInputElement>){
     if(!e.target.files?.length) return;
-    const reader=new FileReader();
-    reader.onload=async ()=>{
-      const base64=(reader.result as string).split(",")[1];
-      const res=await fetch("/api/images",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({base64})});
-      const j=await res.json(); if(!res.ok) return console.error(j.error);
-      setImage(j.url); upd({image:j.url});
-    };
-    reader.readAsDataURL(e.target.files[0]);
+    
+    const file = e.target.files[0];
+    
+    // Limpiar errores previos y resetear el input
+    setUploadError(null);
+    if (e.target) {
+      e.target.value = '';
+    }
+
+    // Validaciones básicas en el frontend
+    if (!file.type.startsWith('image/')) {
+      setUploadError('El archivo debe ser una imagen');
+      // Limpiar error después de 5 segundos
+      setTimeout(() => setUploadError(null), 5000);
+      return;
+    }
+
+    const MAX_SIZE = 50 * 1024 * 1024; // 50MB
+    if (file.size > MAX_SIZE) {
+      setUploadError('La imagen no puede ser mayor a 50MB');
+      // Limpiar error después de 5 segundos
+      setTimeout(() => setUploadError(null), 5000);
+      return;
+    }
+
+    // Crear FormData para enviar la imagen
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      setUploadingImage(true);
+      
+      // Obtener token de autorización
+      const token = localStorage.getItem('token');
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const res = await fetch("/api/images", {
+        method: "POST",
+        headers,
+        body: formData // No establecer Content-Type, el navegador lo hace automáticamente
+      });
+      
+      const j = await res.json();
+      
+      if (!res.ok) {
+        setUploadError(j.error || 'Error al subir la imagen');
+        console.error('Error al subir imagen:', j.error);
+        // Limpiar error después de 5 segundos
+        setTimeout(() => setUploadError(null), 5000);
+        return;
+      }
+      
+      setImage(j.url); 
+      upd({image: j.url});
+    } catch (error) {
+      setUploadError('Error de conexión al subir la imagen');
+      console.error('Error al subir imagen:', error);
+      // Limpiar error después de 5 segundos
+      setTimeout(() => setUploadError(null), 5000);
+    } finally {
+      setUploadingImage(false);
+    }
   }
   async function removeImg(){
     if(image) await fetch(`/api/images?fileName=${fileName(image)}`,{method:"DELETE"});
@@ -182,28 +265,35 @@ export default function MultiSectionsItem({
   };
 
   return(
-    <Reorder.Item data-section-item-id={link.id}
-      value={link.id}
-      as="li"
-      whileDrag={{ 
-        zIndex: 1000,
-        scale: 1.02,
-        transition: { duration: 0.2 }
-      }}
-      layout
-      layoutId={`link-${link.id}`}
-      className="relative list-none"
-      animate={{
-        opacity: isTransitioning ? 0.7 : 1,
-        scale: isTransitioning ? 0.98 : 1,
-      }}
-      transition={{
-        duration: 0.25,
-        ease: "easeOut"
-      }}
+    <div
+      ref={setNodeRef}
+      style={style}
+      data-section-item-id={link.id}
+      className={`relative list-none ${
+        isDragging ? 'z-50 scale-105 opacity-75' : ''
+      } ${
+        isTransitioning ? 'opacity-70 scale-95' : ''
+      } ${
+        activeId === link.id ? 'ring-2 ring-purple-500' : ''
+      }
+      transition-all duration-200 ease-out`}
     >
-      <div className="relative border border-indigo-900/30 p-4 rounded-lg bg-[#120724] text-white min-h-[5rem] cursor-grab">
-        <div className="flex items-center gap-4">
+      <div className="relative border border-indigo-900/30 p-4 rounded-lg bg-[#120724] text-white min-h-[5rem]">
+        {/* Drag Handle */}
+        <div 
+          {...attributes}
+          {...listeners}
+          className="absolute top-2 left-2 p-2 cursor-grab active:cursor-grabbing hover:bg-purple-900/30 rounded transition-colors"
+        >
+          <div className="w-3 h-3 grid grid-cols-2 gap-1">
+            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-4 pl-8">
           <div className="flex flex-col gap-2 flex-1">
             <div className="relative">
               <span className="absolute inset-y-0 left-2 flex items-center pointer-events-none"><TitleIcon/></span>
@@ -235,11 +325,25 @@ export default function MultiSectionsItem({
                         className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1 hover:bg-black/80"><CloseIcon/></button>
               </>
             ):(
-              <div className="w-full h-full border-2 border-indigo-600/40 border-dashed rounded-md flex flex-col items-center justify-center text-xs text-gray-500 gap-1 cursor-pointer hover:border-indigo-400 transition-colors bg-[#1c1033]/40"
-                   onClick={()=>fileRef.current?.click()}>
+              <div className={`w-full h-full border-2 border-indigo-600/40 border-dashed rounded-md flex flex-col items-center justify-center text-xs text-gray-500 gap-1 cursor-pointer hover:border-indigo-400 transition-colors bg-[#1c1033]/40 ${uploadingImage ? 'opacity-50' : ''}`}
+                   onClick={()=>{
+                     if (!uploadingImage) {
+                       setUploadError(null); // Limpiar error cuando se intente de nuevo
+                       fileRef.current?.click();
+                     }
+                   }}>
                 <div className="text-center">
-                  <div className="text-xs font-medium">{t('noImage')}</div>
-                  <div className="text-[10px] text-gray-400 mt-1">{t('uploadImage')}</div>
+                  {uploadingImage ? (
+                    <>
+                      <div className="animate-spin w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full mx-auto mb-1"></div>
+                      <div className="text-xs font-medium">Subiendo...</div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-xs font-medium">{t('noImage')}</div>
+                      <div className="text-[10px] text-gray-400 mt-1">{t('uploadImage')}</div>
+                    </>
+                  )}
                 </div>
               </div>
             )}
@@ -303,6 +407,20 @@ export default function MultiSectionsItem({
           </div>
         </div>
 
+        {/* Error de subida de imagen */}
+        {uploadError && (
+          <div className="mt-2 text-red-400 text-xs bg-red-900/20 rounded px-2 py-1 border border-red-700/30 flex items-center justify-between">
+            <span className="flex-1 text-center">{uploadError}</span>
+            <button 
+              onClick={() => setUploadError(null)}
+              className="ml-2 text-red-300 hover:text-red-100 transition-colors"
+              title="Cerrar"
+            >
+              <CloseIcon />
+            </button>
+          </div>
+        )}
+
         {/* ───────── Modal Stats (sin recortes) ───────── */}
         {statsModal&&(
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
@@ -361,6 +479,6 @@ export default function MultiSectionsItem({
           </div>
         )}
       </div>
-    </Reorder.Item>
+    </div>
   );
 }

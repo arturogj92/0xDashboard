@@ -17,6 +17,7 @@ export default function AdminPage() {
   const [links, setLinks] = useState<LinkData[]>([]);
   const [sections, setSections] = useState<SectionData[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>([]);
+  const [landing, setLanding] = useState<{name: string; description: string}>({name: '', description: ''});
   const [_, setRefreshing] = useState(0);
   const [previewPosition, setPreviewPosition] = useState('fixed');
   const previewRef = useRef<HTMLDivElement>(null);
@@ -24,6 +25,16 @@ export default function AdminPage() {
     // Guardar landingId en closure
     const lid = params.landingId;
     if (lid && !Array.isArray(lid)) {
+      // Obtener datos de la landing
+      fetch(`${API_URL}/api/landings/${lid}`, { headers: createAuthHeaders() })
+        .then(res => res.json())
+        .then(data => { 
+          if (data.success && data.data) {
+            setLanding({name: data.data.name || '', description: data.data.description || ''});
+          }
+        })
+        .catch(err => console.error('Error cargando landing:', err));
+      
       fetch(`${API_URL}/api/sections?landingId=${lid}`, { headers: createAuthHeaders() })
         .then(res => res.json())
         .then(data => { if (Array.isArray(data)) setSections(data); })
@@ -170,10 +181,10 @@ export default function AdminPage() {
     }
   };
 
-  // Simulación de landing para preview
+  // Datos reales de landing para preview
   const landingPreview = {
-    name: "Mi landing de ejemplo",
-    description: "Descripción de ejemplo",
+    name: landing.name || "Mi landing de ejemplo",
+    description: landing.description || "Descripción de ejemplo",
     settings: {},
     links,
     sections,
@@ -202,19 +213,22 @@ export default function AdminPage() {
         <div className="text-white p-2 rounded mb-4 w-full text-center">
           <p className="font-bold text-lg md:text-xl">VISTA PREVIA</p>
         </div>
-        <div className="relative w-[280px] h-[580px] md:w-[320px] md:h-[650px] lg:w-[380px] lg:h-[750px] xl:w-[420px] xl:h-[850px]">
+        {/* iPhone frame wrapper now scales responsively based on viewport width */}
+        <div className="relative w-[50vw] sm:w-[40vw] md:w-[30vw] lg:w-[300px] max-w-[300px] aspect-[9/19.5]">
           <img
             src="/images/iphone16-frame.png"
             alt="iPhone frame"
             className="absolute w-full h-full z-20 pointer-events-none object-contain"
           />
-          <div className="absolute top-[8px] left-0 w-full h-[calc(100%-16px)] z-10 rounded-[80px] md:rounded-[90px] lg:rounded-[100px] overflow-hidden">
+          {/* Landing content area inset uses percentage to adapt to wrapper size */}
+          <div className="absolute inset-[4%] z-10 rounded-[20px] md:rounded-[24px] lg:rounded-[28px] xl:rounded-[32px] overflow-hidden">
             <LandingPreview 
               name={landingPreview.name}
               description={landingPreview.description}
               links={links}
               sections={sections}
               socialLinks={socialLinks}
+              isPreview={true}
             />
           </div>
         </div>
@@ -250,7 +264,7 @@ export default function AdminPage() {
           <SocialLinksPanel
             landingId={landingId}
             onReorder={() => setRefreshing((r) => r + 1)}
-            onUpdate={(updatedSocialLinks) => setSocialLinks(updatedSocialLinks)}
+            onUpdate={setSocialLinks}
           />
         </div>
       </div>
