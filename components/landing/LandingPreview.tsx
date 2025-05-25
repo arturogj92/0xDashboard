@@ -29,6 +29,10 @@ interface LandingPreviewProps {
       background: string;
       text: string;
     };
+    fontFamily?: {
+      family: string;
+      url: string;
+    };
   };
 }
 
@@ -108,6 +112,7 @@ export const LandingPreview = React.memo(function LandingPreview({
   const gradientConfig = configurations.gradient || { color1: '#000000', color2: '#4a044d' };
   const fontColorConfig = configurations.fontColor || { primary: '#ffffff', secondary: '#e2e8f0' };
   const linkColorConfig = configurations.linkColor || { background: '#000000', text: '#ffffff' };
+  const fontFamilyConfig = configurations.fontFamily || { family: 'Inter', url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' };
   
   // Generar gradiente dinámico si existe configuración personalizada
   const dynamicBackground = configurations.gradient 
@@ -121,6 +126,9 @@ export const LandingPreview = React.memo(function LandingPreview({
   // Colores de links dinámicos
   const dynamicLinkBackground = configurations.linkColor ? linkColorConfig.background : currentTheme.colors.linkBackground;
   const dynamicLinkText = configurations.linkColor ? linkColorConfig.text : currentTheme.colors.linkText;
+  
+  // Familia de fuente dinámica
+  const dynamicFontFamily = configurations.fontFamily ? fontFamilyConfig.family : currentTheme.typography.fontFamily;
   
   // Convertir borderRadius CSS a valor de píxeles para estilos inline
   const getBorderRadiusStyle = (cssValue: string): string => {
@@ -144,6 +152,20 @@ export const LandingPreview = React.memo(function LandingPreview({
   
   const borderRadiusStyle = getBorderRadiusStyle(borderRadiusValue);
 
+  // Cargar fuente dinámica
+  useEffect(() => {
+    if (configurations.fontFamily && fontFamilyConfig.url) {
+      // Verificar si la fuente ya está cargada
+      const existingLink = document.querySelector(`link[href="${fontFamilyConfig.url}"]`);
+      if (!existingLink) {
+        const link = document.createElement('link');
+        link.href = fontFamilyConfig.url;
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+      }
+    }
+  }, [configurations.fontFamily, fontFamilyConfig.url]);
+
   // Aplicar CSS variables cuando cambie el tema
   useEffect(() => {
     const previewElement = document.querySelector('[data-landing-preview]');
@@ -158,10 +180,10 @@ export const LandingPreview = React.memo(function LandingPreview({
       element.style.setProperty('--preview-link-border', currentTheme.colors.linkBorder);
       element.style.setProperty('--preview-link-text', currentTheme.colors.linkText);
       element.style.setProperty('--preview-link-hover', currentTheme.colors.linkHover);
-      element.style.setProperty('--preview-font-family', currentTheme.typography.fontFamily);
-      element.style.setProperty('--preview-font-family-heading', currentTheme.typography.fontFamilyHeading);
+      element.style.setProperty('--preview-font-family', dynamicFontFamily);
+      element.style.setProperty('--preview-font-family-heading', dynamicFontFamily);
     }
-  }, [currentTheme, themeId]);
+  }, [currentTheme, themeId, dynamicFontFamily]);
 
   return (
     <div 
@@ -169,7 +191,7 @@ export const LandingPreview = React.memo(function LandingPreview({
       className={`${isPreview ? 'h-full overflow-y-auto overflow-x-hidden' : 'min-h-screen'}`}
       style={{
         background: dynamicBackground,
-        fontFamily: `${currentTheme.typography.fontFamily}, system-ui, sans-serif`,
+        fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`,
         color: dynamicTextPrimary,
       }}
     >
@@ -197,7 +219,7 @@ export const LandingPreview = React.memo(function LandingPreview({
         className={`${isPreview ? 'mt-2' : 'mt-3'} ${isPreview ? 'text-sm' : 'text-2xl'} font-semibold text-center break-words leading-tight`}
         style={{ 
           color: dynamicTextPrimary,
-          fontFamily: `var(--preview-font-family-heading), ${currentTheme.typography.fontFamilyHeading}, system-ui, sans-serif`
+          fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
         }}
       >
         {name || 'Your Name'}
@@ -207,7 +229,7 @@ export const LandingPreview = React.memo(function LandingPreview({
         className={`${isPreview ? 'mt-1 mb-2' : 'mt-2 mb-4'} ${isPreview ? 'text-xs' : 'text-base'} text-center break-words line-clamp-3 leading-tight px-2 ${isPreview ? 'min-h-[2rem]' : 'min-h-[3rem]'}`}
         style={{ 
           color: dynamicTextSecondary,
-          fontFamily: `var(--preview-font-family), ${currentTheme.typography.fontFamily}, system-ui, sans-serif`
+          fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
         }}
       >
         {description || t('descriptionPlaceholder')}
@@ -228,7 +250,7 @@ export const LandingPreview = React.memo(function LandingPreview({
                 className="text-lg text-center font-medium py-2 w-full"
                 style={{ 
                   color: dynamicTextSecondary,
-                  fontFamily: `var(--preview-font-family-heading), ${currentTheme.typography.fontFamilyHeading}, system-ui, sans-serif`
+                  fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
                 }}
               >
                 {section.title}
@@ -269,7 +291,7 @@ export const LandingPreview = React.memo(function LandingPreview({
                         className={`${isPreview ? 'text-xs' : 'text-sm'} font-medium leading-tight`}
                         style={{ 
                           color: dynamicLinkText,
-                          fontFamily: `var(--preview-font-family), ${currentTheme.typography.fontFamily}, system-ui, sans-serif`
+                          fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
                         }}
                       >
                         {link.title || 'Untitled Link'}

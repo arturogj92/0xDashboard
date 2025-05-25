@@ -9,10 +9,7 @@ import { LandingInfoEditor } from "@/components/editor/LandingInfoEditor";
 import { LandingPreview } from "@/components/landing/LandingPreview";
 import { LinkData, SectionData, SocialLinkData } from "@/components/editor/types";
 import ThemeSelector from "@/components/editor/ThemeSelector";
-import BorderRadiusSelector from "@/components/editor/BorderRadiusSelector";
-import BackgroundGradientSelector from "@/components/editor/BackgroundGradientSelector";
-import FontColorSelector from "@/components/editor/FontColorSelector";
-import LinkColorSelector from "@/components/editor/LinkColorSelector";
+import StyleCustomizationAccordion from "@/components/editor/StyleCustomizationAccordion";
 import { useParams } from 'next/navigation';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
@@ -308,38 +305,10 @@ export default function AdminPage() {
         </div>
 
         <div className="w-full mb-8">
-          <BorderRadiusSelector
-            value={landing.configurations?.borderRadius || 'rounded-xl'}
-            onChange={(borderRadius) => handleConfigurationUpdate({ borderRadius })}
-            onSave={(borderRadius) => handleConfigurationSave({ borderRadius })}
-            className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
-          />
-        </div>
-
-        <div className="w-full mb-8">
-          <BackgroundGradientSelector
-            value={landing.configurations?.gradient || { color1: '#000000', color2: '#4a044d' }}
-            onChange={(gradient) => handleConfigurationUpdate({ gradient })}
-            onSave={(gradient) => handleConfigurationSave({ gradient })}
-            className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
-          />
-        </div>
-
-        <div className="w-full mb-8">
-          <FontColorSelector
-            value={landing.configurations?.fontColor || { primary: '#ffffff', secondary: '#e2e8f0' }}
-            onChange={(fontColor) => handleConfigurationUpdate({ fontColor })}
-            onSave={(fontColor) => handleConfigurationSave({ fontColor })}
-            className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
-          />
-        </div>
-
-        <div className="w-full mb-8">
-          <LinkColorSelector
-            value={landing.configurations?.linkColor || { background: '#000000', text: '#ffffff' }}
-            onChange={(linkColor) => handleConfigurationUpdate({ linkColor })}
-            onSave={(linkColor) => handleConfigurationSave({ linkColor })}
-            className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
+          <StyleCustomizationAccordion
+            landing={landing}
+            handleConfigurationUpdate={handleConfigurationUpdate}
+            handleConfigurationSave={handleConfigurationSave}
           />
         </div>
 
