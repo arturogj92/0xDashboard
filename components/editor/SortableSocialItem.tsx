@@ -68,12 +68,8 @@ export function SortableSocialItem({id, data, onToggleVisibility, onUrlChange, o
     // Estilos específicos para el arrastre con mejor rendimiento
     const style = {
         transform: CSS.Transform.toString(transform),
-        transition: isDragging 
-            ? undefined // Sin transición durante el arrastre para mayor fluidez
-            : transition || 'transform 150ms cubic-bezier(0.2, 0, 0, 1)', // Transición más rápida y con curva mejorada
-        willChange: isDragging ? 'transform' : undefined, // Solo aplicar willChange cuando sea necesario
+        transition: isDragging ? undefined : transition,
         zIndex: isDragging ? 1000 : 1,
-        touchAction: 'none', // Deshabilitar comportamientos táctiles del navegador
     };
 
     const SocialIcon = getSocialIcon(data.name);
@@ -82,8 +78,8 @@ export function SortableSocialItem({id, data, onToggleVisibility, onUrlChange, o
         <li
             ref={setNodeRef}
             style={style}
-            className={`list-none flex items-center gap-3 p-3 rounded-lg text-card-foreground will-change-transform
-                        ${isDragging ? 'bg-muted ring-2 ring-primary shadow-md opacity-95 scale-[1.01]' : 'hover:bg-muted/50 transition-colors duration-150'}`}
+            className={`list-none flex items-center gap-3 p-3 rounded-lg text-card-foreground
+                        ${isDragging ? 'bg-muted ring-2 ring-primary shadow-md opacity-95' : 'hover:bg-muted/50'}`}
         >
             <div
                 {...attributes}
