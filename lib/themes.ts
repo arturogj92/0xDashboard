@@ -90,10 +90,10 @@ export interface Theme {
 // Temas predefinidos
 export const themes: Theme[] = [
   {
-    id: 'gradient-purple',
-    name: 'Gradient Purple',
-    description: 'Degradado negro a morado con diseño compacto',
-    preview: '/themes/gradient-purple-preview.jpg',
+    id: 'dark',
+    name: 'Dark',
+    description: 'Tema oscuro con diseño compacto',
+    preview: '/themes/dark-preview.jpg',
     colors: {
       background: 'linear-gradient(to bottom, #000000 0%, #4a044d 100%)',
       backgroundSecondary: 'rgba(0, 0, 0, 0.3)',
@@ -143,16 +143,16 @@ export const themes: Theme[] = [
     }
   },
   {
-    id: 'minimal-light',
-    name: 'Minimal Light',
-    description: 'Diseño limpio y minimalista con colores suaves',
-    preview: '/themes/minimal-light-preview.jpg',
+    id: 'light',
+    name: 'Light',
+    description: 'Tema claro con diseño limpio y minimalista',
+    preview: '/themes/light-preview.jpg',
     colors: {
       background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
       backgroundSecondary: '#ffffff',
-      textPrimary: '#1e293b',
-      textSecondary: '#475569',
-      textMuted: '#64748b',
+      textPrimary: '#000000',
+      textSecondary: '#000000',
+      textMuted: '#475569',
       primary: '#0f172a',
       primaryHover: '#334155',
       secondary: '#f1f5f9',
@@ -161,9 +161,9 @@ export const themes: Theme[] = [
       buttonBackground: '#0f172a',
       buttonText: '#ffffff',
       buttonHover: '#334155',
-      linkBackground: 'rgba(255, 255, 255, 0.9)',
+      linkBackground: '#ffffff',
       linkBorder: 'rgba(148, 163, 184, 0.2)',
-      linkText: '#1e293b',
+      linkText: '#000000',
       linkHover: 'rgba(255, 255, 255, 1)'
     },
     typography: {
@@ -203,7 +203,7 @@ export function getThemeById(id: string): Theme | undefined {
 }
 
 export function getDefaultTheme(): Theme {
-  return themes[0]; // gradient-purple theme as default
+  return themes[0]; // dark theme as default
 }
 
 // CSS variables generator for dynamic theming

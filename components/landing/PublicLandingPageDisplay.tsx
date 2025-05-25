@@ -60,7 +60,7 @@ export default function PublicLandingPageDisplay({ landing }: PublicLandingPageD
         sections={sections}
         socialLinks={socialLinks}
         isPreview={false}
-        themeId={landing.theme_id || 'gradient-purple'}
+        themeId={landing.theme_id || 'dark'}
         configurations={landing.configurations}
       />
     </div>

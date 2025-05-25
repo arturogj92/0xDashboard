@@ -17,6 +17,10 @@ interface LandingPreviewProps {
   themeId?: string;
   configurations?: {
     borderRadius?: string;
+    gradient?: {
+      color1: string;
+      color2: string;
+    };
   };
 }
 
@@ -65,7 +69,7 @@ export const LandingPreview = React.memo(function LandingPreview({
   sections = [], 
   socialLinks = [],
   isPreview = false,
-  themeId = 'gradient-purple',
+  themeId = 'dark',
   configurations = {}
 }: LandingPreviewProps) {
   const t = useTranslations('landing');
@@ -93,6 +97,12 @@ export const LandingPreview = React.memo(function LandingPreview({
   
   // Configuraciones con valores por defecto
   const borderRadiusValue = configurations.borderRadius || 'rounded-xl';
+  const gradientConfig = configurations.gradient || { color1: '#000000', color2: '#4a044d' };
+  
+  // Generar gradiente dinámico si existe configuración personalizada
+  const dynamicBackground = configurations.gradient 
+    ? `linear-gradient(to bottom, ${gradientConfig.color1} 0%, ${gradientConfig.color2} 100%)`
+    : currentTheme.colors.background;
   
   // Convertir borderRadius CSS a valor de píxeles para estilos inline
   const getBorderRadiusStyle = (cssValue: string): string => {
@@ -140,7 +150,7 @@ export const LandingPreview = React.memo(function LandingPreview({
       data-landing-preview
       className={`${isPreview ? 'h-full overflow-y-auto overflow-x-hidden' : 'min-h-screen'}`}
       style={{
-        background: currentTheme.colors.background,
+        background: dynamicBackground,
         fontFamily: `${currentTheme.typography.fontFamily}, system-ui, sans-serif`,
         color: currentTheme.colors.textPrimary,
       }}

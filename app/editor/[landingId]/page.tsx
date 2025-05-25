@@ -10,6 +10,7 @@ import { LandingPreview } from "@/components/landing/LandingPreview";
 import { LinkData, SectionData, SocialLinkData } from "@/components/editor/types";
 import ThemeSelector from "@/components/editor/ThemeSelector";
 import BorderRadiusSelector from "@/components/editor/BorderRadiusSelector";
+import BackgroundGradientSelector from "@/components/editor/BackgroundGradientSelector";
 import { useParams } from 'next/navigation';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
@@ -37,7 +38,7 @@ export default function AdminPage() {
             setLanding({
               name: data.data.name || '',
               description: data.data.description || '',
-              theme_id: data.data.theme_id || 'gradient-purple',
+              theme_id: data.data.theme_id || 'dark',
               configurations: data.data.configurations || {}
             });
           }
@@ -220,7 +221,7 @@ export default function AdminPage() {
   const landingPreview = {
     name: landing.name || "Mi landing de ejemplo",
     description: landing.description || "Descripcion de ejemplo",
-    theme_id: landing.theme_id || "gradient-purple",
+    theme_id: landing.theme_id || "dark",
     settings: {},
     links,
     sections,
@@ -298,7 +299,7 @@ export default function AdminPage() {
         
         <div className="w-full mb-8">
           <ThemeSelector
-            currentThemeId={landing.theme_id || 'gradient-purple'}
+            currentThemeId={landing.theme_id || 'dark'}
             onThemeChange={handleThemeUpdate}
             className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
           />
@@ -309,6 +310,15 @@ export default function AdminPage() {
             value={landing.configurations?.borderRadius || 'rounded-xl'}
             onChange={(borderRadius) => handleConfigurationUpdate({ borderRadius })}
             onSave={(borderRadius) => handleConfigurationSave({ borderRadius })}
+            className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
+          />
+        </div>
+
+        <div className="w-full mb-8">
+          <BackgroundGradientSelector
+            value={landing.configurations?.gradient || { color1: '#000000', color2: '#4a044d' }}
+            onChange={(gradient) => handleConfigurationUpdate({ gradient })}
+            onSave={(gradient) => handleConfigurationSave({ gradient })}
             className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
           />
         </div>
