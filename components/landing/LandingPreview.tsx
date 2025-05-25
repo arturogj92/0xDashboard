@@ -21,6 +21,10 @@ interface LandingPreviewProps {
       color1: string;
       color2: string;
     };
+    fontColor?: {
+      primary: string;
+      secondary: string;
+    };
   };
 }
 
@@ -98,11 +102,16 @@ export const LandingPreview = React.memo(function LandingPreview({
   // Configuraciones con valores por defecto
   const borderRadiusValue = configurations.borderRadius || 'rounded-xl';
   const gradientConfig = configurations.gradient || { color1: '#000000', color2: '#4a044d' };
+  const fontColorConfig = configurations.fontColor || { primary: '#ffffff', secondary: '#e2e8f0' };
   
   // Generar gradiente dinámico si existe configuración personalizada
   const dynamicBackground = configurations.gradient 
     ? `linear-gradient(to bottom, ${gradientConfig.color1} 0%, ${gradientConfig.color2} 100%)`
     : currentTheme.colors.background;
+    
+  // Colores de fuente dinámicos
+  const dynamicTextPrimary = configurations.fontColor ? fontColorConfig.primary : currentTheme.colors.textPrimary;
+  const dynamicTextSecondary = configurations.fontColor ? fontColorConfig.secondary : currentTheme.colors.textSecondary;
   
   // Convertir borderRadius CSS a valor de píxeles para estilos inline
   const getBorderRadiusStyle = (cssValue: string): string => {
@@ -152,7 +161,7 @@ export const LandingPreview = React.memo(function LandingPreview({
       style={{
         background: dynamicBackground,
         fontFamily: `${currentTheme.typography.fontFamily}, system-ui, sans-serif`,
-        color: currentTheme.colors.textPrimary,
+        color: dynamicTextPrimary,
       }}
     >
       <div className={`flex flex-col items-center ${isPreview ? 'pt-16' : 'pt-20'} ${isPreview ? 'px-1 pb-4' : 'px-6 md:px-8 lg:px-12 pb-16'} ${isPreview ? 'min-h-full' : 'min-h-screen'} mx-auto ${isPreview ? 'max-w-lg' : 'max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-5xl'}`}>
@@ -178,7 +187,7 @@ export const LandingPreview = React.memo(function LandingPreview({
       <h2 
         className={`${isPreview ? 'mt-2' : 'mt-3'} ${isPreview ? 'text-sm' : 'text-2xl'} font-semibold text-center break-words leading-tight`}
         style={{ 
-          color: 'var(--preview-text-primary)',
+          color: dynamicTextPrimary,
           fontFamily: `var(--preview-font-family-heading), ${currentTheme.typography.fontFamilyHeading}, system-ui, sans-serif`
         }}
       >
@@ -188,7 +197,7 @@ export const LandingPreview = React.memo(function LandingPreview({
       <p 
         className={`${isPreview ? 'mt-1 mb-2' : 'mt-2 mb-4'} ${isPreview ? 'text-xs' : 'text-base'} text-center break-words line-clamp-3 leading-tight px-2 ${isPreview ? 'min-h-[2rem]' : 'min-h-[3rem]'}`}
         style={{ 
-          color: 'var(--preview-text-secondary)',
+          color: dynamicTextSecondary,
           fontFamily: `var(--preview-font-family), ${currentTheme.typography.fontFamily}, system-ui, sans-serif`
         }}
       >
@@ -209,7 +218,7 @@ export const LandingPreview = React.memo(function LandingPreview({
               <div 
                 className="text-lg text-center font-medium py-2 w-full"
                 style={{ 
-                  color: 'var(--preview-text-secondary)',
+                  color: dynamicTextSecondary,
                   fontFamily: `var(--preview-font-family-heading), ${currentTheme.typography.fontFamilyHeading}, system-ui, sans-serif`
                 }}
               >

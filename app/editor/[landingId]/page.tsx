@@ -11,6 +11,7 @@ import { LinkData, SectionData, SocialLinkData } from "@/components/editor/types
 import ThemeSelector from "@/components/editor/ThemeSelector";
 import BorderRadiusSelector from "@/components/editor/BorderRadiusSelector";
 import BackgroundGradientSelector from "@/components/editor/BackgroundGradientSelector";
+import FontColorSelector from "@/components/editor/FontColorSelector";
 import { useParams } from 'next/navigation';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
@@ -319,6 +320,15 @@ export default function AdminPage() {
             value={landing.configurations?.gradient || { color1: '#000000', color2: '#4a044d' }}
             onChange={(gradient) => handleConfigurationUpdate({ gradient })}
             onSave={(gradient) => handleConfigurationSave({ gradient })}
+            className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
+          />
+        </div>
+
+        <div className="w-full mb-8">
+          <FontColorSelector
+            value={landing.configurations?.fontColor || { primary: '#ffffff', secondary: '#e2e8f0' }}
+            onChange={(fontColor) => handleConfigurationUpdate({ fontColor })}
+            onSave={(fontColor) => handleConfigurationSave({ fontColor })}
             className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
           />
         </div>
