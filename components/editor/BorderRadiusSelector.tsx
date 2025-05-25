@@ -105,15 +105,6 @@ export default function BorderRadiusSelector({
     }
   };
 
-  const getRadiusLabel = (radius: number): string => {
-    if (radius === 0) return 'Sin bordes';
-    if (radius <= 4) return 'Muy pequeño';
-    if (radius <= 8) return 'Pequeño';
-    if (radius <= 16) return 'Mediano';
-    if (radius <= 24) return 'Grande';
-    if (radius <= 40) return 'Muy grande';
-    return 'Completamente redondeado';
-  };
 
   return (
     <div className={`space-y-4 ${className}`}>
@@ -121,21 +112,6 @@ export default function BorderRadiusSelector({
         <label className="text-sm font-medium text-white">
           Bordes de los Links
         </label>
-        <span className="text-xs text-gray-400 flex items-center gap-2">
-          {sliderValue}px - {getRadiusLabel(sliderValue)}
-          {isDragging && (
-            <span className="inline-flex items-center gap-1 text-blue-400">
-              <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
-              Ajustando...
-            </span>
-          )}
-          {!isDragging && pendingValue !== null && (
-            <span className="inline-flex items-center gap-1 text-yellow-400">
-              <div className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse"></div>
-              Guardando...
-            </span>
-          )}
-        </span>
       </div>
       
       {/* Slider */}
@@ -168,21 +144,6 @@ export default function BorderRadiusSelector({
           <span className={`${Math.abs(sliderValue - 75) <= 2 ? 'text-purple-400 font-medium' : ''}`}>75px</span>
           <span className={`${sliderValue >= 98 ? 'text-purple-400 font-medium' : ''}`}>100px</span>
         </div>
-      </div>
-      
-      {/* Preview visual */}
-      <div className="flex items-center gap-3 p-3 bg-gray-800/30 rounded-lg">
-        <span className="text-xs text-gray-400">Vista previa:</span>
-        <div 
-          className="w-20 h-8 bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-150 ease-out transform hover:scale-105"
-          style={{
-            borderRadius: `${sliderValue}px`,
-            boxShadow: `0 4px 12px rgba(168, 85, 247, 0.3)`
-          }}
-        />
-        <span className="text-xs text-gray-300 ml-auto">
-          {sliderValue}px
-        </span>
       </div>
 
       <style jsx>{`
