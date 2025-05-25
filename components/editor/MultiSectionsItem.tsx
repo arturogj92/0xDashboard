@@ -159,6 +159,8 @@ export default function MultiSectionsItem({
   const [url,setUrl]=useState(link.url);
   const [image,setImage]=useState(link.image??"");
   const [urlId,setUrlId]=useState<number|null>(link.url_link_id??null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const [stats7,setStats7]=useState<StatsData|null>(null);
   const [stats28,setStats28]=useState<StatsData|null>(null);
@@ -175,14 +177,71 @@ export default function MultiSectionsItem({
 
   async function selectFile(e:React.ChangeEvent<HTMLInputElement>){
     if(!e.target.files?.length) return;
-    const reader=new FileReader();
-    reader.onload=async ()=>{
-      const base64=(reader.result as string).split(",")[1];
-      const res=await fetch("/api/images",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({base64})});
-      const j=await res.json(); if(!res.ok) return console.error(j.error);
-      setImage(j.url); upd({image:j.url});
-    };
-    reader.readAsDataURL(e.target.files[0]);
+    
+    const file = e.target.files[0];
+    
+    // Limpiar errores previos y resetear el input
+    setUploadError(null);
+    if (e.target) {
+      e.target.value = '';
+    }
+
+    // Validaciones básicas en el frontend
+    if (!file.type.startsWith('image/')) {
+      setUploadError('El archivo debe ser una imagen');
+      // Limpiar error después de 5 segundos
+      setTimeout(() => setUploadError(null), 5000);
+      return;
+    }
+
+    const MAX_SIZE = 50 * 1024 * 1024; // 50MB
+    if (file.size > MAX_SIZE) {
+      setUploadError('La imagen no puede ser mayor a 50MB');
+      // Limpiar error después de 5 segundos
+      setTimeout(() => setUploadError(null), 5000);
+      return;
+    }
+
+    // Crear FormData para enviar la imagen
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      setUploadingImage(true);
+      
+      // Obtener token de autorización
+      const token = localStorage.getItem('token');
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const res = await fetch("/api/images", {
+        method: "POST",
+        headers,
+        body: formData // No establecer Content-Type, el navegador lo hace automáticamente
+      });
+      
+      const j = await res.json();
+      
+      if (!res.ok) {
+        setUploadError(j.error || 'Error al subir la imagen');
+        console.error('Error al subir imagen:', j.error);
+        // Limpiar error después de 5 segundos
+        setTimeout(() => setUploadError(null), 5000);
+        return;
+      }
+      
+      setImage(j.url); 
+      upd({image: j.url});
+    } catch (error) {
+      setUploadError('Error de conexión al subir la imagen');
+      console.error('Error al subir imagen:', error);
+      // Limpiar error después de 5 segundos
+      setTimeout(() => setUploadError(null), 5000);
+    } finally {
+      setUploadingImage(false);
+    }
   }
   async function removeImg(){
     if(image) await fetch(`/api/images?fileName=${fileName(image)}`,{method:"DELETE"});
@@ -266,11 +325,25 @@ export default function MultiSectionsItem({
                         className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1 hover:bg-black/80"><CloseIcon/></button>
               </>
             ):(
-              <div className="w-full h-full border-2 border-indigo-600/40 border-dashed rounded-md flex flex-col items-center justify-center text-xs text-gray-500 gap-1 cursor-pointer hover:border-indigo-400 transition-colors bg-[#1c1033]/40"
-                   onClick={()=>fileRef.current?.click()}>
+              <div className={`w-full h-full border-2 border-indigo-600/40 border-dashed rounded-md flex flex-col items-center justify-center text-xs text-gray-500 gap-1 cursor-pointer hover:border-indigo-400 transition-colors bg-[#1c1033]/40 ${uploadingImage ? 'opacity-50' : ''}`}
+                   onClick={()=>{
+                     if (!uploadingImage) {
+                       setUploadError(null); // Limpiar error cuando se intente de nuevo
+                       fileRef.current?.click();
+                     }
+                   }}>
                 <div className="text-center">
-                  <div className="text-xs font-medium">{t('noImage')}</div>
-                  <div className="text-[10px] text-gray-400 mt-1">{t('uploadImage')}</div>
+                  {uploadingImage ? (
+                    <>
+                      <div className="animate-spin w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full mx-auto mb-1"></div>
+                      <div className="text-xs font-medium">Subiendo...</div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-xs font-medium">{t('noImage')}</div>
+                      <div className="text-[10px] text-gray-400 mt-1">{t('uploadImage')}</div>
+                    </>
+                  )}
                 </div>
               </div>
             )}
@@ -333,6 +406,20 @@ export default function MultiSectionsItem({
             </Toggle>
           </div>
         </div>
+
+        {/* Error de subida de imagen */}
+        {uploadError && (
+          <div className="mt-2 text-red-400 text-xs bg-red-900/20 rounded px-2 py-1 border border-red-700/30 flex items-center justify-between">
+            <span className="flex-1 text-center">{uploadError}</span>
+            <button 
+              onClick={() => setUploadError(null)}
+              className="ml-2 text-red-300 hover:text-red-100 transition-colors"
+              title="Cerrar"
+            >
+              <CloseIcon />
+            </button>
+          </div>
+        )}
 
         {/* ───────── Modal Stats (sin recortes) ───────── */}
         {statsModal&&(

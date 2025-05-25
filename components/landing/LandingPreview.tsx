@@ -123,11 +123,19 @@ export const LandingPreview = React.memo(function LandingPreview({
                     className={`${isPreview ? 'w-[98%]' : 'w-full'} ${isPreview ? '' : 'md:w-1/2'} ${isPreview ? 'min-h-[65px]' : 'min-h-[60px] sm:min-h-[65px] md:min-h-[80px]'} bg-black/80 rounded-xl border-2 border-purple-400/60 hover:border-purple-300/80 hover:bg-black/90 transition-all duration-200 text-white font-medium flex items-stretch backdrop-blur-sm overflow-hidden`}
                     title={link.title}
                   >
-                    {/* Imagen placeholder */}
-                    <div className="w-14 md:w-16 bg-gray-600/50 rounded-l-xl md:rounded-lg flex items-center justify-center flex-shrink-0 self-stretch">
-                      <svg className="w-5 h-5 md:w-6 md:h-6 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                      </svg>
+                    {/* Imagen del link o placeholder */}
+                    <div className="w-14 md:w-16 bg-gray-600/50 rounded-l-xl md:rounded-lg flex items-center justify-center flex-shrink-0 self-stretch overflow-hidden">
+                      {link.image ? (
+                        <img 
+                          src={link.image} 
+                          alt={link.title || 'Link image'} 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <svg className="w-5 h-5 md:w-6 md:h-6 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                        </svg>
+                      )}
                     </div>
                     {/* Texto que puede ir en múltiples líneas */}
                     <div className="flex-1 flex items-center justify-center md:justify-start px-2 md:p-3">

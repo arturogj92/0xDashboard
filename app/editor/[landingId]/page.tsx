@@ -213,13 +213,15 @@ export default function AdminPage() {
         <div className="text-white p-2 rounded mb-4 w-full text-center">
           <p className="font-bold text-lg md:text-xl">VISTA PREVIA</p>
         </div>
-        <div className="relative w-[280px] h-[580px] md:w-[320px] md:h-[650px] lg:w-[380px] lg:h-[750px] xl:w-[420px] xl:h-[850px]">
+        {/* iPhone frame wrapper now scales responsively based on viewport width */}
+        <div className="relative w-[50vw] sm:w-[40vw] md:w-[30vw] lg:w-[300px] max-w-[300px] aspect-[9/19.5]">
           <img
             src="/images/iphone16-frame.png"
             alt="iPhone frame"
             className="absolute w-full h-full z-20 pointer-events-none object-contain"
           />
-          <div className="absolute top-[-0px] left-[70px] w-[calc(100%-140px)] h-[calc(100%-10px)] z-10 rounded-[20px] md:rounded-[24px] lg:rounded-[28px] xl:rounded-[32px] overflow-hidden">
+          {/* Landing content area inset uses percentage to adapt to wrapper size */}
+          <div className="absolute inset-[4%] z-10 rounded-[20px] md:rounded-[24px] lg:rounded-[28px] xl:rounded-[32px] overflow-hidden">
             <LandingPreview 
               name={landingPreview.name}
               description={landingPreview.description}
