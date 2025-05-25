@@ -33,15 +33,15 @@ export default function PublicLandingPageDisplay({ landing }: PublicLandingPageD
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#230447] to-black flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-white">Cargando...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#230447] to-black">
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen">
+      <div className="max-w-lg mx-auto px-4">
         <LandingPreview 
           name={landing.name} 
           description={landing.description}

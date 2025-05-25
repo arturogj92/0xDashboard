@@ -59,7 +59,7 @@ export const LandingPreview = React.memo(function LandingPreview({
   // const linksWithoutSection = visibleLinks.filter(link => !link.section_id);
 
   return (
-    <div className="flex flex-col items-center pt-20 px-4 overflow-hidden bg-gradient-to-b from-[#230447] to-black h-full">
+    <div className="flex flex-col items-center pt-20 px-4 overflow-y-auto overflow-x-hidden bg-gradient-to-b from-black via-black to-[#49044d] h-full">
       {/* Avatar */}
       <div className="relative w-12 h-12 flex-shrink-0">
         <Avatar className="w-full h-full rounded-full border-2 border-purple-500 ring-2 ring-purple-300/30">
@@ -79,7 +79,7 @@ export const LandingPreview = React.memo(function LandingPreview({
       </p>
 
       {/* Links organizados por sección */}
-      <div className="w-full space-y-2 mt-2 flex-1 overflow-y-auto px-1">
+      <div className="w-full space-y-2 mt-2 flex-1 px-1">
         
         {/* Secciones con sus links */}
         {sections.sort((a, b) => a.position - b.position).map((section, sectionIndex) => {
@@ -89,7 +89,7 @@ export const LandingPreview = React.memo(function LandingPreview({
           return (
             <React.Fragment key={section.id}>
               {/* Título de sección */}
-              <div className="text-sm text-gray-400 text-center font-medium py-1">
+              <div className="text-lg text-gray-300 text-center font-medium py-2">
                 {section.title}
               </div>
               
@@ -100,7 +100,7 @@ export const LandingPreview = React.memo(function LandingPreview({
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block w-full min-h-[44px] p-3 bg-gradient-to-r from-orange-500/90 to-orange-600/90 rounded-lg border border-orange-300/40 hover:from-orange-500 hover:to-orange-600 transition-all duration-200 text-white text-sm font-medium text-center flex items-center justify-center"
+                    className="w-full min-h-[44px] p-3 bg-black/80 rounded-xl border-2 border-purple-400/60 hover:border-purple-300/80 hover:bg-black/90 transition-all duration-200 text-white text-sm font-medium text-center flex items-center justify-center backdrop-blur-sm"
                     title={link.title}
                   >
                     <span className="truncate px-1 leading-tight">{link.title || 'Untitled Link'}</span>

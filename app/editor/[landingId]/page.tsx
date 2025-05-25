@@ -17,6 +17,7 @@ export default function AdminPage() {
   const [links, setLinks] = useState<LinkData[]>([]);
   const [sections, setSections] = useState<SectionData[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>([]);
+  const [landing, setLanding] = useState<{name: string; description: string}>({name: '', description: ''});
   const [_, setRefreshing] = useState(0);
   const [previewPosition, setPreviewPosition] = useState('fixed');
   const previewRef = useRef<HTMLDivElement>(null);
@@ -24,6 +25,16 @@ export default function AdminPage() {
     // Guardar landingId en closure
     const lid = params.landingId;
     if (lid && !Array.isArray(lid)) {
+      // Obtener datos de la landing
+      fetch(`${API_URL}/api/landings/${lid}`, { headers: createAuthHeaders() })
+        .then(res => res.json())
+        .then(data => { 
+          if (data.success && data.data) {
+            setLanding({name: data.data.name || '', description: data.data.description || ''});
+          }
+        })
+        .catch(err => console.error('Error cargando landing:', err));
+      
       fetch(`${API_URL}/api/sections?landingId=${lid}`, { headers: createAuthHeaders() })
         .then(res => res.json())
         .then(data => { if (Array.isArray(data)) setSections(data); })
@@ -170,10 +181,10 @@ export default function AdminPage() {
     }
   };
 
-  // Simulación de landing para preview
+  // Datos reales de landing para preview
   const landingPreview = {
-    name: "Mi landing de ejemplo",
-    description: "Descripción de ejemplo",
+    name: landing.name || "Mi landing de ejemplo",
+    description: landing.description || "Descripción de ejemplo",
     settings: {},
     links,
     sections,
