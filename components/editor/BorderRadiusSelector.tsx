@@ -43,9 +43,8 @@ export default function BorderRadiusSelector({
   const [sliderValue, setSliderValue] = useState(0);
   const [pendingValue, setPendingValue] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [lastUpdateTime, setLastUpdateTime] = useState(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const updateThrottleRef = useRef<NodeJS.Timeout | null>(null);
+  const [ , startTransition] = React.useTransition();
 
   // Sincronizar slider con valor prop
   useEffect(() => {
@@ -59,9 +58,6 @@ export default function BorderRadiusSelector({
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
-      if (updateThrottleRef.current) {
-        clearTimeout(updateThrottleRef.current);
-      }
     };
   }, []);
 
@@ -72,21 +68,10 @@ export default function BorderRadiusSelector({
     
     const borderRadiusStyle = radiusToSliderValue(newValue);
     
-    // Throttle las actualizaciones para evitar lag
-    const now = Date.now();
-    if (now - lastUpdateTime > 16) { // ~60fps
+    // Actualizar configuración en baja prioridad para no bloquear la UI
+    startTransition(() => {
       onChange(borderRadiusStyle);
-      setLastUpdateTime(now);
-    } else {
-      // Si está muy rápido, programar para después
-      if (updateThrottleRef.current) {
-        clearTimeout(updateThrottleRef.current);
-      }
-      updateThrottleRef.current = setTimeout(() => {
-        onChange(borderRadiusStyle);
-        setLastUpdateTime(Date.now());
-      }, 16);
-    }
+    });
     
     // Cancelar cualquier timeout previo mientras se arrastra
     if (timeoutRef.current) {
