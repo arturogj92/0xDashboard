@@ -5,6 +5,7 @@ import { API_URL, createAuthHeaders } from "@/lib/api";
 import MultiSectionsBoard from "@/components/editor/MultiSectionsBoard";
 import SocialLinksPanel from "@/components/editor/SocialLinksPanel";
 import { AvatarUpload } from "@/components/editor/AvatarUpload";
+import { LandingInfoEditor } from "@/components/editor/LandingInfoEditor";
 import { LandingPreview } from "@/components/landing/LandingPreview";
 import { LinkData, SectionData, SocialLinkData } from "@/components/editor/types";
 import { useParams } from 'next/navigation';
@@ -182,6 +183,11 @@ export default function AdminPage() {
     }
   };
 
+  // Handler para actualizar información de la landing
+  const handleLandingInfoUpdate = (name: string, description: string) => {
+    setLanding({ name, description });
+  };
+
   // Datos reales de landing para preview
   const landingPreview = {
     name: landing.name || "Mi landing de ejemplo",
@@ -252,6 +258,18 @@ export default function AdminPage() {
             <AvatarUpload size="lg" />
           </div>
         </div>
+        
+        {/* Editor de información de la landing */}
+        <div className="w-full mb-8">
+          <LandingInfoEditor
+            landingId={landingId}
+            initialName={landing.name}
+            initialDescription={landing.description}
+            onUpdate={handleLandingInfoUpdate}
+            className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
+          />
+        </div>
+        
         <div className="w-full">
           <MultiSectionsBoard
             links={links}
