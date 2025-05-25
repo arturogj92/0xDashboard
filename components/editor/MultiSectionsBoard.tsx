@@ -15,6 +15,7 @@ import { LinkData, SectionData } from "./types";
 import MultiSectionsContainer from "./MultiSectionsContainer";
 import { API_URL, createAuthHeaders } from "@/lib/api";
 import { useTranslations } from 'next-intl';
+import toast from 'react-hot-toast';
 
 interface Props {
   landingId: string;
@@ -59,6 +60,7 @@ export default function MultiSectionsBoard({
   );
   
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [highlightedLinkId, setHighlightedLinkId] = useState<string | null>(null);
   /* containers SIEMPRE se recalculan a partir de links/sections.
      Con useMemo el cálculo es barato y se sincroniza en el mismo render,
      por lo que el cambio de sección se ve inmediatamente.               */
@@ -118,17 +120,79 @@ export default function MultiSectionsBoard({
     const activeId = active.id as string;
     const overId = over.id as string;
     
-    // Si se suelta sobre una sección diferente
+    // Verificar si se intenta mover a una sección diferente
+    const activeLink = links.find(l => l.id === activeId);
+    if (!activeLink) return;
+    
+    const currentSectionId = activeLink.section_id ?? 'no-section';
+    
+    // Si se suelta sobre una sección diferente, mostrar notificación
     if (overId.startsWith('section-') || overId === 'no-section') {
       const targetSectionId = overId.replace('section-', '');
-      handleMoveToSection(activeId, targetSectionId);
-      return;
+      
+      if (currentSectionId !== targetSectionId) {
+        // Verificar localStorage para mostrar notificación máximo 2 veces
+        const notificationCount = parseInt(localStorage.getItem('moveItemNotificationCount') || '0');
+        
+        if (notificationCount < 2) {
+          // Mostrar notificación de que debe usar el botón específico
+          toast(t('moveItemNotification'), {
+            icon: '⚠️',
+            style: {
+              background: '#581c87',
+              color: '#e879f9',
+              border: '1px solid #a855f7',
+              fontSize: '14px',
+              fontWeight: '500',
+            },
+          });
+          
+          // Incrementar contador en localStorage
+          localStorage.setItem('moveItemNotificationCount', (notificationCount + 1).toString());
+        }
+        
+        // Activar efecto de brillo en el icono específico del link que se intenta mover
+        setHighlightedLinkId(activeId);
+        setTimeout(() => setHighlightedLinkId(null), 1000);
+        
+        return;
+      }
+    }
+    
+    // Verificar si se intenta mover sobre un item de otra sección
+    const overLink = links.find(l => l.id === overId);
+    if (overLink) {
+      const overSectionId = overLink.section_id ?? 'no-section';
+      if (currentSectionId !== overSectionId) {
+        // Verificar localStorage para mostrar notificación máximo 2 veces
+        const notificationCount = parseInt(localStorage.getItem('moveItemNotificationCount') || '0');
+        
+        if (notificationCount < 2) {
+          // Mostrar notificación de que debe usar el botón específico
+          toast(t('moveItemNotification'), {
+            icon: '⚠️',
+            style: {
+              background: '#581c87',
+              color: '#e879f9',
+              border: '1px solid #a855f7',
+              fontSize: '14px',
+              fontWeight: '500',
+            },
+          });
+          
+          // Incrementar contador en localStorage
+          localStorage.setItem('moveItemNotificationCount', (notificationCount + 1).toString());
+        }
+        
+        // Activar efecto de brillo en el icono específico del link que se intenta mover
+        setHighlightedLinkId(activeId);
+        setTimeout(() => setHighlightedLinkId(null), 1000);
+        
+        return;
+      }
     }
     
     // Si se reordena dentro de la misma sección
-    const activeLink = links.find(l => l.id === activeId);
-    const overLink = links.find(l => l.id === overId);
-    
     if (activeLink && overLink && 
         (activeLink.section_id ?? 'no-section') === (overLink.section_id ?? 'no-section')) {
       const sectionId = activeLink.section_id ?? 'no-section';
@@ -434,6 +498,7 @@ export default function MultiSectionsBoard({
                   onMoveToSection={handleMoveToSection}
                   transitioningLinks={transitioningLinks}
                   activeId={activeId}
+                  highlightedLinkId={highlightedLinkId}
                 />
               </motion.div>
             );

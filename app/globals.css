@@ -49,6 +49,16 @@ div[style*="position: relative"] div[style*="position: absolute"] > iframe {
   left: 0 !important;
 }
 
+/* Animación de spinner para borde */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .w-full div[style*="position: relative"] {
   width: 100% !important;
   max-width: 100% !important;

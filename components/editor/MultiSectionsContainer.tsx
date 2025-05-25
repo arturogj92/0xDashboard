@@ -74,12 +74,13 @@ interface Props{
   onMoveToSection:(id:string,newSectionId:string)=>void;
   transitioningLinks:Set<string>;
   activeId:string|null;
+  highlightedLinkId:string|null;
 }
 
 export default function MultiSectionsContainer({
   containerId,items,links,sections,moveSectionUp,moveSectionDown,idx,total,
   onUpdateLink,onDeleteLink,onCreateLinkInSection,onUpdateSection,onDeleteSection,
-  reorderLinksInContainer,onMoveToSection,transitioningLinks,activeId,
+  reorderLinksInContainer,onMoveToSection,transitioningLinks,activeId,highlightedLinkId,
 }:Props){
   
   const { setNodeRef, isOver } = useDroppable({
@@ -164,6 +165,7 @@ export default function MultiSectionsContainer({
                 availableSections={availableSections}
                 isTransitioning={transitioningLinks.has(link.id)}
                 activeId={activeId}
+                highlightMoveIcon={highlightedLinkId === link.id}
               />
             );
           })}

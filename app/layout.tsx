@@ -12,6 +12,7 @@ import Footer from './components/Footer';
 import { cn } from "@/lib/utils";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { I18nProvider } from '@/contexts/I18nContext';
+import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -56,6 +57,17 @@ export default function RootLayout({
               <RootLayoutInner>
                 {children}
               </RootLayoutInner>
+              <Toaster 
+                position="top-right"
+                toastOptions={{
+                  duration: 4000,
+                  style: {
+                    background: '#1f2937',
+                    color: '#fff',
+                    border: '1px solid #374151',
+                  },
+                }}
+              />
               </I18nProvider>
               <SpeedInsights />
               <Analytics />

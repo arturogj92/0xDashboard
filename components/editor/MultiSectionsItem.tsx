@@ -117,6 +117,7 @@ interface Props{
   availableSections: Array<{id: string; name: string}>;
   isTransitioning?: boolean;
   activeId?: string | null;
+  highlightMoveIcon?: boolean;
 }
 
 const fileName=(url:string)=>{try{return url.split("/").pop()??"";}catch{return"";}};
@@ -137,7 +138,7 @@ function CustomTooltip({active,payload,label}:{active?:boolean;payload?:TooltipI
 
 /* ═════════ COMPONENTE ═════════ */
 export default function MultiSectionsItem({
-  link,onUpdateLink,onDeleteLink,onMoveToSection,availableSections,isTransitioning = false,activeId,
+  link,onUpdateLink,onDeleteLink,onMoveToSection,availableSections,isTransitioning = false,activeId,highlightMoveIcon = false,
 }:Props){
 
   const t = useTranslations('linkItem');
@@ -368,11 +369,16 @@ export default function MultiSectionsItem({
             <div className="relative">
               <Button 
                 variant="destructive" 
-                className="text-xs p-1 w-8 h-8 hover:bg-purple-900" 
+                className={`text-xs p-1 w-8 h-8 transition-all duration-300 ${
+                  highlightMoveIcon 
+                    ? 'bg-purple-600 scale-110 shadow-lg shadow-purple-500/50' 
+                    : 'hover:bg-purple-900'
+                }`}
                 onClick={() => setShowSectionDropdown(!showSectionDropdown)}
               >
                 <MoveIcon/>
               </Button>
+              
               
               {showSectionDropdown && (
                 <div className="absolute top-full right-0 mt-1 bg-gray-800 border border-gray-600 rounded-md shadow-lg z-50 min-w-48">

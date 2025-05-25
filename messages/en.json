@@ -368,7 +368,8 @@
   "editor": {
     "title": "Edit your Landing Page",
     "description": "Create sections to organize your links. Each section can contain multiple links that you can reorder by dragging and dropping, or move between sections using the corresponding button.",
-    "newSection": "New Section"
+    "newSection": "New Section",
+    "moveItemNotification": "To move items between sections, use the move button (⇄) in the item. Drag and drop only works within the same section."
   },
   "social": {
     "title": "Social Media",
