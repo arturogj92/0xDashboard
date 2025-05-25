@@ -371,6 +371,99 @@ export default function MultiSectionsBoard({
     [landingId, setLinks, onLinksReordered, links]
   );
 
+  /* ─────────── Mover links arriba / abajo ─────────── */
+  const moveLinkUp = useCallback(
+    async (linkId: string) => {
+      const link = links.find(l => l.id === linkId);
+      if (!link) return;
+
+      const sectionId = link.section_id ?? 'no-section';
+      const sectionLinks = links
+        .filter(l => (l.section_id ?? 'no-section') === sectionId)
+        .sort((a, b) => a.position - b.position);
+      
+      const currentIndex = sectionLinks.findIndex(l => l.id === linkId);
+      if (currentIndex <= 0) return; // Ya está en la primera posición
+
+      // Intercambiar posiciones
+      const newLinks = [...sectionLinks];
+      [newLinks[currentIndex], newLinks[currentIndex - 1]] = [newLinks[currentIndex - 1], newLinks[currentIndex]];
+      
+      // Actualizar posiciones
+      newLinks.forEach((link, index) => {
+        link.position = index;
+      });
+
+      // Actualizar estado local
+      setLinks(prevLinks => {
+        const updatedLinks = [...prevLinks];
+        newLinks.forEach(newLink => {
+          const index = updatedLinks.findIndex(l => l.id === newLink.id);
+          if (index !== -1) {
+            updatedLinks[index] = { ...updatedLinks[index], position: newLink.position };
+          }
+        });
+        return updatedLinks;
+      });
+
+      // Actualizar en el servidor
+      await fetch(`${API_URL}/api/links?landingId=${landingId}`, {
+        method: "PATCH",
+        headers: createAuthHeaders(),
+        body: JSON.stringify(newLinks.map(l => ({ id: l.id, position: l.position }))),
+      });
+      
+      onLinksReordered?.();
+    },
+    [landingId, links, setLinks, onLinksReordered]
+  );
+
+  const moveLinkDown = useCallback(
+    async (linkId: string) => {
+      const link = links.find(l => l.id === linkId);
+      if (!link) return;
+
+      const sectionId = link.section_id ?? 'no-section';
+      const sectionLinks = links
+        .filter(l => (l.section_id ?? 'no-section') === sectionId)
+        .sort((a, b) => a.position - b.position);
+      
+      const currentIndex = sectionLinks.findIndex(l => l.id === linkId);
+      if (currentIndex >= sectionLinks.length - 1) return; // Ya está en la última posición
+
+      // Intercambiar posiciones
+      const newLinks = [...sectionLinks];
+      [newLinks[currentIndex], newLinks[currentIndex + 1]] = [newLinks[currentIndex + 1], newLinks[currentIndex]];
+      
+      // Actualizar posiciones
+      newLinks.forEach((link, index) => {
+        link.position = index;
+      });
+
+      // Actualizar estado local
+      setLinks(prevLinks => {
+        const updatedLinks = [...prevLinks];
+        newLinks.forEach(newLink => {
+          const index = updatedLinks.findIndex(l => l.id === newLink.id);
+          if (index !== -1) {
+            updatedLinks[index] = { ...updatedLinks[index], position: newLink.position };
+          }
+        });
+        return updatedLinks;
+      });
+
+      // Actualizar en el servidor
+      await fetch(`${API_URL}/api/links?landingId=${landingId}`, {
+        method: "PATCH",
+        headers: createAuthHeaders(),
+        body: JSON.stringify(newLinks.map(l => ({ id: l.id, position: l.position }))),
+      });
+      
+      onLinksReordered?.();
+    },
+    [landingId, links, setLinks, onLinksReordered]
+  );
+
   /* ─────────── Mover secciones arriba / abajo ─────────── */
   const patchSections = useCallback(async (arr: SectionData[]) => {
     await fetch(`${API_URL}/api/sections?landingId=${landingId}`, {
@@ -499,6 +592,8 @@ export default function MultiSectionsBoard({
                   transitioningLinks={transitioningLinks}
                   activeId={activeId}
                   highlightedLinkId={highlightedLinkId}
+                  onMoveLinkUp={moveLinkUp}
+                  onMoveLinkDown={moveLinkDown}
                 />
               </motion.div>
             );
