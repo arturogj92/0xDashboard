@@ -298,8 +298,8 @@ export default function AdminPage() {
         
         <div className="w-full mb-8">
           <ThemeSelector
-            value={landing.theme_id || 'gradient-purple'}
-            onChange={handleThemeUpdate}
+            currentThemeId={landing.theme_id || 'gradient-purple'}
+            onThemeChange={handleThemeUpdate}
             className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
           />
         </div>

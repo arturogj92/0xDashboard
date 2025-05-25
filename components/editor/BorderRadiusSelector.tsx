@@ -106,6 +106,39 @@ export default function BorderRadiusSelector({
   };
 
 
+  const presets = [
+    { value: 0, label: 'Cuadrado', icon: '⬜' },
+    { value: 8, label: 'Poco', icon: '▢' },
+    { value: 16, label: 'Mediano', icon: '◻️' },
+    { value: 50, label: 'Redondeado', icon: '⚪' }
+  ];
+
+  const handlePresetClick = (value: number) => {
+    setSliderValue(value);
+    setPendingValue(value);
+    
+    const borderRadiusStyle = radiusToSliderValue(value);
+    
+    // Actualizar inmediatamente
+    startTransition(() => {
+      onChange(borderRadiusStyle);
+    });
+    
+    // Simular que se soltó el slider para iniciar el guardado
+    if (onSave) {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = setTimeout(() => {
+        onSave(borderRadiusStyle);
+        setPendingValue(null);
+        timeoutRef.current = null;
+      }, 1000);
+    } else {
+      setPendingValue(null);
+    }
+  };
+
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="flex items-center justify-between">
@@ -143,6 +176,34 @@ export default function BorderRadiusSelector({
           <span className={`${Math.abs(sliderValue - 50) <= 2 ? 'text-purple-400 font-medium' : ''}`}>50px</span>
           <span className={`${Math.abs(sliderValue - 75) <= 2 ? 'text-purple-400 font-medium' : ''}`}>75px</span>
           <span className={`${sliderValue >= 98 ? 'text-purple-400 font-medium' : ''}`}>100px</span>
+        </div>
+      </div>
+
+      {/* Presets */}
+      <div className="space-y-2">
+        <span className="text-xs text-gray-400">Valores rápidos:</span>
+        <div className="grid grid-cols-4 gap-2">
+          {presets.map((preset) => (
+            <button
+              key={preset.value}
+              onClick={() => handlePresetClick(preset.value)}
+              className={`flex flex-col items-center p-3 rounded-lg border transition-all duration-200 hover:scale-105 ${
+                Math.abs(sliderValue - preset.value) <= 1
+                  ? 'bg-purple-600/30 border-purple-400 text-white shadow-lg shadow-purple-500/20'
+                  : 'bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-gray-500 hover:text-white'
+              }`}
+            >
+              <span className="text-lg mb-1">{preset.icon}</span>
+              <span className="text-xs font-medium">{preset.label}</span>
+              <span className={`text-xs ${
+                Math.abs(sliderValue - preset.value) <= 1 
+                  ? 'text-purple-200' 
+                  : 'text-gray-500'
+              }`}>
+                {preset.value}px
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 
