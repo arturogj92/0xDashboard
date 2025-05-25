@@ -11,6 +11,7 @@ export interface PublicLandingPageDisplayProps {
     description: string;
     settings: any;
     slug: string;
+    theme_id?: string;
     links?: LinkData[];
     sections?: SectionData[];
     socialLinks?: SocialLinkData[];
@@ -22,6 +23,12 @@ export default function PublicLandingPageDisplay({ landing }: PublicLandingPageD
   const [sections, setSections] = useState<SectionData[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Debug: Log del theme_id
+  console.log('[PublicLandingPageDisplay] Landing data:', { 
+    name: landing.name, 
+    theme_id: landing.theme_id 
+  });
 
   useEffect(() => {
     // Los datos ya vienen incluidos desde el endpoint /api/landings/slug/${slug}
@@ -56,6 +63,7 @@ export default function PublicLandingPageDisplay({ landing }: PublicLandingPageD
         sections={sections}
         socialLinks={socialLinks}
         isPreview={false}
+        themeId={landing.theme_id || 'gradient-purple'}
       />
     </div>
   );

@@ -607,28 +607,30 @@ export default function MultiSectionsBoard({
           transition={{ delay: 0.2, duration: 0.3, ease: "easeOut" }}
           style={{ display: 'flex', justifyContent: 'center' }}
         >
-          <motion.button
+          <motion.div
             whileHover={{ 
               scale: 1.02,
               transition: { duration: 0.2 }
             }}
             whileTap={{ scale: 0.98 }}
-            style={{
-              background: 'linear-gradient(to right, #4f46e5, #7c3aed)',
-              color: 'white',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              fontWeight: '500',
-              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'all 0.2s'
-            }}
-            onClick={onCreateSection}
           >
+            <button
+              onClick={onCreateSection}
+              style={{
+                background: 'linear-gradient(to right, #4f46e5, #7c3aed)',
+                color: 'white',
+                padding: '12px 24px',
+                borderRadius: '8px',
+                fontWeight: '500',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+            >
             <motion.svg 
               xmlns="http://www.w3.org/2000/svg" 
               fill="none" 
@@ -642,7 +644,8 @@ export default function MultiSectionsBoard({
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </motion.svg>
             {t('newSection')}
-          </motion.button>
+            </button>
+          </motion.div>
         </motion.div>
       </div>
     </DndContext>

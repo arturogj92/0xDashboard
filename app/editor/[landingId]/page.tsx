@@ -8,6 +8,7 @@ import { AvatarUpload } from "@/components/editor/AvatarUpload";
 import { LandingInfoEditor } from "@/components/editor/LandingInfoEditor";
 import { LandingPreview } from "@/components/landing/LandingPreview";
 import { LinkData, SectionData, SocialLinkData } from "@/components/editor/types";
+import ThemeSelector from "@/components/editor/ThemeSelector";
 import { useParams } from 'next/navigation';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
@@ -19,7 +20,7 @@ export default function AdminPage() {
   const [links, setLinks] = useState<LinkData[]>([]);
   const [sections, setSections] = useState<SectionData[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>([]);
-  const [landing, setLanding] = useState<{name: string; description: string}>({name: '', description: ''});
+  const [landing, setLanding] = useState<{name: string; description: string; theme_id?: string}>({name: '', description: ''});
   const [_, setRefreshing] = useState(0);
   const [previewPosition, setPreviewPosition] = useState('fixed');
   const previewRef = useRef<HTMLDivElement>(null);
@@ -32,7 +33,11 @@ export default function AdminPage() {
         .then(res => res.json())
         .then(data => { 
           if (data.success && data.data) {
-            setLanding({name: data.data.name || '', description: data.data.description || ''});
+            setLanding({
+              name: data.data.name || '', 
+              description: data.data.description || '',
+              theme_id: data.data.theme_id || 'gradient-purple'
+            });
           }
         })
         .catch(err => console.error('Error cargando landing:', err));
@@ -185,13 +190,34 @@ export default function AdminPage() {
 
   // Handler para actualizar información de la landing
   const handleLandingInfoUpdate = (name: string, description: string) => {
-    setLanding({ name, description });
+    setLanding(prev => ({ ...prev, name, description }));
+  };
+
+  // Handler para actualizar tema
+  const handleThemeChange = async (themeId: string) => {
+    const landingId = params.landingId as string;
+    try {
+      const res = await fetch(`${API_URL}/api/landings/${landingId}`, {
+        method: 'PUT',
+        headers: createAuthHeaders(),
+        body: JSON.stringify({ theme_id: themeId }),
+      });
+      
+      if (res.ok) {
+        setLanding(prev => ({ ...prev, theme_id: themeId }));
+      } else {
+        console.error('Error actualizando tema');
+      }
+    } catch (error) {
+      console.error('Error actualizando tema:', error);
+    }
   };
 
   // Datos reales de landing para preview
   const landingPreview = {
     name: landing.name || "Mi landing de ejemplo",
     description: landing.description || "Descripción de ejemplo",
+    theme_id: landing.theme_id || "gradient-purple",
     settings: {},
     links,
     sections,
@@ -236,6 +262,7 @@ export default function AdminPage() {
               sections={sections}
               socialLinks={socialLinks}
               isPreview={true}
+              themeId={landingPreview.theme_id}
             />
           </div>
         </div>
@@ -266,6 +293,15 @@ export default function AdminPage() {
             initialName={landing.name}
             initialDescription={landing.description}
             onUpdate={handleLandingInfoUpdate}
+            className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
+          />
+        </div>
+
+        {/* Selector de temas */}
+        <div className="w-full mb-8">
+          <ThemeSelector
+            currentThemeId={landing.theme_id || 'gradient-purple'}
+            onThemeChange={handleThemeChange}
             className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
           />
         </div>
