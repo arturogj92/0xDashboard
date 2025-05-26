@@ -178,7 +178,15 @@ export default function AdminPage() {
         headers: createAuthHeaders()
       });
       if (res.ok) {
+        // Actualizar secciones
         setSections(sections => sections.filter(s => s.id !== id));
+        
+        // Actualizar enlaces: mover todos los enlaces de esta sección a "sin sección"
+        setLinks(links => links.map(link => 
+          link.section_id === id 
+            ? { ...link, section_id: null }
+            : link
+        ));
       } else {
         const data = await res.json();
         console.error('Error eliminando seccion:', data.error);
