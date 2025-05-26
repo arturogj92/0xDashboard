@@ -61,7 +61,7 @@ export default function StyleCustomizationAccordion({
       {/* Contenido del accordion */}
       <div 
         className={`overflow-hidden transition-all duration-300 ease-in-out ${
-          isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+          isOpen ? 'max-h-[3000px] opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
         <div className="mt-4 space-y-6">
@@ -111,6 +111,7 @@ export default function StyleCustomizationAccordion({
 
           {/* Font Family */}
           <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
+            <div className="text-white text-sm mb-2">Font Family Selector:</div>
             <FontFamilySelector
               value={landing.configurations?.fontFamily || { family: 'Inter', url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' }}
               onChange={(fontFamily) => handleConfigurationUpdate({ fontFamily })}
