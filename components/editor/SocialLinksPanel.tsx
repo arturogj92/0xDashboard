@@ -6,7 +6,6 @@ import {
     closestCenter,
     DndContext,
     DragEndEvent,
-    DragStartEvent,
     KeyboardSensor,
     PointerSensor,
     useSensor,
@@ -126,7 +125,7 @@ export default function SocialLinksPanel({landingId, onUpdate}: SocialLinksPanel
         useSensor(KeyboardSensor)
     );
 
-    function handleDragStart(event: DragStartEvent) {
+    function handleDragStart() {
         setIsDragging(true);
     }
 

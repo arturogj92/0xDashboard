@@ -6,6 +6,7 @@ import React, { useMemo, useEffect } from 'react';
 import { LinkData, SectionData, SocialLinkData } from '@/components/editor/types';
 import { useAuth } from '@/contexts/AuthContext';
 import { getThemeById, getDefaultTheme } from '@/lib/themes';
+import { useTypewriter } from '@/hooks/useTypewriter';
 
 interface LandingPreviewProps {
   name: string;
@@ -32,6 +33,10 @@ interface LandingPreviewProps {
     fontFamily?: {
       family: string;
       url: string;
+    };
+    effects?: {
+      showBadge?: boolean;
+      typewriterEffect?: boolean;
     };
   };
 }
@@ -101,8 +106,20 @@ export const LandingPreview = React.memo(function LandingPreview({
     return { visibleLinks, visibleSocialLinks, linksBySection };
   }, [links, sections, socialLinks, isPreview]);
   
-  // Links sin sección (no se mostrarán en la vista previa)
-  // const linksWithoutSection = visibleLinks.filter(link => !link.section_id);
+  // Configuración de efectos
+  const effectsConfig = configurations.effects || { showBadge: true, typewriterEffect: true };
+  
+  // Efecto typewriter para la descripción (solo si está habilitado)
+  const { displayText: typewriterDescription, isComplete } = useTypewriter({
+    text: effectsConfig.typewriterEffect ? (description || t('descriptionPlaceholder')) : '',
+    speed: 30,
+    delay: 1000 // Delay de 1 segundo antes de empezar
+  });
+  
+  // Texto final para mostrar (con o sin efecto typewriter)
+  const finalDescription = effectsConfig.typewriterEffect 
+    ? typewriterDescription 
+    : (description || t('descriptionPlaceholder'));
 
   // Obtener el tema actual
   const currentTheme = getThemeById(themeId) || getDefaultTheme();
@@ -215,15 +232,24 @@ export const LandingPreview = React.memo(function LandingPreview({
       </Avatar>
 
       {/* Nombre y descripción */}
-      <h2 
-        className={`${isPreview ? 'mt-2' : 'mt-3'} ${isPreview ? 'text-sm' : 'text-2xl'} font-semibold text-center break-words leading-tight`}
-        style={{ 
-          color: dynamicTextPrimary,
-          fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
-        }}
-      >
-        {name || 'Your Name'}
-      </h2>
+      <div className={`${isPreview ? 'mt-2' : 'mt-3'} flex items-center justify-center gap-1.5`}>
+        {effectsConfig.showBadge && (
+          <img 
+            src="/images/icons/badge.png" 
+            alt="Verificado"
+            className={`${isPreview ? 'w-4 h-4' : 'w-6 h-6'} flex-shrink-0`}
+          />
+        )}
+        <h2 
+          className={`${isPreview ? 'text-sm' : 'text-2xl'} font-semibold text-center break-words leading-tight`}
+          style={{ 
+            color: dynamicTextPrimary,
+            fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
+          }}
+        >
+          {name || 'Your Name'}
+        </h2>
+      </div>
       
       <p 
         className={`${isPreview ? 'mt-1 mb-2' : 'mt-2 mb-4'} ${isPreview ? 'text-xs' : 'text-base'} text-center break-words line-clamp-3 leading-tight px-2 ${isPreview ? 'min-h-[2rem]' : 'min-h-[3rem]'}`}
@@ -232,7 +258,10 @@ export const LandingPreview = React.memo(function LandingPreview({
           fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
         }}
       >
-        {description || t('descriptionPlaceholder')}
+        {finalDescription}
+        {effectsConfig.typewriterEffect && !isComplete && (
+          <span className="animate-pulse text-current ml-0.5">|</span>
+        )}
       </p>
 
       {/* Links organizados por sección */}
@@ -263,7 +292,7 @@ export const LandingPreview = React.memo(function LandingPreview({
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`${isPreview ? 'min-h-[65px] w-[95%]' : 'min-h-[60px] sm:min-h-[65px] md:min-h-[80px] w-full md:w-[70%] lg:w-[60%] xl:w-[50%]'} flex items-center overflow-hidden transition-all duration-200 hover:scale-105 group`}
+                    className={`${isPreview ? 'min-h-[65px] w-[95%]' : 'min-h-[60px] sm:min-h-[65px] md:min-h-[80px] w-full md:w-[70%] lg:w-[60%] xl:w-[50%]'} flex items-center overflow-hidden transition-all duration-100 hover:scale-105 group`}
                     style={{
                       backgroundColor: dynamicLinkBackground,
                       borderColor: 'var(--preview-link-border)',
@@ -324,7 +353,7 @@ export const LandingPreview = React.memo(function LandingPreview({
       <div className={`w-full h-px bg-white/20 ${isPreview ? 'my-12' : 'my-12'}`} />
 
       {/* Social links */}
-      <div className={`flex flex-nowrap justify-center ${isPreview ? 'gap-1.5 mb-4' : 'gap-1 mb-6'} overflow-hidden px-1`}>
+      <div className={`flex flex-nowrap justify-center ${isPreview ? 'gap-1.5 mb-4 py-1' : 'gap-1 mb-6 py-2'} ${isPreview ? 'overflow-hidden' : 'overflow-visible'} px-1`}>
         {/* Debug en preview */}
         {isPreview && visibleSocialLinks.length === 0 && (
           <div className="text-xs text-gray-400 p-2">
@@ -339,7 +368,7 @@ export const LandingPreview = React.memo(function LandingPreview({
               href={socialLink.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${isPreview ? 'p-1.5' : 'p-1.5 sm:p-2 md:p-2.5'} transition-all duration-200 ${isPreview ? '' : 'hover:scale-105'} flex-shrink-0`}
+              className={`${isPreview ? 'p-1.5' : 'p-1.5 sm:p-2 md:p-2.5'} transition-all duration-100 ${isPreview ? '' : 'hover:scale-110'} flex-shrink-0`}
               style={{
                 backgroundColor: dynamicLinkBackground,
                 borderColor: 'var(--preview-link-border)',

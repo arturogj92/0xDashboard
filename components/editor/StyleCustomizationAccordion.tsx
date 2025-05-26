@@ -7,6 +7,7 @@ import BackgroundGradientSelector from "@/components/editor/BackgroundGradientSe
 import FontColorSelector from "@/components/editor/FontColorSelector";
 import LinkColorSelector from "@/components/editor/LinkColorSelector";
 import FontFamilySelector from "@/components/editor/FontFamilySelector";
+import EffectsSelector from "@/components/editor/EffectsSelector";
 
 interface StyleCustomizationAccordionProps {
   landing: {
@@ -116,6 +117,15 @@ export default function StyleCustomizationAccordion({
               value={landing.configurations?.fontFamily || { family: 'Inter', url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' }}
               onChange={(fontFamily) => handleConfigurationUpdate({ fontFamily })}
               onSave={(fontFamily) => handleConfigurationSave({ fontFamily })}
+            />
+          </div>
+
+          {/* Effects */}
+          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
+            <EffectsSelector
+              currentConfig={landing.configurations?.effects || { showBadge: true, typewriterEffect: true }}
+              onConfigUpdate={handleConfigurationUpdate}
+              onConfigSave={handleConfigurationSave}
             />
           </div>
         </div>

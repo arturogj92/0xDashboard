@@ -32,11 +32,23 @@ export default function AdminPage() {
         .then(res => res.json())
         .then(data => {
           if (data.data) {
+            const existingConfigurations = data.data.configurations || {};
+            const defaultEffects = {
+              showBadge: true,
+              typewriterEffect: true
+            };
+            
             setLanding({
               name: data.data.name || '',
               description: data.data.description || '',
               theme_id: data.data.theme_id || 'dark',
-              configurations: data.data.configurations || {}
+              configurations: {
+                ...existingConfigurations,
+                effects: {
+                  ...defaultEffects,
+                  ...existingConfigurations.effects
+                }
+              }
             });
           }
         })
@@ -201,6 +213,10 @@ export default function AdminPage() {
       fontFamily: {
         family: 'Inter',
         url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
+      },
+      effects: {
+        showBadge: true,
+        typewriterEffect: true
       }
     };
 
