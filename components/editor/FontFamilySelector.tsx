@@ -186,7 +186,7 @@ export default function FontFamilySelector({
   }, [value]);
 
   // Cargar fuente dinámicamente
-  const loadFont = (url: string, family: string) => {
+  const loadFont = React.useCallback((url: string, family: string) => {
     if (fontsLoaded.has(family)) return;
 
     const link = document.createElement('link');
@@ -196,7 +196,7 @@ export default function FontFamilySelector({
       setFontsLoaded(prev => new Set([...prev, family]));
     };
     document.head.appendChild(link);
-  };
+  }, [fontsLoaded]);
 
   // Limpiar timeouts al desmontar
   useEffect(() => {
@@ -240,7 +240,14 @@ export default function FontFamilySelector({
     if (localFont.url && localFont.family) {
       loadFont(localFont.url, localFont.family);
     }
-  }, []);
+  }, [localFont.url, localFont.family, loadFont]);
+
+  // Cargar todas las fuentes para mostrar previews
+  useEffect(() => {
+    googleFonts.forEach(font => {
+      loadFont(font.url, font.family);
+    });
+  }, [loadFont]);
 
   return (
     <div className={`space-y-4 ${className}`}>
@@ -295,6 +302,14 @@ export default function FontFamilySelector({
                   }}
                 >
                   {font.name}
+                </div>
+                <div 
+                  className="text-sm text-gray-400 mb-1"
+                  style={{ 
+                    fontFamily: fontsLoaded.has(font.family) ? `${font.family}, system-ui, sans-serif` : 'system-ui, sans-serif'
+                  }}
+                >
+                  Mi Landing Page Ejemplo
                 </div>
                 <div className="text-xs text-gray-500">
                   {font.category} • Google Fonts
