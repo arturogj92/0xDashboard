@@ -4,7 +4,6 @@ import { User, ExternalLink, Github, Linkedin, Facebook, Globe } from "lucide-re
 import { useTranslations } from 'next-intl';
 import React, { useMemo, useEffect } from 'react';
 import { LinkData, SectionData, SocialLinkData } from '@/components/editor/types';
-import { useAuth } from '@/contexts/AuthContext';
 import { getThemeById, getDefaultTheme } from '@/lib/themes';
 import { useTypewriter } from '@/hooks/useTypewriter';
 
@@ -16,6 +15,7 @@ interface LandingPreviewProps {
   socialLinks?: SocialLinkData[];
   isPreview?: boolean;
   themeId?: string;
+  avatarUrl?: string;
   configurations?: {
     borderRadius?: string;
     gradient?: {
@@ -48,8 +48,95 @@ interface LandingPreviewProps {
       };
       gradientDirection?: string;
     };
+    avatarDisplay?: {
+      showAvatar?: boolean;
+    };
+    backgroundPattern?: {
+      pattern: string;
+      color: string;
+      opacity: number;
+    };
   };
 }
+
+// Función para generar el CSS del patrón de fondo
+const generatePatternCSS = (pattern: string, color: string, opacity: number) => {
+  const colorWithOpacity = `${color}${Math.round(opacity * 255).toString(16).padStart(2, '0')}`;
+  
+  switch (pattern) {
+    case 'grid':
+      return {
+        backgroundImage: `
+          linear-gradient(${colorWithOpacity} 1px, transparent 1px),
+          linear-gradient(90deg, ${colorWithOpacity} 1px, transparent 1px)
+        `,
+        backgroundSize: '40px 40px'
+      };
+    
+    case 'dots':
+      return {
+        backgroundImage: `radial-gradient(circle, ${colorWithOpacity} 1px, transparent 1px)`,
+        backgroundSize: '20px 20px'
+      };
+    
+    case 'diagonal':
+      return {
+        backgroundImage: `repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 40px,
+          ${colorWithOpacity} 40px,
+          ${colorWithOpacity} 42px
+        )`
+      };
+    
+    case 'waves':
+      return {
+        backgroundImage: `
+          radial-gradient(ellipse at center, transparent 50%, ${colorWithOpacity} 50%),
+          linear-gradient(90deg, transparent 50%, ${colorWithOpacity} 50%)
+        `,
+        backgroundSize: '40px 40px, 40px 20px'
+      };
+    
+    case 'geometric':
+      return {
+        backgroundImage: `
+          linear-gradient(45deg, ${colorWithOpacity} 25%, transparent 25%),
+          linear-gradient(-45deg, ${colorWithOpacity} 25%, transparent 25%),
+          linear-gradient(45deg, transparent 75%, ${colorWithOpacity} 75%),
+          linear-gradient(-45deg, transparent 75%, ${colorWithOpacity} 75%)
+        `,
+        backgroundSize: '60px 60px',
+        backgroundPosition: '0 0, 0 30px, 30px -30px, -30px 0px'
+      };
+    
+    case 'circuit':
+      return {
+        backgroundImage: `
+          linear-gradient(90deg, ${colorWithOpacity} 1px, transparent 1px),
+          linear-gradient(${colorWithOpacity} 1px, transparent 1px),
+          radial-gradient(circle at 20px 20px, ${colorWithOpacity} 2px, transparent 2px)
+        `,
+        backgroundSize: '40px 40px, 40px 40px, 40px 40px'
+      };
+    
+    case 'lines':
+      return {
+        backgroundImage: `
+          linear-gradient(23deg, ${colorWithOpacity} 1px, transparent 1px),
+          linear-gradient(67deg, ${colorWithOpacity} 1px, transparent 1px),
+          linear-gradient(135deg, ${colorWithOpacity} 1px, transparent 1px),
+          linear-gradient(158deg, ${colorWithOpacity} 1px, transparent 1px)
+        `,
+        backgroundSize: '60px 80px, 80px 60px, 100px 70px, 70px 90px',
+        backgroundPosition: '0 0, 20px 10px, 40px 30px, 10px 50px'
+      };
+    
+    default:
+      return {};
+  }
+};
 
 // Iconos personalizados
 const TikTokIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
@@ -97,10 +184,10 @@ export const LandingPreview = React.memo(function LandingPreview({
   socialLinks = [],
   isPreview = false,
   themeId = 'dark',
+  avatarUrl,
   configurations = {}
 }: LandingPreviewProps) {
   const t = useTranslations('landing');
-  const { user } = useAuth();
   
   // Memorizar cálculos para optimizar rendimiento
   const { visibleLinks, visibleSocialLinks, linksBySection } = useMemo(() => {
@@ -123,6 +210,11 @@ export const LandingPreview = React.memo(function LandingPreview({
   const titleStyleConfig = configurations.titleStyle || { 
     fontSize: 'text-2xl', 
     gradientEnabled: false 
+  };
+  
+  // Configuración del avatar
+  const avatarDisplayConfig = configurations.avatarDisplay || { 
+    showAvatar: true 
   };
   
   // Efecto typewriter para la descripción (solo si está habilitado)
@@ -151,6 +243,12 @@ export const LandingPreview = React.memo(function LandingPreview({
   const dynamicBackground = configurations.gradient 
     ? `linear-gradient(to bottom, ${gradientConfig.color1} 0%, ${gradientConfig.color2} 100%)`
     : currentTheme.colors.background;
+    
+  // Configuración del patrón de fondo
+  const backgroundPatternConfig = configurations.backgroundPattern || { pattern: 'none', color: '#ffffff', opacity: 0.1 };
+  const backgroundPatternStyle = backgroundPatternConfig.pattern !== 'none' 
+    ? generatePatternCSS(backgroundPatternConfig.pattern, backgroundPatternConfig.color, backgroundPatternConfig.opacity)
+    : {};
     
   // Colores de fuente dinámicos
   const dynamicTextPrimary = configurations.fontColor ? fontColorConfig.primary : currentTheme.colors.textPrimary;
@@ -272,34 +370,43 @@ export const LandingPreview = React.memo(function LandingPreview({
   return (
     <div 
       data-landing-preview
-      className={`${isPreview ? 'h-full overflow-y-scroll overflow-x-hidden scrollbar-hide' : 'min-h-screen'}`}
+      className={`${isPreview ? 'h-full overflow-y-scroll overflow-x-hidden scrollbar-hide' : 'min-h-screen'} relative`}
       style={{
         background: dynamicBackground,
         fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`,
         color: dynamicTextPrimary,
       }}
     >
-      <div className={`flex flex-col items-center ${isPreview ? 'pt-16' : 'pt-20'} ${isPreview ? 'px-1 pb-4' : 'px-6 md:px-8 lg:px-12 pb-16'} ${isPreview ? 'min-h-full' : 'min-h-screen'} mx-auto ${isPreview ? 'max-w-lg' : 'max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-5xl'}`}>
-      {/* Avatar */}
-      <Avatar className={`${isPreview ? 'w-16 h-16 mb-4' : 'w-24 h-24 mb-6'} flex-shrink-0`} style={{ backgroundColor: 'var(--preview-link-background)' }}>
-        <AvatarImage 
-          src={user?.avatar_url} 
-          alt={user?.name || user?.username || 'Avatar'}
-          className="object-cover"
+      {/* Patrón superpuesto */}
+      {backgroundPatternConfig.pattern !== 'none' && (
+        <div 
+          className="absolute inset-0 pointer-events-none"
+          style={backgroundPatternStyle}
         />
-        <AvatarFallback 
-          className={`${isPreview ? 'text-lg' : 'text-2xl'} font-bold`}
-          style={{ 
-            backgroundColor: 'var(--preview-link-background)',
-            color: 'var(--preview-text-primary)'
-          }}
-        >
-          <User className={`${isPreview ? 'w-8 h-8' : 'w-12 h-12'}`} style={{ color: 'var(--preview-text-muted)' }} />
-        </AvatarFallback>
-      </Avatar>
+      )}
+      <div className={`relative z-10 flex flex-col items-center ${isPreview ? 'pt-16' : 'pt-20'} ${isPreview ? 'px-1 pb-4' : 'px-6 md:px-8 lg:px-12 pb-16'} ${isPreview ? 'min-h-full' : 'min-h-screen'} mx-auto ${isPreview ? 'max-w-lg' : 'max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-5xl'}`}>
+      {/* Avatar (solo si está habilitado) */}
+      {avatarDisplayConfig.showAvatar && (
+        <Avatar className={`${isPreview ? 'w-16 h-16 mb-4' : 'w-24 h-24 mb-6'} flex-shrink-0`} style={{ backgroundColor: 'var(--preview-link-background)' }}>
+          <AvatarImage 
+            src={avatarUrl} 
+            alt="Avatar de landing"
+            className="object-cover"
+          />
+          <AvatarFallback 
+            className={`${isPreview ? 'text-lg' : 'text-2xl'} font-bold`}
+            style={{ 
+              backgroundColor: 'var(--preview-link-background)',
+              color: 'var(--preview-text-primary)'
+            }}
+          >
+            <User className={`${isPreview ? 'w-8 h-8' : 'w-12 h-12'}`} style={{ color: 'var(--preview-text-muted)' }} />
+          </AvatarFallback>
+        </Avatar>
+      )}
 
       {/* Nombre y descripción */}
-      <div className={`${isPreview ? 'mt-2' : 'mt-3'} flex items-center justify-center gap-1.5`}>
+      <div className={`${avatarDisplayConfig.showAvatar ? (isPreview ? 'mt-2' : 'mt-3') : (isPreview ? 'mt-0' : 'mt-0')} flex items-center justify-center gap-1.5`}>
         {effectsConfig.showBadge && (
           <img 
             src="/images/icons/badge.png" 

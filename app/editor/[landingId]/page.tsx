@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { API_URL, createAuthHeaders } from "@/lib/api";
 import MultiSectionsBoard from "@/components/editor/MultiSectionsBoard";
 import SocialLinksPanel from "@/components/editor/SocialLinksPanel";
-import { AvatarUpload } from "@/components/editor/AvatarUpload";
 import { LandingInfoEditor } from "@/components/editor/LandingInfoEditor";
 import { LandingPreview } from "@/components/landing/LandingPreview";
 import { LinkData, SectionData, SocialLinkData } from "@/components/editor/types";
@@ -20,7 +19,7 @@ export default function AdminPage() {
   const [links, setLinks] = useState<LinkData[]>([]);
   const [sections, setSections] = useState<SectionData[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>([]);
-  const [landing, setLanding] = useState<{name: string; description: string; theme_id?: string; configurations?: any}>({name: '', description: ''});
+  const [landing, setLanding] = useState<{id?: string; name: string; description: string; theme_id?: string; avatar_url?: string; configurations?: any}>({name: '', description: ''});
   const [previewPosition, setPreviewPosition] = useState('fixed');
   const previewRef = useRef<HTMLDivElement>(null);
 
@@ -48,10 +47,22 @@ export default function AdminPage() {
               gradientDirection: 'to right'
             };
             
+            const defaultAvatarDisplay = {
+              showAvatar: true
+            };
+            
+            const defaultBackgroundPattern = {
+              pattern: 'none',
+              color: '#ffffff',
+              opacity: 0.1
+            };
+            
             setLanding({
+              id: data.data.id,
               name: data.data.name || '',
               description: data.data.description || '',
               theme_id: data.data.theme_id || 'dark',
+              avatar_url: data.data.avatar_url,
               configurations: {
                 ...existingConfigurations,
                 effects: {
@@ -61,6 +72,14 @@ export default function AdminPage() {
                 titleStyle: {
                   ...defaultTitleStyle,
                   ...existingConfigurations.titleStyle
+                },
+                avatarDisplay: {
+                  ...defaultAvatarDisplay,
+                  ...existingConfigurations.avatarDisplay
+                },
+                backgroundPattern: {
+                  ...defaultBackgroundPattern,
+                  ...existingConfigurations.backgroundPattern
                 }
               }
             });
@@ -292,6 +311,9 @@ export default function AdminPage() {
           to: '#00D4FF'
         },
         gradientDirection: 'to right'
+      },
+      avatarDisplay: {
+        showAvatar: true
       }
     };
 
@@ -353,6 +375,10 @@ export default function AdminPage() {
     }
   };
 
+  const handleAvatarUpdate = (avatarUrl: string | null) => {
+    setLanding(prev => ({ ...prev, avatar_url: avatarUrl || undefined }));
+  };
+
   const landingPreview = {
     name: landing.name || "Mi landing de ejemplo",
     description: landing.description || "Descripcion de ejemplo",
@@ -399,6 +425,7 @@ export default function AdminPage() {
               socialLinks={socialLinks}
               isPreview={true}
               themeId={landingPreview.theme_id}
+              avatarUrl={landing.avatar_url}
               configurations={landing.configurations}
             />
           </div>
@@ -417,9 +444,6 @@ export default function AdminPage() {
             {t('description')}
           </p>
           
-          <div className="mt-6 mb-4">
-            <AvatarUpload size="lg" />
-          </div>
         </div>
         
         <div className="w-full mb-8">
@@ -438,6 +462,7 @@ export default function AdminPage() {
             handleConfigurationUpdate={handleConfigurationUpdate}
             handleConfigurationSave={handleConfigurationSave}
             handleThemeUpdate={handleThemeUpdate}
+            onAvatarUpdate={handleAvatarUpdate}
           />
         </div>
 

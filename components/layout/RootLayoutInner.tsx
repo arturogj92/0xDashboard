@@ -7,10 +7,20 @@ import { UserNav } from "@/components/auth/UserNav";
 import { useTranslations } from 'next-intl';
 import Footer from "@/app/components/Footer";
 import { FileText } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 export default function RootLayoutInner({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth();
   const t = useTranslations('app');
+  const pathname = usePathname();
+  
+  // Detectar si estamos en una landing pública
+  const isPublicLanding = pathname?.startsWith('/landing/') && pathname !== '/landing';
+  
+  // Si es una landing pública, renderizar solo el children sin navbar/footer
+  if (isPublicLanding) {
+    return <>{children}</>;
+  }
   
   return (
     <div className="min-h-screen bg-transparent flex flex-col">

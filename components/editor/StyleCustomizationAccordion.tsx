@@ -9,15 +9,21 @@ import LinkColorSelector from "@/components/editor/LinkColorSelector";
 import FontFamilySelector from "@/components/editor/FontFamilySelector";
 import EffectsSelector from "@/components/editor/EffectsSelector";
 import TitleStyleSelector from "@/components/editor/TitleStyleSelector";
+import AvatarDisplaySelector from "@/components/editor/AvatarDisplaySelector";
+import { LandingAvatarUpload } from "@/components/editor/LandingAvatarUpload";
+import BackgroundPatternSelector from "@/components/editor/BackgroundPatternSelector";
 
 interface StyleCustomizationAccordionProps {
   landing: {
+    id?: string;
     theme_id?: string;
     configurations?: any;
+    avatar_url?: string;
   };
   handleConfigurationUpdate: (config: any) => void;
   handleConfigurationSave: (config: any) => void;
   handleThemeUpdate: (themeId: string) => void;
+  onAvatarUpdate: (avatarUrl: string | null) => void;
   className?: string;
 }
 
@@ -26,6 +32,7 @@ export default function StyleCustomizationAccordion({
   handleConfigurationUpdate, 
   handleConfigurationSave,
   handleThemeUpdate,
+  onAvatarUpdate,
   className = "" 
 }: StyleCustomizationAccordionProps) {
   const [isOpen, setIsOpen] = useState(true);
@@ -75,6 +82,27 @@ export default function StyleCustomizationAccordion({
             />
           </div>
 
+          {/* Avatar Display */}
+          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
+            <AvatarDisplaySelector
+              value={landing.configurations?.avatarDisplay || { showAvatar: true }}
+              onChange={(avatarDisplay) => handleConfigurationUpdate({ avatarDisplay })}
+              onSave={(avatarDisplay) => handleConfigurationSave({ avatarDisplay })}
+            />
+          </div>
+
+          {/* Landing Avatar Upload */}
+          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
+            <div className="text-white text-sm mb-3 font-medium">Avatar de la Landing</div>
+            <p className="text-gray-400 text-xs mb-4">Sube un avatar específico para esta landing page que se mostrará públicamente.</p>
+            <LandingAvatarUpload
+              landingId={landing.id || ''}
+              currentAvatarUrl={landing.avatar_url}
+              onAvatarUpdate={onAvatarUpdate}
+              size="lg"
+            />
+          </div>
+
           {/* Border Radius */}
           <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
             <BorderRadiusSelector
@@ -90,6 +118,15 @@ export default function StyleCustomizationAccordion({
               value={landing.configurations?.gradient || { color1: '#000000', color2: '#4a044d' }}
               onChange={(gradient) => handleConfigurationUpdate({ gradient })}
               onSave={(gradient) => handleConfigurationSave({ gradient })}
+            />
+          </div>
+
+          {/* Background Pattern */}
+          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
+            <BackgroundPatternSelector
+              value={landing.configurations?.backgroundPattern || { pattern: 'none', color: '#ffffff', opacity: 0.1 }}
+              onChange={(backgroundPattern) => handleConfigurationUpdate({ backgroundPattern })}
+              onSave={(backgroundPattern) => handleConfigurationSave({ backgroundPattern })}
             />
           </div>
 
