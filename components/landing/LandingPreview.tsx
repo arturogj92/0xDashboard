@@ -38,6 +38,16 @@ interface LandingPreviewProps {
       showBadge?: boolean;
       typewriterEffect?: boolean;
     };
+    titleStyle?: {
+      fontSize?: string;
+      gradientEnabled?: boolean;
+      gradientColors?: {
+        from: string;
+        via?: string;
+        to: string;
+      };
+      gradientDirection?: string;
+    };
   };
 }
 
@@ -109,6 +119,12 @@ export const LandingPreview = React.memo(function LandingPreview({
   // Configuración de efectos
   const effectsConfig = configurations.effects || { showBadge: true, typewriterEffect: true };
   
+  // Configuración del título
+  const titleStyleConfig = configurations.titleStyle || { 
+    fontSize: 'text-2xl', 
+    gradientEnabled: false 
+  };
+  
   // Efecto typewriter para la descripción (solo si está habilitado)
   const { displayText: typewriterDescription, isComplete } = useTypewriter({
     text: effectsConfig.typewriterEffect ? (description || t('descriptionPlaceholder')) : '',
@@ -146,6 +162,57 @@ export const LandingPreview = React.memo(function LandingPreview({
   
   // Familia de fuente dinámica
   const dynamicFontFamily = configurations.fontFamily ? fontFamilyConfig.family : currentTheme.typography.fontFamily;
+  
+  // Convertir tamaño de fuente para preview móvil
+  const getPreviewFontSize = (fontSize: string) => {
+    const sizeMap: Record<string, string> = {
+      'text-lg': 'text-xs',
+      'text-xl': 'text-sm', 
+      'text-2xl': 'text-sm',
+      'text-3xl': 'text-base',
+      'text-4xl': 'text-lg'
+    };
+    return sizeMap[fontSize] || 'text-sm';
+  };
+
+  // Generar estilo del título con gradiente
+  const getTitleStyle = () => {
+    const baseStyle = {
+      fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
+    };
+    
+    if (!titleStyleConfig.gradientEnabled || !titleStyleConfig.gradientColors) {
+      return {
+        ...baseStyle,
+        color: dynamicTextPrimary,
+        background: 'none',
+        WebkitBackgroundClip: 'unset',
+        WebkitTextFillColor: 'unset'
+      };
+    }
+    
+    const { from, via, to } = titleStyleConfig.gradientColors;
+    const direction = titleStyleConfig.gradientDirection || 'to right';
+    
+    let gradientString = `linear-gradient(${direction}, ${from}`;
+    if (via) gradientString += `, ${via}`;
+    gradientString += `, ${to})`;
+    
+    return {
+      ...baseStyle,
+      background: gradientString,
+      backgroundClip: 'text',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      MozBackgroundClip: 'text',
+      MozTextFillColor: 'transparent',
+      color: 'transparent',
+      display: 'inline-block',
+      // Forzar re-render del gradiente
+      backgroundSize: '100% 100%',
+      backgroundRepeat: 'no-repeat'
+    };
+  };
   
   // Convertir borderRadius CSS a valor de píxeles para estilos inline
   const getBorderRadiusStyle = (cssValue: string): string => {
@@ -241,11 +308,9 @@ export const LandingPreview = React.memo(function LandingPreview({
           />
         )}
         <h2 
-          className={`${isPreview ? 'text-sm' : 'text-2xl'} font-semibold text-center break-words leading-tight`}
-          style={{ 
-            color: dynamicTextPrimary,
-            fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
-          }}
+          key={`title-${titleStyleConfig.gradientEnabled}-${JSON.stringify(titleStyleConfig.gradientColors)}`}
+          className={`${isPreview ? getPreviewFontSize(titleStyleConfig.fontSize || 'text-2xl') : titleStyleConfig.fontSize} font-semibold text-center break-words leading-tight`}
+          style={getTitleStyle()}
         >
           {name || 'Your Name'}
         </h2>

@@ -8,6 +8,7 @@ import FontColorSelector from "@/components/editor/FontColorSelector";
 import LinkColorSelector from "@/components/editor/LinkColorSelector";
 import FontFamilySelector from "@/components/editor/FontFamilySelector";
 import EffectsSelector from "@/components/editor/EffectsSelector";
+import TitleStyleSelector from "@/components/editor/TitleStyleSelector";
 
 interface StyleCustomizationAccordionProps {
   landing: {
@@ -61,8 +62,8 @@ export default function StyleCustomizationAccordion({
 
       {/* Contenido del accordion */}
       <div 
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${
-          isOpen ? 'max-h-[3000px] opacity-100' : 'max-h-0 opacity-0'
+        className={`transition-all duration-300 ease-in-out ${
+          isOpen ? 'max-h-none opacity-100 overflow-visible' : 'max-h-0 opacity-0 overflow-hidden'
         }`}
       >
         <div className="mt-4 space-y-6">
@@ -107,6 +108,15 @@ export default function StyleCustomizationAccordion({
               value={landing.configurations?.linkColor || { background: '#000000', text: '#ffffff' }}
               onChange={(linkColor) => handleConfigurationUpdate({ linkColor })}
               onSave={(linkColor) => handleConfigurationSave({ linkColor })}
+            />
+          </div>
+
+          {/* Title Style */}
+          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
+            <TitleStyleSelector
+              value={landing.configurations?.titleStyle || { fontSize: 'text-2xl', gradientEnabled: false }}
+              onChange={(titleStyle) => handleConfigurationUpdate({ titleStyle })}
+              onSave={(titleStyle) => handleConfigurationSave({ titleStyle })}
             />
           </div>
 

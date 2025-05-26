@@ -38,6 +38,16 @@ export default function AdminPage() {
               typewriterEffect: true
             };
             
+            const defaultTitleStyle = {
+              fontSize: 'text-2xl',
+              gradientEnabled: false,
+              gradientColors: {
+                from: '#007AFF',
+                to: '#00D4FF'
+              },
+              gradientDirection: 'to right'
+            };
+            
             setLanding({
               name: data.data.name || '',
               description: data.data.description || '',
@@ -47,6 +57,10 @@ export default function AdminPage() {
                 effects: {
                   ...defaultEffects,
                   ...existingConfigurations.effects
+                },
+                titleStyle: {
+                  ...defaultTitleStyle,
+                  ...existingConfigurations.titleStyle
                 }
               }
             });
@@ -217,6 +231,15 @@ export default function AdminPage() {
       effects: {
         showBadge: true,
         typewriterEffect: true
+      },
+      titleStyle: {
+        fontSize: 'text-2xl',
+        gradientEnabled: false,
+        gradientColors: {
+          from: '#007AFF',
+          to: '#00D4FF'
+        },
+        gradientDirection: 'to right'
       }
     };
 

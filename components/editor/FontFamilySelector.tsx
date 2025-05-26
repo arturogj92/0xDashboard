@@ -281,8 +281,8 @@ export default function FontFamilySelector({
 
       {/* Selector de fuentes */}
       <div className="space-y-2">
-        <span className="text-xs text-gray-400">Fuentes disponibles:</span>
-        <div className="max-h-64 overflow-y-auto overflow-x-hidden space-y-2">
+        <span className="text-xs text-gray-400">Fuentes disponibles ({googleFonts.length}):</span>
+        <div className="max-h-64 overflow-y-auto space-y-2 border border-gray-600 rounded-lg p-2">
           {googleFonts.map((font) => {
             const isActive = localFont.family === font.family;
             
