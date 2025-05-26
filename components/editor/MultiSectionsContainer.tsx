@@ -74,12 +74,16 @@ interface Props{
   onMoveToSection:(id:string,newSectionId:string)=>void;
   transitioningLinks:Set<string>;
   activeId:string|null;
+  highlightedLinkId:string|null;
+  onMoveLinkUp?:(id:string)=>void;
+  onMoveLinkDown?:(id:string)=>void;
 }
 
 export default function MultiSectionsContainer({
   containerId,items,links,sections,moveSectionUp,moveSectionDown,idx,total,
   onUpdateLink,onDeleteLink,onCreateLinkInSection,onUpdateSection,onDeleteSection,
-  reorderLinksInContainer,onMoveToSection,transitioningLinks,activeId,
+  reorderLinksInContainer,onMoveToSection,transitioningLinks,activeId,highlightedLinkId,
+  onMoveLinkUp,onMoveLinkDown,
 }:Props){
   
   const { setNodeRef, isOver } = useDroppable({
@@ -152,7 +156,7 @@ export default function MultiSectionsContainer({
 
       <SortableContext items={order} strategy={verticalListSortingStrategy}>
         <div className="flex flex-col gap-4">
-          {order.map(id=>{
+          {order.map((id, index)=>{
             const link=links.find(l=>l.id===id); if(!link) return null;
             return(
               <MultiSectionsItem 
@@ -164,6 +168,11 @@ export default function MultiSectionsContainer({
                 availableSections={availableSections}
                 isTransitioning={transitioningLinks.has(link.id)}
                 activeId={activeId}
+                highlightMoveIcon={highlightedLinkId === link.id}
+                onMoveUp={onMoveLinkUp}
+                onMoveDown={onMoveLinkDown}
+                isFirst={index === 0}
+                isLast={index === order.length - 1}
               />
             );
           })}

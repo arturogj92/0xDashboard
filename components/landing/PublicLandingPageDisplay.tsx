@@ -11,6 +11,8 @@ export interface PublicLandingPageDisplayProps {
     description: string;
     settings: any;
     slug: string;
+    theme_id?: string;
+    configurations?: any;
     links?: LinkData[];
     sections?: SectionData[];
     socialLinks?: SocialLinkData[];
@@ -23,6 +25,12 @@ export default function PublicLandingPageDisplay({ landing }: PublicLandingPageD
   const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Debug: Log del theme_id
+  console.log('[PublicLandingPageDisplay] Landing data:', { 
+    name: landing.name, 
+    theme_id: landing.theme_id 
+  });
+
   useEffect(() => {
     // Los datos ya vienen incluidos desde el endpoint /api/landings/slug/${slug}
     if (landing.links) setLinks(landing.links);
@@ -30,13 +38,6 @@ export default function PublicLandingPageDisplay({ landing }: PublicLandingPageD
     if (landing.socialLinks) setSocialLinks(landing.socialLinks);
     setLoading(false);
 
-    // Ocultar scroll del body
-    document.body.style.overflow = 'hidden';
-    
-    // Cleanup cuando se desmonta el componente
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
   }, [landing]);
 
   if (loading) {
@@ -48,7 +49,10 @@ export default function PublicLandingPageDisplay({ landing }: PublicLandingPageD
   }
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
+    <div 
+      className="fixed inset-0 overflow-y-auto"
+      style={{ zIndex: 9999 }}
+    >
       <LandingPreview 
         name={landing.name} 
         description={landing.description}
@@ -56,6 +60,8 @@ export default function PublicLandingPageDisplay({ landing }: PublicLandingPageD
         sections={sections}
         socialLinks={socialLinks}
         isPreview={false}
+        themeId={landing.theme_id || 'dark'}
+        configurations={landing.configurations}
       />
     </div>
   );

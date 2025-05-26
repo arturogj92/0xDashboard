@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Toggle } from "@/components/ui/toggle";
 import { LinkData } from "./types";
+import { ImageCropModal } from "./ImageCropModal";
 import {
   Card,
   CardContent,
@@ -98,6 +99,22 @@ function MoveIcon() {
   );
 }
 
+function ChevronUpIcon() {
+  return (
+    <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5"/>
+    </svg>
+  );
+}
+
+function ChevronDownIcon() {
+  return (
+    <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/>
+    </svg>
+  );
+}
+
 /* ═════════ BANDERAS, TIPOS, HELPERS ═════════ */
 const countryFlags: Record<string, string> = {
   US:"🇺🇸", RU:"🇷🇺", ES:"🇪🇸", MX:"🇲🇽", PL:"🇵🇱", KR:"🇰🇷", VN:"🇻🇳", IE:"🇮🇪",
@@ -116,6 +133,11 @@ interface Props{
   availableSections: Array<{id: string; name: string}>;
   isTransitioning?: boolean;
   activeId?: string | null;
+  highlightMoveIcon?: boolean;
+  onMoveUp?: (id: string) => void;
+  onMoveDown?: (id: string) => void;
+  isFirst?: boolean;
+  isLast?: boolean;
 }
 
 const fileName=(url:string)=>{try{return url.split("/").pop()??"";}catch{return"";}};
@@ -136,7 +158,8 @@ function CustomTooltip({active,payload,label}:{active?:boolean;payload?:TooltipI
 
 /* ═════════ COMPONENTE ═════════ */
 export default function MultiSectionsItem({
-  link,onUpdateLink,onDeleteLink,onMoveToSection,availableSections,isTransitioning = false,activeId,
+  link,onUpdateLink,onDeleteLink,onMoveToSection,availableSections,isTransitioning = false,activeId,highlightMoveIcon = false,
+  onMoveUp,onMoveDown,isFirst = false,isLast = false,
 }:Props){
 
   const t = useTranslations('linkItem');
@@ -161,6 +184,8 @@ export default function MultiSectionsItem({
   const [urlId,setUrlId]=useState<number|null>(link.url_link_id??null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [imageToCrop, setImageToCrop] = useState<string | null>(null);
 
   const [stats7,setStats7]=useState<StatsData|null>(null);
   const [stats28,setStats28]=useState<StatsData|null>(null);
@@ -202,13 +227,24 @@ export default function MultiSectionsItem({
       return;
     }
 
-    // Crear FormData para enviar la imagen
-    const formData = new FormData();
-    formData.append('image', file);
+    // Crear URL temporal para mostrar en el modal de recorte
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      setImageToCrop(result);
+      setShowCropModal(true);
+    };
+    reader.readAsDataURL(file);
+  }
 
+  async function handleCropComplete(croppedImageBlob: Blob) {
     try {
       setUploadingImage(true);
       
+      // Crear FormData con la imagen recortada
+      const formData = new FormData();
+      formData.append('image', croppedImageBlob, 'cropped-image.jpg');
+
       // Obtener token de autorización
       const token = localStorage.getItem('token');
       const headers: Record<string, string> = {};
@@ -219,7 +255,7 @@ export default function MultiSectionsItem({
       const res = await fetch("/api/images", {
         method: "POST",
         headers,
-        body: formData // No establecer Content-Type, el navegador lo hace automáticamente
+        body: formData
       });
       
       const j = await res.json();
@@ -227,7 +263,6 @@ export default function MultiSectionsItem({
       if (!res.ok) {
         setUploadError(j.error || 'Error al subir la imagen');
         console.error('Error al subir imagen:', j.error);
-        // Limpiar error después de 5 segundos
         setTimeout(() => setUploadError(null), 5000);
         return;
       }
@@ -237,12 +272,12 @@ export default function MultiSectionsItem({
     } catch (error) {
       setUploadError('Error de conexión al subir la imagen');
       console.error('Error al subir imagen:', error);
-      // Limpiar error después de 5 segundos
       setTimeout(() => setUploadError(null), 5000);
     } finally {
       setUploadingImage(false);
     }
   }
+
   async function removeImg(){
     if(image) await fetch(`/api/images?fileName=${fileName(image)}`,{method:"DELETE"});
     setImage(""); upd({image:""});
@@ -341,7 +376,7 @@ export default function MultiSectionsItem({
                   ) : (
                     <>
                       <div className="text-xs font-medium">{t('noImage')}</div>
-                      <div className="text-[10px] text-gray-400 mt-1">{t('uploadImage')}</div>
+                      <div className="text-[10px] text-gray-400 mt-1">Haz clic para subir</div>
                     </>
                   )}
                 </div>
@@ -350,60 +385,94 @@ export default function MultiSectionsItem({
             <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={selectFile}/>
           </div>
 
-          {/* Panel de iconos en matriz 2x2 */}
-          <div className="grid grid-cols-2 gap-1">
-            <div className="relative">
+          {/* Panel de iconos en matriz 3x2 */}
+          <div className="flex flex-col gap-1">
+            {/* Fila superior: Flechas de movimiento */}
+            <div className="flex gap-1">
               <Button 
                 variant="destructive" 
-                className="text-xs p-1 w-8 h-8 hover:bg-purple-900" 
-                onClick={() => setShowSectionDropdown(!showSectionDropdown)}
+                className={`text-xs p-1 w-6 h-6 hover:bg-purple-900 ${isFirst ? 'opacity-50 cursor-not-allowed' : ''}`}
+                onClick={() => onMoveUp?.(link.id)}
+                disabled={isFirst}
+                title="Mover arriba"
               >
-                <MoveIcon/>
+                <ChevronUpIcon/>
               </Button>
-              
-              {showSectionDropdown && (
-                <div className="absolute top-full right-0 mt-1 bg-gray-800 border border-gray-600 rounded-md shadow-lg z-50 min-w-48">
-                  <div className="p-2">
-                    <div className="text-xs text-gray-400 mb-2 text-center">Mover a sección:</div>
-                    {otherSections.length > 0 ? (
-                      otherSections.map(section => (
-                        <button
-                          key={section.id}
-                          onClick={() => handleMoveToSection(section.id)}
-                          className="w-full text-center px-3 py-2 text-sm rounded-sm hover:bg-gray-700 transition-colors"
-                        >
-                          {section.name}
-                        </button>
-                      ))
-                    ) : (
-                      <div className="px-3 py-2 text-sm text-gray-500 text-center">
-                        No hay otras secciones disponibles
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-              
-              {showSectionDropdown && (
-                <div 
-                  className="fixed inset-0 z-40"
-                  onClick={() => setShowSectionDropdown(false)}
-                />
-              )}
+              <Button 
+                variant="destructive" 
+                className={`text-xs p-1 w-6 h-6 hover:bg-purple-900 ${isLast ? 'opacity-50 cursor-not-allowed' : ''}`}
+                onClick={() => onMoveDown?.(link.id)}
+                disabled={isLast}
+                title="Mover abajo"
+              >
+                <ChevronDownIcon/>
+              </Button>
             </div>
             
-            <Button variant="destructive" className="text-xs p-1 w-8 h-8 hover:bg-purple-900" onClick={openStats}>
-              <StatsIcon/>
-            </Button>
+            {/* Fila media: Mover a sección y estadísticas */}
+            <div className="flex gap-1">
+              <div className="relative">
+                <Button 
+                  variant="destructive" 
+                  className={`text-xs p-1 w-6 h-6 transition-all duration-300 ${
+                    highlightMoveIcon 
+                      ? 'bg-purple-600 scale-110 shadow-lg shadow-purple-500/50' 
+                      : 'hover:bg-purple-900'
+                  }`}
+                  onClick={() => setShowSectionDropdown(!showSectionDropdown)}
+                  title="Mover a otra sección"
+                >
+                  <MoveIcon/>
+                </Button>
+                
+                {showSectionDropdown && (
+                  <div className="absolute top-full right-0 mt-1 bg-gray-800 border border-gray-600 rounded-md shadow-lg z-50 min-w-48">
+                    <div className="p-2">
+                      <div className="text-xs text-gray-400 mb-2 text-center">Mover a sección:</div>
+                      {otherSections.length > 0 ? (
+                        otherSections.map(section => (
+                          <button
+                            key={section.id}
+                            onClick={() => handleMoveToSection(section.id)}
+                            className="w-full text-center px-3 py-2 text-sm rounded-sm hover:bg-gray-700 transition-colors"
+                          >
+                            {section.name}
+                          </button>
+                        ))
+                      ) : (
+                        <div className="px-3 py-2 text-sm text-gray-500 text-center">
+                          No hay otras secciones disponibles
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+                
+                {showSectionDropdown && (
+                  <div 
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowSectionDropdown(false)}
+                  />
+                )}
+              </div>
+              
+              <Button variant="destructive" className="text-xs p-1 w-6 h-6 hover:bg-purple-900" onClick={openStats} title="Ver estadísticas">
+                <StatsIcon/>
+              </Button>
+            </div>
             
-            <Button variant="destructive" className="text-xs p-1 w-8 h-8 hover:bg-purple-900" onClick={()=>onDeleteLink(link.id)}>
-              <TrashIcon/>
-            </Button>
-            
-            <Toggle pressed={link.visible} onPressedChange={v=>upd({visible:v})}
-                    className="w-8 h-8 flex items-center justify-center hover:bg-purple-900">
-              {link.visible?<EyeIcon/>:<EyeSlashIcon/>}
-            </Toggle>
+            {/* Fila inferior: Eliminar y visibilidad */}
+            <div className="flex gap-1">
+              <Button variant="destructive" className="text-xs p-1 w-6 h-6 hover:bg-purple-900" onClick={()=>onDeleteLink(link.id)} title="Eliminar link">
+                <TrashIcon/>
+              </Button>
+              
+              <Toggle pressed={link.visible} onPressedChange={v=>upd({visible:v})}
+                      className="w-6 h-6 flex items-center justify-center hover:bg-purple-900"
+                      title={link.visible ? "Ocultar" : "Mostrar"}>
+                {link.visible?<EyeIcon/>:<EyeSlashIcon/>}
+              </Toggle>
+            </div>
           </div>
         </div>
 
@@ -477,6 +546,19 @@ export default function MultiSectionsItem({
               </CardContent>
             </Card>
           </div>
+        )}
+
+        {/* Modal de recorte de imagen */}
+        {showCropModal && imageToCrop && (
+          <ImageCropModal
+            isOpen={showCropModal}
+            imageSrc={imageToCrop}
+            onClose={() => {
+              setShowCropModal(false);
+              setImageToCrop(null);
+            }}
+            onCropComplete={handleCropComplete}
+          />
         )}
       </div>
     </div>

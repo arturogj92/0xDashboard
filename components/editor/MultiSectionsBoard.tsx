@@ -15,6 +15,7 @@ import { LinkData, SectionData } from "./types";
 import MultiSectionsContainer from "./MultiSectionsContainer";
 import { API_URL, createAuthHeaders } from "@/lib/api";
 import { useTranslations } from 'next-intl';
+import toast from 'react-hot-toast';
 
 interface Props {
   landingId: string;
@@ -59,6 +60,7 @@ export default function MultiSectionsBoard({
   );
   
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [highlightedLinkId, setHighlightedLinkId] = useState<string | null>(null);
   /* containers SIEMPRE se recalculan a partir de links/sections.
      Con useMemo el cálculo es barato y se sincroniza en el mismo render,
      por lo que el cambio de sección se ve inmediatamente.               */
@@ -118,17 +120,79 @@ export default function MultiSectionsBoard({
     const activeId = active.id as string;
     const overId = over.id as string;
     
-    // Si se suelta sobre una sección diferente
+    // Verificar si se intenta mover a una sección diferente
+    const activeLink = links.find(l => l.id === activeId);
+    if (!activeLink) return;
+    
+    const currentSectionId = activeLink.section_id ?? 'no-section';
+    
+    // Si se suelta sobre una sección diferente, mostrar notificación
     if (overId.startsWith('section-') || overId === 'no-section') {
       const targetSectionId = overId.replace('section-', '');
-      handleMoveToSection(activeId, targetSectionId);
-      return;
+      
+      if (currentSectionId !== targetSectionId) {
+        // Verificar localStorage para mostrar notificación máximo 2 veces
+        const notificationCount = parseInt(localStorage.getItem('moveItemNotificationCount') || '0');
+        
+        if (notificationCount < 2) {
+          // Mostrar notificación de que debe usar el botón específico
+          toast(t('moveItemNotification'), {
+            icon: '⚠️',
+            style: {
+              background: '#581c87',
+              color: '#e879f9',
+              border: '1px solid #a855f7',
+              fontSize: '14px',
+              fontWeight: '500',
+            },
+          });
+          
+          // Incrementar contador en localStorage
+          localStorage.setItem('moveItemNotificationCount', (notificationCount + 1).toString());
+        }
+        
+        // Activar efecto de brillo en el icono específico del link que se intenta mover
+        setHighlightedLinkId(activeId);
+        setTimeout(() => setHighlightedLinkId(null), 1000);
+        
+        return;
+      }
+    }
+    
+    // Verificar si se intenta mover sobre un item de otra sección
+    const overLink = links.find(l => l.id === overId);
+    if (overLink) {
+      const overSectionId = overLink.section_id ?? 'no-section';
+      if (currentSectionId !== overSectionId) {
+        // Verificar localStorage para mostrar notificación máximo 2 veces
+        const notificationCount = parseInt(localStorage.getItem('moveItemNotificationCount') || '0');
+        
+        if (notificationCount < 2) {
+          // Mostrar notificación de que debe usar el botón específico
+          toast(t('moveItemNotification'), {
+            icon: '⚠️',
+            style: {
+              background: '#581c87',
+              color: '#e879f9',
+              border: '1px solid #a855f7',
+              fontSize: '14px',
+              fontWeight: '500',
+            },
+          });
+          
+          // Incrementar contador en localStorage
+          localStorage.setItem('moveItemNotificationCount', (notificationCount + 1).toString());
+        }
+        
+        // Activar efecto de brillo en el icono específico del link que se intenta mover
+        setHighlightedLinkId(activeId);
+        setTimeout(() => setHighlightedLinkId(null), 1000);
+        
+        return;
+      }
     }
     
     // Si se reordena dentro de la misma sección
-    const activeLink = links.find(l => l.id === activeId);
-    const overLink = links.find(l => l.id === overId);
-    
     if (activeLink && overLink && 
         (activeLink.section_id ?? 'no-section') === (overLink.section_id ?? 'no-section')) {
       const sectionId = activeLink.section_id ?? 'no-section';
@@ -307,6 +371,99 @@ export default function MultiSectionsBoard({
     [landingId, setLinks, onLinksReordered, links]
   );
 
+  /* ─────────── Mover links arriba / abajo ─────────── */
+  const moveLinkUp = useCallback(
+    async (linkId: string) => {
+      const link = links.find(l => l.id === linkId);
+      if (!link) return;
+
+      const sectionId = link.section_id ?? 'no-section';
+      const sectionLinks = links
+        .filter(l => (l.section_id ?? 'no-section') === sectionId)
+        .sort((a, b) => a.position - b.position);
+      
+      const currentIndex = sectionLinks.findIndex(l => l.id === linkId);
+      if (currentIndex <= 0) return; // Ya está en la primera posición
+
+      // Intercambiar posiciones
+      const newLinks = [...sectionLinks];
+      [newLinks[currentIndex], newLinks[currentIndex - 1]] = [newLinks[currentIndex - 1], newLinks[currentIndex]];
+      
+      // Actualizar posiciones
+      newLinks.forEach((link, index) => {
+        link.position = index;
+      });
+
+      // Actualizar estado local
+      setLinks(prevLinks => {
+        const updatedLinks = [...prevLinks];
+        newLinks.forEach(newLink => {
+          const index = updatedLinks.findIndex(l => l.id === newLink.id);
+          if (index !== -1) {
+            updatedLinks[index] = { ...updatedLinks[index], position: newLink.position };
+          }
+        });
+        return updatedLinks;
+      });
+
+      // Actualizar en el servidor
+      await fetch(`${API_URL}/api/links?landingId=${landingId}`, {
+        method: "PATCH",
+        headers: createAuthHeaders(),
+        body: JSON.stringify(newLinks.map(l => ({ id: l.id, position: l.position }))),
+      });
+      
+      onLinksReordered?.();
+    },
+    [landingId, links, setLinks, onLinksReordered]
+  );
+
+  const moveLinkDown = useCallback(
+    async (linkId: string) => {
+      const link = links.find(l => l.id === linkId);
+      if (!link) return;
+
+      const sectionId = link.section_id ?? 'no-section';
+      const sectionLinks = links
+        .filter(l => (l.section_id ?? 'no-section') === sectionId)
+        .sort((a, b) => a.position - b.position);
+      
+      const currentIndex = sectionLinks.findIndex(l => l.id === linkId);
+      if (currentIndex >= sectionLinks.length - 1) return; // Ya está en la última posición
+
+      // Intercambiar posiciones
+      const newLinks = [...sectionLinks];
+      [newLinks[currentIndex], newLinks[currentIndex + 1]] = [newLinks[currentIndex + 1], newLinks[currentIndex]];
+      
+      // Actualizar posiciones
+      newLinks.forEach((link, index) => {
+        link.position = index;
+      });
+
+      // Actualizar estado local
+      setLinks(prevLinks => {
+        const updatedLinks = [...prevLinks];
+        newLinks.forEach(newLink => {
+          const index = updatedLinks.findIndex(l => l.id === newLink.id);
+          if (index !== -1) {
+            updatedLinks[index] = { ...updatedLinks[index], position: newLink.position };
+          }
+        });
+        return updatedLinks;
+      });
+
+      // Actualizar en el servidor
+      await fetch(`${API_URL}/api/links?landingId=${landingId}`, {
+        method: "PATCH",
+        headers: createAuthHeaders(),
+        body: JSON.stringify(newLinks.map(l => ({ id: l.id, position: l.position }))),
+      });
+      
+      onLinksReordered?.();
+    },
+    [landingId, links, setLinks, onLinksReordered]
+  );
+
   /* ─────────── Mover secciones arriba / abajo ─────────── */
   const patchSections = useCallback(async (arr: SectionData[]) => {
     await fetch(`${API_URL}/api/sections?landingId=${landingId}`, {
@@ -434,6 +591,9 @@ export default function MultiSectionsBoard({
                   onMoveToSection={handleMoveToSection}
                   transitioningLinks={transitioningLinks}
                   activeId={activeId}
+                  highlightedLinkId={highlightedLinkId}
+                  onMoveLinkUp={moveLinkUp}
+                  onMoveLinkDown={moveLinkDown}
                 />
               </motion.div>
             );
@@ -447,28 +607,30 @@ export default function MultiSectionsBoard({
           transition={{ delay: 0.2, duration: 0.3, ease: "easeOut" }}
           style={{ display: 'flex', justifyContent: 'center' }}
         >
-          <motion.button
+          <motion.div
             whileHover={{ 
               scale: 1.02,
               transition: { duration: 0.2 }
             }}
             whileTap={{ scale: 0.98 }}
-            style={{
-              background: 'linear-gradient(to right, #4f46e5, #7c3aed)',
-              color: 'white',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              fontWeight: '500',
-              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'all 0.2s'
-            }}
-            onClick={onCreateSection}
           >
+            <button
+              onClick={onCreateSection}
+              style={{
+                background: 'linear-gradient(to right, #4f46e5, #7c3aed)',
+                color: 'white',
+                padding: '12px 24px',
+                borderRadius: '8px',
+                fontWeight: '500',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+            >
             <motion.svg 
               xmlns="http://www.w3.org/2000/svg" 
               fill="none" 
@@ -482,7 +644,8 @@ export default function MultiSectionsBoard({
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </motion.svg>
             {t('newSection')}
-          </motion.button>
+            </button>
+          </motion.div>
         </motion.div>
       </div>
     </DndContext>

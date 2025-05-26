@@ -1,0 +1,209 @@
+"use client";
+import React, { useState, useEffect, useRef } from 'react';
+
+interface FontFamilySelectorProps {
+  value: {
+    family: string;
+    url: string;
+  };
+  onChange: (fontFamily: { family: string; url: string }) => void;
+  onSave?: (fontFamily: { family: string; url: string }) => void;
+  className?: string;
+}
+
+export default function FontFamilySelector({ 
+  value, 
+  onChange, 
+  onSave,
+  className = "" 
+}: FontFamilySelectorProps) {
+  const [localFont, setLocalFont] = useState(value);
+  const [pendingValue, setPendingValue] = useState<{ family: string; url: string } | null>(null);
+  const [fontsLoaded, setFontsLoaded] = useState<Set<string>>(new Set());
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [, startTransition] = React.useTransition();
+
+  // Google Fonts populares
+  const googleFonts = [
+    { 
+      name: 'Inter', 
+      family: 'Inter', 
+      url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
+      category: 'Sans Serif'
+    },
+    { 
+      name: 'Roboto', 
+      family: 'Roboto', 
+      url: 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap',
+      category: 'Sans Serif'
+    },
+    { 
+      name: 'Poppins', 
+      family: 'Poppins', 
+      url: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap',
+      category: 'Sans Serif'
+    },
+    { 
+      name: 'Montserrat', 
+      family: 'Montserrat', 
+      url: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap',
+      category: 'Sans Serif'
+    },
+    { 
+      name: 'Open Sans', 
+      family: 'Open Sans', 
+      url: 'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap',
+      category: 'Sans Serif'
+    },
+    { 
+      name: 'Lato', 
+      family: 'Lato', 
+      url: 'https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap',
+      category: 'Sans Serif'
+    },
+    { 
+      name: 'Playfair Display', 
+      family: 'Playfair Display', 
+      url: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap',
+      category: 'Serif'
+    },
+    { 
+      name: 'Merriweather', 
+      family: 'Merriweather', 
+      url: 'https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap',
+      category: 'Serif'
+    }
+  ];
+
+  // Sincronizar con valor prop
+  useEffect(() => {
+    setLocalFont(value);
+  }, [value]);
+
+  // Cargar fuente dinámicamente
+  const loadFont = (url: string, family: string) => {
+    if (fontsLoaded.has(family)) return;
+
+    const link = document.createElement('link');
+    link.href = url;
+    link.rel = 'stylesheet';
+    link.onload = () => {
+      setFontsLoaded(prev => new Set([...prev, family]));
+    };
+    document.head.appendChild(link);
+  };
+
+  // Limpiar timeouts al desmontar
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleFontChange = (font: { family: string; url: string }) => {
+    setLocalFont(font);
+    setPendingValue(font);
+    
+    // Cargar la fuente si no está cargada
+    loadFont(font.url, font.family);
+    
+    // Actualizar inmediatamente en baja prioridad
+    startTransition(() => {
+      onChange(font);
+    });
+    
+    // Configurar guardado con debounce
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    
+    if (onSave) {
+      timeoutRef.current = setTimeout(() => {
+        onSave(font);
+        setPendingValue(null);
+        timeoutRef.current = null;
+      }, 1000);
+    } else {
+      setPendingValue(null);
+    }
+  };
+
+  // Cargar fuente actual al montar el componente
+  useEffect(() => {
+    if (localFont.url && localFont.family) {
+      loadFont(localFont.url, localFont.family);
+    }
+  }, []);
+
+  return (
+    <div className={`space-y-4 ${className}`}>
+      <div className="flex items-center justify-between">
+        <label className="text-sm font-medium text-white">
+          Tipo de Fuente
+        </label>
+      </div>
+      
+      {/* Vista previa de la fuente */}
+      <div className="space-y-3">
+        <div className="bg-gray-900 rounded-lg p-4 border border-gray-600">
+          <div 
+            className="text-lg font-semibold mb-2"
+            style={{ fontFamily: `${localFont.family}, system-ui, sans-serif` }}
+          >
+            Mi Nombre Aquí
+          </div>
+          <div 
+            className="text-sm text-gray-300"
+            style={{ fontFamily: `${localFont.family}, system-ui, sans-serif` }}
+          >
+            Esta es la descripción de mi landing page con la fuente seleccionada.
+          </div>
+          <div className="text-xs text-gray-500 mt-2">
+            Fuente actual: {localFont.family}
+          </div>
+        </div>
+      </div>
+
+      {/* Selector de fuentes */}
+      <div className="space-y-2">
+        <span className="text-xs text-gray-400">Fuentes disponibles:</span>
+        <div className="max-h-64 overflow-y-auto space-y-2">
+          {googleFonts.map((font) => {
+            const isActive = localFont.family === font.family;
+            
+            return (
+              <button
+                key={font.family}
+                onClick={() => handleFontChange({ family: font.family, url: font.url })}
+                className={`w-full text-left p-3 rounded-lg border transition-all duration-200 hover:scale-[1.02] ${
+                  isActive
+                    ? 'bg-purple-600/30 border-purple-400 text-white shadow-lg shadow-purple-500/20'
+                    : 'bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-gray-500 hover:text-white'
+                }`}
+              >
+                <div 
+                  className="text-base font-medium mb-1"
+                  style={{ 
+                    fontFamily: fontsLoaded.has(font.family) ? `${font.family}, system-ui, sans-serif` : 'system-ui, sans-serif'
+                  }}
+                >
+                  {font.name}
+                </div>
+                <div className="text-xs text-gray-500">
+                  {font.category} • Google Fonts
+                </div>
+                {!fontsLoaded.has(font.family) && isActive && (
+                  <div className="text-xs text-blue-400 mt-1">
+                    Cargando fuente...
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}

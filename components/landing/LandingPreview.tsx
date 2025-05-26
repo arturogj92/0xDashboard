@@ -1,9 +1,11 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, PlayCircle, ExternalLink, Github, Linkedin, Facebook, Globe } from "lucide-react";
+import { User, ExternalLink, Github, Linkedin, Facebook, Globe } from "lucide-react";
 import { useTranslations } from 'next-intl';
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { LinkData, SectionData, SocialLinkData } from '@/components/editor/types';
+import { useAuth } from '@/contexts/AuthContext';
+import { getThemeById, getDefaultTheme } from '@/lib/themes';
 
 interface LandingPreviewProps {
   name: string;
@@ -12,6 +14,26 @@ interface LandingPreviewProps {
   sections?: SectionData[];
   socialLinks?: SocialLinkData[];
   isPreview?: boolean;
+  themeId?: string;
+  configurations?: {
+    borderRadius?: string;
+    gradient?: {
+      color1: string;
+      color2: string;
+    };
+    fontColor?: {
+      primary: string;
+      secondary: string;
+    };
+    linkColor?: {
+      background: string;
+      text: string;
+    };
+    fontFamily?: {
+      family: string;
+      url: string;
+    };
+  };
 }
 
 // Iconos personalizados
@@ -58,14 +80,18 @@ export const LandingPreview = React.memo(function LandingPreview({
   links = [], 
   sections = [], 
   socialLinks = [],
-  isPreview = false
+  isPreview = false,
+  themeId = 'dark',
+  configurations = {}
 }: LandingPreviewProps) {
   const t = useTranslations('landing');
+  const { user } = useAuth();
   
   // Memorizar cálculos para optimizar rendimiento
   const { visibleLinks, visibleSocialLinks, linksBySection } = useMemo(() => {
     const visibleLinks = links.filter(link => link.visible).sort((a, b) => a.position - b.position);
     const visibleSocialLinks = socialLinks.filter(link => link.visible).sort((a, b) => a.position - b.position);
+    
     
     const linksBySection = sections.reduce((acc, section) => {
       acc[section.id] = visibleLinks.filter(link => link.section_id === section.id);
@@ -73,28 +99,139 @@ export const LandingPreview = React.memo(function LandingPreview({
     }, {} as Record<string, LinkData[]>);
     
     return { visibleLinks, visibleSocialLinks, linksBySection };
-  }, [links, sections, socialLinks]);
+  }, [links, sections, socialLinks, isPreview]);
   
   // Links sin sección (no se mostrarán en la vista previa)
   // const linksWithoutSection = visibleLinks.filter(link => !link.section_id);
 
+  // Obtener el tema actual
+  const currentTheme = getThemeById(themeId) || getDefaultTheme();
+  
+  // Configuraciones con valores por defecto
+  const borderRadiusValue = configurations.borderRadius || 'rounded-xl';
+  const gradientConfig = configurations.gradient || { color1: '#000000', color2: '#4a044d' };
+  const fontColorConfig = configurations.fontColor || { primary: '#ffffff', secondary: '#e2e8f0' };
+  const linkColorConfig = configurations.linkColor || { background: '#000000', text: '#ffffff' };
+  const fontFamilyConfig = configurations.fontFamily || { family: 'Inter', url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' };
+  
+  // Generar gradiente dinámico si existe configuración personalizada
+  const dynamicBackground = configurations.gradient 
+    ? `linear-gradient(to bottom, ${gradientConfig.color1} 0%, ${gradientConfig.color2} 100%)`
+    : currentTheme.colors.background;
+    
+  // Colores de fuente dinámicos
+  const dynamicTextPrimary = configurations.fontColor ? fontColorConfig.primary : currentTheme.colors.textPrimary;
+  const dynamicTextSecondary = configurations.fontColor ? fontColorConfig.secondary : currentTheme.colors.textSecondary;
+  
+  // Colores de links dinámicos
+  const dynamicLinkBackground = configurations.linkColor ? linkColorConfig.background : currentTheme.colors.linkBackground;
+  const dynamicLinkText = configurations.linkColor ? linkColorConfig.text : currentTheme.colors.linkText;
+  
+  // Familia de fuente dinámica
+  const dynamicFontFamily = configurations.fontFamily ? fontFamilyConfig.family : currentTheme.typography.fontFamily;
+  
+  // Convertir borderRadius CSS a valor de píxeles para estilos inline
+  const getBorderRadiusStyle = (cssValue: string): string => {
+    if (cssValue === 'rounded-none') return '0px';
+    if (cssValue === 'rounded-sm') return '2px';
+    if (cssValue === 'rounded-md') return '6px';
+    if (cssValue === 'rounded-lg') return '8px';
+    if (cssValue === 'rounded-xl') return '12px';
+    if (cssValue === 'rounded-2xl') return '16px';
+    
+    // Extraer valor de rounded-[Npx]
+    const pxMatch = cssValue.match(/rounded-\[(\d+)px\]/);
+    if (pxMatch) return `${pxMatch[1]}px`;
+    
+    // Si es un valor en %, ignorar y usar default
+    const percentMatch = cssValue.match(/rounded-\[(\d+)%\]/);
+    if (percentMatch) return '12px'; // Convertir a px default
+    
+    return '12px'; // Default
+  };
+  
+  const borderRadiusStyle = getBorderRadiusStyle(borderRadiusValue);
+
+  // Cargar fuente dinámica
+  useEffect(() => {
+    if (configurations.fontFamily && fontFamilyConfig.url) {
+      // Verificar si la fuente ya está cargada
+      const existingLink = document.querySelector(`link[href="${fontFamilyConfig.url}"]`);
+      if (!existingLink) {
+        const link = document.createElement('link');
+        link.href = fontFamilyConfig.url;
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+      }
+    }
+  }, [configurations.fontFamily, fontFamilyConfig.url]);
+
+  // Aplicar CSS variables cuando cambie el tema
+  useEffect(() => {
+    const previewElement = document.querySelector('[data-landing-preview]');
+    if (previewElement) {
+      const element = previewElement as HTMLElement;
+      // Aplicar variables del tema
+      element.style.setProperty('--preview-background', currentTheme.colors.background);
+      element.style.setProperty('--preview-text-primary', currentTheme.colors.textPrimary);
+      element.style.setProperty('--preview-text-secondary', currentTheme.colors.textSecondary);
+      element.style.setProperty('--preview-text-muted', currentTheme.colors.textMuted);
+      element.style.setProperty('--preview-link-background', currentTheme.colors.linkBackground);
+      element.style.setProperty('--preview-link-border', currentTheme.colors.linkBorder);
+      element.style.setProperty('--preview-link-text', currentTheme.colors.linkText);
+      element.style.setProperty('--preview-link-hover', currentTheme.colors.linkHover);
+      element.style.setProperty('--preview-font-family', dynamicFontFamily);
+      element.style.setProperty('--preview-font-family-heading', dynamicFontFamily);
+    }
+  }, [currentTheme, themeId, dynamicFontFamily]);
+
   return (
-    <div className={`flex flex-col items-center pt-20 ${isPreview ? 'px-1' : 'px-6 md:px-8 lg:px-12'} overflow-y-auto overflow-x-hidden bg-gradient-to-b from-black via-black to-[#49044d] h-full`}>
+    <div 
+      data-landing-preview
+      className={`${isPreview ? 'h-full overflow-y-auto overflow-x-hidden' : 'min-h-screen'}`}
+      style={{
+        background: dynamicBackground,
+        fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`,
+        color: dynamicTextPrimary,
+      }}
+    >
+      <div className={`flex flex-col items-center ${isPreview ? 'pt-16' : 'pt-20'} ${isPreview ? 'px-1 pb-4' : 'px-6 md:px-8 lg:px-12 pb-16'} ${isPreview ? 'min-h-full' : 'min-h-screen'} mx-auto ${isPreview ? 'max-w-lg' : 'max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-5xl'}`}>
       {/* Avatar */}
-      <div className="relative w-12 h-12 flex-shrink-0">
-        <Avatar className="w-full h-full rounded-full border-2 border-purple-500 ring-2 ring-purple-300/30">
-          <AvatarFallback className="bg-gradient-to-br from-purple-600 to-indigo-800 text-white font-semibold flex items-center justify-center">
-            <User className="w-6 h-6" />
-          </AvatarFallback>
-        </Avatar>
-        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 opacity-40 blur-sm -z-10"></div>
-      </div>
+      <Avatar className={`${isPreview ? 'w-16 h-16 mb-4' : 'w-24 h-24 mb-6'} flex-shrink-0`} style={{ backgroundColor: 'var(--preview-link-background)' }}>
+        <AvatarImage 
+          src={user?.avatar_url} 
+          alt={user?.name || user?.username || 'Avatar'}
+          className="object-cover"
+        />
+        <AvatarFallback 
+          className={`${isPreview ? 'text-lg' : 'text-2xl'} font-bold`}
+          style={{ 
+            backgroundColor: 'var(--preview-link-background)',
+            color: 'var(--preview-text-primary)'
+          }}
+        >
+          <User className={`${isPreview ? 'w-8 h-8' : 'w-12 h-12'}`} style={{ color: 'var(--preview-text-muted)' }} />
+        </AvatarFallback>
+      </Avatar>
 
       {/* Nombre y descripción */}
-      <h2 className={`mt-3 ${isPreview ? 'text-sm' : 'text-sm sm:text-lg md:text-xl'} font-semibold text-[#8ad2ff] text-center break-words leading-tight`}>
+      <h2 
+        className={`${isPreview ? 'mt-2' : 'mt-3'} ${isPreview ? 'text-sm' : 'text-2xl'} font-semibold text-center break-words leading-tight`}
+        style={{ 
+          color: dynamicTextPrimary,
+          fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
+        }}
+      >
         {name || 'Your Name'}
       </h2>
-      <p className={`mt-2 mb-4 ${isPreview ? 'text-xs' : 'text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl'} text-gray-300 text-center break-words line-clamp-3 leading-tight px-2 min-h-[3rem]`}>
+      
+      <p 
+        className={`${isPreview ? 'mt-1 mb-2' : 'mt-2 mb-4'} ${isPreview ? 'text-xs' : 'text-base'} text-center break-words line-clamp-3 leading-tight px-2 ${isPreview ? 'min-h-[2rem]' : 'min-h-[3rem]'}`}
+        style={{ 
+          color: dynamicTextSecondary,
+          fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
+        }}
+      >
         {description || t('descriptionPlaceholder')}
       </p>
 
@@ -109,7 +246,13 @@ export const LandingPreview = React.memo(function LandingPreview({
           return (
             <React.Fragment key={section.id}>
               {/* Título de sección */}
-              <div className="text-lg text-gray-300 text-center font-medium py-2 w-full">
+              <div 
+                className="text-lg text-center font-medium py-2 w-full"
+                style={{ 
+                  color: dynamicTextSecondary,
+                  fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
+                }}
+              >
                 {section.title}
               </div>
               
@@ -120,37 +263,50 @@ export const LandingPreview = React.memo(function LandingPreview({
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`${isPreview ? 'w-[98%]' : 'w-full'} ${isPreview ? '' : 'md:w-1/2'} ${isPreview ? 'min-h-[65px]' : 'min-h-[60px] sm:min-h-[65px] md:min-h-[80px]'} bg-black/80 rounded-xl border-2 border-purple-400/60 hover:border-purple-300/80 hover:bg-black/90 transition-all duration-200 text-white font-medium flex items-stretch backdrop-blur-sm overflow-hidden`}
-                    title={link.title}
+                    className={`${isPreview ? 'min-h-[65px] w-[95%]' : 'min-h-[60px] sm:min-h-[65px] md:min-h-[80px] w-full md:w-[70%] lg:w-[60%] xl:w-[50%]'} flex items-center overflow-hidden transition-all duration-200 hover:scale-105 group`}
+                    style={{
+                      backgroundColor: dynamicLinkBackground,
+                      borderColor: 'var(--preview-link-border)',
+                      color: dynamicLinkText,
+                      border: '1px solid',
+                      borderRadius: borderRadiusStyle
+                    }}
                   >
-                    {/* Imagen del link o placeholder */}
-                    <div className="w-14 md:w-16 bg-gray-600/50 rounded-l-xl md:rounded-lg flex items-center justify-center flex-shrink-0 self-stretch overflow-hidden">
-                      {link.image ? (
-                        <img 
-                          src={link.image} 
-                          alt={link.title || 'Link image'} 
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <svg className="w-5 h-5 md:w-6 md:h-6 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                        </svg>
-                      )}
-                    </div>
-                    {/* Texto que puede ir en múltiples líneas */}
-                    <div className="flex-1 flex items-center justify-center md:justify-start px-2 md:p-3">
-                      <span className="text-center md:text-left leading-tight line-clamp-2 text-[10px] md:text-xs">{link.title || 'Untitled Link'}</span>
+                    {link.image && (
+                      <img 
+                        src={link.image} 
+                        alt={link.title || 'Link image'}
+                        className={`h-full object-cover flex-shrink-0 ${
+                          currentTheme.layout.imageStyle === 'square' ? 'rounded-none' : 'rounded-lg'
+                        }`}
+                        style={{
+                          width: isPreview ? '65px' : '80px',
+                          aspectRatio: '1/1',
+                          objectFit: 'cover'
+                        }}
+                      />
+                    )}
+                    <div className="flex-1 px-4">
+                      <h3 
+                        className={`${isPreview ? 'text-xs' : 'text-sm'} font-medium leading-tight`}
+                        style={{ 
+                          color: dynamicLinkText,
+                          fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
+                        }}
+                      >
+                        {link.title || 'Untitled Link'}
+                      </h3>
                     </div>
                   </a>
                   {linkIndex < sectionLinks.length - 1 && (
-                    <div className={`${isPreview ? 'w-[98%]' : 'w-full'} ${isPreview ? '' : 'md:w-1/2'} h-px bg-gradient-to-r from-transparent via-white/25 to-transparent my-1`} />
+                    <div className={`${isPreview ? 'w-[95%]' : 'w-full md:w-[70%] lg:w-[60%] xl:w-[50%]'} h-px bg-gradient-to-r from-transparent via-white/25 to-transparent my-1`} />
                   )}
                 </React.Fragment>
               ))}
               
               {/* Separador entre secciones */}
               {sectionIndex < sections.length - 1 && (
-                <div className={`${isPreview ? 'w-[98%]' : 'w-full'} ${isPreview ? '' : 'md:w-1/2'} h-px bg-white/20 my-2`} />
+                <div className={`${isPreview ? 'w-[95%]' : 'w-full md:w-[70%] lg:w-[60%] xl:w-[50%]'} h-px bg-white/20 my-2`} />
               )}
             </React.Fragment>
           );
@@ -165,35 +321,38 @@ export const LandingPreview = React.memo(function LandingPreview({
       </div>
 
       {/* Línea separadora */}
-      <div className="w-full h-px bg-white/20 my-3" />
+      <div className={`w-full h-px bg-white/20 ${isPreview ? 'my-12' : 'my-12'}`} />
 
-      {/* Iconos de redes sociales */}
-      <div className="flex items-center justify-center gap-4 mb-3">
-        {visibleSocialLinks.length > 0 ? (
-          visibleSocialLinks.map((socialLink) => {
-            const IconComponent = socialIcons[socialLink.name.toLowerCase() as keyof typeof socialIcons] || socialIcons.default;
-            return (
-              <a
-                key={socialLink.id}
-                href={socialLink.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-orange-400 hover:text-orange-300 transition-colors"
-                title={socialLink.name}
-              >
-                <IconComponent className="w-5 h-5" />
-              </a>
-            );
-          })
-        ) : (
-          // Placeholders por defecto
-          <>
-            <YoutubeIcon className="w-5 h-5 text-orange-400" />
-            <PlayCircle className="w-5 h-5 text-orange-400" />
-            <InstagramIcon className="w-5 h-5 text-orange-400" />
-            <TwitterIcon className="w-5 h-5 text-orange-400" />
-          </>
+      {/* Social links */}
+      <div className={`flex flex-nowrap justify-center ${isPreview ? 'gap-1.5' : 'gap-1'} ${isPreview ? 'mb-4' : 'mb-6'} overflow-x-auto px-1`}>
+        {/* Debug en preview */}
+        {isPreview && visibleSocialLinks.length === 0 && (
+          <div className="text-xs text-gray-400 p-2">
+            No social links ({socialLinks.length} total)
+          </div>
         )}
+        {visibleSocialLinks.map((socialLink) => {
+          const IconComponent = socialIcons[socialLink.name as keyof typeof socialIcons] || socialIcons.default;
+          return (
+            <a
+              key={socialLink.id}
+              href={socialLink.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${isPreview ? 'p-1.5' : 'p-1.5 sm:p-2 md:p-2.5'} transition-all duration-200 hover:scale-105 flex-shrink-0`}
+              style={{
+                backgroundColor: dynamicLinkBackground,
+                borderColor: 'var(--preview-link-border)',
+                color: dynamicLinkText,
+                border: '1px solid',
+                borderRadius: borderRadiusStyle
+              }}
+            >
+              <IconComponent className={`${isPreview ? 'w-3.5 h-3.5' : 'w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4'}`} />
+            </a>
+          );
+        })}
+      </div>
       </div>
     </div>
   );

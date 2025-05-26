@@ -1,16 +1,18 @@
 "use client";
 
 import {useEffect, useState} from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     closestCenter,
     DndContext,
     DragEndEvent,
+    DragStartEvent,
     KeyboardSensor,
     PointerSensor,
     useSensor,
     useSensors,
 } from "@dnd-kit/core";
-import {arrayMove, SortableContext, verticalListSortingStrategy,} from "@dnd-kit/sortable";
+import {SortableContext, verticalListSortingStrategy,} from "@dnd-kit/sortable";
 import {SocialLinkData} from "./types";
 import {SortableSocialItem} from "./SortableSocialItem";
 import { API_URL, createAuthHeaders } from "@/lib/api";
@@ -45,6 +47,7 @@ interface SocialLinksPanelProps {
 export default function SocialLinksPanel({landingId, onReorder, onUpdate}: SocialLinksPanelProps) {
     const t = useTranslations('social');
     const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>(initialPlaceholders);
+    const [isDragging, setIsDragging] = useState(false);
 
     useEffect(() => {
         fetch(`${API_URL}/api/social-links?landingId=${landingId}`, {
@@ -124,18 +127,33 @@ export default function SocialLinksPanel({landingId, onReorder, onUpdate}: Socia
         useSensor(KeyboardSensor)
     );
 
+    function handleDragStart(event: DragStartEvent) {
+        setIsDragging(true);
+    }
+
     async function handleDragEnd(event: DragEndEvent) {
+        setIsDragging(false);
         const { active, over } = event;
         if (!over || active.id === over.id) return;
+        
         const oldIndex = socialLinks.findIndex((s) => s.id === active.id);
         const newIndex = socialLinks.findIndex((s) => s.id === over.id);
         if (oldIndex < 0 || newIndex < 0) return;
-        const newOrder = arrayMove(socialLinks, oldIndex, newIndex);
-        const payload = newOrder.map((item, idx) => ({ id: item.id, position: idx }));
-        // Optimistic update
-        const updatedLinks = newOrder.map((s, idx)=>({...s, position: idx}));
+        
+        // Crear nueva lista reordenada manualmente para mejor control
+        const newOrder = [...socialLinks];
+        const [movedItem] = newOrder.splice(oldIndex, 1);
+        newOrder.splice(newIndex, 0, movedItem);
+        
+        // Actualizar posiciones
+        const updatedLinks = newOrder.map((s, idx) => ({ ...s, position: idx }));
+        
+        // Actualización optimista
         setSocialLinks(updatedLinks);
         onUpdate?.(updatedLinks);
+        
+        // Actualizar en servidor
+        const payload = updatedLinks.map((item, idx) => ({ id: item.id, position: idx }));
         try {
             const res = await fetch(`${API_URL}/api/social-links?landingId=${landingId}`, {
                 method: "PATCH",
@@ -150,6 +168,81 @@ export default function SocialLinksPanel({landingId, onReorder, onUpdate}: Socia
             }
         } catch(err){
             console.error('Error reordering social links:', err);
+        }
+        onReorder?.();
+    }
+
+    // Funciones para mover social links arriba/abajo
+    async function moveSocialLinkUp(id: string) {
+        const currentIndex = socialLinks.findIndex(s => s.id === id);
+        if (currentIndex <= 0) return; // Ya está en la primera posición
+
+        // Intercambiar posiciones
+        const newLinks = [...socialLinks];
+        [newLinks[currentIndex], newLinks[currentIndex - 1]] = [newLinks[currentIndex - 1], newLinks[currentIndex]];
+        
+        // Actualizar posiciones
+        newLinks.forEach((link, index) => {
+            link.position = index;
+        });
+
+        // Actualizar estado local
+        setSocialLinks(newLinks);
+        onUpdate?.(newLinks);
+
+        // Actualizar en el servidor
+        const payload = newLinks.map((item, idx) => ({ id: item.id, position: idx }));
+        try {
+            const res = await fetch(`${API_URL}/api/social-links?landingId=${landingId}`, {
+                method: "PATCH",
+                headers: {
+                    ...createAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload),
+            });
+            if(!res.ok){
+                console.error('Move up failed', res.status);
+            }
+        } catch(err){
+            console.error('Error moving social link up:', err);
+        }
+        onReorder?.();
+    }
+
+    async function moveSocialLinkDown(id: string) {
+        const currentIndex = socialLinks.findIndex(s => s.id === id);
+        if (currentIndex >= socialLinks.length - 1) return; // Ya está en la última posición
+
+        // Intercambiar posiciones
+        const newLinks = [...socialLinks];
+        [newLinks[currentIndex], newLinks[currentIndex + 1]] = [newLinks[currentIndex + 1], newLinks[currentIndex]];
+        
+        // Actualizar posiciones
+        newLinks.forEach((link, index) => {
+            link.position = index;
+        });
+
+        // Actualizar estado local
+        setSocialLinks(newLinks);
+        onUpdate?.(newLinks);
+
+        // Actualizar en el servidor
+        const payload = newLinks.map((item, idx) => ({ id: item.id, position: idx }));
+        try {
+            const res = await fetch(`${API_URL}/api/social-links?landingId=${landingId}`, {
+                method: "PATCH",
+                headers: {
+                    ...createAuthHeaders(),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload),
+            });
+            if(!res.ok){
+                console.error('Move down failed', res.status);
+            }
+        } catch(err){
+            console.error('Error moving social link down:', err);
         }
         onReorder?.();
     }
@@ -170,6 +263,7 @@ export default function SocialLinksPanel({landingId, onReorder, onUpdate}: Socia
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
+                onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
                 // Habilitar scroll automático durante el arrastre
                 autoScroll={true}
@@ -179,17 +273,56 @@ export default function SocialLinksPanel({landingId, onReorder, onUpdate}: Socia
                     strategy={verticalListSortingStrategy}
                 >
                     <div className="space-y-2" style={{ position: 'relative' }}>
-                        {socialLinks.map((item) => (
-                            <SortableSocialItem
-                                key={item.id}
-                                id={item.id}
-                                data={item}
-                                onToggleVisibility={(visible) =>
-                                    handleUpdate(item.id, {visible})
-                                }
-                                onUrlChange={(url) => handleUpdate(item.id, {url})}
-                            />
-                        ))}
+                        <AnimatePresence>
+                            {socialLinks.map((item, index) => (
+                                <motion.div
+                                    key={item.id}
+                                    layout={!isDragging}
+                                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                                    animate={{ 
+                                        opacity: 1, 
+                                        y: 0, 
+                                        scale: 1,
+                                        transition: isDragging ? { duration: 0 } : {
+                                            type: "spring",
+                                            stiffness: 400,
+                                            damping: 25,
+                                            duration: 0.3
+                                        }
+                                    }}
+                                    exit={{ 
+                                        opacity: 0, 
+                                        y: -20, 
+                                        scale: 0.95,
+                                        transition: {
+                                            duration: 0.2,
+                                            ease: "easeInOut"
+                                        }
+                                    }}
+                                    transition={{
+                                        layout: isDragging ? { duration: 0 } : {
+                                            type: "spring",
+                                            stiffness: 400,
+                                            damping: 25,
+                                            duration: 0.4
+                                        }
+                                    }}
+                                >
+                                    <SortableSocialItem
+                                        id={item.id}
+                                        data={item}
+                                        onToggleVisibility={(visible) =>
+                                            handleUpdate(item.id, {visible})
+                                        }
+                                        onUrlChange={(url) => handleUpdate(item.id, {url})}
+                                        onMoveUp={moveSocialLinkUp}
+                                        onMoveDown={moveSocialLinkDown}
+                                        isFirst={index === 0}
+                                        isLast={index === socialLinks.length - 1}
+                                    />
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
                     </div>
                 </SortableContext>
             </DndContext>
