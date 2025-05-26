@@ -371,6 +371,27 @@ export default function AdminPage() {
           />
         </div>
       </div>
+      
+      {/* Estilos para preview */}
+      <style jsx global>{`
+        /* Ocultar scrollbar pero mantener funcionalidad de scroll */
+        .scrollbar-hide {
+          -ms-overflow-style: none;  /* Internet Explorer 10+ */
+          scrollbar-width: none;  /* Firefox */
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;  /* Safari and Chrome */
+        }
+        
+        /* Ocultar navbar en el preview */
+        .preview-container nav,
+        .preview-container header,
+        .preview-container [data-navbar],
+        .preview-container .navbar,
+        .preview-container .nav {
+          display: none !important;
+        }
+      `}</style>
     </div>
   );
 }

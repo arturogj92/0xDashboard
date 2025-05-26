@@ -188,7 +188,7 @@ export const LandingPreview = React.memo(function LandingPreview({
   return (
     <div 
       data-landing-preview
-      className={`${isPreview ? 'h-full overflow-y-auto overflow-x-hidden' : 'min-h-screen'}`}
+      className={`${isPreview ? 'h-full overflow-y-scroll overflow-x-hidden scrollbar-hide' : 'min-h-screen'}`}
       style={{
         background: dynamicBackground,
         fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`,
