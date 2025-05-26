@@ -17,6 +17,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Bar,
   BarChart,
   CartesianGrid,
@@ -195,6 +199,7 @@ export default function MultiSectionsItem({
 
   const fileRef=useRef<HTMLInputElement>(null);
   const [showSectionDropdown, setShowSectionDropdown] = useState(false);
+  const [showDeleteLinkModal, setShowDeleteLinkModal] = useState(false);
   
   const upd=(u:Partial<LinkData>)=>onUpdateLink(link.id,u);
   
@@ -463,7 +468,7 @@ export default function MultiSectionsItem({
             
             {/* Fila inferior: Eliminar y visibilidad */}
             <div className="flex gap-1">
-              <Button variant="destructive" className="text-xs p-1 w-6 h-6 hover:bg-purple-900" onClick={()=>onDeleteLink(link.id)} title="Eliminar link">
+              <Button variant="destructive" className="text-xs p-1 w-6 h-6 hover:bg-purple-900" onClick={()=>setShowDeleteLinkModal(true)} title="Eliminar link">
                 <TrashIcon/>
               </Button>
               
@@ -560,6 +565,37 @@ export default function MultiSectionsItem({
             onCropComplete={handleCropComplete}
           />
         )}
+
+        {/* Modal de confirmación para borrar link */}
+        <AlertDialog open={showDeleteLinkModal} onOpenChange={setShowDeleteLinkModal}>
+          <AlertDialogContent className="bg-gray-900 border border-gray-700">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-white">
+                ¿Eliminar enlace &ldquo;{link.title}&rdquo;?
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-gray-300">
+                Esta acción no se puede deshacer. El enlace será eliminado permanentemente de tu landing page.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel 
+                onClick={() => setShowDeleteLinkModal(false)}
+                className="bg-gray-700 text-white border-gray-600 hover:bg-gray-600"
+              >
+                Cancelar
+              </AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={() => {
+                  onDeleteLink(link.id);
+                  setShowDeleteLinkModal(false);
+                }}
+                className="bg-red-600 text-white hover:bg-red-700"
+              >
+                Eliminar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
