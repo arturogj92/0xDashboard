@@ -188,6 +188,50 @@ export default function AdminPage() {
     }
   };
 
+  const handleCreateSection = async () => {
+    try {
+      const newSection = {
+        title: 'Nueva Sección',
+        position: sections.length
+      };
+
+      const res = await fetch(`${API_URL}/api/sections?landingId=${landingId}`, {
+        method: 'POST',
+        headers: createAuthHeaders(),
+        body: JSON.stringify(newSection)
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setSections(prev => [...prev, data]);
+        
+        // Hacer scroll a la nueva sección después de un pequeño delay para que se renderice
+        setTimeout(() => {
+          const sectionElement = document.querySelector(`[data-section-id="${data.id}"]`);
+          if (sectionElement) {
+            // Scroll suave hacia la nueva sección
+            sectionElement.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center',
+              inline: 'nearest'
+            });
+            
+            // Opcional: agregar un brillo temporal para destacar la nueva sección
+            sectionElement.classList.add('highlight-new-section');
+            setTimeout(() => {
+              sectionElement.classList.remove('highlight-new-section');
+            }, 2000);
+          }
+        }, 150);
+      } else {
+        const data = await res.json();
+        console.error('Error creando seccion:', data.error);
+      }
+    } catch (error) {
+      console.error('Error creando seccion:', error);
+    }
+  };
+
   const handleLandingInfoUpdate = (name: string, description: string) => {
     setLanding(prev => ({ ...prev, name, description }));
   };
@@ -399,6 +443,7 @@ export default function AdminPage() {
             onDeleteLink={handleDeleteLink}
             onUpdateSection={handleUpdateSection}
             onDeleteSection={handleDeleteSection}
+            onCreateSection={handleCreateSection}
             landingId={landingId}
           />
         </div>
@@ -456,6 +501,26 @@ export default function AdminPage() {
         .preview-container [data-landing-preview],
         .preview-container [data-landing-preview] * {
           overflow: hidden !important;
+        }
+        
+        /* Efecto de brillo para nueva sección creada */
+        .highlight-new-section {
+          animation: highlight-glow 2s ease-in-out;
+        }
+        
+        @keyframes highlight-glow {
+          0% { 
+            box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4);
+            border-color: rgba(168, 85, 247, 0.3);
+          }
+          50% { 
+            box-shadow: 0 0 20px 5px rgba(168, 85, 247, 0.6);
+            border-color: rgba(168, 85, 247, 0.8);
+          }
+          100% { 
+            box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4);
+            border-color: rgba(168, 85, 247, 0.3);
+          }
         }
       `}</style>
     </div>
