@@ -37,24 +37,44 @@ function ThemePreview({ theme, isSelected, onClick }: ThemePreviewProps) {
         {/* Visual Preview */}
         <div className="p-4 h-32 relative">
           {/* Background */}
-          <div className={`absolute inset-0 bg-gradient-to-br ${theme.colors.background}`} />
+          <div 
+            className="absolute inset-0"
+            style={{ background: theme.colors.background }}
+          />
           
           {/* Sample avatar */}
           <div className="relative z-10 flex flex-col items-center space-y-2">
-            <div className={`w-8 h-8 bg-gray-300 ${theme.layout.borderRadiusAvatar}`} />
+            <div className="w-8 h-8 bg-gray-300 rounded-full" />
             
             {/* Sample title */}
-            <div className={`w-16 h-3 bg-gray-400 ${theme.layout.borderRadius}`} />
+            <div 
+              className="w-16 h-3 rounded"
+              style={{ backgroundColor: theme.colors.textPrimary }}
+            />
             
             {/* Sample links */}
             <div className="space-y-1 w-full">
-              <div className={`w-full h-6 ${theme.colors.linkBackground} ${theme.colors.linkBorder} border ${theme.layout.borderRadiusCard} ${theme.layout.shadowCard} flex items-center px-2`}>
+              <div 
+                className="w-full h-6 border rounded flex items-center px-2"
+                style={{ 
+                  backgroundColor: theme.colors.linkBackground,
+                  borderColor: theme.colors.linkBorder,
+                  color: theme.colors.linkText
+                }}
+              >
                 <div className="w-3 h-3 bg-gray-300 rounded mr-2" />
-                <div className="w-12 h-2 bg-gray-400 rounded" />
+                <div className="w-12 h-2 bg-current rounded opacity-70" />
               </div>
-              <div className={`w-full h-6 ${theme.colors.linkBackground} ${theme.colors.linkBorder} border ${theme.layout.borderRadiusCard} ${theme.layout.shadowCard} flex items-center px-2`}>
+              <div 
+                className="w-full h-6 border rounded flex items-center px-2"
+                style={{ 
+                  backgroundColor: theme.colors.linkBackground,
+                  borderColor: theme.colors.linkBorder,
+                  color: theme.colors.linkText
+                }}
+              >
                 <div className="w-3 h-3 bg-gray-300 rounded mr-2" />
-                <div className="w-16 h-2 bg-gray-400 rounded" />
+                <div className="w-16 h-2 bg-current rounded opacity-70" />
               </div>
             </div>
           </div>
@@ -91,7 +111,7 @@ function ThemePreview({ theme, isSelected, onClick }: ThemePreviewProps) {
   );
 }
 
-export default function ThemeSelector({ currentThemeId = 'minimal', onThemeChange, className = '' }: ThemeSelectorProps) {
+export default function ThemeSelector({ currentThemeId = 'dark', onThemeChange, className = '' }: ThemeSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const currentTheme = getThemeById(currentThemeId) || themes[0];
 

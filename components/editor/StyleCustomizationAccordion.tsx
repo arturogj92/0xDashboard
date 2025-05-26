@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon, PaintBrushIcon } from '@heroicons/react/24/outline';
+import ThemeSelector from "@/components/editor/ThemeSelector";
 import BorderRadiusSelector from "@/components/editor/BorderRadiusSelector";
 import BackgroundGradientSelector from "@/components/editor/BackgroundGradientSelector";
 import FontColorSelector from "@/components/editor/FontColorSelector";
@@ -9,10 +10,12 @@ import FontFamilySelector from "@/components/editor/FontFamilySelector";
 
 interface StyleCustomizationAccordionProps {
   landing: {
+    theme_id?: string;
     configurations?: any;
   };
   handleConfigurationUpdate: (config: any) => void;
   handleConfigurationSave: (config: any) => void;
+  handleThemeUpdate: (themeId: string) => void;
   className?: string;
 }
 
@@ -20,9 +23,10 @@ export default function StyleCustomizationAccordion({
   landing, 
   handleConfigurationUpdate, 
   handleConfigurationSave,
+  handleThemeUpdate,
   className = "" 
 }: StyleCustomizationAccordionProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <div className={`${className}`}>
@@ -61,6 +65,14 @@ export default function StyleCustomizationAccordion({
         }`}
       >
         <div className="mt-4 space-y-6">
+          {/* Theme Selector */}
+          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
+            <ThemeSelector
+              currentThemeId={landing.theme_id || 'dark'}
+              onThemeChange={handleThemeUpdate}
+            />
+          </div>
+
           {/* Border Radius */}
           <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
             <BorderRadiusSelector

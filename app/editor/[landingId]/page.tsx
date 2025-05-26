@@ -8,7 +8,6 @@ import { AvatarUpload } from "@/components/editor/AvatarUpload";
 import { LandingInfoEditor } from "@/components/editor/LandingInfoEditor";
 import { LandingPreview } from "@/components/landing/LandingPreview";
 import { LinkData, SectionData, SocialLinkData } from "@/components/editor/types";
-import ThemeSelector from "@/components/editor/ThemeSelector";
 import StyleCustomizationAccordion from "@/components/editor/StyleCustomizationAccordion";
 import { useParams } from 'next/navigation';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
@@ -170,19 +169,66 @@ export default function AdminPage() {
 
   const handleThemeUpdate = async (themeId: string) => {
     try {
+      // Obtener configuraciones del tema seleccionado
+      const themeConfigurations = getThemeConfigurations(themeId);
+      
       const res = await fetch(`${API_URL}/api/landings/${landingId}`, {
         method: 'PUT',
         headers: createAuthHeaders(),
-        body: JSON.stringify({ theme_id: themeId }),
+        body: JSON.stringify({ 
+          theme_id: themeId,
+          configurations: themeConfigurations
+        }),
       });
       
       if (res.ok) {
-        setLanding(prev => ({ ...prev, theme_id: themeId }));
+        setLanding(prev => ({ 
+          ...prev, 
+          theme_id: themeId,
+          configurations: themeConfigurations
+        }));
       } else {
         console.error('Error actualizando tema');
       }
     } catch (error) {
       console.error('Error actualizando tema:', error);
+    }
+  };
+
+  // Función para obtener configuraciones basadas en el tema
+  const getThemeConfigurations = (themeId: string) => {
+    const baseConfig = {
+      borderRadius: 'rounded-xl',
+      fontFamily: {
+        family: 'Inter',
+        url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
+      }
+    };
+
+    switch (themeId) {
+      case 'dark':
+        return {
+          ...baseConfig,
+          gradient: { color1: '#000000', color2: '#000000' },
+          fontColor: { primary: '#ffffff', secondary: '#ffffff' },
+          linkColor: { background: '#000000', text: '#ffffff' }
+        };
+      case 'light':
+        return {
+          ...baseConfig,
+          gradient: { color1: '#f8fafc', color2: '#e2e8f0' },
+          fontColor: { primary: '#000000', secondary: '#000000' },
+          linkColor: { background: '#ffffff', text: '#000000' }
+        };
+      case 'gradient':
+        return {
+          ...baseConfig,
+          gradient: { color1: '#667eea', color2: '#764ba2' },
+          fontColor: { primary: '#ffffff', secondary: '#f1f5f9' },
+          linkColor: { background: 'rgba(255,255,255,0.15)', text: '#ffffff' }
+        };
+      default:
+        return baseConfig;
     }
   };
 
@@ -297,18 +343,11 @@ export default function AdminPage() {
         </div>
         
         <div className="w-full mb-8">
-          <ThemeSelector
-            currentThemeId={landing.theme_id || 'dark'}
-            onThemeChange={handleThemeUpdate}
-            className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
-          />
-        </div>
-
-        <div className="w-full mb-8">
           <StyleCustomizationAccordion
             landing={landing}
             handleConfigurationUpdate={handleConfigurationUpdate}
             handleConfigurationSave={handleConfigurationSave}
+            handleThemeUpdate={handleThemeUpdate}
           />
         </div>
 
