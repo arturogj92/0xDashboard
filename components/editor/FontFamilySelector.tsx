@@ -25,6 +25,7 @@ export default function FontFamilySelector({
 
   // Google Fonts populares
   const googleFonts = [
+    // Sans Serif Modernas
     { 
       name: 'Inter', 
       family: 'Inter', 
@@ -62,6 +63,32 @@ export default function FontFamilySelector({
       category: 'Sans Serif'
     },
     { 
+      name: 'Nunito', 
+      family: 'Nunito', 
+      url: 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap',
+      category: 'Sans Serif'
+    },
+    { 
+      name: 'Source Sans Pro', 
+      family: 'Source Sans Pro', 
+      url: 'https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap',
+      category: 'Sans Serif'
+    },
+    { 
+      name: 'Raleway', 
+      family: 'Raleway', 
+      url: 'https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap',
+      category: 'Sans Serif'
+    },
+    { 
+      name: 'Ubuntu', 
+      family: 'Ubuntu', 
+      url: 'https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap',
+      category: 'Sans Serif'
+    },
+    
+    // Serif Elegantes
+    { 
       name: 'Playfair Display', 
       family: 'Playfair Display', 
       url: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap',
@@ -72,6 +99,84 @@ export default function FontFamilySelector({
       family: 'Merriweather', 
       url: 'https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap',
       category: 'Serif'
+    },
+    { 
+      name: 'Lora', 
+      family: 'Lora', 
+      url: 'https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap',
+      category: 'Serif'
+    },
+    { 
+      name: 'Crimson Text', 
+      family: 'Crimson Text', 
+      url: 'https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap',
+      category: 'Serif'
+    },
+    { 
+      name: 'Libre Baskerville', 
+      family: 'Libre Baskerville', 
+      url: 'https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap',
+      category: 'Serif'
+    },
+    
+    // Display y Creativas
+    { 
+      name: 'Oswald', 
+      family: 'Oswald', 
+      url: 'https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap',
+      category: 'Display'
+    },
+    { 
+      name: 'Bebas Neue', 
+      family: 'Bebas Neue', 
+      url: 'https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap',
+      category: 'Display'
+    },
+    { 
+      name: 'Anton', 
+      family: 'Anton', 
+      url: 'https://fonts.googleapis.com/css2?family=Anton&display=swap',
+      category: 'Display'
+    },
+    { 
+      name: 'Abril Fatface', 
+      family: 'Abril Fatface', 
+      url: 'https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap',
+      category: 'Display'
+    },
+    
+    // Handwriting
+    { 
+      name: 'Dancing Script', 
+      family: 'Dancing Script', 
+      url: 'https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap',
+      category: 'Handwriting'
+    },
+    { 
+      name: 'Pacifico', 
+      family: 'Pacifico', 
+      url: 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap',
+      category: 'Handwriting'
+    },
+    { 
+      name: 'Caveat', 
+      family: 'Caveat', 
+      url: 'https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap',
+      category: 'Handwriting'
+    },
+    
+    // Monospace
+    { 
+      name: 'JetBrains Mono', 
+      family: 'JetBrains Mono', 
+      url: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap',
+      category: 'Monospace'
+    },
+    { 
+      name: 'Fira Code', 
+      family: 'Fira Code', 
+      url: 'https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&display=swap',
+      category: 'Monospace'
     }
   ];
 
@@ -169,7 +274,7 @@ export default function FontFamilySelector({
       {/* Selector de fuentes */}
       <div className="space-y-2">
         <span className="text-xs text-gray-400">Fuentes disponibles:</span>
-        <div className="max-h-64 overflow-y-auto space-y-2">
+        <div className="max-h-64 overflow-y-auto overflow-x-hidden space-y-2">
           {googleFonts.map((font) => {
             const isActive = localFont.family === font.family;
             
@@ -177,10 +282,10 @@ export default function FontFamilySelector({
               <button
                 key={font.family}
                 onClick={() => handleFontChange({ family: font.family, url: font.url })}
-                className={`w-full text-left p-3 rounded-lg border transition-all duration-200 hover:scale-[1.02] ${
+                className={`w-full text-left p-3 rounded-lg border transition-all duration-200 hover:bg-gray-700 hover:border-gray-500 ${
                   isActive
                     ? 'bg-purple-600/30 border-purple-400 text-white shadow-lg shadow-purple-500/20'
-                    : 'bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-gray-500 hover:text-white'
+                    : 'bg-gray-800 border-gray-600 text-gray-300 hover:text-white'
                 }`}
               >
                 <div 

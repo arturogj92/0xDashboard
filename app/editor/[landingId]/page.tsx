@@ -391,6 +391,34 @@ export default function AdminPage() {
         .preview-container .nav {
           display: none !important;
         }
+        
+        /* Ocultar scrollbars completamente en el preview */
+        .preview-container,
+        .preview-container *,
+        .preview-container *:before,
+        .preview-container *:after {
+          scrollbar-width: none !important;
+          -ms-overflow-style: none !important;
+        }
+        .preview-container::-webkit-scrollbar,
+        .preview-container *::-webkit-scrollbar {
+          display: none !important;
+          width: 0 !important;
+          height: 0 !important;
+        }
+        
+        /* Prevenir overflow en hover */
+        .preview-container a:hover,
+        .preview-container button:hover {
+          transform: none !important;
+          overflow: hidden !important;
+        }
+        
+        /* Forzar overflow hidden en todos los elementos del preview */
+        .preview-container [data-landing-preview],
+        .preview-container [data-landing-preview] * {
+          overflow: hidden !important;
+        }
       `}</style>
     </div>
   );

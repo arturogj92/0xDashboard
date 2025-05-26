@@ -324,7 +324,7 @@ export const LandingPreview = React.memo(function LandingPreview({
       <div className={`w-full h-px bg-white/20 ${isPreview ? 'my-12' : 'my-12'}`} />
 
       {/* Social links */}
-      <div className={`flex flex-nowrap justify-center ${isPreview ? 'gap-1.5' : 'gap-1'} ${isPreview ? 'mb-4' : 'mb-6'} overflow-x-auto px-1`}>
+      <div className={`flex flex-nowrap justify-center ${isPreview ? 'gap-1.5 mb-4' : 'gap-1 mb-6'} overflow-hidden px-1`}>
         {/* Debug en preview */}
         {isPreview && visibleSocialLinks.length === 0 && (
           <div className="text-xs text-gray-400 p-2">
@@ -339,7 +339,7 @@ export const LandingPreview = React.memo(function LandingPreview({
               href={socialLink.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`${isPreview ? 'p-1.5' : 'p-1.5 sm:p-2 md:p-2.5'} transition-all duration-200 hover:scale-105 flex-shrink-0`}
+              className={`${isPreview ? 'p-1.5' : 'p-1.5 sm:p-2 md:p-2.5'} transition-all duration-200 ${isPreview ? '' : 'hover:scale-105'} flex-shrink-0`}
               style={{
                 backgroundColor: dynamicLinkBackground,
                 borderColor: 'var(--preview-link-border)',
