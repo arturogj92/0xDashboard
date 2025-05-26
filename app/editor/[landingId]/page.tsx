@@ -21,7 +21,6 @@ export default function AdminPage() {
   const [sections, setSections] = useState<SectionData[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>([]);
   const [landing, setLanding] = useState<{name: string; description: string; theme_id?: string; configurations?: any}>({name: '', description: ''});
-  const [_, setRefreshing] = useState(0);
   const [previewPosition, setPreviewPosition] = useState('fixed');
   const previewRef = useRef<HTMLDivElement>(null);
 
@@ -367,7 +366,7 @@ export default function AdminPage() {
         <div className="mt-8 w-full">
           <SocialLinksPanel
             landingId={landingId}
-            onReorder={() => setRefreshing((r) => r + 1)}
+            onUpdate={(updatedSocialLinks) => setSocialLinks(updatedSocialLinks)}
           />
         </div>
       </div>

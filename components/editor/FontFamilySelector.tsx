@@ -247,6 +247,7 @@ export default function FontFamilySelector({
     googleFonts.forEach(font => {
       loadFont(font.url, font.family);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadFont]);
 
   return (
