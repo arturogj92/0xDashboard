@@ -20,7 +20,7 @@ export default function LandingPage() {
       <div className="mb-16 relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-visible">
         <div className="relative w-full max-w-5xl rounded-xl border border-white/10 bg-[#0e0b15]/70 backdrop-blur-xl shadow-2xl pt-8 pb-3 px-3 sm:pt-10 sm:pb-4 sm:px-4 flex flex-col items-center justify-center">
           <div className="relative z-10 w-full max-w-3xl mx-auto">
-        <LandingWizard />
+            <LandingWizard />
           </div>
         </div>
         {/* Fondo radial principal visible en todas las resoluciones */}

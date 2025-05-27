@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { User, Info, Globe, Lock } from 'lucide-react';
+import { User, Info, Globe, Lock, Instagram, Twitter, Youtube, Music2 } from 'lucide-react';
 import Image from 'next/image';
-import { LandingPreview } from './LandingPreview';
 
 export default function LandingWizard() {
   const t = useTranslations('landing');
@@ -167,7 +166,55 @@ export default function LandingWizard() {
 
         {/* Columna derecha: preview (solo md+) */}
         <div className="flex flex-col items-center gap-2 justify-center">
-          <LandingPreview name={name} description={description} />
+          {/* iPhone Frame with Skeleton Landing */}
+          <div className="relative mx-auto" style={{ width: '200px', height: '400px' }}>
+            {/* iPhone Frame */}
+            <img
+              src="/images/iphone16-frame.png"
+              alt="iPhone frame"
+              className="absolute inset-0 w-full h-full z-10 pointer-events-none"
+            />
+            
+            {/* Skeleton Landing Content */}
+            <div className="absolute inset-0 flex items-center justify-center" style={{ padding: '44px 13px 56px 13px' }}>
+              <div className="w-full h-full bg-gradient-to-b from-gray-900 to-black rounded-[1.5rem] overflow-hidden">
+                <div className="h-full overflow-y-auto scrollbar-hide p-4 flex flex-col items-center">
+                  {/* Skeleton Avatar */}
+                  <div className="w-16 h-16 rounded-full bg-gray-800 animate-pulse mb-3" />
+                  
+                  {/* Skeleton Title */}
+                  <div className="h-4 w-20 bg-gray-800 rounded animate-pulse mb-1" />
+                  
+                  {/* Skeleton Description */}
+                  <div className="h-3 w-32 bg-gray-800 rounded animate-pulse mb-6" />
+                  
+                  {/* Skeleton Links */}
+                  <div className="w-full space-y-2 mb-6">
+                    <div className="h-8 bg-gray-800 rounded-lg animate-pulse" />
+                    <div className="h-8 bg-gray-800 rounded-lg animate-pulse" />
+                    <div className="h-8 bg-gray-800 rounded-lg animate-pulse" />
+                    <div className="h-8 bg-gray-800 rounded-lg animate-pulse" />
+                  </div>
+                  
+                  {/* Skeleton Social Icons */}
+                  <div className="flex gap-2 mt-auto">
+                    <div className="w-7 h-7 bg-gray-800 rounded-full animate-pulse flex items-center justify-center">
+                      <Instagram className="w-3.5 h-3.5 text-gray-600" />
+                    </div>
+                    <div className="w-7 h-7 bg-gray-800 rounded-full animate-pulse flex items-center justify-center">
+                      <Twitter className="w-3.5 h-3.5 text-gray-600" />
+                    </div>
+                    <div className="w-7 h-7 bg-gray-800 rounded-full animate-pulse flex items-center justify-center">
+                      <Youtube className="w-3.5 h-3.5 text-gray-600" />
+                    </div>
+                    <div className="w-7 h-7 bg-gray-800 rounded-full animate-pulse flex items-center justify-center">
+                      <Music2 className="w-3.5 h-3.5 text-gray-600" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="inline-flex items-center gap-1 bg-slate-800/90 px-3 py-1.5 rounded-full shadow-inner w-[280px] md:w-[180px] lg:w-[230px]">
             <Lock className="h-3 w-3 text-green-400" />
             <span className="text-xs font-medium text-slate-400">https://</span>
