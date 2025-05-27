@@ -41,13 +41,13 @@ const guidePoints: GuidePoint[] = [
     id: 'section-title',
     tooltip: 'Cambiar estilo de fuentes',
     position: { top: '40%', left: '50%' },
-    sectionId: 'style-customization'
+    sectionId: 'font-family'
   },
   {
     id: 'link-background',
     tooltip: 'Personalizar estilo de enlaces',
     position: { top: '56%', left: '86%' },
-    sectionId: 'style-customization'
+    sectionId: 'link-styles'
   }
 ];
 

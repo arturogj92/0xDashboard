@@ -6,30 +6,12 @@ import { CSS } from "@dnd-kit/utilities";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Toggle } from "@/components/ui/toggle";
 import { LinkData } from "./types";
 import { ImageCropModal } from "./ImageCropModal";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  ResponsiveContainer,
-  Tooltip as RechartsTooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 
 /* ═════════ ICONOS COMPLETOS ═════════ */
 function StatsIcon() {
@@ -119,16 +101,8 @@ function ChevronDownIcon() {
   );
 }
 
-/* ═════════ BANDERAS, TIPOS, HELPERS ═════════ */
-const countryFlags: Record<string, string> = {
-  US:"🇺🇸", RU:"🇷🇺", ES:"🇪🇸", MX:"🇲🇽", PL:"🇵🇱", KR:"🇰🇷", VN:"🇻🇳", IE:"🇮🇪",
-  AR:"🇦🇷", TW:"🇹🇼", FR:"🇫🇷", DK:"🇩🇰", CO:"🇨🇴", VE:"🇻🇪", PE:"🇵🇪", SE:"🇸🇪",
-  PT:"🇵🇹", IT:"🇮🇹", SG:"🇸🇬", RO:"🇷🇴", BO:"🇧🇴",
-};
+/* ═════════ TIPOS, HELPERS ═════════ */
 
-interface DailyStat{date:string;count:number;countries:Record<string,number>; }
-interface StatsData{selected:number;global:number;variation:number;dailyStats:DailyStat[];byCountry:Record<string,number>; }
-interface TooltipItem{name:string;value:number;color:string;payload:{date:string;count:number;countries:Record<string,number>;}; }
 interface Props{
   link: LinkData;
   onUpdateLink: (id: string, u: Partial<LinkData>) => void;
@@ -144,21 +118,7 @@ interface Props{
   isLast?: boolean;
 }
 
-const fileName=(url:string)=>{try{return url.split("/").pop()??"";}catch{return"";}};
-function CustomTooltip({active,payload,label}:{active?:boolean;payload?:TooltipItem[];label?:string;}){
-  if(active&&payload&&payload.length){
-    const d=new Date(label!);
-    return(
-      <div style={{background:"black",padding:"6px 8px",borderRadius:4,color:"white",fontSize:"0.8rem"}}>
-        <p className="mb-1">{d.toLocaleDateString("es-ES",{day:"numeric",month:"short",year:"numeric"})}</p>
-        <div className="flex items-center gap-2">
-          <span style={{background:"hsl(var(--chart-1))",width:8,height:8,display:"inline-block"}}/>
-          <span>Page Views: {payload[0].value}</span>
-        </div>
-      </div>
-    );
-  } return null;
-}
+const fileName=(url:string)=>{try{return url.split("/").pop()??"";}catch{return"";}};;
 
 /* ═════════ COMPONENTE ═════════ */
 export default function MultiSectionsItem({
@@ -185,17 +145,11 @@ export default function MultiSectionsItem({
   const [title,setTitle]=useState(link.title);
   const [url,setUrl]=useState(link.url);
   const [image,setImage]=useState(link.image??"");
-  const [urlId,setUrlId]=useState<number|null>(link.url_link_id??null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [showCropModal, setShowCropModal] = useState(false);
   const [imageToCrop, setImageToCrop] = useState<string | null>(null);
 
-  const [stats7,setStats7]=useState<StatsData|null>(null);
-  const [stats28,setStats28]=useState<StatsData|null>(null);
-  const [statsModal,setStatsModal]=useState(false);
-  const [loadingStats,setLoadingStats]=useState(false);
-  const [statsErr,setStatsErr]=useState<string|null>(null);
 
   const fileRef=useRef<HTMLInputElement>(null);
   const [showSectionDropdown, setShowSectionDropdown] = useState(false);
@@ -288,16 +242,10 @@ export default function MultiSectionsItem({
     setImage(""); upd({image:""});
   }
 
-  async function openStats(){
-    if(!urlId){setStatsErr("Sin url_link_id");setStatsModal(true);return;}
-    setStatsModal(true); setLoadingStats(true); setStatsErr(null);
-    try{
-      const s7=await(await fetch(`https://www.art0x.link/api/url/visitStats?url_id=${urlId}&range=7d`)).json();
-      const s28=await(await fetch(`https://www.art0x.link/api/url/visitStats?url_id=${urlId}&range=28d`)).json();
-      setStats7(s7.stats); setStats28(s28.stats);
-    }catch{setStatsErr("Error obteniendo stats");}
-    finally{setLoadingStats(false);}
-  }
+  const openStats = () => {
+    // TODO: Implementar estadísticas más adelante
+    console.log('Estadísticas para el link:', link.title);
+  };
 
   const handleMoveToSection = (sectionId: string) => {
     onMoveToSection(link.id, sectionId);
@@ -341,19 +289,11 @@ export default function MultiSectionsItem({
                      placeholder="Título"
                      className="w-full text-sm pl-8 pr-2 py-1 rounded-md bg-transparent text-white placeholder:text-muted-foreground hover:bg-[#1c1033]/80 focus:bg-[#1c1033] border border-slate-600/50 focus:border-indigo-500 focus:outline-none"/>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="relative flex-1">
-                <span className="absolute inset-y-0 left-2 flex items-center pointer-events-none"><LinkIcon/></span>
-                <Input value={url} onChange={e=>{setUrl(e.target.value);upd({url:e.target.value});}}
-                       placeholder="URL"
-                       className="w-full text-sm pl-8 pr-2 py-1 rounded-md bg-transparent text-white placeholder:text-muted-foreground hover:bg-[#1c1033]/80 focus:bg-[#1c1033] border border-slate-600/50 focus:border-indigo-500 focus:outline-none"/>
-              </div>
-              <div className="flex items-center gap-1 flex-shrink-0">
-                <span className="text-xs text-gray-300">ID:</span>
-                <Input type="number" value={urlId??""} onChange={e=>{const n=parseInt(e.target.value,10);const id=isNaN(n)?null:n;setUrlId(id);upd({url_link_id:id});}}
-                       placeholder="LinkID"
-                       className="w-20 text-sm rounded-md bg-transparent text-white placeholder:text-muted-foreground hover:bg-[#1c1033]/80 focus:bg-[#1c1033] border border-slate-600/50 focus:border-indigo-500 focus:outline-none"/>
-              </div>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-2 flex items-center pointer-events-none"><LinkIcon/></span>
+              <Input value={url} onChange={e=>{setUrl(e.target.value);upd({url:e.target.value});}}
+                     placeholder="URL"
+                     className="w-full text-sm pl-8 pr-2 py-1 rounded-md bg-transparent text-white placeholder:text-muted-foreground hover:bg-[#1c1033]/80 focus:bg-[#1c1033] border border-slate-600/50 focus:border-indigo-500 focus:outline-none"/>
             </div>
           </div>
 
@@ -472,11 +412,14 @@ export default function MultiSectionsItem({
                 <TrashIcon/>
               </Button>
               
-              <Toggle pressed={link.visible} onPressedChange={v=>upd({visible:v})}
-                      className="w-6 h-6 flex items-center justify-center hover:bg-purple-900"
-                      title={link.visible ? "Ocultar" : "Mostrar"}>
+              <Button 
+                variant="destructive" 
+                className={`text-xs p-1 w-6 h-6 hover:bg-purple-900 ${link.visible ? 'bg-green-600' : 'bg-gray-700'}`}
+                onClick={() => upd({visible: !link.visible})}
+                title={link.visible ? "Ocultar" : "Mostrar"}
+              >
                 {link.visible?<EyeIcon/>:<EyeSlashIcon/>}
-              </Toggle>
+              </Button>
             </div>
           </div>
         </div>
@@ -495,63 +438,6 @@ export default function MultiSectionsItem({
           </div>
         )}
 
-        {/* ───────── Modal Stats (sin recortes) ───────── */}
-        {statsModal&&(
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
-               onClick={e=>e.target===e.currentTarget&&setStatsModal(false)}>
-            <Card className="relative w-full max-w-screen-xl max-h-[85vh] overflow-y-auto" onClick={e=>e.stopPropagation()}>
-              <button onClick={()=>setStatsModal(false)}
-                      className="absolute top-2 right-2 text-black dark:text-white text-xl">&times;</button>
-              <CardHeader>
-                <CardTitle>Estadísticas</CardTitle>
-                <CardDescription>Resumen de clics y países (7 y 28 días)</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {loadingStats?(
-                  <p className="text-sm text-gray-200">Cargando stats…</p>
-                ):statsErr?(
-                  <p className="text-sm text-red-400">{statsErr}</p>
-                ):stats28?(
-                  <>
-                    <div className="mb-4 flex flex-wrap items-center gap-4 text-sm">
-                      {stats7&&<p className="flex items-center gap-1">🔎 <strong>7d:</strong> {stats7.selected}</p>}
-                      <p className="flex items-center gap-1">📅 <strong>28d:</strong> {stats28.selected}</p>
-                      <p className="flex items-center gap-1">🌍 <strong>Global:</strong> {stats28.global}</p>
-                      <p className="flex items-center gap-1">🚀 <strong>Var:</strong> {stats28.variation}%</p>
-                    </div>
-                    <div className="w-full mb-4">
-                      <ResponsiveContainer width="100%" height={320}>
-                        <BarChart data={stats28.dailyStats}>
-                          <CartesianGrid stroke="none"/>
-                          <XAxis dataKey="date" tickFormatter={v=>new Date(v).toLocaleDateString("es-ES",{month:"short",day:"numeric"})}/>
-                          <YAxis/>
-                          <RechartsTooltip content={<CustomTooltip/>} cursor={{fill:"gray",fillOpacity:0.5}}/>
-                          <Bar dataKey="count">
-                            {stats28.dailyStats.map((_,i)=>(
-                              <Cell key={i} fill="hsl(var(--chart-1))"
-                                    onMouseOver={e=>e.currentTarget.setAttribute("fill","hsl(var(--chart-2))")}
-                                    onMouseOut={e=>e.currentTarget.setAttribute("fill","hsl(var(--chart-1))")}/>
-                            ))}
-                          </Bar>
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                    <div className="mt-4 text-sm">
-                      <p className="font-semibold mb-4">Visitas por país (28d):</p>
-                      <div className="grid grid-cols-2 sm:grid-cols-6 gap-2">
-                        {Object.entries(stats28.byCountry).sort(([,a],[,b])=>b-a).map(([c,n])=>(
-                          <div key={c}>{countryFlags[c]??"🏳️"} {c}: {n}</div>
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                ):(
-                  <p className="text-sm text-gray-200">No se han cargado datos.</p>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        )}
 
         {/* Modal de recorte de imagen */}
         {showCropModal && imageToCrop && (

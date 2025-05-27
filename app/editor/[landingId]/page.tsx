@@ -382,7 +382,7 @@ export default function AdminPage() {
 
   const handleScrollToSection = (sectionId: string) => {
     // Casos especiales para elementos dentro del acordeón de personalización
-    if (sectionId === 'background-gradient' || sectionId === 'background-pattern' || sectionId === 'avatar-section') {
+    if (sectionId === 'background-gradient' || sectionId === 'background-pattern' || sectionId === 'avatar-section' || sectionId === 'link-styles' || sectionId === 'font-family') {
       // Primero, asegurar que el acordeón esté abierto
       const accordionButton = document.querySelector('[data-accordion="style-customization"]');
       let isOpen = true;

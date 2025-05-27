@@ -105,14 +105,6 @@ export default function StyleCustomizationAccordion({
             />
           </div>
 
-          {/* Border Radius */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
-            <BorderRadiusSelector
-              value={landing.configurations?.borderRadius || 'rounded-xl'}
-              onChange={(borderRadius) => handleConfigurationUpdate({ borderRadius })}
-              onSave={(borderRadius) => handleConfigurationSave({ borderRadius })}
-            />
-          </div>
 
           {/* Background Gradient */}
           <div id="background-gradient" className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
@@ -141,8 +133,21 @@ export default function StyleCustomizationAccordion({
             />
           </div>
 
-          {/* Link Colors */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
+          {/* Estilo de Enlaces - Border Radius y Link Colors */}
+          <div id="link-styles" className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4 space-y-6">
+            <div className="text-white text-sm font-medium mb-4">Estilo de Enlaces</div>
+            
+            {/* Border Radius */}
+            <BorderRadiusSelector
+              value={landing.configurations?.borderRadius || 'rounded-xl'}
+              onChange={(borderRadius) => handleConfigurationUpdate({ borderRadius })}
+              onSave={(borderRadius) => handleConfigurationSave({ borderRadius })}
+            />
+            
+            {/* Separador visual */}
+            <div className="border-t border-gray-600/30"></div>
+            
+            {/* Link Colors */}
             <LinkColorSelector
               value={landing.configurations?.linkColor || { background: '#000000', text: '#ffffff' }}
               onChange={(linkColor) => handleConfigurationUpdate({ linkColor })}
@@ -160,7 +165,7 @@ export default function StyleCustomizationAccordion({
           </div>
 
           {/* Font Family */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
+          <div id="font-family" className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
             <div className="text-white text-sm mb-2">Font Family Selector:</div>
             <FontFamilySelector
               value={landing.configurations?.fontFamily || { family: 'Inter', url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' }}
