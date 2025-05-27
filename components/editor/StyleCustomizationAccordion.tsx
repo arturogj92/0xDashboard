@@ -113,7 +113,7 @@ export default function StyleCustomizationAccordion({
           </div>
 
           {/* Background Gradient */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
+          <div id="background-gradient" className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
             <BackgroundGradientSelector
               value={landing.configurations?.gradient || { color1: '#000000', color2: '#4a044d' }}
               onChange={(gradient) => handleConfigurationUpdate({ gradient })}
@@ -122,7 +122,7 @@ export default function StyleCustomizationAccordion({
           </div>
 
           {/* Background Pattern */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
+          <div id="background-pattern" className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
             <BackgroundPatternSelector
               value={landing.configurations?.backgroundPattern || { pattern: 'none', color: '#ffffff', opacity: 0.1 }}
               onChange={(backgroundPattern) => handleConfigurationUpdate({ backgroundPattern })}

@@ -8,6 +8,7 @@ import { LandingInfoEditor } from "@/components/editor/LandingInfoEditor";
 import { LandingPreview } from "@/components/landing/LandingPreview";
 import { LinkData, SectionData, SocialLinkData } from "@/components/editor/types";
 import StyleCustomizationAccordion from "@/components/editor/StyleCustomizationAccordion";
+import { GuideOverlay } from "@/components/editor/GuideOverlay";
 import { useParams } from 'next/navigation';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
@@ -379,6 +380,31 @@ export default function AdminPage() {
     setLanding(prev => ({ ...prev, avatar_url: avatarUrl || undefined }));
   };
 
+  const handleScrollToSection = (sectionId: string) => {
+    const sectionMap: Record<string, string> = {
+      'background-section': 'style-customization',
+      'avatar-section': 'style-customization',
+      'info-section': 'landing-info',
+      'links-section': 'sections-board',
+      'social-section': 'social-links'
+    };
+
+    const targetElement = document.getElementById(sectionMap[sectionId]);
+    if (targetElement) {
+      targetElement.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start',
+        inline: 'nearest'
+      });
+      
+      // Add a highlight effect to the target section
+      targetElement.classList.add('highlight-section');
+      setTimeout(() => {
+        targetElement.classList.remove('highlight-section');
+      }, 3000);
+    }
+  };
+
   const landingPreview = {
     name: landing.name || "Mi landing de ejemplo",
     description: landing.description || "Descripcion de ejemplo",
@@ -431,6 +457,7 @@ export default function AdminPage() {
               />
             </div>
           </div>
+          <GuideOverlay onScrollToSection={handleScrollToSection} />
         </div>
       </div>
       
@@ -448,7 +475,7 @@ export default function AdminPage() {
           
         </div>
         
-        <div className="w-full mb-8">
+        <div id="landing-info" className="w-full mb-8">
           <LandingInfoEditor
             landingId={landingId}
             initialName={landing.name}
@@ -458,7 +485,7 @@ export default function AdminPage() {
           />
         </div>
         
-        <div className="w-full mb-8">
+        <div id="style-customization" className="w-full mb-8">
           <StyleCustomizationAccordion
             landing={landing}
             handleConfigurationUpdate={handleConfigurationUpdate}
@@ -468,7 +495,7 @@ export default function AdminPage() {
           />
         </div>
 
-        <div className="w-full">
+        <div id="sections-board" className="w-full">
           <MultiSectionsBoard
             links={links}
             setLinks={setLinks}
@@ -482,7 +509,7 @@ export default function AdminPage() {
             landingId={landingId}
           />
         </div>
-        <div className="mt-8 w-full">
+        <div id="social-links" className="mt-8 w-full">
           <SocialLinksPanel
             landingId={landingId}
             onUpdate={(updatedSocialLinks) => setSocialLinks(updatedSocialLinks)}
@@ -543,6 +570,11 @@ export default function AdminPage() {
           animation: highlight-glow 2s ease-in-out;
         }
         
+        /* Efecto de brillo para sección enfocada por la guía */
+        .highlight-section {
+          animation: guide-highlight 3s ease-in-out;
+        }
+        
         @keyframes highlight-glow {
           0% { 
             box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4);
@@ -555,6 +587,25 @@ export default function AdminPage() {
           100% { 
             box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4);
             border-color: rgba(168, 85, 247, 0.3);
+          }
+        }
+        
+        @keyframes guide-highlight {
+          0% { 
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+            background-color: rgba(59, 130, 246, 0.05);
+          }
+          25% { 
+            box-shadow: 0 0 30px 10px rgba(59, 130, 246, 0.8);
+            background-color: rgba(59, 130, 246, 0.15);
+          }
+          75% { 
+            box-shadow: 0 0 30px 10px rgba(59, 130, 246, 0.8);
+            background-color: rgba(59, 130, 246, 0.15);
+          }
+          100% { 
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+            background-color: rgba(59, 130, 246, 0.05);
           }
         }
       `}</style>
