@@ -12,6 +12,7 @@ export interface PublicLandingPageDisplayProps {
     settings: any;
     slug: string;
     theme_id?: string;
+    avatar_url?: string;
     configurations?: any;
     links?: LinkData[];
     sections?: SectionData[];
@@ -61,6 +62,7 @@ export default function PublicLandingPageDisplay({ landing }: PublicLandingPageD
         socialLinks={socialLinks}
         isPreview={false}
         themeId={landing.theme_id || 'dark'}
+        avatarUrl={landing.avatar_url}
         configurations={landing.configurations}
       />
     </div>

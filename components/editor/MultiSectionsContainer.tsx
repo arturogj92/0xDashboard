@@ -97,6 +97,9 @@ export default function MultiSectionsContainer({
   const [edit,setEdit]=useState(false);
   const [title,setTitle]=useState(sec?.title??"");
   const timer=useRef<NodeJS.Timeout|null>(null);
+  
+  /* modal de confirmación para borrar sección */
+  const [showDeleteSectionModal, setShowDeleteSectionModal] = useState(false);
 
   /* orden local con referencia estable */
   const [order,setOrder]=useState(items);
@@ -149,7 +152,7 @@ export default function MultiSectionsContainer({
               <AddLink/><span className="hidden sm:inline">Link</span>
             </button>
             <button onClick={()=>setEdit(true)} className="px-1 py-1 rounded flex items-center gap-1 hover:bg-indigo-700 bg-[#1c1033] border border-indigo-900/30"><PencilIcon/></button>
-            <button onClick={()=>onDeleteSection(sec.id)} className="px-1 py-1 rounded flex items-center hover:bg-red-700 bg-[#1c1033] border border-indigo-900/30"><TrashIcon/></button>
+            <button onClick={()=>setShowDeleteSectionModal(true)} className="px-1 py-1 rounded flex items-center hover:bg-red-700 bg-[#1c1033] border border-indigo-900/30"><TrashIcon/></button>
           </div>
         )}
       </div>
@@ -180,6 +183,37 @@ export default function MultiSectionsContainer({
       </SortableContext>
 
       {order.length===0&&<p className="text-sm text-gray-400">Arrastra aquí enlaces para asignar</p>}
+      
+      {/* Modal de confirmación para borrar sección */}
+      <AlertDialog open={showDeleteSectionModal} onOpenChange={setShowDeleteSectionModal}>
+        <AlertDialogContent className="bg-gray-900 border border-gray-700">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">
+              ¿Eliminar sección &ldquo;{sec?.title}&rdquo;?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-300">
+              Esta acción no se puede deshacer. Se eliminará la sección y todos los enlaces dentro de ella se moverán a &ldquo;Sin sección&rdquo;.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel 
+              onClick={() => setShowDeleteSectionModal(false)}
+              className="bg-gray-700 text-white border-gray-600 hover:bg-gray-600"
+            >
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                onDeleteSection(sec?.id || '');
+                setShowDeleteSectionModal(false);
+              }}
+              className="bg-red-600 text-white hover:bg-red-700"
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

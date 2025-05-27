@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { API_URL, createAuthHeaders } from "@/lib/api";
 import MultiSectionsBoard from "@/components/editor/MultiSectionsBoard";
 import SocialLinksPanel from "@/components/editor/SocialLinksPanel";
-import { AvatarUpload } from "@/components/editor/AvatarUpload";
 import { LandingInfoEditor } from "@/components/editor/LandingInfoEditor";
 import { LandingPreview } from "@/components/landing/LandingPreview";
 import { LinkData, SectionData, SocialLinkData } from "@/components/editor/types";
@@ -20,8 +19,7 @@ export default function AdminPage() {
   const [links, setLinks] = useState<LinkData[]>([]);
   const [sections, setSections] = useState<SectionData[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>([]);
-  const [landing, setLanding] = useState<{name: string; description: string; theme_id?: string; configurations?: any}>({name: '', description: ''});
-  const [_, setRefreshing] = useState(0);
+  const [landing, setLanding] = useState<{id?: string; name: string; description: string; theme_id?: string; avatar_url?: string; configurations?: any}>({name: '', description: ''});
   const [previewPosition, setPreviewPosition] = useState('fixed');
   const previewRef = useRef<HTMLDivElement>(null);
 
@@ -33,11 +31,57 @@ export default function AdminPage() {
         .then(res => res.json())
         .then(data => {
           if (data.data) {
+            const existingConfigurations = data.data.configurations || {};
+            const defaultEffects = {
+              showBadge: true,
+              typewriterEffect: true
+            };
+            
+            const defaultTitleStyle = {
+              fontSize: 'text-2xl',
+              gradientEnabled: false,
+              gradientColors: {
+                from: '#007AFF',
+                to: '#00D4FF'
+              },
+              gradientDirection: 'to right'
+            };
+            
+            const defaultAvatarDisplay = {
+              showAvatar: true
+            };
+            
+            const defaultBackgroundPattern = {
+              pattern: 'none',
+              color: '#ffffff',
+              opacity: 0.1
+            };
+            
             setLanding({
+              id: data.data.id,
               name: data.data.name || '',
               description: data.data.description || '',
               theme_id: data.data.theme_id || 'dark',
-              configurations: data.data.configurations || {}
+              avatar_url: data.data.avatar_url,
+              configurations: {
+                ...existingConfigurations,
+                effects: {
+                  ...defaultEffects,
+                  ...existingConfigurations.effects
+                },
+                titleStyle: {
+                  ...defaultTitleStyle,
+                  ...existingConfigurations.titleStyle
+                },
+                avatarDisplay: {
+                  ...defaultAvatarDisplay,
+                  ...existingConfigurations.avatarDisplay
+                },
+                backgroundPattern: {
+                  ...defaultBackgroundPattern,
+                  ...existingConfigurations.backgroundPattern
+                }
+              }
             });
           }
         })
@@ -153,13 +197,65 @@ export default function AdminPage() {
         headers: createAuthHeaders()
       });
       if (res.ok) {
+        // Actualizar secciones
         setSections(sections => sections.filter(s => s.id !== id));
+        
+        // Actualizar enlaces: mover todos los enlaces de esta sección a "sin sección"
+        setLinks(links => links.map(link => 
+          link.section_id === id 
+            ? { ...link, section_id: null }
+            : link
+        ));
       } else {
         const data = await res.json();
         console.error('Error eliminando seccion:', data.error);
       }
     } catch (error) {
       console.error('Error eliminando seccion:', error);
+    }
+  };
+
+  const handleCreateSection = async () => {
+    try {
+      const newSection = {
+        title: 'Nueva Sección',
+        position: sections.length
+      };
+
+      const res = await fetch(`${API_URL}/api/sections?landingId=${landingId}`, {
+        method: 'POST',
+        headers: createAuthHeaders(),
+        body: JSON.stringify(newSection)
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setSections(prev => [...prev, data]);
+        
+        // Hacer scroll a la nueva sección después de un pequeño delay para que se renderice
+        setTimeout(() => {
+          const sectionElement = document.querySelector(`[data-section-id="${data.id}"]`);
+          if (sectionElement) {
+            // Scroll suave hacia la nueva sección
+            sectionElement.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center',
+              inline: 'nearest'
+            });
+            
+            // Opcional: agregar un brillo temporal para destacar la nueva sección
+            sectionElement.classList.add('highlight-new-section');
+            setTimeout(() => {
+              sectionElement.classList.remove('highlight-new-section');
+            }, 2000);
+          }
+        }, 150);
+      } else {
+        const data = await res.json();
+        console.error('Error creando seccion:', data.error);
+      }
+    } catch (error) {
+      console.error('Error creando seccion:', error);
     }
   };
 
@@ -202,6 +298,22 @@ export default function AdminPage() {
       fontFamily: {
         family: 'Inter',
         url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
+      },
+      effects: {
+        showBadge: true,
+        typewriterEffect: true
+      },
+      titleStyle: {
+        fontSize: 'text-2xl',
+        gradientEnabled: false,
+        gradientColors: {
+          from: '#007AFF',
+          to: '#00D4FF'
+        },
+        gradientDirection: 'to right'
+      },
+      avatarDisplay: {
+        showAvatar: true
       }
     };
 
@@ -263,6 +375,10 @@ export default function AdminPage() {
     }
   };
 
+  const handleAvatarUpdate = (avatarUrl: string | null) => {
+    setLanding(prev => ({ ...prev, avatar_url: avatarUrl || undefined }));
+  };
+
   const landingPreview = {
     name: landing.name || "Mi landing de ejemplo",
     description: landing.description || "Descripcion de ejemplo",
@@ -309,6 +425,7 @@ export default function AdminPage() {
               socialLinks={socialLinks}
               isPreview={true}
               themeId={landingPreview.theme_id}
+              avatarUrl={landing.avatar_url}
               configurations={landing.configurations}
             />
           </div>
@@ -327,9 +444,6 @@ export default function AdminPage() {
             {t('description')}
           </p>
           
-          <div className="mt-6 mb-4">
-            <AvatarUpload size="lg" />
-          </div>
         </div>
         
         <div className="w-full mb-8">
@@ -348,6 +462,7 @@ export default function AdminPage() {
             handleConfigurationUpdate={handleConfigurationUpdate}
             handleConfigurationSave={handleConfigurationSave}
             handleThemeUpdate={handleThemeUpdate}
+            onAvatarUpdate={handleAvatarUpdate}
           />
         </div>
 
@@ -361,16 +476,86 @@ export default function AdminPage() {
             onDeleteLink={handleDeleteLink}
             onUpdateSection={handleUpdateSection}
             onDeleteSection={handleDeleteSection}
+            onCreateSection={handleCreateSection}
             landingId={landingId}
           />
         </div>
         <div className="mt-8 w-full">
           <SocialLinksPanel
             landingId={landingId}
-            onReorder={() => setRefreshing((r) => r + 1)}
+            onUpdate={(updatedSocialLinks) => setSocialLinks(updatedSocialLinks)}
           />
         </div>
       </div>
+      
+      {/* Estilos para preview */}
+      <style jsx global>{`
+        /* Ocultar scrollbar pero mantener funcionalidad de scroll */
+        .scrollbar-hide {
+          -ms-overflow-style: none;  /* Internet Explorer 10+ */
+          scrollbar-width: none;  /* Firefox */
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;  /* Safari and Chrome */
+        }
+        
+        /* Ocultar navbar en el preview */
+        .preview-container nav,
+        .preview-container header,
+        .preview-container [data-navbar],
+        .preview-container .navbar,
+        .preview-container .nav {
+          display: none !important;
+        }
+        
+        /* Ocultar scrollbars completamente en el preview */
+        .preview-container,
+        .preview-container *,
+        .preview-container *:before,
+        .preview-container *:after {
+          scrollbar-width: none !important;
+          -ms-overflow-style: none !important;
+        }
+        .preview-container::-webkit-scrollbar,
+        .preview-container *::-webkit-scrollbar {
+          display: none !important;
+          width: 0 !important;
+          height: 0 !important;
+        }
+        
+        /* Prevenir overflow en hover */
+        .preview-container a:hover,
+        .preview-container button:hover {
+          transform: none !important;
+          overflow: hidden !important;
+        }
+        
+        /* Forzar overflow hidden en todos los elementos del preview */
+        .preview-container [data-landing-preview],
+        .preview-container [data-landing-preview] * {
+          overflow: hidden !important;
+        }
+        
+        /* Efecto de brillo para nueva sección creada */
+        .highlight-new-section {
+          animation: highlight-glow 2s ease-in-out;
+        }
+        
+        @keyframes highlight-glow {
+          0% { 
+            box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4);
+            border-color: rgba(168, 85, 247, 0.3);
+          }
+          50% { 
+            box-shadow: 0 0 20px 5px rgba(168, 85, 247, 0.6);
+            border-color: rgba(168, 85, 247, 0.8);
+          }
+          100% { 
+            box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4);
+            border-color: rgba(168, 85, 247, 0.3);
+          }
+        }
+      `}</style>
     </div>
   );
 }

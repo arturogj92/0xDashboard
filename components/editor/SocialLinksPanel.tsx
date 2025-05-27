@@ -6,7 +6,6 @@ import {
     closestCenter,
     DndContext,
     DragEndEvent,
-    DragStartEvent,
     KeyboardSensor,
     PointerSensor,
     useSensor,
@@ -38,13 +37,11 @@ const initialPlaceholders: SocialLinkData[] = SUPPORTED_SOCIALS.map((name, idx) 
 
 interface SocialLinksPanelProps {
     landingId: string;
-    /** Called when a social link is reordered (optional) */
-    onReorder?: () => void;
     /** Called when social links are updated (optional) */
     onUpdate?: (socialLinks: SocialLinkData[]) => void;
 }
 
-export default function SocialLinksPanel({landingId, onReorder, onUpdate}: SocialLinksPanelProps) {
+export default function SocialLinksPanel({landingId, onUpdate}: SocialLinksPanelProps) {
     const t = useTranslations('social');
     const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>(initialPlaceholders);
     const [isDragging, setIsDragging] = useState(false);
@@ -72,10 +69,11 @@ export default function SocialLinksPanel({landingId, onReorder, onUpdate}: Socia
                 });
                 const sortedLinks = merged.sort((a,b)=>a.position-b.position);
                 setSocialLinks(sortedLinks);
-                onUpdate?.(sortedLinks);
+                // No llamar onUpdate aquí para evitar bucle infinito
+                // El componente padre ya maneja su propia carga de datos
             })
             .catch((err) => console.error("Error fetching social links:", err));
-    }, [landingId, onUpdate]);
+    }, [landingId]);
 
     async function handleUpdate(id: string, updates: Partial<SocialLinkData>) {
         try {
@@ -127,7 +125,7 @@ export default function SocialLinksPanel({landingId, onReorder, onUpdate}: Socia
         useSensor(KeyboardSensor)
     );
 
-    function handleDragStart(event: DragStartEvent) {
+    function handleDragStart() {
         setIsDragging(true);
     }
 
@@ -148,11 +146,12 @@ export default function SocialLinksPanel({landingId, onReorder, onUpdate}: Socia
         // Actualizar posiciones
         const updatedLinks = newOrder.map((s, idx) => ({ ...s, position: idx }));
         
-        // Actualización optimista
+        // Actualización optimista local
         setSocialLinks(updatedLinks);
+        // Notificar al componente padre inmediatamente
         onUpdate?.(updatedLinks);
         
-        // Actualizar en servidor
+        // Actualizar en servidor sin callback adicional
         const payload = updatedLinks.map((item, idx) => ({ id: item.id, position: idx }));
         try {
             const res = await fetch(`${API_URL}/api/social-links?landingId=${landingId}`, {
@@ -165,11 +164,12 @@ export default function SocialLinksPanel({landingId, onReorder, onUpdate}: Socia
             });
             if(!res.ok){
                 console.error('Reorder failed', res.status);
+                // Si falla, podrías revertir el estado aquí si es necesario
             }
         } catch(err){
             console.error('Error reordering social links:', err);
+            // Si falla, podrías revertir el estado aquí si es necesario
         }
-        onReorder?.();
     }
 
     // Funciones para mover social links arriba/abajo
@@ -207,7 +207,6 @@ export default function SocialLinksPanel({landingId, onReorder, onUpdate}: Socia
         } catch(err){
             console.error('Error moving social link up:', err);
         }
-        onReorder?.();
     }
 
     async function moveSocialLinkDown(id: string) {
@@ -244,7 +243,6 @@ export default function SocialLinksPanel({landingId, onReorder, onUpdate}: Socia
         } catch(err){
             console.error('Error moving social link down:', err);
         }
-        onReorder?.();
     }
 
     return (
