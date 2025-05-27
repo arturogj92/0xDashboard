@@ -9,99 +9,137 @@ import { LandingPreview } from "@/components/landing/LandingPreview";
 import { LinkData, SectionData, SocialLinkData } from "@/components/editor/types";
 import StyleCustomizationAccordion from "@/components/editor/StyleCustomizationAccordion";
 import { GuideOverlay } from "@/components/editor/GuideOverlay";
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function AdminPage() {
   const t = useTranslations('editor');
   const params = useParams();
+  const router = useRouter();
+  const { user, isAuthenticated, isLoading } = useAuth();
   
   const [links, setLinks] = useState<LinkData[]>([]);
   const [sections, setSections] = useState<SectionData[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>([]);
-  const [landing, setLanding] = useState<{id?: string; name: string; description: string; theme_id?: string; avatar_url?: string; configurations?: any}>({name: '', description: ''});
+  const [landing, setLanding] = useState<{id?: string; name: string; description: string; theme_id?: string; avatar_url?: string; configurations?: any; user_id?: string}>({name: '', description: ''});
   const [previewPosition, setPreviewPosition] = useState('fixed');
+  const [isOwnershipVerified, setIsOwnershipVerified] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
 
+  // Protección de autenticación y ownership
   useEffect(() => {
+    if (isLoading) return; // Esperar a que termine de cargar la autenticación
+    
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+    
     const lid = params.landingId;
     if (lid && !Array.isArray(lid)) {
-      // Obtener datos de la landing
+      // Primero verificar ownership de la landing
       fetch(`${API_URL}/api/landings/${lid}`, { headers: createAuthHeaders() })
-        .then(res => res.json())
-        .then(data => {
-          if (data.data) {
-            const existingConfigurations = data.data.configurations || {};
-            const defaultEffects = {
-              showBadge: true,
-              typewriterEffect: true
-            };
-            
-            const defaultTitleStyle = {
-              fontSize: 'text-2xl',
-              gradientEnabled: false,
-              gradientColors: {
-                from: '#007AFF',
-                to: '#00D4FF'
+        .then(res => {
+          if (res.status === 404) {
+            router.push('/');
+            return null;
+          }
+          if (res.status === 403) {
+            // Redirigir a la home si no es propietario
+            router.push('/');
+            return null;
+          }
+          return res.json();
+        })
+        .then(async (data) => {
+          if (!data || !data.data) return;
+          
+          setIsOwnershipVerified(true);
+          
+          // Configurar datos de la landing
+          const existingConfigurations = data.data.configurations || {};
+          const defaultEffects = {
+            showBadge: true,
+            typewriterEffect: true
+          };
+          
+          const defaultTitleStyle = {
+            fontSize: 'text-2xl',
+            gradientEnabled: false,
+            gradientColors: {
+              from: '#007AFF',
+              to: '#00D4FF'
+            },
+            gradientDirection: 'to right'
+          };
+          
+          const defaultAvatarDisplay = {
+            showAvatar: true
+          };
+          
+          const defaultBackgroundPattern = {
+            pattern: 'none',
+            color: '#ffffff',
+            opacity: 0.1
+          };
+          
+          setLanding({
+            id: data.data.id,
+            name: data.data.name || '',
+            description: data.data.description || '',
+            theme_id: data.data.theme_id || 'dark',
+            avatar_url: data.data.avatar_url,
+            user_id: data.data.user_id,
+            configurations: {
+              ...existingConfigurations,
+              effects: {
+                ...defaultEffects,
+                ...existingConfigurations.effects
               },
-              gradientDirection: 'to right'
-            };
-            
-            const defaultAvatarDisplay = {
-              showAvatar: true
-            };
-            
-            const defaultBackgroundPattern = {
-              pattern: 'none',
-              color: '#ffffff',
-              opacity: 0.1
-            };
-            
-            setLanding({
-              id: data.data.id,
-              name: data.data.name || '',
-              description: data.data.description || '',
-              theme_id: data.data.theme_id || 'dark',
-              avatar_url: data.data.avatar_url,
-              configurations: {
-                ...existingConfigurations,
-                effects: {
-                  ...defaultEffects,
-                  ...existingConfigurations.effects
-                },
-                titleStyle: {
-                  ...defaultTitleStyle,
-                  ...existingConfigurations.titleStyle
-                },
-                avatarDisplay: {
-                  ...defaultAvatarDisplay,
-                  ...existingConfigurations.avatarDisplay
-                },
-                backgroundPattern: {
-                  ...defaultBackgroundPattern,
-                  ...existingConfigurations.backgroundPattern
-                }
+              titleStyle: {
+                ...defaultTitleStyle,
+                ...existingConfigurations.titleStyle
+              },
+              avatarDisplay: {
+                ...defaultAvatarDisplay,
+                ...existingConfigurations.avatarDisplay
+              },
+              backgroundPattern: {
+                ...defaultBackgroundPattern,
+                ...existingConfigurations.backgroundPattern
               }
-            });
+            }
+          });
+
+          // Solo después de verificar ownership, cargar el resto de datos
+          try {
+            const [sectionsRes, linksRes, socialLinksRes] = await Promise.all([
+              fetch(`${API_URL}/api/sections?landingId=${lid}`, { headers: createAuthHeaders() }),
+              fetch(`${API_URL}/api/links?landingId=${lid}`, { headers: createAuthHeaders() }),
+              fetch(`${API_URL}/api/social-links?landingId=${lid}`, { headers: createAuthHeaders() })
+            ]);
+
+            const [sectionsData, linksData, socialLinksData] = await Promise.all([
+              sectionsRes.json(),
+              linksRes.json(),
+              socialLinksRes.json()
+            ]);
+
+            if (Array.isArray(sectionsData)) setSections(sectionsData);
+            if (Array.isArray(linksData)) setLinks(linksData);
+            if (Array.isArray(socialLinksData)) setSocialLinks(socialLinksData);
+          } catch (err) {
+            console.error('Error cargando datos relacionados:', err);
           }
         })
-        .catch(err => console.error('Error cargando landing:', err));
-      
-      fetch(`${API_URL}/api/sections?landingId=${lid}`, { headers: createAuthHeaders() })
-        .then(res => res.json())
-        .then(data => { if (Array.isArray(data)) setSections(data); })
-        .catch(err => console.error('Error cargando secciones:', err));
-      fetch(`${API_URL}/api/links?landingId=${lid}`, { headers: createAuthHeaders() })
-        .then(res => res.json())
-        .then(data => { if (Array.isArray(data)) setLinks(data); })
-        .catch(err => console.error('Error cargando enlaces:', err));
-      fetch(`${API_URL}/api/social-links?landingId=${lid}`, { headers: createAuthHeaders() })
-        .then(res => res.json())
-        .then(data => { if (Array.isArray(data)) setSocialLinks(data); })
-        .catch(err => console.error('Error cargando enlaces sociales:', err));
+        .catch(err => {
+          console.error('Error cargando landing:', err);
+          router.push('/');
+        });
     }
-  }, [params.landingId]);
+  }, [params.landingId, isLoading, isAuthenticated, user?.id, router]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -127,8 +165,35 @@ export default function AdminPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Protección de acceso
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-900 flex items-center justify-center">
+        <div className="text-white text-center">
+          <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p>{t('verifyingAccess')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null; // El useEffect ya redirigió
+  }
+
+  if (!isOwnershipVerified) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-900 flex items-center justify-center">
+        <div className="text-white text-center">
+          <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p>{t('verifyingPermissions')}</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!params.landingId || Array.isArray(params.landingId)) {
-    return <div>Error: landingId invalido</div>;
+    return <div className="text-white">{t('invalidLandingId')}</div>;
   }
   const landingId: string = params.landingId;
 
