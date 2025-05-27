@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { User, Info, Globe, Lock, Instagram, Twitter, Youtube, Music2 } from 'lucide-react';
 import Image from 'next/image';
 
 export default function LandingWizard() {
   const t = useTranslations('landing');
+  const router = useRouter();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [saving, setSaving] = useState(false);
@@ -21,8 +23,12 @@ export default function LandingWizard() {
     }
     setSlugStatus('checking');
     try {
-      // Endpoint de comprobación de disponibilidad (aún no implementado en backend)
-      const res = await fetch(`/api/landings/slug-exists?slug=${value}`);
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+      const res = await fetch(`${API_URL}/api/landings/slug-exists?slug=${value}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
       const data = await res.json();
       setSlugStatus(data.available ? 'free' : 'taken');
     } catch (_) {
@@ -54,14 +60,32 @@ export default function LandingWizard() {
     setSaving(true);
     try {
       const payload = { name, description: description.trim(), slug };
-      await fetch('/api/landings', {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+      const response = await fetch(`${API_URL}/api/landings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
         body: JSON.stringify(payload)
       });
-      // TODO: replace with router push when editor exists
-      alert('Landing creada, ahora redirigiríamos al editor');
-    } finally {
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.data) {
+          // Redirigir al editor de la landing recién creada
+          router.push(`/editor/${data.data.id}`);
+        } else {
+          alert('Error al crear la landing');
+          setSaving(false);
+        }
+      } else {
+        alert('Error al crear la landing');
+        setSaving(false);
+      }
+    } catch (error) {
+      console.error('Error creating landing:', error);
+      alert('Error al crear la landing');
       setSaving(false);
     }
   };
