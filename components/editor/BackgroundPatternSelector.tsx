@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 
@@ -74,15 +74,14 @@ const patterns = [
 ];
 
 const colors = [
-  { name: 'Blanco', value: '#ffffff' },
-  { name: 'Gris claro', value: '#f3f4f6' },
-  { name: 'Gris', value: '#9ca3af' },
-  { name: 'Azul', value: '#3b82f6' },
-  { name: 'Púrpura', value: '#8b5cf6' },
-  { name: 'Rosa', value: '#ec4899' },
-  { name: 'Verde', value: '#10b981' },
-  { name: 'Amarillo', value: '#f59e0b' },
-  { name: 'Rojo', value: '#ef4444' }
+  { name: 'Snow', value: '#ffffff' },
+  { name: 'Midnight', value: '#000000' },
+  { name: 'Ocean', value: '#3b82f6' },
+  { name: 'Electric', value: '#8b5cf6' },
+  { name: 'Neon', value: '#ec4899' },
+  { name: 'Mint', value: '#10b981' },
+  { name: 'Sunset', value: '#f97316' },
+  { name: 'Custom', value: 'custom' }
 ];
 
 // Función para generar el CSS del patrón (solo para preview en selector)
@@ -167,28 +166,59 @@ const generatePatternCSS = (pattern: string, color: string, opacity: number) => 
 export default function BackgroundPatternSelector({ value, onChange, onSave }: BackgroundPatternSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [localConfig, setLocalConfig] = useState(value);
+  const [customColor, setCustomColor] = useState('#3b82f6');
+  const debounceRef = useRef<NodeJS.Timeout>();
+
+  // Debounced onChange para evitar muchas llamadas
+  const debouncedOnChange = useCallback((config: BackgroundPatternConfiguration) => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    debounceRef.current = setTimeout(() => {
+      onChange(config);
+    }, 300); // 300ms delay
+  }, [onChange]);
 
   const handlePatternChange = (pattern: string) => {
     const newConfig = { ...localConfig, pattern };
     setLocalConfig(newConfig);
-    onChange(newConfig);
+    debouncedOnChange(newConfig);
   };
 
   const handleColorChange = (color: string) => {
-    const newConfig = { ...localConfig, color };
+    const finalColor = color === 'custom' ? customColor : color;
+    const newConfig = { ...localConfig, color: finalColor };
     setLocalConfig(newConfig);
-    onChange(newConfig);
+    debouncedOnChange(newConfig);
+  };
+
+  const handleCustomColorChange = (color: string) => {
+    setCustomColor(color);
+    if (localConfig.color === customColor || colors.find(c => c.value === localConfig.color)?.value === 'custom') {
+      const newConfig = { ...localConfig, color };
+      setLocalConfig(newConfig);
+      debouncedOnChange(newConfig);
+    }
   };
 
   const handleOpacityChange = (opacity: number) => {
     const newConfig = { ...localConfig, opacity };
     setLocalConfig(newConfig);
-    onChange(newConfig);
+    debouncedOnChange(newConfig);
   };
 
   const handleSave = () => {
     onSave(localConfig);
   };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
 
   const selectedPattern = patterns.find(p => p.id === localConfig.pattern) || patterns[0];
 
@@ -257,19 +287,45 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
                     key={color.value}
                     onClick={() => handleColorChange(color.value)}
                     className={`p-2 rounded-lg border transition-all ${
-                      localConfig.color === color.value
+                      (color.value === 'custom' ? customColor === localConfig.color : localConfig.color === color.value)
                         ? 'border-purple-500 bg-purple-500/20'
                         : 'border-gray-600 bg-gray-800/50 hover:bg-gray-700/50'
                     }`}
                   >
-                    <div
-                      className="w-6 h-6 rounded border border-gray-600 mx-auto mb-1"
-                      style={{ backgroundColor: color.value }}
-                    />
+                    {color.value === 'custom' ? (
+                      <div className="w-6 h-6 rounded border border-gray-600 mx-auto mb-1 bg-gradient-to-br from-red-400 via-purple-400 to-blue-400" />
+                    ) : (
+                      <div
+                        className="w-6 h-6 rounded border border-gray-600 mx-auto mb-1"
+                        style={{ backgroundColor: color.value }}
+                      />
+                    )}
                     <div className="text-xs text-white">{color.name}</div>
                   </button>
                 ))}
               </div>
+              
+              {/* Selector de color personalizado */}
+              {(localConfig.color === customColor || colors.find(c => c.value === localConfig.color)?.value === 'custom') && (
+                <div className="mt-3">
+                  <label className="block text-sm font-medium text-white mb-2">Color personalizado</label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={customColor}
+                      onChange={(e) => handleCustomColorChange(e.target.value)}
+                      className="w-12 h-8 rounded border border-gray-600 bg-transparent cursor-pointer"
+                    />
+                    <input
+                      type="text"
+                      value={customColor}
+                      onChange={(e) => handleCustomColorChange(e.target.value)}
+                      className="flex-1 px-3 py-2 bg-gray-800/50 border border-gray-600 rounded text-white text-sm"
+                      placeholder="#3b82f6"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
