@@ -20,47 +20,56 @@ const patterns = [
   {
     id: 'none',
     name: 'Sin patrón',
-    description: 'Fondo sólido sin patrones'
+    description: 'Fondo sólido sin patrones',
+    type: 'none'
   },
   {
     id: 'grid',
     name: 'Grid',
-    description: 'Patrón de cuadrícula moderna'
+    description: 'Patrón de cuadrícula moderna',
+    type: 'css'
   },
   {
     id: 'dots',
     name: 'Puntos',
-    description: 'Patrón de puntos elegante'
+    description: 'Patrón de puntos elegante',
+    type: 'css'
   },
   {
     id: 'diagonal',
     name: 'Líneas diagonales',
-    description: 'Líneas diagonales dinámicas'
+    description: 'Líneas diagonales dinámicas',
+    type: 'css'
   },
   {
     id: 'waves',
     name: 'Ondas',
-    description: 'Patrón de ondas suaves'
+    description: 'Patrón de ondas suaves',
+    type: 'css'
   },
   {
     id: 'geometric',
     name: 'Geométrico',
-    description: 'Formas geométricas modernas'
+    description: 'Formas geométricas modernas',
+    type: 'image'
   },
   {
     id: 'circuit',
     name: 'Circuitos',
-    description: 'Patrón tecnológico de circuitos'
+    description: 'Patrón tecnológico de circuitos',
+    type: 'css'
   },
   {
     id: 'dark_marble',
     name: 'Mármol oscuro',
-    description: 'Textura de mármol oscuro elegante'
+    description: 'Textura de mármol oscuro elegante',
+    type: 'image'
   },
   {
     id: 'white_marble',
     name: 'Mármol blanco',
-    description: 'Textura de mármol blanco clásico'
+    description: 'Textura de mármol blanco clásico',
+    type: 'image'
   }
 ];
 
@@ -238,8 +247,8 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
             </div>
           </div>
 
-          {/* Selector de color (solo si no es 'none') */}
-          {localConfig.pattern !== 'none' && (
+          {/* Selector de color (solo si no es 'none' y es tipo 'css') */}
+          {localConfig.pattern !== 'none' && selectedPattern.type === 'css' && (
             <div>
               <label className="block text-sm font-medium text-white mb-3">Color del patrón</label>
               <div className="grid grid-cols-3 gap-2">
