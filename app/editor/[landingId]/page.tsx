@@ -417,17 +417,19 @@ export default function AdminPage() {
             className="absolute w-full h-full z-20 pointer-events-none object-contain"
           />
           <div className="absolute inset-[4%] z-10 rounded-[20px] md:rounded-[24px] lg:rounded-[28px] xl:rounded-[32px] overflow-hidden">
-            <LandingPreview 
-              name={landingPreview.name}
-              description={landingPreview.description}
-              links={links}
-              sections={sections}
-              socialLinks={socialLinks}
-              isPreview={true}
-              themeId={landingPreview.theme_id}
-              avatarUrl={landing.avatar_url}
-              configurations={landing.configurations}
-            />
+            <div className="h-full overflow-y-auto overflow-x-hidden scrollbar-hide">
+              <LandingPreview 
+                name={landingPreview.name}
+                description={landingPreview.description}
+                links={links}
+                sections={sections}
+                socialLinks={socialLinks}
+                isPreview={true}
+                themeId={landingPreview.theme_id}
+                avatarUrl={landing.avatar_url}
+                configurations={landing.configurations}
+              />
+            </div>
           </div>
         </div>
       </div>
