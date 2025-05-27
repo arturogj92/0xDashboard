@@ -176,28 +176,33 @@ export default function LandingWizard() {
             />
             
             {/* Skeleton Landing Content */}
-            <div className="absolute inset-0 flex items-center justify-center" style={{ padding: '44px 13px 56px 13px' }}>
+            <div className="absolute inset-0">
               <div className="w-full h-full bg-gradient-to-b from-gray-900 to-black rounded-[1.5rem] overflow-hidden">
-                <div className="h-full overflow-y-auto scrollbar-hide p-4 flex flex-col items-center">
-                  {/* Skeleton Avatar */}
-                  <div className="w-16 h-16 rounded-full bg-gray-800 animate-pulse mb-3" />
-                  
-                  {/* Skeleton Title */}
-                  <div className="h-4 w-20 bg-gray-800 rounded animate-pulse mb-1" />
-                  
-                  {/* Skeleton Description */}
-                  <div className="h-3 w-32 bg-gray-800 rounded animate-pulse mb-6" />
-                  
-                  {/* Skeleton Links */}
-                  <div className="w-full space-y-2 mb-6">
-                    <div className="h-8 bg-gray-800 rounded-lg animate-pulse" />
-                    <div className="h-8 bg-gray-800 rounded-lg animate-pulse" />
-                    <div className="h-8 bg-gray-800 rounded-lg animate-pulse" />
-                    <div className="h-8 bg-gray-800 rounded-lg animate-pulse" />
+                <div className="h-full flex flex-col items-center p-4">
+                  {/* Top section with avatar and info */}
+                  <div className="flex flex-col items-center mb-4">
+                    {/* Skeleton Avatar */}
+                    <div className="w-16 h-16 rounded-full bg-gray-800 animate-pulse mt-8 mb-3" />
+                    
+                    {/* Skeleton Title */}
+                    <div className="h-4 w-20 bg-gray-800 rounded animate-pulse mb-1" />
+                    
+                    {/* Skeleton Description */}
+                    <div className="h-3 w-32 bg-gray-800 rounded animate-pulse" />
                   </div>
                   
-                  {/* Skeleton Social Icons */}
-                  <div className="flex gap-2 mt-auto">
+                  {/* Middle section with links - takes remaining space */}
+                  <div className="w-full flex-1 flex flex-col justify-center py-2">
+                    <div className="w-full space-y-2">
+                      <div className="h-8 bg-gray-800 rounded-lg animate-pulse" />
+                      <div className="h-8 bg-gray-800 rounded-lg animate-pulse" />
+                      <div className="h-8 bg-gray-800 rounded-lg animate-pulse" />
+                      <div className="h-8 bg-gray-800 rounded-lg animate-pulse" />
+                    </div>
+                  </div>
+                  
+                  {/* Bottom section with social icons */}
+                  <div className="flex gap-2 mt-4">
                     <div className="w-7 h-7 bg-gray-800 rounded-full animate-pulse flex items-center justify-center">
                       <Instagram className="w-3.5 h-3.5 text-gray-600" />
                     </div>
