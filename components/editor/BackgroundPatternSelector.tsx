@@ -194,7 +194,8 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
 
   const handleCustomColorChange = (color: string) => {
     setCustomColor(color);
-    if (localConfig.color === customColor || colors.find(c => c.value === localConfig.color)?.value === 'custom') {
+    // Si estamos en modo personalizado, actualizar inmediatamente
+    if (!colors.some(c => c.value === localConfig.color && c.value !== 'custom')) {
       const newConfig = { ...localConfig, color };
       setLocalConfig(newConfig);
       debouncedOnChange(newConfig);
@@ -210,6 +211,16 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
   const handleSave = () => {
     onSave(localConfig);
   };
+
+  // Sincronizar con el valor del padre cuando cambie
+  useEffect(() => {
+    setLocalConfig(value);
+    // Si el color actual es un color personalizado, actualizar customColor
+    const isCustomColor = !colors.some(c => c.value === value.color && c.value !== 'custom');
+    if (isCustomColor && value.color) {
+      setCustomColor(value.color);
+    }
+  }, [value]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -287,7 +298,9 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
                     key={color.value}
                     onClick={() => handleColorChange(color.value)}
                     className={`p-2 rounded-lg border transition-all ${
-                      (color.value === 'custom' ? customColor === localConfig.color : localConfig.color === color.value)
+                      (color.value === 'custom' ? 
+                        !colors.some(c => c.value === localConfig.color && c.value !== 'custom') : 
+                        localConfig.color === color.value)
                         ? 'border-purple-500 bg-purple-500/20'
                         : 'border-gray-600 bg-gray-800/50 hover:bg-gray-700/50'
                     }`}
@@ -306,7 +319,7 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
               </div>
               
               {/* Selector de color personalizado */}
-              {(localConfig.color === customColor || colors.find(c => c.value === localConfig.color)?.value === 'custom') && (
+              {!colors.some(c => c.value === localConfig.color && c.value !== 'custom') && (
                 <div className="mt-3">
                   <label className="block text-sm font-medium text-white mb-2">Color personalizado</label>
                   <div className="flex items-center gap-3">
