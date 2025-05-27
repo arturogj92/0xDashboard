@@ -53,9 +53,14 @@ const patterns = [
     description: 'Patrón tecnológico de circuitos'
   },
   {
-    id: 'lines',
-    name: 'Líneas sueltas',
-    description: 'Líneas flotantes dispersas'
+    id: 'dark_marble',
+    name: 'Mármol oscuro',
+    description: 'Textura de mármol oscuro elegante'
+  },
+  {
+    id: 'white_marble',
+    name: 'Mármol blanco',
+    description: 'Textura de mármol blanco clásico'
   }
 ];
 
@@ -113,14 +118,10 @@ const generatePatternCSS = (pattern: string, color: string, opacity: number) => 
     
     case 'geometric':
       return {
-        backgroundImage: `
-          linear-gradient(45deg, ${colorWithOpacity} 25%, transparent 25%),
-          linear-gradient(-45deg, ${colorWithOpacity} 25%, transparent 25%),
-          linear-gradient(45deg, transparent 75%, ${colorWithOpacity} 75%),
-          linear-gradient(-45deg, transparent 75%, ${colorWithOpacity} 75%)
-        `,
-        backgroundSize: '60px 60px',
-        backgroundPosition: '0 0, 0 30px, 30px -30px, -30px 0px'
+        backgroundImage: `url('/images/background/geometric.png')`,
+        backgroundSize: '200px 200px',
+        backgroundRepeat: 'repeat',
+        opacity: opacity
       };
     
     case 'circuit':
@@ -133,16 +134,20 @@ const generatePatternCSS = (pattern: string, color: string, opacity: number) => 
         backgroundSize: '40px 40px, 40px 40px, 40px 40px'
       };
     
-    case 'lines':
+    case 'dark_marble':
       return {
-        backgroundImage: `
-          linear-gradient(23deg, ${colorWithOpacity} 1px, transparent 1px),
-          linear-gradient(67deg, ${colorWithOpacity} 1px, transparent 1px),
-          linear-gradient(135deg, ${colorWithOpacity} 1px, transparent 1px),
-          linear-gradient(158deg, ${colorWithOpacity} 1px, transparent 1px)
-        `,
-        backgroundSize: '60px 80px, 80px 60px, 100px 70px, 70px 90px',
-        backgroundPosition: '0 0, 20px 10px, 40px 30px, 10px 50px'
+        backgroundImage: `url('/images/background/dark_marmol.png')`,
+        backgroundSize: '300px 300px',
+        backgroundRepeat: 'repeat',
+        opacity: opacity
+      };
+    
+    case 'white_marble':
+      return {
+        backgroundImage: `url('/images/background/white_marmol.png')`,
+        backgroundSize: '300px 300px',
+        backgroundRepeat: 'repeat',
+        opacity: opacity
       };
     
     default:
