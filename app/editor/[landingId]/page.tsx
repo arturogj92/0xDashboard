@@ -381,15 +381,51 @@ export default function AdminPage() {
   };
 
   const handleScrollToSection = (sectionId: string) => {
+    // Casos especiales para elementos dentro del acordeón de personalización
+    if (sectionId === 'background-gradient' || sectionId === 'background-pattern' || sectionId === 'avatar-section') {
+      // Primero, asegurar que el acordeón esté abierto
+      const accordionButton = document.querySelector('[data-accordion="style-customization"]');
+      let isOpen = true;
+      let delay = 0;
+      
+      if (accordionButton) {
+        // Si el acordeón está cerrado, abrirlo
+        isOpen = accordionButton.getAttribute('aria-expanded') === 'true';
+        if (!isOpen) {
+          (accordionButton as HTMLElement).click();
+          delay = 300; // Esperar 300ms para que se abra
+        }
+      }
+      
+      // Esperar un momento para que el acordeón se abra, luego hacer scroll
+      setTimeout(() => {
+        const targetElement = document.getElementById(sectionId);
+        if (targetElement) {
+          targetElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+          });
+          
+          targetElement.classList.add('highlight-section');
+          setTimeout(() => {
+            targetElement.classList.remove('highlight-section');
+          }, 3000);
+        }
+      }, delay);
+      
+      return;
+    }
+
+    // Mapeo para secciones principales
     const sectionMap: Record<string, string> = {
-      'background-section': 'style-customization',
-      'avatar-section': 'style-customization',
       'info-section': 'landing-info',
       'links-section': 'sections-board',
-      'social-section': 'social-links'
+      'social-section': 'social-links',
+      'style-customization': 'style-customization'
     };
 
-    const targetElement = document.getElementById(sectionMap[sectionId]);
+    const targetElement = document.getElementById(sectionMap[sectionId] || sectionId);
     if (targetElement) {
       targetElement.scrollIntoView({ 
         behavior: 'smooth', 
@@ -397,7 +433,6 @@ export default function AdminPage() {
         inline: 'nearest'
       });
       
-      // Add a highlight effect to the target section
       targetElement.classList.add('highlight-section');
       setTimeout(() => {
         targetElement.classList.remove('highlight-section');

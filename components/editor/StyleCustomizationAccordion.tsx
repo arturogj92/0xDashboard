@@ -42,6 +42,8 @@ export default function StyleCustomizationAccordion({
       {/* Header del accordion */}
       <button
         onClick={() => setIsOpen(!isOpen)}
+        data-accordion="style-customization"
+        aria-expanded={isOpen}
         className="w-full flex items-center justify-between p-4 bg-gray-800/30 border border-gray-700/50 rounded-lg hover:bg-gray-800/40 transition-all duration-200"
       >
         <div className="flex items-center gap-3">

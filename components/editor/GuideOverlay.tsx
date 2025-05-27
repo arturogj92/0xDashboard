@@ -23,7 +23,7 @@ const guidePoints: GuidePoint[] = [
     id: 'background',
     tooltip: 'Personalizar fondo con gradientes y patrones',
     position: { top: '10%', left: '15%' },
-    sectionId: 'background-pattern'
+    sectionId: 'background-gradient'
   },
   {
     id: 'avatar',
