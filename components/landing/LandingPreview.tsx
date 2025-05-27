@@ -440,9 +440,13 @@ export const LandingPreview = React.memo(function LandingPreview({
       <div className="w-full space-y-2 mt-2 flex-1 px-0 flex flex-col items-center">
         
         {/* Secciones con sus links */}
-        {sections.sort((a, b) => a.position - b.position).map((section, sectionIndex) => {
-          const sectionLinks = linksBySection[section.id] || [];
-          if (sectionLinks.length === 0) return null;
+        {(() => {
+          const sectionsWithLinks = sections
+            .sort((a, b) => a.position - b.position)
+            .filter(section => (linksBySection[section.id] || []).length > 0);
+          
+          return sectionsWithLinks.map((section, sectionIndex) => {
+            const sectionLinks = linksBySection[section.id] || [];
           
           return (
             <React.Fragment key={section.id}>
@@ -505,13 +509,14 @@ export const LandingPreview = React.memo(function LandingPreview({
                 </React.Fragment>
               ))}
               
-              {/* Separador entre secciones */}
-              {sectionIndex < sections.length - 1 && (
+              {/* Separador entre secciones (solo entre secciones que tienen enlaces) */}
+              {sectionIndex < sectionsWithLinks.length - 1 && (
                 <div className={`${isPreview ? 'w-[95%]' : 'w-full md:w-[70%] lg:w-[60%] xl:w-[50%]'} h-px bg-white/20 my-2`} />
               )}
             </React.Fragment>
           );
-        })}
+        });
+        })()}
         
         {/* Mostrar placeholders si no hay secciones con contenido */}
         {sections.length === 0 && (
