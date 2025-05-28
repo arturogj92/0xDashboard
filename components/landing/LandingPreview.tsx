@@ -238,6 +238,7 @@ export const LandingPreview = React.memo(function LandingPreview({
   const fontColorConfig = configurations.fontColor || { primary: '#ffffff', secondary: '#e2e8f0' };
   const linkColorConfig = configurations.linkColor || { background: '#000000', text: '#ffffff' };
   const fontFamilyConfig = configurations.fontFamily || { family: 'Inter', url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' };
+  const linkImageStyleConfig = configurations.linkImageStyle || { style: 'rectangle' };
   
   // Generar gradiente dinámico si existe configuración personalizada
   const dynamicBackground = configurations.gradient 
@@ -284,6 +285,50 @@ export const LandingPreview = React.memo(function LandingPreview({
   
   // Familia de fuente dinámica
   const dynamicFontFamily = configurations.fontFamily ? fontFamilyConfig.family : currentTheme.typography.fontFamily;
+  
+  // Función para obtener el estilo de imagen según la configuración
+  const getImageStyle = () => {
+    const style = linkImageStyleConfig.style;
+    
+    switch (style) {
+      case 'circle':
+        return {
+          containerClass: 'p-3',
+          imageClass: 'rounded-full',
+          imageStyle: {
+            width: isPreview ? '50px' : '60px',
+            height: isPreview ? '50px' : '60px',
+            aspectRatio: '1/1',
+            objectFit: 'cover' as const
+          }
+        };
+      
+      case 'rectangle-padded':
+        return {
+          containerClass: 'p-2',
+          imageClass: 'rounded-lg',
+          imageStyle: {
+            width: isPreview ? '60px' : '75px',
+            height: '100%',
+            aspectRatio: '1/1',
+            objectFit: 'cover' as const
+          }
+        };
+      
+      case 'rectangle':
+      default:
+        return {
+          containerClass: '',
+          imageClass: currentTheme.layout.imageStyle === 'square' ? 'rounded-none' : 'rounded-lg',
+          imageStyle: {
+            width: isPreview ? '65px' : '80px',
+            height: '100%',
+            aspectRatio: '1/1',
+            objectFit: 'cover' as const
+          }
+        };
+    }
+  };
   
   // Convertir tamaño de fuente para preview móvil
   const getPreviewFontSize = (fontSize: string) => {
@@ -502,18 +547,14 @@ export const LandingPreview = React.memo(function LandingPreview({
                     }}
                   >
                     {link.image && (
-                      <img 
-                        src={link.image} 
-                        alt={link.title || 'Link image'}
-                        className={`h-full object-cover flex-shrink-0 ${
-                          currentTheme.layout.imageStyle === 'square' ? 'rounded-none' : 'rounded-lg'
-                        }`}
-                        style={{
-                          width: isPreview ? '65px' : '80px',
-                          aspectRatio: '1/1',
-                          objectFit: 'cover'
-                        }}
-                      />
+                      <div className={`flex-shrink-0 ${getImageStyle().containerClass}`}>
+                        <img 
+                          src={link.image} 
+                          alt={link.title || 'Link image'}
+                          className={`object-cover ${getImageStyle().imageClass}`}
+                          style={getImageStyle().imageStyle}
+                        />
+                      </div>
                     )}
                     <div className="flex-1 px-4">
                       <h3 

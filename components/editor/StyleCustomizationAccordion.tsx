@@ -13,6 +13,7 @@ import TitleStyleSelector from "@/components/editor/TitleStyleSelector";
 import AvatarDisplaySelector from "@/components/editor/AvatarDisplaySelector";
 import { LandingAvatarUpload } from "@/components/editor/LandingAvatarUpload";
 import BackgroundPatternSelector from "@/components/editor/BackgroundPatternSelector";
+import LinkImageStyleSelector from "@/components/editor/LinkImageStyleSelector";
 
 interface StyleCustomizationAccordionProps {
   landing: {
@@ -237,6 +238,16 @@ export default function StyleCustomizationAccordion({
                   value={landing.configurations?.linkColor || { background: '#000000', text: '#ffffff' }}
                   onChange={(linkColor) => handleConfigurationUpdate({ linkColor })}
                   onSave={(linkColor) => handleConfigurationSave({ linkColor })}
+                />
+                
+                {/* Separador visual */}
+                <div className="border-t border-gray-600/30"></div>
+                
+                {/* Link Image Style */}
+                <LinkImageStyleSelector
+                  value={landing.configurations?.linkImageStyle || { style: 'rectangle' }}
+                  onChange={(linkImageStyle) => handleConfigurationUpdate({ linkImageStyle })}
+                  onSave={(linkImageStyle) => handleConfigurationSave({ linkImageStyle })}
                 />
               </div>
             )}
