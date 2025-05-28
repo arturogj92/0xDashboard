@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon, PaintBrushIcon } from '@heroicons/react/24/outline';
-import { Palette, User, Type, Link2, Sparkles } from 'lucide-react';
+import { Palette, User, Type, Link2, Sparkles, Paintbrush2 } from 'lucide-react';
 import ThemeSelector from "@/components/editor/ThemeSelector";
 import BorderRadiusSelector from "@/components/editor/BorderRadiusSelector";
 import BackgroundGradientSelector from "@/components/editor/BackgroundGradientSelector";
@@ -91,8 +91,17 @@ export default function StyleCustomizationAccordion({
         }`}
       >
         <div className="mt-4 space-y-6">
-          {/* Theme Selector */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
+          {/* Selector de Temas - Destacado */}
+          <div className="bg-gradient-to-br from-indigo-900/30 to-purple-900/30 border-2 border-indigo-500/50 rounded-xl p-6 shadow-lg shadow-indigo-500/20">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-3 rounded-xl shadow-lg">
+                <Paintbrush2 className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white">Seleccionar Tema</h3>
+                <p className="text-sm text-indigo-200">Elige el estilo perfecto para tu landing</p>
+              </div>
+            </div>
             <ThemeSelector
               currentThemeId={landing.theme_id || 'dark'}
               onThemeChange={handleThemeUpdate}

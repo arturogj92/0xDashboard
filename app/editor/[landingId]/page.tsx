@@ -13,6 +13,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/AuthContext';
+import { getThemeById } from '@/lib/themes';
 
 export default function AdminPage() {
   const t = useTranslations('editor');
@@ -359,6 +360,8 @@ export default function AdminPage() {
 
   // Función para obtener configuraciones basadas en el tema
   const getThemeConfigurations = (themeId: string) => {
+    const theme = getThemeById(themeId);
+    
     const baseConfig = {
       borderRadius: 'rounded-xl',
       fontFamily: {
@@ -383,31 +386,71 @@ export default function AdminPage() {
       }
     };
 
+    // Si existe el tema, usar sus configuraciones
+    if (theme) {
+      return {
+        ...baseConfig,
+        fontFamily: {
+          family: theme.typography.fontFamily,
+          url: theme.typography.googleFontsUrl || baseConfig.fontFamily.url
+        },
+        gradient: extractGradientColors(theme.colors.background),
+        fontColor: { 
+          primary: theme.colors.textPrimary, 
+          secondary: theme.colors.textSecondary 
+        },
+        linkColor: { 
+          background: theme.colors.linkBackground, 
+          text: theme.colors.linkText 
+        },
+        // Agregar el patrón de fondo del tema si existe
+        backgroundPattern: theme.layout.backgroundPattern || { 
+          pattern: 'none', 
+          color: '#ffffff', 
+          opacity: 0.1 
+        }
+      };
+    }
+
+    // Configuraciones por defecto para temas legacy
     switch (themeId) {
       case 'dark':
         return {
           ...baseConfig,
           gradient: { color1: '#000000', color2: '#000000' },
           fontColor: { primary: '#ffffff', secondary: '#ffffff' },
-          linkColor: { background: '#000000', text: '#ffffff' }
+          linkColor: { background: '#000000', text: '#ffffff' },
+          backgroundPattern: { pattern: 'grid', color: '#ffffff', opacity: 0.1 }
         };
       case 'light':
         return {
           ...baseConfig,
           gradient: { color1: '#f8fafc', color2: '#e2e8f0' },
           fontColor: { primary: '#000000', secondary: '#000000' },
-          linkColor: { background: '#ffffff', text: '#000000' }
+          linkColor: { background: '#ffffff', text: '#000000' },
+          backgroundPattern: { pattern: 'dots', color: '#000000', opacity: 0.15 }
         };
       case 'gradient':
         return {
           ...baseConfig,
           gradient: { color1: '#667eea', color2: '#764ba2' },
           fontColor: { primary: '#ffffff', secondary: '#f1f5f9' },
-          linkColor: { background: 'rgba(255,255,255,0.15)', text: '#ffffff' }
+          linkColor: { background: 'rgba(255,255,255,0.15)', text: '#ffffff' },
+          backgroundPattern: { pattern: 'geometric', color: '#8b5cf6', opacity: 0.2 }
         };
       default:
         return baseConfig;
     }
+  };
+
+  // Función auxiliar para extraer colores del gradiente
+  const extractGradientColors = (gradient: string) => {
+    // Buscar colores hexadecimales en el gradiente
+    const colors = gradient.match(/#[0-9a-fA-F]{6}/g) || ['#000000', '#000000'];
+    return {
+      color1: colors[0] || '#000000',
+      color2: colors[1] || colors[0] || '#000000'
+    };
   };
 
   const handleConfigurationUpdate = (newConfig: any) => {
