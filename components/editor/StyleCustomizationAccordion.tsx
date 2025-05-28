@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon, PaintBrushIcon } from '@heroicons/react/24/outline';
+import { Palette, User, Type, Link2 } from 'lucide-react';
 import ThemeSelector from "@/components/editor/ThemeSelector";
 import BorderRadiusSelector from "@/components/editor/BorderRadiusSelector";
 import BackgroundGradientSelector from "@/components/editor/BackgroundGradientSelector";
@@ -84,8 +85,31 @@ export default function StyleCustomizationAccordion({
             />
           </div>
 
-          {/* Avatar Display */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
+          {/* Configuración de Avatar */}
+          <div id="avatar-configuration" className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4 space-y-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-gradient-to-br from-indigo-500 to-blue-600 p-2 rounded-lg shadow-lg">
+                <User className="h-5 w-5 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-white">Configuración de Avatar</h3>
+            </div>
+            
+            {/* Avatar Upload */}
+            <div>
+              <div className="text-white text-sm mb-3">Subir Avatar</div>
+              <p className="text-gray-400 text-xs mb-4">Sube un avatar específico para esta landing page que se mostrará públicamente.</p>
+              <LandingAvatarUpload
+                landingId={landing.id || ''}
+                currentAvatarUrl={landing.avatar_url}
+                onAvatarUpdate={onAvatarUpdate}
+                size="lg"
+              />
+            </div>
+            
+            {/* Separador visual */}
+            <div className="border-t border-gray-600/30"></div>
+            
+            {/* Avatar Display Toggle */}
             <AvatarDisplaySelector
               value={landing.configurations?.avatarDisplay || { showAvatar: true }}
               onChange={(avatarDisplay) => handleConfigurationUpdate({ avatarDisplay })}
@@ -93,30 +117,27 @@ export default function StyleCustomizationAccordion({
             />
           </div>
 
-          {/* Landing Avatar Upload */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
-            <div className="text-white text-sm mb-3 font-medium">Avatar de la Landing</div>
-            <p className="text-gray-400 text-xs mb-4">Sube un avatar específico para esta landing page que se mostrará públicamente.</p>
-            <LandingAvatarUpload
-              landingId={landing.id || ''}
-              currentAvatarUrl={landing.avatar_url}
-              onAvatarUpdate={onAvatarUpdate}
-              size="lg"
-            />
-          </div>
 
-
-          {/* Background Gradient */}
-          <div id="background-gradient" className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
+          {/* Configuración de Fondos */}
+          <div id="background-configuration" className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4 space-y-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-2 rounded-lg shadow-lg">
+                <Palette className="h-5 w-5 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-white">Configuración de Fondos</h3>
+            </div>
+            
+            {/* Background Gradient */}
             <BackgroundGradientSelector
               value={landing.configurations?.gradient || { color1: '#000000', color2: '#4a044d' }}
               onChange={(gradient) => handleConfigurationUpdate({ gradient })}
               onSave={(gradient) => handleConfigurationSave({ gradient })}
             />
-          </div>
-
-          {/* Background Pattern */}
-          <div id="background-pattern" className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
+            
+            {/* Separador visual */}
+            <div className="border-t border-gray-600/30"></div>
+            
+            {/* Background Pattern */}
             <BackgroundPatternSelector
               value={landing.configurations?.backgroundPattern || { pattern: 'none', color: '#ffffff', opacity: 0.1 }}
               onChange={(backgroundPattern) => handleConfigurationUpdate({ backgroundPattern })}
@@ -124,18 +145,15 @@ export default function StyleCustomizationAccordion({
             />
           </div>
 
-          {/* Font Colors */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
-            <FontColorSelector
-              value={landing.configurations?.fontColor || { primary: '#ffffff', secondary: '#e2e8f0' }}
-              onChange={(fontColor) => handleConfigurationUpdate({ fontColor })}
-              onSave={(fontColor) => handleConfigurationSave({ fontColor })}
-            />
-          </div>
 
-          {/* Estilo de Enlaces - Border Radius y Link Colors */}
+          {/* Configuración de Enlaces */}
           <div id="link-styles" className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4 space-y-6">
-            <div className="text-white text-sm font-medium mb-4">Estilo de Enlaces</div>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-gradient-to-br from-violet-500 to-purple-600 p-2 rounded-lg shadow-lg">
+                <Link2 className="h-5 w-5 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-white">Configuración de Enlaces</h3>
+            </div>
             
             {/* Border Radius */}
             <BorderRadiusSelector
@@ -155,22 +173,40 @@ export default function StyleCustomizationAccordion({
             />
           </div>
 
-          {/* Title Style */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
-            <TitleStyleSelector
-              value={landing.configurations?.titleStyle || { fontSize: 'text-2xl', gradientEnabled: false }}
-              onChange={(titleStyle) => handleConfigurationUpdate({ titleStyle })}
-              onSave={(titleStyle) => handleConfigurationSave({ titleStyle })}
-            />
-          </div>
-
-          {/* Font Family */}
-          <div id="font-family" className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
-            <div className="text-white text-sm mb-2">Font Family Selector:</div>
+          {/* Configuración de Fuentes */}
+          <div id="font-configuration" className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4 space-y-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-2 rounded-lg shadow-lg">
+                <Type className="h-5 w-5 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-white">Configuración de Fuentes</h3>
+            </div>
+            
+            {/* Font Family */}
             <FontFamilySelector
               value={landing.configurations?.fontFamily || { family: 'Inter', url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' }}
               onChange={(fontFamily) => handleConfigurationUpdate({ fontFamily })}
               onSave={(fontFamily) => handleConfigurationSave({ fontFamily })}
+            />
+            
+            {/* Separador visual */}
+            <div className="border-t border-gray-600/30"></div>
+            
+            {/* Font Colors */}
+            <FontColorSelector
+              value={landing.configurations?.fontColor || { primary: '#ffffff', secondary: '#e2e8f0' }}
+              onChange={(fontColor) => handleConfigurationUpdate({ fontColor })}
+              onSave={(fontColor) => handleConfigurationSave({ fontColor })}
+            />
+            
+            {/* Separador visual */}
+            <div className="border-t border-gray-600/30"></div>
+            
+            {/* Title Style (Font Size) */}
+            <TitleStyleSelector
+              value={landing.configurations?.titleStyle || { fontSize: 'text-2xl', gradientEnabled: false }}
+              onChange={(titleStyle) => handleConfigurationUpdate({ titleStyle })}
+              onSave={(titleStyle) => handleConfigurationSave({ titleStyle })}
             />
           </div>
 

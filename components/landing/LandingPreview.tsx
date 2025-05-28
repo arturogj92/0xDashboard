@@ -531,12 +531,6 @@ export const LandingPreview = React.memo(function LandingPreview({
 
       {/* Social links */}
       <div className={`flex flex-nowrap justify-center ${isPreview ? 'gap-1.5 mb-4 py-1' : 'gap-1 mb-6 py-2'} ${isPreview ? 'overflow-hidden' : 'overflow-visible'} px-1`}>
-        {/* Debug en preview */}
-        {isPreview && visibleSocialLinks.length === 0 && (
-          <div className="text-xs text-gray-400 p-2">
-            No social links ({socialLinks.length} total)
-          </div>
-        )}
         {visibleSocialLinks.map((socialLink) => {
           const IconComponent = socialIcons[socialLink.name as keyof typeof socialIcons] || socialIcons.default;
           return (
