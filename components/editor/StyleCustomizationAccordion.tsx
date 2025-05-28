@@ -20,6 +20,8 @@ interface StyleCustomizationAccordionProps {
     theme_id?: string;
     configurations?: any;
     avatar_url?: string;
+    name?: string;
+    description?: string;
   };
   handleConfigurationUpdate: (config: any) => void;
   handleConfigurationSave: (config: any) => void;
@@ -105,6 +107,8 @@ export default function StyleCustomizationAccordion({
             <ThemeSelector
               currentThemeId={landing.theme_id || 'dark'}
               onThemeChange={handleThemeUpdate}
+              landingName={landing.name}
+              landingDescription={landing.description}
             />
           </div>
 

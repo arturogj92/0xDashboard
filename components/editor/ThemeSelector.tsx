@@ -4,7 +4,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { themes, Theme, getThemeById } from '@/lib/themes';
 import { SwatchIcon, CheckIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
@@ -14,15 +14,19 @@ interface ThemeSelectorProps {
   currentThemeId?: string;
   onThemeChange: (themeId: string) => void;
   className?: string;
+  landingName?: string;
+  landingDescription?: string;
 }
 
 interface ThemePreviewProps {
   theme: Theme;
   isSelected: boolean;
   onClick: () => void;
+  landingName?: string;
+  landingDescription?: string;
 }
 
-function ThemePreview({ theme, isSelected, onClick }: ThemePreviewProps) {
+function ThemePreview({ theme, isSelected, onClick, landingName = "Mi Landing", landingDescription = "Descripción" }: ThemePreviewProps) {
   const getThemeIcon = (themeId: string) => {
     switch (themeId) {
       case 'dark': return '🌙';
@@ -34,6 +38,85 @@ function ThemePreview({ theme, isSelected, onClick }: ThemePreviewProps) {
       case 'forest-zen': return '🌿';
       case 'royal-luxury': return '👑';
       default: return '🎨';
+    }
+  };
+
+  // Función para generar el CSS del patrón para la previsualización
+  const generatePatternCSS = (pattern: string, color: string, opacity: number) => {
+    const colorWithOpacity = `${color}${Math.round(opacity * 255).toString(16).padStart(2, '0')}`;
+    
+    switch (pattern) {
+      case 'grid':
+        return {
+          backgroundImage: `
+            linear-gradient(${colorWithOpacity} 1px, transparent 1px),
+            linear-gradient(90deg, ${colorWithOpacity} 1px, transparent 1px)
+          `,
+          backgroundSize: '20px 20px'
+        };
+      
+      case 'dots':
+        return {
+          backgroundImage: `radial-gradient(circle, ${colorWithOpacity} 1px, transparent 1px)`,
+          backgroundSize: '10px 10px'
+        };
+      
+      case 'diagonal':
+        return {
+          backgroundImage: `repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 20px,
+            ${colorWithOpacity} 20px,
+            ${colorWithOpacity} 21px
+          )`
+        };
+      
+      case 'waves':
+        return {
+          backgroundImage: `
+            radial-gradient(ellipse at center, transparent 50%, ${colorWithOpacity} 50%),
+            linear-gradient(90deg, transparent 50%, ${colorWithOpacity} 50%)
+          `,
+          backgroundSize: '20px 20px, 20px 10px'
+        };
+      
+      case 'geometric':
+        return {
+          backgroundImage: `url('/images/background/geometric.png')`,
+          backgroundSize: '100px 100px',
+          backgroundRepeat: 'repeat',
+          opacity: opacity
+        };
+      
+      case 'circuit':
+        return {
+          backgroundImage: `
+            linear-gradient(90deg, ${colorWithOpacity} 1px, transparent 1px),
+            linear-gradient(${colorWithOpacity} 1px, transparent 1px),
+            radial-gradient(circle at 10px 10px, ${colorWithOpacity} 2px, transparent 2px)
+          `,
+          backgroundSize: '20px 20px, 20px 20px, 20px 20px'
+        };
+      
+      case 'dark_marble':
+        return {
+          backgroundImage: `url('/images/background/dark_marmol.png')`,
+          backgroundSize: '150px 150px',
+          backgroundRepeat: 'repeat',
+          opacity: opacity
+        };
+      
+      case 'white_marble':
+        return {
+          backgroundImage: `url('/images/background/white_marmol.png')`,
+          backgroundSize: '150px 150px',
+          backgroundRepeat: 'repeat',
+          opacity: opacity
+        };
+      
+      default:
+        return {};
     }
   };
 
@@ -60,35 +143,51 @@ function ThemePreview({ theme, isSelected, onClick }: ThemePreviewProps) {
         </div>
         
         {/* Visual Preview */}
-        <div className="p-4 h-40 relative">
+        <div className="p-4 h-40 relative overflow-hidden">
           {/* Background */}
           <div 
             className="absolute inset-0 rounded-b-xl"
             style={{ background: theme.colors.background }}
           />
           
-          {/* Sample phone mockup */}
-          <div className="relative z-10 flex flex-col items-center space-y-3 h-full justify-center">
-            {/* Sample avatar with better styling */}
+          {/* Background Pattern */}
+          {theme.layout.backgroundPattern && theme.layout.backgroundPattern.pattern !== 'none' && (
             <div 
-              className="w-12 h-12 rounded-full border-3 border-white shadow-lg bg-gradient-to-br from-gray-200 to-gray-400"
-              style={{ backgroundColor: theme.colors.textSecondary }}
+              className="absolute inset-0 rounded-b-xl"
+              style={generatePatternCSS(
+                theme.layout.backgroundPattern.pattern,
+                theme.layout.backgroundPattern.color,
+                theme.layout.backgroundPattern.opacity
+              )}
             />
-            
-            {/* Sample title with theme font */}
+          )}
+          
+          {/* Sample phone mockup */}
+          <div className="relative z-10 flex flex-col items-center space-y-3 h-full justify-center px-3">
+            {/* Landing name with theme font and color */}
             <div 
-              className="px-3 py-1 rounded-lg font-bold text-sm text-center shadow-sm"
+              className="font-bold text-base text-center truncate max-w-full"
               style={{ 
-                backgroundColor: theme.colors.textPrimary,
-                color: theme.colors.background,
+                color: theme.colors.textPrimary,
                 fontFamily: theme.typography.fontFamily
               }}
             >
-              @usuario
+              {landingName}
             </div>
             
-            {/* Sample links with better styling */}
-            <div className="space-y-2 w-full max-w-32">
+            {/* Landing description with theme font and color */}
+            <div 
+              className="text-xs text-center truncate max-w-full opacity-90"
+              style={{ 
+                color: theme.colors.textSecondary,
+                fontFamily: theme.typography.fontFamily
+              }}
+            >
+              {landingDescription}
+            </div>
+            
+            {/* Sample link */}
+            <div className="w-full max-w-32 mt-2">
               <div 
                 className="w-full h-8 border-2 rounded-xl flex items-center px-3 shadow-sm transition-all"
                 style={{ 
@@ -97,19 +196,8 @@ function ThemePreview({ theme, isSelected, onClick }: ThemePreviewProps) {
                   color: theme.colors.linkText
                 }}
               >
-                <div className="w-4 h-4 bg-gradient-to-br from-indigo-400 to-purple-400 rounded mr-2" />
-                <div className="text-xs font-medium">Instagram</div>
-              </div>
-              <div 
-                className="w-full h-8 border-2 rounded-xl flex items-center px-3 shadow-sm transition-all"
-                style={{ 
-                  backgroundColor: theme.colors.linkBackground,
-                  borderColor: theme.colors.linkBorder,
-                  color: theme.colors.linkText
-                }}
-              >
-                <div className="w-4 h-4 bg-gradient-to-br from-blue-400 to-cyan-400 rounded mr-2" />
-                <div className="text-xs font-medium">YouTube</div>
+                <div className="w-4 h-4 bg-gradient-to-br from-pink-400 to-purple-400 rounded mr-2 flex-shrink-0" />
+                <div className="text-xs font-medium truncate">Instagram</div>
               </div>
             </div>
           </div>
@@ -146,9 +234,26 @@ function ThemePreview({ theme, isSelected, onClick }: ThemePreviewProps) {
   );
 }
 
-export default function ThemeSelector({ currentThemeId = 'dark', onThemeChange, className = '' }: ThemeSelectorProps) {
+export default function ThemeSelector({ currentThemeId = 'dark', onThemeChange, className = '', landingName, landingDescription }: ThemeSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const currentTheme = getThemeById(currentThemeId) || themes[0];
+
+  // Precargar todas las fuentes de Google de los temas
+  useEffect(() => {
+    themes.forEach(theme => {
+      if (theme.typography.googleFontsUrl) {
+        // Verificar si la fuente ya está cargada
+        const fontLinkId = `theme-font-${theme.id}`;
+        if (!document.getElementById(fontLinkId)) {
+          const link = document.createElement('link');
+          link.id = fontLinkId;
+          link.rel = 'stylesheet';
+          link.href = theme.typography.googleFontsUrl;
+          document.head.appendChild(link);
+        }
+      }
+    });
+  }, []);
 
   const handleThemeSelect = (themeId: string) => {
     onThemeChange(themeId);
@@ -219,6 +324,8 @@ export default function ThemeSelector({ currentThemeId = 'dark', onThemeChange, 
                         theme={theme}
                         isSelected={theme.id === currentThemeId}
                         onClick={() => handleThemeSelect(theme.id)}
+                        landingName={landingName}
+                        landingDescription={landingDescription}
                       />
                     </motion.div>
                   ))}
