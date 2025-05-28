@@ -254,8 +254,32 @@ export const LandingPreview = React.memo(function LandingPreview({
   const dynamicTextPrimary = configurations.fontColor ? fontColorConfig.primary : currentTheme.colors.textPrimary;
   const dynamicTextSecondary = configurations.fontColor ? fontColorConfig.secondary : currentTheme.colors.textSecondary;
   
+  // Función para aplicar opacidad a un color
+  const applyOpacityToColor = (color: string, opacity: number) => {
+    // Si ya es rgba, actualizar la opacidad
+    if (color.startsWith('rgba')) {
+      const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      if (match) {
+        return `rgba(${match[1]}, ${match[2]}, ${match[3]}, ${opacity})`;
+      }
+    }
+    
+    // Si es hex, convertir a rgba
+    if (color.startsWith('#')) {
+      const hex = color.replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    }
+    
+    return color;
+  };
+
   // Colores de links dinámicos
-  const dynamicLinkBackground = configurations.linkColor ? linkColorConfig.background : currentTheme.colors.linkBackground;
+  const dynamicLinkBackground = configurations.linkColor 
+    ? applyOpacityToColor(linkColorConfig.background, linkColorConfig.backgroundOpacity ?? 1)
+    : currentTheme.colors.linkBackground;
   const dynamicLinkText = configurations.linkColor ? linkColorConfig.text : currentTheme.colors.linkText;
   
   // Familia de fuente dinámica

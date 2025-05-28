@@ -5,9 +5,10 @@ interface LinkColorSelectorProps {
   value: {
     background: string;
     text: string;
+    backgroundOpacity?: number;
   };
-  onChange: (linkColors: { background: string; text: string }) => void;
-  onSave?: (linkColors: { background: string; text: string }) => void;
+  onChange: (linkColors: { background: string; text: string; backgroundOpacity?: number }) => void;
+  onSave?: (linkColors: { background: string; text: string; backgroundOpacity?: number }) => void;
   className?: string;
 }
 
@@ -17,14 +18,42 @@ export default function LinkColorSelector({
   onSave,
   className = "" 
 }: LinkColorSelectorProps) {
-  const [localColors, setLocalColors] = useState(value);
-  const [pendingValue, setPendingValue] = useState<{ background: string; text: string } | null>(null);
+  const [localColors, setLocalColors] = useState({
+    ...value,
+    backgroundOpacity: value.backgroundOpacity ?? 1
+  });
+  const [pendingValue, setPendingValue] = useState<{ background: string; text: string; backgroundOpacity?: number } | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [, startTransition] = React.useTransition();
 
+  // Función para aplicar opacidad a un color hex
+  const applyOpacityToColor = (color: string, opacity: number) => {
+    // Si ya es rgba, extraer el color base
+    if (color.startsWith('rgba')) {
+      const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      if (match) {
+        return `rgba(${match[1]}, ${match[2]}, ${match[3]}, ${opacity})`;
+      }
+    }
+    
+    // Si es hex, convertir a rgba
+    if (color.startsWith('#')) {
+      const hex = color.replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+    }
+    
+    return color;
+  };
+
   // Sincronizar con valor prop
   useEffect(() => {
-    setLocalColors(value);
+    setLocalColors({
+      ...value,
+      backgroundOpacity: value.backgroundOpacity ?? 1
+    });
   }, [value]);
 
   // Limpiar timeouts al desmontar
@@ -38,6 +67,32 @@ export default function LinkColorSelector({
 
   const handleColorChange = (colorKey: 'background' | 'text', newColor: string) => {
     const newLinkColors = { ...localColors, [colorKey]: newColor };
+    setLocalColors(newLinkColors);
+    setPendingValue(newLinkColors);
+    
+    // Actualizar inmediatamente en baja prioridad
+    startTransition(() => {
+      onChange(newLinkColors);
+    });
+    
+    // Configurar guardado con debounce
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    
+    if (onSave) {
+      timeoutRef.current = setTimeout(() => {
+        onSave(newLinkColors);
+        setPendingValue(null);
+        timeoutRef.current = null;
+      }, 1000);
+    } else {
+      setPendingValue(null);
+    }
+  };
+
+  const handleOpacityChange = (opacity: number) => {
+    const newLinkColors = { ...localColors, backgroundOpacity: opacity };
     setLocalColors(newLinkColors);
     setPendingValue(newLinkColors);
     
@@ -86,12 +141,13 @@ export default function LinkColorSelector({
   ];
 
   const handlePresetClick = (preset: { background: string; text: string }) => {
-    setLocalColors(preset);
-    setPendingValue(preset);
+    const newColors = { ...preset, backgroundOpacity: 1 };
+    setLocalColors(newColors);
+    setPendingValue(newColors);
     
     // Actualizar inmediatamente
     startTransition(() => {
-      onChange(preset);
+      onChange(newColors);
     });
     
     // Configurar guardado
@@ -100,7 +156,7 @@ export default function LinkColorSelector({
         clearTimeout(timeoutRef.current);
       }
       timeoutRef.current = setTimeout(() => {
-        onSave(preset);
+        onSave(newColors);
         setPendingValue(null);
         timeoutRef.current = null;
       }, 1000);
@@ -123,7 +179,7 @@ export default function LinkColorSelector({
           <div 
             className="px-6 py-3 rounded-lg border flex items-center justify-center text-sm font-medium transition-all duration-200"
             style={{ 
-              backgroundColor: localColors.background,
+              backgroundColor: applyOpacityToColor(localColors.background, localColors.backgroundOpacity || 1),
               color: localColors.text,
               borderColor: 'rgba(148, 163, 184, 0.2)'
             }}
@@ -170,6 +226,35 @@ export default function LinkColorSelector({
                 placeholder="#ffffff"
               />
             </div>
+          </div>
+        </div>
+        
+        {/* Control de opacidad */}
+        <div className="space-y-2 mt-4">
+          <label className="text-xs text-gray-400 flex items-center justify-between">
+            <span>Opacidad del fondo</span>
+            <span className="text-purple-400 font-medium">{Math.round((localColors.backgroundOpacity || 1) * 100)}%</span>
+          </label>
+          <div className="relative">
+            <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-200"
+                style={{ width: `${(localColors.backgroundOpacity || 1) * 100}%` }}
+              />
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={localColors.backgroundOpacity || 1}
+              onChange={(e) => handleOpacityChange(parseFloat(e.target.value))}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            />
+          </div>
+          <div className="flex justify-between text-xs text-gray-500">
+            <span>Transparente</span>
+            <span>Sólido</span>
           </div>
         </div>
       </div>

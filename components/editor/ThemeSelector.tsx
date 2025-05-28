@@ -196,8 +196,8 @@ function ThemePreview({ theme, isSelected, onClick, landingName = "Mi Landing", 
                   color: theme.colors.linkText
                 }}
               >
-                <div className="w-4 h-4 bg-gradient-to-br from-pink-400 to-purple-400 rounded mr-2 flex-shrink-0" />
-                <div className="text-xs font-medium truncate">Instagram</div>
+                <div className="w-4 h-4 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full mr-2 flex-shrink-0" />
+                <div className="text-xs font-medium truncate">Link 1</div>
               </div>
             </div>
           </div>
