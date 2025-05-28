@@ -49,14 +49,14 @@ function ThemePreview({ theme, isSelected, onClick }: ThemePreviewProps) {
       onClick={onClick}
     >
       {/* Preview Card */}
-      <div className="relative bg-white rounded-xl border-2 border-gray-200 shadow-lg overflow-hidden transition-all duration-300 group-hover:border-indigo-300">
+      <div className="relative bg-gray-800 rounded-xl border-2 border-gray-700 shadow-lg overflow-hidden transition-all duration-300 group-hover:border-indigo-500">
         {/* Header with theme name and icon */}
-        <div className="p-4 bg-gradient-to-r from-gray-50 to-indigo-50/30 border-b border-gray-200">
+        <div className="p-4 bg-gradient-to-r from-gray-900 to-gray-800 border-b border-gray-700">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-lg">{getThemeIcon(theme.id)}</span>
-            <h3 className="font-bold text-base text-gray-900">{theme.name}</h3>
+            <h3 className="font-bold text-base text-white">{theme.name}</h3>
           </div>
-          <p className="text-xs text-gray-600 leading-relaxed">{theme.description}</p>
+          <p className="text-xs text-gray-400 leading-relaxed">{theme.description}</p>
         </div>
         
         {/* Visual Preview */}
@@ -116,9 +116,9 @@ function ThemePreview({ theme, isSelected, onClick }: ThemePreviewProps) {
         </div>
         
         {/* Font family indicator */}
-        <div className="px-4 py-2 bg-gray-50 border-t border-gray-200">
+        <div className="px-4 py-2 bg-gray-900/50 border-t border-gray-700">
           <div 
-            className="text-xs text-gray-600 text-center font-medium"
+            className="text-xs text-gray-400 text-center font-medium"
             style={{ fontFamily: theme.typography.fontFamily }}
           >
             {theme.typography.fontFamily.split(',')[0]}
@@ -140,7 +140,7 @@ function ThemePreview({ theme, isSelected, onClick }: ThemePreviewProps) {
         </AnimatePresence>
         
         {/* Hover overlay with gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-indigo-500/0 via-transparent to-indigo-500/0 group-hover:from-indigo-500/10 group-hover:to-indigo-500/5 transition-all duration-300 pointer-events-none rounded-xl" />
+        <div className="absolute inset-0 bg-gradient-to-t from-indigo-500/0 via-transparent to-indigo-500/0 group-hover:from-indigo-500/20 group-hover:to-indigo-500/10 transition-all duration-300 pointer-events-none rounded-xl" />
       </div>
     </motion.div>
   );
@@ -199,12 +199,12 @@ export default function ThemeSelector({ currentThemeId = 'dark', onThemeChange, 
               initial={{ opacity: 0, scale: 0.95, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
-              className="absolute top-full left-0 right-0 mt-2 bg-gradient-to-br from-white via-gray-50 to-indigo-50/50 rounded-xl shadow-2xl border border-indigo-200/50 z-50 max-h-[500px] overflow-y-auto backdrop-blur-sm"
+              className="absolute top-full left-0 right-0 mt-2 bg-gradient-to-br from-gray-900 via-gray-800 to-indigo-900/50 rounded-xl shadow-2xl border border-gray-700/50 z-50 max-h-[500px] overflow-y-auto backdrop-blur-sm"
             >
               <div className="p-6">
                 <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">🎨 Selecciona tu tema</h3>
-                  <p className="text-gray-600">Elige el estilo que mejor represente tu personalidad</p>
+                  <h3 className="text-2xl font-bold text-white mb-2">🎨 Selecciona tu tema</h3>
+                  <p className="text-gray-300">Elige el estilo que mejor represente tu personalidad</p>
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -224,11 +224,11 @@ export default function ThemeSelector({ currentThemeId = 'dark', onThemeChange, 
                   ))}
                 </div>
                 
-                <div className="mt-6 pt-4 border-t border-indigo-200/50">
+                <div className="mt-6 pt-4 border-t border-gray-700/50">
                   <Button
                     variant="outline"
                     onClick={() => setIsOpen(false)}
-                    className="w-full border-indigo-200 text-indigo-700 hover:bg-indigo-50"
+                    className="w-full border-gray-600 text-gray-300 hover:bg-gray-700/50 hover:text-white bg-gray-800/50"
                   >
                     ✨ Cerrar selector
                   </Button>
