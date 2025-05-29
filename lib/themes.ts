@@ -413,15 +413,15 @@ export const themes: Theme[] = [
       linkHover: 'rgba(255, 215, 0, 0.1)'
     },
     typography: {
-      fontFamily: 'Crimson Text',
-      fontFamilyHeading: 'Crimson Text',
+      fontFamily: 'Fira Code',
+      fontFamilyHeading: 'Fira Code',
       fontWeightNormal: 400,
       fontWeightMedium: 600,
       fontWeightBold: 700,
       titleSize: 'text-3xl',
       subtitleSize: 'text-xl',
       bodySize: 'text-lg',
-      googleFontsUrl: 'https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap'
+      googleFontsUrl: 'https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&display=swap'
     },
     layout: {
       borderRadius: 'rounded-lg',

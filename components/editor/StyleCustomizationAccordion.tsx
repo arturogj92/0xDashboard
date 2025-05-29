@@ -14,6 +14,8 @@ import AvatarDisplaySelector from "@/components/editor/AvatarDisplaySelector";
 import { LandingAvatarUpload } from "@/components/editor/LandingAvatarUpload";
 import BackgroundPatternSelector from "@/components/editor/BackgroundPatternSelector";
 import LinkImageStyleSelector from "@/components/editor/LinkImageStyleSelector";
+import { LandingInfoEditor } from "@/components/editor/LandingInfoEditor";
+import { Info } from 'lucide-react';
 
 interface StyleCustomizationAccordionProps {
   landing: {
@@ -28,6 +30,7 @@ interface StyleCustomizationAccordionProps {
   handleConfigurationSave: (config: any) => void;
   handleThemeUpdate: (themeId: string) => void;
   onAvatarUpdate: (avatarUrl: string | null) => void;
+  onLandingInfoUpdate?: (name: string, description: string) => void;
   className?: string;
 }
 
@@ -37,10 +40,12 @@ export default function StyleCustomizationAccordion({
   handleConfigurationSave,
   handleThemeUpdate,
   onAvatarUpdate,
+  onLandingInfoUpdate,
   className = "" 
 }: StyleCustomizationAccordionProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    info: false,
     avatar: false,
     backgrounds: false,
     links: false,
@@ -111,6 +116,39 @@ export default function StyleCustomizationAccordion({
               landingName={landing.name}
               landingDescription={landing.description}
             />
+          </div>
+
+          {/* Información Básica */}
+          <div id="landing-info" className="bg-gray-800/20 border border-gray-700/50 rounded-lg overflow-hidden">
+            <button
+              onClick={() => toggleSection('info')}
+              className="w-full p-4 flex items-center justify-between hover:bg-gray-800/30 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-br from-blue-500 to-cyan-600 p-2 rounded-lg shadow-lg">
+                  <Info className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-white">Información Básica</h3>
+              </div>
+              {openSections.info ? (
+                <ChevronUpIcon className="h-5 w-5 text-gray-400" />
+              ) : (
+                <ChevronDownIcon className="h-5 w-5 text-gray-400" />
+              )}
+            </button>
+            
+            {openSections.info && (
+              <div className="p-4 pt-0">
+                {landing.id && onLandingInfoUpdate && (
+                  <LandingInfoEditor
+                    landingId={landing.id}
+                    initialName={landing.name || ''}
+                    initialDescription={landing.description || ''}
+                    onUpdate={onLandingInfoUpdate}
+                  />
+                )}
+              </div>
+            )}
           </div>
 
           {/* Configuración de Avatar */}

@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import { API_URL, createAuthHeaders } from "@/lib/api";
 import MultiSectionsBoard from "@/components/editor/MultiSectionsBoard";
 import SocialLinksPanel from "@/components/editor/SocialLinksPanel";
-import { LandingInfoEditor } from "@/components/editor/LandingInfoEditor";
 import { LandingPreview } from "@/components/landing/LandingPreview";
 import { LinkData, SectionData, SocialLinkData } from "@/components/editor/types";
 import StyleCustomizationAccordion from "@/components/editor/StyleCustomizationAccordion";
@@ -420,7 +419,17 @@ export default function AdminPage() {
           gradient: { color1: '#000000', color2: '#000000' },
           fontColor: { primary: '#ffffff', secondary: '#ffffff' },
           linkColor: { background: '#000000', text: '#ffffff' },
-          backgroundPattern: { pattern: 'grid', color: '#ffffff', opacity: 0.1 }
+          backgroundPattern: { pattern: 'grid', color: '#ffffff', opacity: 0.1 },
+          titleStyle: {
+            fontSize: 'text-2xl',
+            gradientEnabled: true,
+            gradientColors: {
+              from: '#667eea',
+              via: '#764ba2',
+              to: '#f093fb'
+            },
+            gradientDirection: 'to right'
+          }
         };
       case 'light':
         return {
@@ -490,7 +499,7 @@ export default function AdminPage() {
 
   const handleScrollToSection = (sectionId: string) => {
     // Casos especiales para elementos dentro del acordeón de personalización
-    if (sectionId === 'background-gradient' || sectionId === 'background-pattern' || sectionId === 'avatar-section' || sectionId === 'link-styles' || sectionId === 'font-family') {
+    if (sectionId === 'landing-info' || sectionId === 'info-section' || sectionId === 'background-gradient' || sectionId === 'background-pattern' || sectionId === 'avatar-section' || sectionId === 'link-styles' || sectionId === 'font-family') {
       // Primero, asegurar que el acordeón esté abierto
       const accordionButton = document.querySelector('[data-accordion="style-customization"]');
       let isOpen = true;
@@ -507,18 +516,236 @@ export default function AdminPage() {
       
       // Esperar un momento para que el acordeón se abra, luego hacer scroll
       setTimeout(() => {
-        const targetElement = document.getElementById(sectionId);
-        if (targetElement) {
-          targetElement.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start',
-            inline: 'nearest'
-          });
-          
-          targetElement.classList.add('highlight-section');
-          setTimeout(() => {
-            targetElement.classList.remove('highlight-section');
-          }, 3000);
+        // Para background-gradient, necesitamos abrir el accordion de fondos
+        if (sectionId === 'background-gradient') {
+          const backgroundAccordion = document.querySelector('#background-configuration button');
+          if (backgroundAccordion) {
+            // Verificar si el accordion de fondos está cerrado
+            const backgroundSection = document.querySelector('#background-configuration');
+            const isBackgroundOpen = backgroundSection?.querySelector('[class*="pt-0"]') !== null;
+            
+            if (!isBackgroundOpen) {
+              (backgroundAccordion as HTMLElement).click();
+              // Esperar un poco más para que se abra el accordion interno
+              setTimeout(() => {
+                const targetElement = document.getElementById('background-configuration');
+                if (targetElement) {
+                  targetElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'nearest'
+                  });
+                  
+                  targetElement.classList.add('highlight-section');
+                  setTimeout(() => {
+                    targetElement.classList.remove('highlight-section');
+                  }, 3000);
+                }
+              }, 300);
+            } else {
+              // Si ya está abierto, solo hacer scroll
+              const targetElement = document.getElementById('background-configuration');
+              if (targetElement) {
+                targetElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest'
+                });
+                
+                targetElement.classList.add('highlight-section');
+                setTimeout(() => {
+                  targetElement.classList.remove('highlight-section');
+                }, 3000);
+              }
+            }
+          }
+        } else if (sectionId === 'avatar-section') {
+          // Para avatar-section, necesitamos abrir el accordion de avatar
+          const avatarAccordion = document.querySelector('#avatar-configuration button');
+          if (avatarAccordion) {
+            // Verificar si el accordion de avatar está cerrado
+            const avatarSection = document.querySelector('#avatar-configuration');
+            const isAvatarOpen = avatarSection?.querySelector('[class*="pt-0"]') !== null;
+            
+            if (!isAvatarOpen) {
+              (avatarAccordion as HTMLElement).click();
+              // Esperar un poco más para que se abra el accordion interno
+              setTimeout(() => {
+                const targetElement = document.getElementById('avatar-configuration');
+                if (targetElement) {
+                  targetElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'nearest'
+                  });
+                  
+                  targetElement.classList.add('highlight-section');
+                  setTimeout(() => {
+                    targetElement.classList.remove('highlight-section');
+                  }, 3000);
+                }
+              }, 300);
+            } else {
+              // Si ya está abierto, solo hacer scroll
+              const targetElement = document.getElementById('avatar-configuration');
+              if (targetElement) {
+                targetElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest'
+                });
+                
+                targetElement.classList.add('highlight-section');
+                setTimeout(() => {
+                  targetElement.classList.remove('highlight-section');
+                }, 3000);
+              }
+            }
+          }
+        } else if (sectionId === 'info-section') {
+          // Para info-section, necesitamos abrir el accordion de información básica
+          const infoAccordion = document.querySelector('#landing-info button');
+          if (infoAccordion) {
+            // Verificar si el accordion de info está cerrado
+            const infoSection = document.querySelector('#landing-info');
+            const isInfoOpen = infoSection?.querySelector('[class*="pt-0"]') !== null;
+            
+            if (!isInfoOpen) {
+              (infoAccordion as HTMLElement).click();
+              // Esperar un poco más para que se abra el accordion interno
+              setTimeout(() => {
+                const targetElement = document.getElementById('landing-info');
+                if (targetElement) {
+                  targetElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'nearest'
+                  });
+                  
+                  targetElement.classList.add('highlight-section');
+                  setTimeout(() => {
+                    targetElement.classList.remove('highlight-section');
+                  }, 3000);
+                }
+              }, 300);
+            } else {
+              // Si ya está abierto, solo hacer scroll
+              const targetElement = document.getElementById('landing-info');
+              if (targetElement) {
+                targetElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest'
+                });
+                
+                targetElement.classList.add('highlight-section');
+                setTimeout(() => {
+                  targetElement.classList.remove('highlight-section');
+                }, 3000);
+              }
+            }
+          }
+        } else if (sectionId === 'font-family') {
+          // Para font-family, necesitamos abrir el accordion de fuentes
+          const fontAccordion = document.querySelector('#font-configuration button');
+          if (fontAccordion) {
+            // Verificar si el accordion de fuentes está cerrado
+            const fontSection = document.querySelector('#font-configuration');
+            const isFontOpen = fontSection?.querySelector('[class*="pt-0"]') !== null;
+            
+            if (!isFontOpen) {
+              (fontAccordion as HTMLElement).click();
+              // Esperar un poco más para que se abra el accordion interno
+              setTimeout(() => {
+                const targetElement = document.getElementById('font-configuration');
+                if (targetElement) {
+                  targetElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'nearest'
+                  });
+                  
+                  targetElement.classList.add('highlight-section');
+                  setTimeout(() => {
+                    targetElement.classList.remove('highlight-section');
+                  }, 3000);
+                }
+              }, 300);
+            } else {
+              // Si ya está abierto, solo hacer scroll
+              const targetElement = document.getElementById('font-configuration');
+              if (targetElement) {
+                targetElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest'
+                });
+                
+                targetElement.classList.add('highlight-section');
+                setTimeout(() => {
+                  targetElement.classList.remove('highlight-section');
+                }, 3000);
+              }
+            }
+          }
+        } else if (sectionId === 'link-styles') {
+          // Para link-styles, necesitamos abrir el accordion de enlaces
+          const linkAccordion = document.querySelector('#link-styles button');
+          if (linkAccordion) {
+            // Verificar si el accordion de enlaces está cerrado
+            const linkSection = document.querySelector('#link-styles');
+            const isLinkOpen = linkSection?.querySelector('[class*="pt-0"]') !== null;
+            
+            if (!isLinkOpen) {
+              (linkAccordion as HTMLElement).click();
+              // Esperar un poco más para que se abra el accordion interno
+              setTimeout(() => {
+                const targetElement = document.getElementById('link-styles');
+                if (targetElement) {
+                  targetElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'nearest'
+                  });
+                  
+                  targetElement.classList.add('highlight-section');
+                  setTimeout(() => {
+                    targetElement.classList.remove('highlight-section');
+                  }, 3000);
+                }
+              }, 300);
+            } else {
+              // Si ya está abierto, solo hacer scroll
+              const targetElement = document.getElementById('link-styles');
+              if (targetElement) {
+                targetElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest'
+                });
+                
+                targetElement.classList.add('highlight-section');
+                setTimeout(() => {
+                  targetElement.classList.remove('highlight-section');
+                }, 3000);
+              }
+            }
+          }
+        } else {
+          // Para otros elementos, comportamiento normal
+          const targetElement = document.getElementById(sectionId);
+          if (targetElement) {
+            targetElement.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'start',
+              inline: 'nearest'
+            });
+            
+            targetElement.classList.add('highlight-section');
+            setTimeout(() => {
+              targetElement.classList.remove('highlight-section');
+            }, 3000);
+          }
         }
       }, delay);
       
@@ -618,16 +845,6 @@ export default function AdminPage() {
           
         </div>
         
-        <div id="landing-info" className="w-full mb-8">
-          <LandingInfoEditor
-            landingId={landingId}
-            initialName={landing.name}
-            initialDescription={landing.description}
-            onUpdate={handleLandingInfoUpdate}
-            className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
-          />
-        </div>
-        
         <div id="style-customization" className="w-full mb-8">
           <StyleCustomizationAccordion
             landing={landing}
@@ -635,6 +852,7 @@ export default function AdminPage() {
             handleConfigurationSave={handleConfigurationSave}
             handleThemeUpdate={handleThemeUpdate}
             onAvatarUpdate={handleAvatarUpdate}
+            onLandingInfoUpdate={handleLandingInfoUpdate}
           />
         </div>
 
