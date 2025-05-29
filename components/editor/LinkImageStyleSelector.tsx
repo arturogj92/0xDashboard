@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 
 interface LinkImageStyleConfig {
   style: 'rectangle' | 'circle' | 'rectangle-padded';
@@ -91,16 +90,14 @@ export default function LinkImageStyleSelector({
         
         <div className="space-y-3">
           {styles.map((style) => (
-            <motion.button
+            <div
               key={style.id}
               onClick={() => handleStyleChange(style.id as 'rectangle' | 'circle' | 'rectangle-padded')}
-              className={`w-full text-left transition-all duration-200 ${
+              className={`w-full text-left transition-all duration-200 cursor-pointer transform hover:scale-[1.02] active:scale-[0.98] ${
                 selectedStyle === style.id
                   ? 'ring-2 ring-purple-500 ring-offset-2 ring-offset-gray-900'
                   : ''
               }`}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
             >
               <div className={`p-4 rounded-lg border ${
                 selectedStyle === style.id
@@ -126,7 +123,7 @@ export default function LinkImageStyleSelector({
                   </p>
                 </div>
               </div>
-            </motion.button>
+            </div>
           ))}
         </div>
       </div>

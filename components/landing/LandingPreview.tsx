@@ -29,6 +29,7 @@ interface LandingPreviewProps {
     linkColor?: {
       background: string;
       text: string;
+      backgroundOpacity?: number;
     };
     fontFamily?: {
       family: string;
@@ -55,6 +56,9 @@ interface LandingPreviewProps {
       pattern: string;
       color: string;
       opacity: number;
+    };
+    linkImageStyle?: {
+      style: 'rectangle' | 'circle' | 'rectangle-padded';
     };
   };
 }
@@ -236,7 +240,7 @@ export const LandingPreview = React.memo(function LandingPreview({
   const borderRadiusValue = configurations.borderRadius || 'rounded-xl';
   const gradientConfig = configurations.gradient || { color1: '#000000', color2: '#4a044d' };
   const fontColorConfig = configurations.fontColor || { primary: '#ffffff', secondary: '#e2e8f0' };
-  const linkColorConfig = configurations.linkColor || { background: '#000000', text: '#ffffff' };
+  const linkColorConfig = configurations.linkColor || { background: '#000000', text: '#ffffff', backgroundOpacity: 1 };
   const fontFamilyConfig = configurations.fontFamily || { family: 'Inter', url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' };
   const linkImageStyleConfig = configurations.linkImageStyle || { style: 'rectangle' };
   

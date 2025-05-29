@@ -167,7 +167,7 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
   const [isOpen, setIsOpen] = useState(false);
   const [localConfig, setLocalConfig] = useState(value);
   const [customColor, setCustomColor] = useState('#3b82f6');
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   // Debounced onChange para evitar muchas llamadas
   const debouncedOnChange = useCallback((config: BackgroundPatternConfiguration) => {
