@@ -39,13 +39,13 @@ export default function StyleCustomizationAccordion({
   onAvatarUpdate,
   className = "" 
 }: StyleCustomizationAccordionProps) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    avatar: true,
-    backgrounds: true,
-    links: true,
-    fonts: true,
-    effects: true,
+    avatar: false,
+    backgrounds: false,
+    links: false,
+    fonts: false,
+    effects: false,
   });
 
   const toggleSection = (section: string) => {
