@@ -4,103 +4,142 @@ import { useState, useEffect, useRef } from "react";
 import { API_URL, createAuthHeaders } from "@/lib/api";
 import MultiSectionsBoard from "@/components/editor/MultiSectionsBoard";
 import SocialLinksPanel from "@/components/editor/SocialLinksPanel";
-import { LandingInfoEditor } from "@/components/editor/LandingInfoEditor";
 import { LandingPreview } from "@/components/landing/LandingPreview";
 import { LinkData, SectionData, SocialLinkData } from "@/components/editor/types";
 import StyleCustomizationAccordion from "@/components/editor/StyleCustomizationAccordion";
-import { useParams } from 'next/navigation';
+import { GuideOverlay } from "@/components/editor/GuideOverlay";
+import { useParams, useRouter } from 'next/navigation';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
+import { useAuth } from '@/contexts/AuthContext';
+import { getThemeById } from '@/lib/themes';
 
 export default function AdminPage() {
   const t = useTranslations('editor');
   const params = useParams();
+  const router = useRouter();
+  const { user, isAuthenticated, isLoading } = useAuth();
   
   const [links, setLinks] = useState<LinkData[]>([]);
   const [sections, setSections] = useState<SectionData[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>([]);
-  const [landing, setLanding] = useState<{id?: string; name: string; description: string; theme_id?: string; avatar_url?: string; configurations?: any}>({name: '', description: ''});
+  const [landing, setLanding] = useState<{id?: string; name: string; description: string; theme_id?: string; avatar_url?: string; configurations?: any; user_id?: string}>({name: '', description: ''});
   const [previewPosition, setPreviewPosition] = useState('fixed');
+  const [isOwnershipVerified, setIsOwnershipVerified] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
 
+  // Protección de autenticación y ownership
   useEffect(() => {
+    if (isLoading) return; // Esperar a que termine de cargar la autenticación
+    
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+    
     const lid = params.landingId;
     if (lid && !Array.isArray(lid)) {
-      // Obtener datos de la landing
+      // Primero verificar ownership de la landing
       fetch(`${API_URL}/api/landings/${lid}`, { headers: createAuthHeaders() })
-        .then(res => res.json())
-        .then(data => {
-          if (data.data) {
-            const existingConfigurations = data.data.configurations || {};
-            const defaultEffects = {
-              showBadge: true,
-              typewriterEffect: true
-            };
-            
-            const defaultTitleStyle = {
-              fontSize: 'text-2xl',
-              gradientEnabled: false,
-              gradientColors: {
-                from: '#007AFF',
-                to: '#00D4FF'
+        .then(res => {
+          if (res.status === 404) {
+            router.push('/');
+            return null;
+          }
+          if (res.status === 403) {
+            // Redirigir a la home si no es propietario
+            router.push('/');
+            return null;
+          }
+          return res.json();
+        })
+        .then(async (data) => {
+          if (!data || !data.data) return;
+          
+          setIsOwnershipVerified(true);
+          
+          // Configurar datos de la landing
+          const existingConfigurations = data.data.configurations || {};
+          const defaultEffects = {
+            showBadge: true,
+            typewriterEffect: true
+          };
+          
+          const defaultTitleStyle = {
+            fontSize: 'text-2xl',
+            gradientEnabled: false,
+            gradientColors: {
+              from: '#007AFF',
+              to: '#00D4FF'
+            },
+            gradientDirection: 'to right'
+          };
+          
+          const defaultAvatarDisplay = {
+            showAvatar: true
+          };
+          
+          const defaultBackgroundPattern = {
+            pattern: 'none',
+            color: '#ffffff',
+            opacity: 0.1
+          };
+          
+          setLanding({
+            id: data.data.id,
+            name: data.data.name || '',
+            description: data.data.description || '',
+            theme_id: data.data.theme_id || 'dark',
+            avatar_url: data.data.avatar_url,
+            user_id: data.data.user_id,
+            configurations: {
+              ...existingConfigurations,
+              effects: {
+                ...defaultEffects,
+                ...existingConfigurations.effects
               },
-              gradientDirection: 'to right'
-            };
-            
-            const defaultAvatarDisplay = {
-              showAvatar: true
-            };
-            
-            const defaultBackgroundPattern = {
-              pattern: 'none',
-              color: '#ffffff',
-              opacity: 0.1
-            };
-            
-            setLanding({
-              id: data.data.id,
-              name: data.data.name || '',
-              description: data.data.description || '',
-              theme_id: data.data.theme_id || 'dark',
-              avatar_url: data.data.avatar_url,
-              configurations: {
-                ...existingConfigurations,
-                effects: {
-                  ...defaultEffects,
-                  ...existingConfigurations.effects
-                },
-                titleStyle: {
-                  ...defaultTitleStyle,
-                  ...existingConfigurations.titleStyle
-                },
-                avatarDisplay: {
-                  ...defaultAvatarDisplay,
-                  ...existingConfigurations.avatarDisplay
-                },
-                backgroundPattern: {
-                  ...defaultBackgroundPattern,
-                  ...existingConfigurations.backgroundPattern
-                }
+              titleStyle: {
+                ...defaultTitleStyle,
+                ...existingConfigurations.titleStyle
+              },
+              avatarDisplay: {
+                ...defaultAvatarDisplay,
+                ...existingConfigurations.avatarDisplay
+              },
+              backgroundPattern: {
+                ...defaultBackgroundPattern,
+                ...existingConfigurations.backgroundPattern
               }
-            });
+            }
+          });
+
+          // Solo después de verificar ownership, cargar el resto de datos
+          try {
+            const [sectionsRes, linksRes, socialLinksRes] = await Promise.all([
+              fetch(`${API_URL}/api/sections?landingId=${lid}`, { headers: createAuthHeaders() }),
+              fetch(`${API_URL}/api/links?landingId=${lid}`, { headers: createAuthHeaders() }),
+              fetch(`${API_URL}/api/social-links?landingId=${lid}`, { headers: createAuthHeaders() })
+            ]);
+
+            const [sectionsData, linksData, socialLinksData] = await Promise.all([
+              sectionsRes.json(),
+              linksRes.json(),
+              socialLinksRes.json()
+            ]);
+
+            if (Array.isArray(sectionsData)) setSections(sectionsData);
+            if (Array.isArray(linksData)) setLinks(linksData);
+            if (Array.isArray(socialLinksData)) setSocialLinks(socialLinksData);
+          } catch (err) {
+            console.error('Error cargando datos relacionados:', err);
           }
         })
-        .catch(err => console.error('Error cargando landing:', err));
-      
-      fetch(`${API_URL}/api/sections?landingId=${lid}`, { headers: createAuthHeaders() })
-        .then(res => res.json())
-        .then(data => { if (Array.isArray(data)) setSections(data); })
-        .catch(err => console.error('Error cargando secciones:', err));
-      fetch(`${API_URL}/api/links?landingId=${lid}`, { headers: createAuthHeaders() })
-        .then(res => res.json())
-        .then(data => { if (Array.isArray(data)) setLinks(data); })
-        .catch(err => console.error('Error cargando enlaces:', err));
-      fetch(`${API_URL}/api/social-links?landingId=${lid}`, { headers: createAuthHeaders() })
-        .then(res => res.json())
-        .then(data => { if (Array.isArray(data)) setSocialLinks(data); })
-        .catch(err => console.error('Error cargando enlaces sociales:', err));
+        .catch(err => {
+          console.error('Error cargando landing:', err);
+          router.push('/');
+        });
     }
-  }, [params.landingId]);
+  }, [params.landingId, isLoading, isAuthenticated, user?.id, router]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -126,8 +165,35 @@ export default function AdminPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Protección de acceso
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-900 flex items-center justify-center">
+        <div className="text-white text-center">
+          <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p>{t('verifyingAccess')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null; // El useEffect ya redirigió
+  }
+
+  if (!isOwnershipVerified) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-900 flex items-center justify-center">
+        <div className="text-white text-center">
+          <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p>{t('verifyingPermissions')}</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!params.landingId || Array.isArray(params.landingId)) {
-    return <div>Error: landingId invalido</div>;
+    return <div className="text-white">{t('invalidLandingId')}</div>;
   }
   const landingId: string = params.landingId;
 
@@ -293,6 +359,8 @@ export default function AdminPage() {
 
   // Función para obtener configuraciones basadas en el tema
   const getThemeConfigurations = (themeId: string) => {
+    const theme = getThemeById(themeId);
+    
     const baseConfig = {
       borderRadius: 'rounded-xl',
       fontFamily: {
@@ -317,31 +385,81 @@ export default function AdminPage() {
       }
     };
 
+    // Si existe el tema, usar sus configuraciones
+    if (theme) {
+      return {
+        ...baseConfig,
+        fontFamily: {
+          family: theme.typography.fontFamily,
+          url: theme.typography.googleFontsUrl || baseConfig.fontFamily.url
+        },
+        gradient: extractGradientColors(theme.colors.background),
+        fontColor: { 
+          primary: theme.colors.textPrimary, 
+          secondary: theme.colors.textSecondary 
+        },
+        linkColor: { 
+          background: theme.colors.linkBackground, 
+          text: theme.colors.linkText 
+        },
+        // Agregar el patrón de fondo del tema si existe
+        backgroundPattern: theme.layout.backgroundPattern || { 
+          pattern: 'none', 
+          color: '#ffffff', 
+          opacity: 0.1 
+        }
+      };
+    }
+
+    // Configuraciones por defecto para temas legacy
     switch (themeId) {
       case 'dark':
         return {
           ...baseConfig,
           gradient: { color1: '#000000', color2: '#000000' },
           fontColor: { primary: '#ffffff', secondary: '#ffffff' },
-          linkColor: { background: '#000000', text: '#ffffff' }
+          linkColor: { background: '#000000', text: '#ffffff' },
+          backgroundPattern: { pattern: 'grid', color: '#ffffff', opacity: 0.1 },
+          titleStyle: {
+            fontSize: 'text-2xl',
+            gradientEnabled: true,
+            gradientColors: {
+              from: '#667eea',
+              via: '#764ba2',
+              to: '#f093fb'
+            },
+            gradientDirection: 'to right'
+          }
         };
       case 'light':
         return {
           ...baseConfig,
           gradient: { color1: '#f8fafc', color2: '#e2e8f0' },
           fontColor: { primary: '#000000', secondary: '#000000' },
-          linkColor: { background: '#ffffff', text: '#000000' }
+          linkColor: { background: '#ffffff', text: '#000000' },
+          backgroundPattern: { pattern: 'dots', color: '#000000', opacity: 0.15 }
         };
       case 'gradient':
         return {
           ...baseConfig,
           gradient: { color1: '#667eea', color2: '#764ba2' },
           fontColor: { primary: '#ffffff', secondary: '#f1f5f9' },
-          linkColor: { background: 'rgba(255,255,255,0.15)', text: '#ffffff' }
+          linkColor: { background: 'rgba(255,255,255,0.15)', text: '#ffffff' },
+          backgroundPattern: { pattern: 'geometric', color: '#8b5cf6', opacity: 0.2 }
         };
       default:
         return baseConfig;
     }
+  };
+
+  // Función auxiliar para extraer colores del gradiente
+  const extractGradientColors = (gradient: string) => {
+    // Buscar colores hexadecimales en el gradiente
+    const colors = gradient.match(/#[0-9a-fA-F]{6}/g) || ['#000000', '#000000'];
+    return {
+      color1: colors[0] || '#000000',
+      color2: colors[1] || colors[0] || '#000000'
+    };
   };
 
   const handleConfigurationUpdate = (newConfig: any) => {
@@ -377,6 +495,284 @@ export default function AdminPage() {
 
   const handleAvatarUpdate = (avatarUrl: string | null) => {
     setLanding(prev => ({ ...prev, avatar_url: avatarUrl || undefined }));
+  };
+
+  const handleScrollToSection = (sectionId: string) => {
+    // Casos especiales para elementos dentro del acordeón de personalización
+    if (sectionId === 'landing-info' || sectionId === 'info-section' || sectionId === 'background-gradient' || sectionId === 'background-pattern' || sectionId === 'avatar-section' || sectionId === 'link-styles' || sectionId === 'font-family') {
+      // Primero, asegurar que el acordeón esté abierto
+      const accordionButton = document.querySelector('[data-accordion="style-customization"]');
+      let isOpen = true;
+      let delay = 0;
+      
+      if (accordionButton) {
+        // Si el acordeón está cerrado, abrirlo
+        isOpen = accordionButton.getAttribute('aria-expanded') === 'true';
+        if (!isOpen) {
+          (accordionButton as HTMLElement).click();
+          delay = 300; // Esperar 300ms para que se abra
+        }
+      }
+      
+      // Esperar un momento para que el acordeón se abra, luego hacer scroll
+      setTimeout(() => {
+        // Para background-gradient, necesitamos abrir el accordion de fondos
+        if (sectionId === 'background-gradient') {
+          const backgroundAccordion = document.querySelector('#background-configuration button');
+          if (backgroundAccordion) {
+            // Verificar si el accordion de fondos está cerrado
+            const backgroundSection = document.querySelector('#background-configuration');
+            const isBackgroundOpen = backgroundSection?.querySelector('[class*="pt-0"]') !== null;
+            
+            if (!isBackgroundOpen) {
+              (backgroundAccordion as HTMLElement).click();
+              // Esperar un poco más para que se abra el accordion interno
+              setTimeout(() => {
+                const targetElement = document.getElementById('background-configuration');
+                if (targetElement) {
+                  targetElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'nearest'
+                  });
+                  
+                  targetElement.classList.add('highlight-section');
+                  setTimeout(() => {
+                    targetElement.classList.remove('highlight-section');
+                  }, 3000);
+                }
+              }, 300);
+            } else {
+              // Si ya está abierto, solo hacer scroll
+              const targetElement = document.getElementById('background-configuration');
+              if (targetElement) {
+                targetElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest'
+                });
+                
+                targetElement.classList.add('highlight-section');
+                setTimeout(() => {
+                  targetElement.classList.remove('highlight-section');
+                }, 3000);
+              }
+            }
+          }
+        } else if (sectionId === 'avatar-section') {
+          // Para avatar-section, necesitamos abrir el accordion de avatar
+          const avatarAccordion = document.querySelector('#avatar-configuration button');
+          if (avatarAccordion) {
+            // Verificar si el accordion de avatar está cerrado
+            const avatarSection = document.querySelector('#avatar-configuration');
+            const isAvatarOpen = avatarSection?.querySelector('[class*="pt-0"]') !== null;
+            
+            if (!isAvatarOpen) {
+              (avatarAccordion as HTMLElement).click();
+              // Esperar un poco más para que se abra el accordion interno
+              setTimeout(() => {
+                const targetElement = document.getElementById('avatar-configuration');
+                if (targetElement) {
+                  targetElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'nearest'
+                  });
+                  
+                  targetElement.classList.add('highlight-section');
+                  setTimeout(() => {
+                    targetElement.classList.remove('highlight-section');
+                  }, 3000);
+                }
+              }, 300);
+            } else {
+              // Si ya está abierto, solo hacer scroll
+              const targetElement = document.getElementById('avatar-configuration');
+              if (targetElement) {
+                targetElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest'
+                });
+                
+                targetElement.classList.add('highlight-section');
+                setTimeout(() => {
+                  targetElement.classList.remove('highlight-section');
+                }, 3000);
+              }
+            }
+          }
+        } else if (sectionId === 'info-section') {
+          // Para info-section, necesitamos abrir el accordion de información básica
+          const infoAccordion = document.querySelector('#landing-info button');
+          if (infoAccordion) {
+            // Verificar si el accordion de info está cerrado
+            const infoSection = document.querySelector('#landing-info');
+            const isInfoOpen = infoSection?.querySelector('[class*="pt-0"]') !== null;
+            
+            if (!isInfoOpen) {
+              (infoAccordion as HTMLElement).click();
+              // Esperar un poco más para que se abra el accordion interno
+              setTimeout(() => {
+                const targetElement = document.getElementById('landing-info');
+                if (targetElement) {
+                  targetElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'nearest'
+                  });
+                  
+                  targetElement.classList.add('highlight-section');
+                  setTimeout(() => {
+                    targetElement.classList.remove('highlight-section');
+                  }, 3000);
+                }
+              }, 300);
+            } else {
+              // Si ya está abierto, solo hacer scroll
+              const targetElement = document.getElementById('landing-info');
+              if (targetElement) {
+                targetElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest'
+                });
+                
+                targetElement.classList.add('highlight-section');
+                setTimeout(() => {
+                  targetElement.classList.remove('highlight-section');
+                }, 3000);
+              }
+            }
+          }
+        } else if (sectionId === 'font-family') {
+          // Para font-family, necesitamos abrir el accordion de fuentes
+          const fontAccordion = document.querySelector('#font-configuration button');
+          if (fontAccordion) {
+            // Verificar si el accordion de fuentes está cerrado
+            const fontSection = document.querySelector('#font-configuration');
+            const isFontOpen = fontSection?.querySelector('[class*="pt-0"]') !== null;
+            
+            if (!isFontOpen) {
+              (fontAccordion as HTMLElement).click();
+              // Esperar un poco más para que se abra el accordion interno
+              setTimeout(() => {
+                const targetElement = document.getElementById('font-configuration');
+                if (targetElement) {
+                  targetElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'nearest'
+                  });
+                  
+                  targetElement.classList.add('highlight-section');
+                  setTimeout(() => {
+                    targetElement.classList.remove('highlight-section');
+                  }, 3000);
+                }
+              }, 300);
+            } else {
+              // Si ya está abierto, solo hacer scroll
+              const targetElement = document.getElementById('font-configuration');
+              if (targetElement) {
+                targetElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest'
+                });
+                
+                targetElement.classList.add('highlight-section');
+                setTimeout(() => {
+                  targetElement.classList.remove('highlight-section');
+                }, 3000);
+              }
+            }
+          }
+        } else if (sectionId === 'link-styles') {
+          // Para link-styles, necesitamos abrir el accordion de enlaces
+          const linkAccordion = document.querySelector('#link-styles button');
+          if (linkAccordion) {
+            // Verificar si el accordion de enlaces está cerrado
+            const linkSection = document.querySelector('#link-styles');
+            const isLinkOpen = linkSection?.querySelector('[class*="pt-0"]') !== null;
+            
+            if (!isLinkOpen) {
+              (linkAccordion as HTMLElement).click();
+              // Esperar un poco más para que se abra el accordion interno
+              setTimeout(() => {
+                const targetElement = document.getElementById('link-styles');
+                if (targetElement) {
+                  targetElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start',
+                    inline: 'nearest'
+                  });
+                  
+                  targetElement.classList.add('highlight-section');
+                  setTimeout(() => {
+                    targetElement.classList.remove('highlight-section');
+                  }, 3000);
+                }
+              }, 300);
+            } else {
+              // Si ya está abierto, solo hacer scroll
+              const targetElement = document.getElementById('link-styles');
+              if (targetElement) {
+                targetElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest'
+                });
+                
+                targetElement.classList.add('highlight-section');
+                setTimeout(() => {
+                  targetElement.classList.remove('highlight-section');
+                }, 3000);
+              }
+            }
+          }
+        } else {
+          // Para otros elementos, comportamiento normal
+          const targetElement = document.getElementById(sectionId);
+          if (targetElement) {
+            targetElement.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'start',
+              inline: 'nearest'
+            });
+            
+            targetElement.classList.add('highlight-section');
+            setTimeout(() => {
+              targetElement.classList.remove('highlight-section');
+            }, 3000);
+          }
+        }
+      }, delay);
+      
+      return;
+    }
+
+    // Mapeo para secciones principales
+    const sectionMap: Record<string, string> = {
+      'info-section': 'landing-info',
+      'links-section': 'sections-board',
+      'social-section': 'social-links',
+      'style-customization': 'style-customization'
+    };
+
+    const targetElement = document.getElementById(sectionMap[sectionId] || sectionId);
+    if (targetElement) {
+      targetElement.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start',
+        inline: 'nearest'
+      });
+      
+      targetElement.classList.add('highlight-section');
+      setTimeout(() => {
+        targetElement.classList.remove('highlight-section');
+      }, 3000);
+    }
   };
 
   const landingPreview = {
@@ -417,18 +813,21 @@ export default function AdminPage() {
             className="absolute w-full h-full z-20 pointer-events-none object-contain"
           />
           <div className="absolute inset-[4%] z-10 rounded-[20px] md:rounded-[24px] lg:rounded-[28px] xl:rounded-[32px] overflow-hidden">
-            <LandingPreview 
-              name={landingPreview.name}
-              description={landingPreview.description}
-              links={links}
-              sections={sections}
-              socialLinks={socialLinks}
-              isPreview={true}
-              themeId={landingPreview.theme_id}
-              avatarUrl={landing.avatar_url}
-              configurations={landing.configurations}
-            />
+            <div className="h-full overflow-y-auto overflow-x-hidden scrollbar-hide">
+              <LandingPreview 
+                name={landingPreview.name}
+                description={landingPreview.description}
+                links={links}
+                sections={sections}
+                socialLinks={socialLinks}
+                isPreview={true}
+                themeId={landingPreview.theme_id}
+                avatarUrl={landing.avatar_url}
+                configurations={landing.configurations}
+              />
+            </div>
           </div>
+          <GuideOverlay onScrollToSection={handleScrollToSection} />
         </div>
       </div>
       
@@ -446,27 +845,18 @@ export default function AdminPage() {
           
         </div>
         
-        <div className="w-full mb-8">
-          <LandingInfoEditor
-            landingId={landingId}
-            initialName={landing.name}
-            initialDescription={landing.description}
-            onUpdate={handleLandingInfoUpdate}
-            className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4"
-          />
-        </div>
-        
-        <div className="w-full mb-8">
+        <div id="style-customization" className="w-full mb-8">
           <StyleCustomizationAccordion
             landing={landing}
             handleConfigurationUpdate={handleConfigurationUpdate}
             handleConfigurationSave={handleConfigurationSave}
             handleThemeUpdate={handleThemeUpdate}
             onAvatarUpdate={handleAvatarUpdate}
+            onLandingInfoUpdate={handleLandingInfoUpdate}
           />
         </div>
 
-        <div className="w-full">
+        <div id="sections-board" className="w-full">
           <MultiSectionsBoard
             links={links}
             setLinks={setLinks}
@@ -480,7 +870,7 @@ export default function AdminPage() {
             landingId={landingId}
           />
         </div>
-        <div className="mt-8 w-full">
+        <div id="social-links" className="mt-8 w-full">
           <SocialLinksPanel
             landingId={landingId}
             onUpdate={(updatedSocialLinks) => setSocialLinks(updatedSocialLinks)}
@@ -541,6 +931,11 @@ export default function AdminPage() {
           animation: highlight-glow 2s ease-in-out;
         }
         
+        /* Efecto de brillo para sección enfocada por la guía */
+        .highlight-section {
+          animation: guide-highlight 3s ease-in-out;
+        }
+        
         @keyframes highlight-glow {
           0% { 
             box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4);
@@ -553,6 +948,25 @@ export default function AdminPage() {
           100% { 
             box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4);
             border-color: rgba(168, 85, 247, 0.3);
+          }
+        }
+        
+        @keyframes guide-highlight {
+          0% { 
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+            background-color: rgba(59, 130, 246, 0.05);
+          }
+          25% { 
+            box-shadow: 0 0 30px 10px rgba(59, 130, 246, 0.8);
+            background-color: rgba(59, 130, 246, 0.15);
+          }
+          75% { 
+            box-shadow: 0 0 30px 10px rgba(59, 130, 246, 0.8);
+            background-color: rgba(59, 130, 246, 0.15);
+          }
+          100% { 
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+            background-color: rgba(59, 130, 246, 0.05);
           }
         }
       `}</style>

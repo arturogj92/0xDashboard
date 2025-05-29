@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 
@@ -20,55 +20,68 @@ const patterns = [
   {
     id: 'none',
     name: 'Sin patrón',
-    description: 'Fondo sólido sin patrones'
+    description: 'Fondo sólido sin patrones',
+    type: 'none'
   },
   {
     id: 'grid',
     name: 'Grid',
-    description: 'Patrón de cuadrícula moderna'
+    description: 'Patrón de cuadrícula moderna',
+    type: 'css'
   },
   {
     id: 'dots',
     name: 'Puntos',
-    description: 'Patrón de puntos elegante'
+    description: 'Patrón de puntos elegante',
+    type: 'css'
   },
   {
     id: 'diagonal',
     name: 'Líneas diagonales',
-    description: 'Líneas diagonales dinámicas'
+    description: 'Líneas diagonales dinámicas',
+    type: 'css'
   },
   {
     id: 'waves',
     name: 'Ondas',
-    description: 'Patrón de ondas suaves'
+    description: 'Patrón de ondas suaves',
+    type: 'css'
   },
   {
     id: 'geometric',
     name: 'Geométrico',
-    description: 'Formas geométricas modernas'
+    description: 'Formas geométricas modernas',
+    type: 'image'
   },
   {
     id: 'circuit',
     name: 'Circuitos',
-    description: 'Patrón tecnológico de circuitos'
+    description: 'Patrón tecnológico de circuitos',
+    type: 'css'
   },
   {
-    id: 'lines',
-    name: 'Líneas sueltas',
-    description: 'Líneas flotantes dispersas'
+    id: 'dark_marble',
+    name: 'Mármol oscuro',
+    description: 'Textura de mármol oscuro elegante',
+    type: 'image'
+  },
+  {
+    id: 'white_marble',
+    name: 'Mármol blanco',
+    description: 'Textura de mármol blanco clásico',
+    type: 'image'
   }
 ];
 
 const colors = [
-  { name: 'Blanco', value: '#ffffff' },
-  { name: 'Gris claro', value: '#f3f4f6' },
-  { name: 'Gris', value: '#9ca3af' },
-  { name: 'Azul', value: '#3b82f6' },
-  { name: 'Púrpura', value: '#8b5cf6' },
-  { name: 'Rosa', value: '#ec4899' },
-  { name: 'Verde', value: '#10b981' },
-  { name: 'Amarillo', value: '#f59e0b' },
-  { name: 'Rojo', value: '#ef4444' }
+  { name: 'Snow', value: '#ffffff' },
+  { name: 'Midnight', value: '#000000' },
+  { name: 'Ocean', value: '#3b82f6' },
+  { name: 'Electric', value: '#8b5cf6' },
+  { name: 'Neon', value: '#ec4899' },
+  { name: 'Mint', value: '#10b981' },
+  { name: 'Sunset', value: '#f97316' },
+  { name: 'Custom', value: 'custom' }
 ];
 
 // Función para generar el CSS del patrón (solo para preview en selector)
@@ -113,14 +126,10 @@ const generatePatternCSS = (pattern: string, color: string, opacity: number) => 
     
     case 'geometric':
       return {
-        backgroundImage: `
-          linear-gradient(45deg, ${colorWithOpacity} 25%, transparent 25%),
-          linear-gradient(-45deg, ${colorWithOpacity} 25%, transparent 25%),
-          linear-gradient(45deg, transparent 75%, ${colorWithOpacity} 75%),
-          linear-gradient(-45deg, transparent 75%, ${colorWithOpacity} 75%)
-        `,
-        backgroundSize: '60px 60px',
-        backgroundPosition: '0 0, 0 30px, 30px -30px, -30px 0px'
+        backgroundImage: `url('/images/background/geometric.png')`,
+        backgroundSize: '200px 200px',
+        backgroundRepeat: 'repeat',
+        opacity: opacity
       };
     
     case 'circuit':
@@ -133,16 +142,20 @@ const generatePatternCSS = (pattern: string, color: string, opacity: number) => 
         backgroundSize: '40px 40px, 40px 40px, 40px 40px'
       };
     
-    case 'lines':
+    case 'dark_marble':
       return {
-        backgroundImage: `
-          linear-gradient(23deg, ${colorWithOpacity} 1px, transparent 1px),
-          linear-gradient(67deg, ${colorWithOpacity} 1px, transparent 1px),
-          linear-gradient(135deg, ${colorWithOpacity} 1px, transparent 1px),
-          linear-gradient(158deg, ${colorWithOpacity} 1px, transparent 1px)
-        `,
-        backgroundSize: '60px 80px, 80px 60px, 100px 70px, 70px 90px',
-        backgroundPosition: '0 0, 20px 10px, 40px 30px, 10px 50px'
+        backgroundImage: `url('/images/background/dark_marmol.png')`,
+        backgroundSize: '300px 300px',
+        backgroundRepeat: 'repeat',
+        opacity: opacity
+      };
+    
+    case 'white_marble':
+      return {
+        backgroundImage: `url('/images/background/white_marmol.png')`,
+        backgroundSize: '300px 300px',
+        backgroundRepeat: 'repeat',
+        opacity: opacity
       };
     
     default:
@@ -153,28 +166,68 @@ const generatePatternCSS = (pattern: string, color: string, opacity: number) => 
 export default function BackgroundPatternSelector({ value, onChange, onSave }: BackgroundPatternSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [localConfig, setLocalConfig] = useState(value);
+  const [customColor, setCustomColor] = useState('#3b82f6');
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Debounced onChange para evitar muchas llamadas
+  const debouncedOnChange = useCallback((config: BackgroundPatternConfiguration) => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+    debounceRef.current = setTimeout(() => {
+      onChange(config);
+      onSave(config); // También guardar después del debounce
+    }, 300); // 300ms delay
+  }, [onChange, onSave]);
 
   const handlePatternChange = (pattern: string) => {
     const newConfig = { ...localConfig, pattern };
     setLocalConfig(newConfig);
-    onChange(newConfig);
+    debouncedOnChange(newConfig);
   };
 
   const handleColorChange = (color: string) => {
-    const newConfig = { ...localConfig, color };
+    const finalColor = color === 'custom' ? customColor : color;
+    const newConfig = { ...localConfig, color: finalColor };
     setLocalConfig(newConfig);
-    onChange(newConfig);
+    debouncedOnChange(newConfig);
+  };
+
+  const handleCustomColorChange = (color: string) => {
+    setCustomColor(color);
+    // Si estamos en modo personalizado, actualizar inmediatamente
+    if (!colors.some(c => c.value === localConfig.color && c.value !== 'custom')) {
+      const newConfig = { ...localConfig, color };
+      setLocalConfig(newConfig);
+      debouncedOnChange(newConfig);
+    }
   };
 
   const handleOpacityChange = (opacity: number) => {
     const newConfig = { ...localConfig, opacity };
     setLocalConfig(newConfig);
-    onChange(newConfig);
+    debouncedOnChange(newConfig);
   };
 
-  const handleSave = () => {
-    onSave(localConfig);
-  };
+
+  // Sincronizar con el valor del padre cuando cambie
+  useEffect(() => {
+    setLocalConfig(value);
+    // Si el color actual es un color personalizado, actualizar customColor
+    const isCustomColor = !colors.some(c => c.value === value.color && c.value !== 'custom');
+    if (isCustomColor && value.color) {
+      setCustomColor(value.color);
+    }
+  }, [value]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
 
   const selectedPattern = patterns.find(p => p.id === localConfig.pattern) || patterns[0];
 
@@ -182,110 +235,214 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
     <div className="space-y-4">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-3 bg-gray-800/50 hover:bg-gray-700/50 rounded-lg border border-gray-600/50 transition-colors"
+        className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-gray-800/80 to-gray-700/80 hover:from-gray-700/90 hover:to-gray-600/90 rounded-xl border border-gray-500/30 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20"
       >
-        <div className="flex items-center space-x-3">
-          <div
-            className="w-8 h-8 rounded border border-gray-600 flex-shrink-0"
-            style={{
-              background: localConfig.pattern === 'none' ? localConfig.color : undefined,
-              ...generatePatternCSS(localConfig.pattern, localConfig.color, localConfig.opacity)
-            }}
-          />
+        <div className="flex items-center space-x-4">
+          <div className="relative">
+            <div
+              className="w-12 h-12 rounded-lg border-2 border-gray-500/30 flex-shrink-0 shadow-inner overflow-hidden"
+              style={{
+                background: localConfig.pattern === 'none' ? localConfig.color : undefined,
+                ...generatePatternCSS(localConfig.pattern, localConfig.color, localConfig.opacity)
+              }}
+            />
+            <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full border-2 border-gray-800 shadow-lg flex items-center justify-center">
+              <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+            </div>
+          </div>
           <div className="text-left">
-            <div className="text-white font-medium text-sm">{selectedPattern.name}</div>
-            <div className="text-gray-400 text-xs">{selectedPattern.description}</div>
+            <div className="text-white font-semibold text-base">{selectedPattern.name}</div>
+            <div className="text-gray-300 text-sm opacity-80">{selectedPattern.description}</div>
           </div>
         </div>
-        {isOpen ? (
-          <ChevronUpIcon className="w-4 h-4 text-gray-400" />
-        ) : (
-          <ChevronDownIcon className="w-4 h-4 text-gray-400" />
-        )}
+        <div className="flex items-center space-x-2">
+          <div className="text-xs text-purple-400 font-medium">
+            {localConfig.pattern !== 'none' ? `${Math.round(localConfig.opacity * 100)}%` : ''}
+          </div>
+          <div className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+            <ChevronDownIcon className="w-5 h-5 text-purple-400" />
+          </div>
+        </div>
       </button>
 
       {isOpen && (
-        <div className="space-y-4 p-4 bg-gray-800/30 rounded-lg border border-gray-600/30">
+        <div className="space-y-6 p-6 bg-gradient-to-br from-gray-800/60 to-gray-900/60 rounded-xl border border-gray-500/30 backdrop-blur-sm shadow-2xl">
           {/* Selector de patrón */}
           <div>
-            <label className="block text-sm font-medium text-white mb-3">Patrón de fondo</label>
-            <div className="grid grid-cols-2 gap-2">
+            <label className="block text-base font-semibold text-white mb-4 flex items-center gap-2">
+              <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"></div>
+              Patrón de fondo
+            </label>
+            <div className="grid grid-cols-2 gap-3">
               {patterns.map((pattern) => (
                 <button
                   key={pattern.id}
                   onClick={() => handlePatternChange(pattern.id)}
-                  className={`p-3 rounded-lg border transition-all ${
+                  className={`group p-4 rounded-xl border-2 transition-all duration-300 hover:scale-105 ${
                     localConfig.pattern === pattern.id
-                      ? 'border-purple-500 bg-purple-500/20'
-                      : 'border-gray-600 bg-gray-800/50 hover:bg-gray-700/50'
+                      ? 'border-purple-500 bg-gradient-to-br from-purple-500/30 to-pink-500/20 shadow-lg shadow-purple-500/25'
+                      : 'border-gray-600/50 bg-gray-800/40 hover:bg-gray-700/60 hover:border-gray-500'
                   }`}
                 >
                   <div
-                    className="w-full h-8 rounded mb-2 border border-gray-600"
+                    className="w-full h-10 rounded-lg mb-3 border-2 border-gray-600/30 shadow-inner overflow-hidden"
                     style={{
                       background: pattern.id === 'none' ? localConfig.color : undefined,
                       ...generatePatternCSS(pattern.id, localConfig.color, localConfig.opacity)
                     }}
                   />
-                  <div className="text-xs text-white font-medium">{pattern.name}</div>
+                  <div className={`text-sm font-medium transition-colors ${
+                    localConfig.pattern === pattern.id ? 'text-white' : 'text-gray-300 group-hover:text-white'
+                  }`}>
+                    {pattern.name}
+                  </div>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Selector de color (solo si no es 'none') */}
-          {localConfig.pattern !== 'none' && (
+          {/* Selector de color (solo si no es 'none' y es tipo 'css') */}
+          {localConfig.pattern !== 'none' && selectedPattern.type === 'css' && (
             <div>
-              <label className="block text-sm font-medium text-white mb-3">Color del patrón</label>
-              <div className="grid grid-cols-3 gap-2">
+              <label className="block text-base font-semibold text-white mb-4 flex items-center gap-2">
+                <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full"></div>
+                Color del patrón
+              </label>
+              <div className="grid grid-cols-4 gap-3">
                 {colors.map((color) => (
                   <button
                     key={color.value}
                     onClick={() => handleColorChange(color.value)}
-                    className={`p-2 rounded-lg border transition-all ${
-                      localConfig.color === color.value
-                        ? 'border-purple-500 bg-purple-500/20'
-                        : 'border-gray-600 bg-gray-800/50 hover:bg-gray-700/50'
+                    className={`group p-3 rounded-xl border-2 transition-all duration-300 hover:scale-105 ${
+                      (color.value === 'custom' ? 
+                        !colors.some(c => c.value === localConfig.color && c.value !== 'custom') : 
+                        localConfig.color === color.value)
+                        ? 'border-purple-500 bg-gradient-to-br from-purple-500/30 to-pink-500/20 shadow-lg shadow-purple-500/25'
+                        : 'border-gray-600/50 bg-gray-800/40 hover:bg-gray-700/60 hover:border-gray-500'
                     }`}
                   >
-                    <div
-                      className="w-6 h-6 rounded border border-gray-600 mx-auto mb-1"
-                      style={{ backgroundColor: color.value }}
-                    />
-                    <div className="text-xs text-white">{color.name}</div>
+                    {color.value === 'custom' ? (
+                      <div className="w-8 h-8 rounded-lg border-2 border-gray-600/30 mx-auto mb-2 bg-gradient-to-br from-red-400 via-purple-400 to-blue-400 shadow-inner" />
+                    ) : (
+                      <div
+                        className="w-8 h-8 rounded-lg border-2 border-gray-600/30 mx-auto mb-2 shadow-inner"
+                        style={{ backgroundColor: color.value }}
+                      />
+                    )}
+                    <div className={`text-xs font-medium transition-colors ${
+                      (color.value === 'custom' ? 
+                        !colors.some(c => c.value === localConfig.color && c.value !== 'custom') : 
+                        localConfig.color === color.value)
+                        ? 'text-white' : 'text-gray-300 group-hover:text-white'
+                    }`}>
+                      {color.name}
+                    </div>
                   </button>
                 ))}
               </div>
+              
+              {/* Selector de color personalizado */}
+              {!colors.some(c => c.value === localConfig.color && c.value !== 'custom') && (
+                <div className="mt-4 p-4 bg-gray-800/50 rounded-xl border border-gray-600/30">
+                  <label className="block text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                    <div className="w-2 h-2 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full"></div>
+                    Color personalizado
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={customColor}
+                      onChange={(e) => handleCustomColorChange(e.target.value)}
+                      className="w-14 h-10 rounded-lg border-2 border-gray-600/30 bg-transparent cursor-pointer shadow-inner"
+                    />
+                    <input
+                      type="text"
+                      value={customColor}
+                      onChange={(e) => handleCustomColorChange(e.target.value)}
+                      className="flex-1 px-4 py-2.5 bg-gray-700/50 border-2 border-gray-600/30 rounded-lg text-white text-sm font-mono focus:border-purple-500/50 focus:outline-none transition-colors"
+                      placeholder="#3b82f6"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
           {/* Slider de opacidad (solo si no es 'none') */}
           {localConfig.pattern !== 'none' && (
             <div>
-              <label className="block text-sm font-medium text-white mb-3">
-                Opacidad: {Math.round(localConfig.opacity * 100)}%
+              <label className="block text-base font-semibold text-white mb-4 flex items-center gap-2">
+                <div className="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full"></div>
+                Opacidad: 
+                <span className="text-purple-400 font-bold">{Math.round(localConfig.opacity * 100)}%</span>
               </label>
-              <input
-                type="range"
-                min="0.1"
-                max="1"
-                step="0.1"
-                value={localConfig.opacity}
-                onChange={(e) => handleOpacityChange(parseFloat(e.target.value))}
-                className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
-              />
+              <div className="relative">
+                <div className="mx-3 h-3 bg-gray-700 rounded-lg overflow-hidden shadow-inner">
+                  <div 
+                    className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-200"
+                    style={{ 
+                      width: `${((localConfig.opacity - 0.1) / 0.9) * 100}%`
+                    }}
+                  />
+                </div>
+                <input
+                  type="range"
+                  min="0.1"
+                  max="1"
+                  step="0.1"
+                  value={localConfig.opacity}
+                  onChange={(e) => handleOpacityChange(parseFloat(e.target.value))}
+                  className="absolute top-0 left-0 w-full h-3 appearance-none bg-transparent cursor-pointer opacity-slider"
+                />
+              </div>
             </div>
           )}
 
-          {/* Botón de guardar */}
-          <Button
-            onClick={handleSave}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-          >
-            Aplicar patrón de fondo
-          </Button>
         </div>
       )}
+      
+      {/* Estilos CSS para el slider personalizado */}
+      <style jsx>{`
+        .opacity-slider {
+          -webkit-appearance: none;
+          appearance: none;
+          background: transparent;
+          outline: none;
+          margin: 0;
+          padding: 0;
+        }
+        
+        .opacity-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #8b5cf6, #ec4899);
+          cursor: pointer;
+          border: 3px solid white;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+          margin-top: -5px;
+          position: relative;
+        }
+        
+        .opacity-slider::-moz-range-thumb {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #8b5cf6, #ec4899);
+          cursor: pointer;
+          border: 3px solid white;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+          margin-top: -5px;
+        }
+        
+        .opacity-slider::-moz-range-track {
+          background: transparent;
+          border: none;
+          height: 12px;
+        }
+      `}</style>
     </div>
   );
 }

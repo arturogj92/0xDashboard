@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon, PaintBrushIcon } from '@heroicons/react/24/outline';
+import { Palette, User, Type, Link2, Sparkles, Paintbrush2 } from 'lucide-react';
 import ThemeSelector from "@/components/editor/ThemeSelector";
 import BorderRadiusSelector from "@/components/editor/BorderRadiusSelector";
 import BackgroundGradientSelector from "@/components/editor/BackgroundGradientSelector";
@@ -12,6 +13,9 @@ import TitleStyleSelector from "@/components/editor/TitleStyleSelector";
 import AvatarDisplaySelector from "@/components/editor/AvatarDisplaySelector";
 import { LandingAvatarUpload } from "@/components/editor/LandingAvatarUpload";
 import BackgroundPatternSelector from "@/components/editor/BackgroundPatternSelector";
+import LinkImageStyleSelector from "@/components/editor/LinkImageStyleSelector";
+import { LandingInfoEditor } from "@/components/editor/LandingInfoEditor";
+import { Info } from 'lucide-react';
 
 interface StyleCustomizationAccordionProps {
   landing: {
@@ -19,11 +23,14 @@ interface StyleCustomizationAccordionProps {
     theme_id?: string;
     configurations?: any;
     avatar_url?: string;
+    name?: string;
+    description?: string;
   };
   handleConfigurationUpdate: (config: any) => void;
   handleConfigurationSave: (config: any) => void;
   handleThemeUpdate: (themeId: string) => void;
   onAvatarUpdate: (avatarUrl: string | null) => void;
+  onLandingInfoUpdate?: (name: string, description: string) => void;
   className?: string;
 }
 
@@ -33,15 +40,33 @@ export default function StyleCustomizationAccordion({
   handleConfigurationSave,
   handleThemeUpdate,
   onAvatarUpdate,
+  onLandingInfoUpdate,
   className = "" 
 }: StyleCustomizationAccordionProps) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    info: false,
+    avatar: false,
+    backgrounds: false,
+    links: false,
+    fonts: false,
+    effects: false,
+  });
+
+  const toggleSection = (section: string) => {
+    setOpenSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
 
   return (
     <div className={`${className}`}>
       {/* Header del accordion */}
       <button
         onClick={() => setIsOpen(!isOpen)}
+        data-accordion="style-customization"
+        aria-expanded={isOpen}
         className="w-full flex items-center justify-between p-4 bg-gray-800/30 border border-gray-700/50 rounded-lg hover:bg-gray-800/40 transition-all duration-200"
       >
         <div className="flex items-center gap-3">
@@ -74,106 +99,277 @@ export default function StyleCustomizationAccordion({
         }`}
       >
         <div className="mt-4 space-y-6">
-          {/* Theme Selector */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
+          {/* Selector de Temas - Destacado */}
+          <div className="bg-gradient-to-br from-indigo-900/30 to-purple-900/30 border-2 border-indigo-500/50 rounded-xl p-6 shadow-lg shadow-indigo-500/20">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-3 rounded-xl shadow-lg">
+                <Paintbrush2 className="h-6 w-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white">Seleccionar Tema</h3>
+                <p className="text-sm text-indigo-200">Elige el estilo perfecto para tu landing</p>
+              </div>
+            </div>
             <ThemeSelector
               currentThemeId={landing.theme_id || 'dark'}
               onThemeChange={handleThemeUpdate}
+              landingName={landing.name}
+              landingDescription={landing.description}
             />
           </div>
 
-          {/* Avatar Display */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
-            <AvatarDisplaySelector
-              value={landing.configurations?.avatarDisplay || { showAvatar: true }}
-              onChange={(avatarDisplay) => handleConfigurationUpdate({ avatarDisplay })}
-              onSave={(avatarDisplay) => handleConfigurationSave({ avatarDisplay })}
-            />
+          {/* Información Básica */}
+          <div id="landing-info" className="bg-gray-800/20 border border-gray-700/50 rounded-lg overflow-hidden">
+            <button
+              onClick={() => toggleSection('info')}
+              className="w-full p-4 flex items-center justify-between hover:bg-gray-800/30 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-br from-blue-500 to-cyan-600 p-2 rounded-lg shadow-lg">
+                  <Info className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-white">Información Básica</h3>
+              </div>
+              {openSections.info ? (
+                <ChevronUpIcon className="h-5 w-5 text-gray-400" />
+              ) : (
+                <ChevronDownIcon className="h-5 w-5 text-gray-400" />
+              )}
+            </button>
+            
+            {openSections.info && (
+              <div className="p-4 pt-0">
+                {landing.id && onLandingInfoUpdate && (
+                  <LandingInfoEditor
+                    landingId={landing.id}
+                    initialName={landing.name || ''}
+                    initialDescription={landing.description || ''}
+                    onUpdate={onLandingInfoUpdate}
+                  />
+                )}
+              </div>
+            )}
           </div>
 
-          {/* Landing Avatar Upload */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
-            <div className="text-white text-sm mb-3 font-medium">Avatar de la Landing</div>
-            <p className="text-gray-400 text-xs mb-4">Sube un avatar específico para esta landing page que se mostrará públicamente.</p>
-            <LandingAvatarUpload
-              landingId={landing.id || ''}
-              currentAvatarUrl={landing.avatar_url}
-              onAvatarUpdate={onAvatarUpdate}
-              size="lg"
-            />
+          {/* Configuración de Avatar */}
+          <div id="avatar-configuration" className="bg-gray-800/20 border border-gray-700/50 rounded-lg overflow-hidden">
+            <button
+              onClick={() => toggleSection('avatar')}
+              className="w-full p-4 flex items-center justify-between hover:bg-gray-800/30 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-br from-indigo-500 to-blue-600 p-2 rounded-lg shadow-lg">
+                  <User className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-white">Configuración de Avatar</h3>
+              </div>
+              {openSections.avatar ? (
+                <ChevronUpIcon className="h-5 w-5 text-gray-400" />
+              ) : (
+                <ChevronDownIcon className="h-5 w-5 text-gray-400" />
+              )}
+            </button>
+            
+            {openSections.avatar && (
+              <div className="p-4 pt-0 space-y-6">
+                {/* Avatar Upload */}
+                <div>
+                  <div className="text-white text-sm mb-3">Subir Avatar</div>
+                  <p className="text-gray-400 text-xs mb-4">Sube un avatar específico para esta landing page que se mostrará públicamente.</p>
+                  <LandingAvatarUpload
+                    landingId={landing.id || ''}
+                    currentAvatarUrl={landing.avatar_url}
+                    onAvatarUpdate={onAvatarUpdate}
+                    size="lg"
+                  />
+                </div>
+                
+                {/* Separador visual */}
+                <div className="border-t border-gray-600/30"></div>
+                
+                {/* Avatar Display Toggle */}
+                <AvatarDisplaySelector
+                  value={landing.configurations?.avatarDisplay || { showAvatar: true }}
+                  onChange={(avatarDisplay) => handleConfigurationUpdate({ avatarDisplay })}
+                  onSave={(avatarDisplay) => handleConfigurationSave({ avatarDisplay })}
+                />
+              </div>
+            )}
           </div>
 
-          {/* Border Radius */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
-            <BorderRadiusSelector
-              value={landing.configurations?.borderRadius || 'rounded-xl'}
-              onChange={(borderRadius) => handleConfigurationUpdate({ borderRadius })}
-              onSave={(borderRadius) => handleConfigurationSave({ borderRadius })}
-            />
+
+          {/* Configuración de Fondos */}
+          <div id="background-configuration" className="bg-gray-800/20 border border-gray-700/50 rounded-lg overflow-hidden">
+            <button
+              onClick={() => toggleSection('backgrounds')}
+              className="w-full p-4 flex items-center justify-between hover:bg-gray-800/30 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-2 rounded-lg shadow-lg">
+                  <Palette className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-white">Configuración de Fondos</h3>
+              </div>
+              {openSections.backgrounds ? (
+                <ChevronUpIcon className="h-5 w-5 text-gray-400" />
+              ) : (
+                <ChevronDownIcon className="h-5 w-5 text-gray-400" />
+              )}
+            </button>
+            
+            {openSections.backgrounds && (
+              <div className="p-4 pt-0 space-y-6">
+                {/* Background Gradient */}
+                <BackgroundGradientSelector
+                  value={landing.configurations?.gradient || { color1: '#000000', color2: '#4a044d' }}
+                  onChange={(gradient) => handleConfigurationUpdate({ gradient })}
+                  onSave={(gradient) => handleConfigurationSave({ gradient })}
+                />
+                
+                {/* Separador visual */}
+                <div className="border-t border-gray-600/30"></div>
+                
+                {/* Background Pattern */}
+                <BackgroundPatternSelector
+                  value={landing.configurations?.backgroundPattern || { pattern: 'none', color: '#ffffff', opacity: 0.1 }}
+                  onChange={(backgroundPattern) => handleConfigurationUpdate({ backgroundPattern })}
+                  onSave={(backgroundPattern) => handleConfigurationSave({ backgroundPattern })}
+                />
+              </div>
+            )}
           </div>
 
-          {/* Background Gradient */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
-            <BackgroundGradientSelector
-              value={landing.configurations?.gradient || { color1: '#000000', color2: '#4a044d' }}
-              onChange={(gradient) => handleConfigurationUpdate({ gradient })}
-              onSave={(gradient) => handleConfigurationSave({ gradient })}
-            />
+
+          {/* Configuración de Enlaces */}
+          <div id="link-styles" className="bg-gray-800/20 border border-gray-700/50 rounded-lg overflow-hidden">
+            <button
+              onClick={() => toggleSection('links')}
+              className="w-full p-4 flex items-center justify-between hover:bg-gray-800/30 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-br from-violet-500 to-purple-600 p-2 rounded-lg shadow-lg">
+                  <Link2 className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-white">Configuración de Enlaces</h3>
+              </div>
+              {openSections.links ? (
+                <ChevronUpIcon className="h-5 w-5 text-gray-400" />
+              ) : (
+                <ChevronDownIcon className="h-5 w-5 text-gray-400" />
+              )}
+            </button>
+            
+            {openSections.links && (
+              <div className="p-4 pt-0 space-y-6">
+                {/* Border Radius */}
+                <BorderRadiusSelector
+                  value={landing.configurations?.borderRadius || 'rounded-xl'}
+                  onChange={(borderRadius) => handleConfigurationUpdate({ borderRadius })}
+                  onSave={(borderRadius) => handleConfigurationSave({ borderRadius })}
+                />
+                
+                {/* Separador visual */}
+                <div className="border-t border-gray-600/30"></div>
+                
+                {/* Link Colors */}
+                <LinkColorSelector
+                  value={landing.configurations?.linkColor || { background: '#000000', text: '#ffffff' }}
+                  onChange={(linkColor) => handleConfigurationUpdate({ linkColor })}
+                  onSave={(linkColor) => handleConfigurationSave({ linkColor })}
+                />
+                
+                {/* Separador visual */}
+                <div className="border-t border-gray-600/30"></div>
+                
+                {/* Link Image Style */}
+                <LinkImageStyleSelector
+                  value={landing.configurations?.linkImageStyle || { style: 'rectangle' }}
+                  onChange={(linkImageStyle) => handleConfigurationUpdate({ linkImageStyle })}
+                  onSave={(linkImageStyle) => handleConfigurationSave({ linkImageStyle })}
+                />
+              </div>
+            )}
           </div>
 
-          {/* Background Pattern */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
-            <BackgroundPatternSelector
-              value={landing.configurations?.backgroundPattern || { pattern: 'none', color: '#ffffff', opacity: 0.1 }}
-              onChange={(backgroundPattern) => handleConfigurationUpdate({ backgroundPattern })}
-              onSave={(backgroundPattern) => handleConfigurationSave({ backgroundPattern })}
-            />
+          {/* Configuración de Fuentes */}
+          <div id="font-configuration" className="bg-gray-800/20 border border-gray-700/50 rounded-lg overflow-hidden">
+            <button
+              onClick={() => toggleSection('fonts')}
+              className="w-full p-4 flex items-center justify-between hover:bg-gray-800/30 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-2 rounded-lg shadow-lg">
+                  <Type className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-white">Configuración de Fuentes</h3>
+              </div>
+              {openSections.fonts ? (
+                <ChevronUpIcon className="h-5 w-5 text-gray-400" />
+              ) : (
+                <ChevronDownIcon className="h-5 w-5 text-gray-400" />
+              )}
+            </button>
+            
+            {openSections.fonts && (
+              <div className="p-4 pt-0 space-y-6">
+                {/* Font Family */}
+                <FontFamilySelector
+                  value={landing.configurations?.fontFamily || { family: 'Inter', url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' }}
+                  onChange={(fontFamily) => handleConfigurationUpdate({ fontFamily })}
+                  onSave={(fontFamily) => handleConfigurationSave({ fontFamily })}
+                />
+                
+                {/* Separador visual */}
+                <div className="border-t border-gray-600/30"></div>
+                
+                {/* Font Colors */}
+                <FontColorSelector
+                  value={landing.configurations?.fontColor || { primary: '#ffffff', secondary: '#e2e8f0' }}
+                  onChange={(fontColor) => handleConfigurationUpdate({ fontColor })}
+                  onSave={(fontColor) => handleConfigurationSave({ fontColor })}
+                />
+                
+                {/* Separador visual */}
+                <div className="border-t border-gray-600/30"></div>
+                
+                {/* Title Style (Font Size) */}
+                <TitleStyleSelector
+                  value={landing.configurations?.titleStyle || { fontSize: 'text-2xl', gradientEnabled: false }}
+                  onChange={(titleStyle) => handleConfigurationUpdate({ titleStyle })}
+                  onSave={(titleStyle) => handleConfigurationSave({ titleStyle })}
+                />
+              </div>
+            )}
           </div>
 
-          {/* Font Colors */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
-            <FontColorSelector
-              value={landing.configurations?.fontColor || { primary: '#ffffff', secondary: '#e2e8f0' }}
-              onChange={(fontColor) => handleConfigurationUpdate({ fontColor })}
-              onSave={(fontColor) => handleConfigurationSave({ fontColor })}
-            />
-          </div>
-
-          {/* Link Colors */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
-            <LinkColorSelector
-              value={landing.configurations?.linkColor || { background: '#000000', text: '#ffffff' }}
-              onChange={(linkColor) => handleConfigurationUpdate({ linkColor })}
-              onSave={(linkColor) => handleConfigurationSave({ linkColor })}
-            />
-          </div>
-
-          {/* Title Style */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
-            <TitleStyleSelector
-              value={landing.configurations?.titleStyle || { fontSize: 'text-2xl', gradientEnabled: false }}
-              onChange={(titleStyle) => handleConfigurationUpdate({ titleStyle })}
-              onSave={(titleStyle) => handleConfigurationSave({ titleStyle })}
-            />
-          </div>
-
-          {/* Font Family */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
-            <div className="text-white text-sm mb-2">Font Family Selector:</div>
-            <FontFamilySelector
-              value={landing.configurations?.fontFamily || { family: 'Inter', url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' }}
-              onChange={(fontFamily) => handleConfigurationUpdate({ fontFamily })}
-              onSave={(fontFamily) => handleConfigurationSave({ fontFamily })}
-            />
-          </div>
-
-          {/* Effects */}
-          <div className="bg-gray-800/20 border border-gray-700/50 rounded-lg p-4">
-            <EffectsSelector
-              currentConfig={landing.configurations?.effects || { showBadge: true, typewriterEffect: true }}
-              onConfigUpdate={handleConfigurationUpdate}
-              onConfigSave={handleConfigurationSave}
-            />
+          {/* Configuración de Efectos */}
+          <div id="effects-configuration" className="bg-gray-800/20 border border-gray-700/50 rounded-lg overflow-hidden">
+            <button
+              onClick={() => toggleSection('effects')}
+              className="w-full p-4 flex items-center justify-between hover:bg-gray-800/30 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-br from-yellow-500 to-orange-600 p-2 rounded-lg shadow-lg">
+                  <Sparkles className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-white">Configuración de Efectos</h3>
+              </div>
+              {openSections.effects ? (
+                <ChevronUpIcon className="h-5 w-5 text-gray-400" />
+              ) : (
+                <ChevronDownIcon className="h-5 w-5 text-gray-400" />
+              )}
+            </button>
+            
+            {openSections.effects && (
+              <div className="p-4 pt-0">
+                <EffectsSelector
+                  currentConfig={landing.configurations?.effects || { showBadge: true, typewriterEffect: true }}
+                  onConfigUpdate={handleConfigurationUpdate}
+                  onConfigSave={handleConfigurationSave}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

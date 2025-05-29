@@ -46,7 +46,7 @@ export default function AvatarDisplaySelector({ value, onChange, onSave }: Avata
           <div className="bg-gradient-to-br from-indigo-500 to-blue-600 p-2 rounded-lg shadow-lg">
             <UserIcon className="h-5 w-5 text-white" />
           </div>
-          <h3 className="text-lg font-semibold text-white">Mostrar Avatar</h3>
+          <h3 className="text-lg font-semibold text-white">Configuración del Avatar</h3>
         </div>
         <p className="text-sm text-gray-400 max-w-xl mx-auto leading-relaxed">
           Elige si quieres mostrar tu foto de perfil o solo el nombre

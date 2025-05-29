@@ -370,7 +370,10 @@
     "title": "Edita tu Landing Page",
     "description": "Crea secciones para organizar tus enlaces. Cada sección puede contener múltiples enlaces que puedes reordenar arrastrando y soltando, o mover entre secciones usando el botón correspondiente.",
     "newSection": "Nueva Sección",
-    "moveItemNotification": "Para mover elementos entre secciones, usa el botón de mover (⇄) en el elemento. Arrastrar y soltar solo funciona dentro de la misma sección."
+    "moveItemNotification": "Para mover elementos entre secciones, usa el botón de mover (⇄) en el elemento. Arrastrar y soltar solo funciona dentro de la misma sección.",
+    "verifyingAccess": "Verificando acceso...",
+    "verifyingPermissions": "Verificando permisos...",
+    "invalidLandingId": "Error: ID de landing inválido"
   },
   "social": {
     "title": "Redes Sociales",

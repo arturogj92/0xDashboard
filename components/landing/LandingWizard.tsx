@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { User, Info, Globe, Lock } from 'lucide-react';
+import { User, Info, Globe, Lock, Instagram, Twitter, Youtube, Music2 } from 'lucide-react';
 import Image from 'next/image';
-import { LandingPreview } from './LandingPreview';
 
 export default function LandingWizard() {
   const t = useTranslations('landing');
+  const router = useRouter();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [saving, setSaving] = useState(false);
@@ -22,8 +23,12 @@ export default function LandingWizard() {
     }
     setSlugStatus('checking');
     try {
-      // Endpoint de comprobación de disponibilidad (aún no implementado en backend)
-      const res = await fetch(`/api/landings/slug-exists?slug=${value}`);
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+      const res = await fetch(`${API_URL}/api/landings/slug-exists?slug=${value}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
       const data = await res.json();
       setSlugStatus(data.available ? 'free' : 'taken');
     } catch (_) {
@@ -55,14 +60,32 @@ export default function LandingWizard() {
     setSaving(true);
     try {
       const payload = { name, description: description.trim(), slug };
-      await fetch('/api/landings', {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+      const response = await fetch(`${API_URL}/api/landings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
         body: JSON.stringify(payload)
       });
-      // TODO: replace with router push when editor exists
-      alert('Landing creada, ahora redirigiríamos al editor');
-    } finally {
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.data) {
+          // Redirigir al editor de la landing recién creada
+          router.push(`/editor/${data.data.id}`);
+        } else {
+          alert('Error al crear la landing');
+          setSaving(false);
+        }
+      } else {
+        alert('Error al crear la landing');
+        setSaving(false);
+      }
+    } catch (error) {
+      console.error('Error creating landing:', error);
+      alert('Error al crear la landing');
       setSaving(false);
     }
   };
@@ -167,7 +190,60 @@ export default function LandingWizard() {
 
         {/* Columna derecha: preview (solo md+) */}
         <div className="flex flex-col items-center gap-2 justify-center">
-          <LandingPreview name={name} description={description} />
+          {/* iPhone Frame with Skeleton Landing */}
+          <div className="relative mx-auto" style={{ width: '200px', height: '400px' }}>
+            {/* iPhone Frame */}
+            <img
+              src="/images/iphone16-frame.png"
+              alt="iPhone frame"
+              className="absolute inset-0 w-full h-full z-10 pointer-events-none"
+            />
+            
+            {/* Skeleton Landing Content */}
+            <div className="absolute inset-0">
+              <div className="w-full h-full bg-gradient-to-b from-gray-900 to-black rounded-[1.5rem] overflow-hidden">
+                <div className="h-full flex flex-col items-center p-4">
+                  {/* Top section with avatar and info */}
+                  <div className="flex flex-col items-center mb-4">
+                    {/* Skeleton Avatar */}
+                    <div className="w-16 h-16 rounded-full bg-gray-800 animate-pulse mt-8 mb-3" />
+                    
+                    {/* Skeleton Title */}
+                    <div className="h-4 w-20 bg-gray-800 rounded animate-pulse mb-1" />
+                    
+                    {/* Skeleton Description */}
+                    <div className="h-3 w-32 bg-gray-800 rounded animate-pulse" />
+                  </div>
+                  
+                  {/* Middle section with links - takes remaining space */}
+                  <div className="w-full flex-1 flex flex-col justify-center py-2">
+                    <div className="w-full space-y-2">
+                      <div className="h-8 bg-gray-800 rounded-lg animate-pulse" />
+                      <div className="h-8 bg-gray-800 rounded-lg animate-pulse" />
+                      <div className="h-8 bg-gray-800 rounded-lg animate-pulse" />
+                      <div className="h-8 bg-gray-800 rounded-lg animate-pulse" />
+                    </div>
+                  </div>
+                  
+                  {/* Bottom section with social icons */}
+                  <div className="flex gap-2 mt-4">
+                    <div className="w-7 h-7 bg-gray-800 rounded-full animate-pulse flex items-center justify-center">
+                      <Instagram className="w-3.5 h-3.5 text-gray-600" />
+                    </div>
+                    <div className="w-7 h-7 bg-gray-800 rounded-full animate-pulse flex items-center justify-center">
+                      <Twitter className="w-3.5 h-3.5 text-gray-600" />
+                    </div>
+                    <div className="w-7 h-7 bg-gray-800 rounded-full animate-pulse flex items-center justify-center">
+                      <Youtube className="w-3.5 h-3.5 text-gray-600" />
+                    </div>
+                    <div className="w-7 h-7 bg-gray-800 rounded-full animate-pulse flex items-center justify-center">
+                      <Music2 className="w-3.5 h-3.5 text-gray-600" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="inline-flex items-center gap-1 bg-slate-800/90 px-3 py-1.5 rounded-full shadow-inner w-[280px] md:w-[180px] lg:w-[230px]">
             <Lock className="h-3 w-3 text-green-400" />
             <span className="text-xs font-medium text-slate-400">https://</span>

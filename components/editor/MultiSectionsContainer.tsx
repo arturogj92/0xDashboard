@@ -131,13 +131,13 @@ export default function MultiSectionsContainer({
         isOver ? 'ring-2 ring-purple-500 bg-purple-900/20' : ''
       }`}
     >
-      <div className="relative flex items-center justify-center mb-2">
+      <div className="relative flex items-center justify-start mb-2">
         {edit&&sec?(
           <input autoFocus value={title}
                  onChange={(e)=>{setTitle(e.target.value); if(timer.current)clearTimeout(timer.current);
                    timer.current=setTimeout(()=>onUpdateSection(sec.id,{title:e.target.value}),500);}}
                  onBlur={()=>{setEdit(false); if(timer.current){clearTimeout(timer.current);} onUpdateSection(sec.id,{title});}}
-                 className="bg-transparent text-lg font-semibold border-b border-indigo-500 focus:border-indigo-400 focus:outline-none py-1 px-0 text-center text-white"/>
+                 className="bg-transparent text-lg font-semibold border-b border-indigo-500 focus:border-indigo-400 focus:outline-none py-1 px-0 text-left text-white"/>
         ):(
           <h3 className="font-semibold text-lg">
             {isNoSec?"Sin Sección (no visibles)":sec?.title}
