@@ -176,8 +176,9 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
     }
     debounceRef.current = setTimeout(() => {
       onChange(config);
+      onSave(config); // También guardar después del debounce
     }, 300); // 300ms delay
-  }, [onChange]);
+  }, [onChange, onSave]);
 
   const handlePatternChange = (pattern: string) => {
     const newConfig = { ...localConfig, pattern };
