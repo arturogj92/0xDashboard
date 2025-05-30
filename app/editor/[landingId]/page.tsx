@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { API_URL, createAuthHeaders } from "@/lib/api";
 import MultiSectionsBoard from "@/components/editor/MultiSectionsBoard";
 import SocialLinksPanel from "@/components/editor/SocialLinksPanel";
 import { LandingPreview } from "@/components/landing/LandingPreview";
 import { LinkData, SectionData, SocialLinkData } from "@/components/editor/types";
 import StyleCustomizationAccordion from "@/components/editor/StyleCustomizationAccordion";
-import { GuideOverlay } from "@/components/editor/GuideOverlay";
 import { useParams, useRouter } from 'next/navigation';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
@@ -164,6 +163,233 @@ export default function AdminPage() {
     
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Función para manejar scroll a secciones - definida con useCallback
+  const handleScrollToSection = useCallback((sectionId: string) => {
+    console.log('🚀 handleScrollToSection called with:', sectionId);
+    // Casos especiales para elementos dentro del acordeón de personalización
+    if (sectionId === 'landing-info' || sectionId === 'info-section' || sectionId === 'background-gradient' || sectionId === 'background-pattern' || sectionId === 'avatar-section' || sectionId === 'link-styles' || sectionId === 'font-family') {
+      console.log('🎯 Section matches accordion sections');
+      // Primero, asegurar que el acordeón esté abierto
+      const accordionButton = document.querySelector('[data-accordion="style-customization"]');
+      console.log('🔍 Accordion button found:', accordionButton);
+      
+      if (accordionButton) {
+        const isOpen = accordionButton.getAttribute('aria-expanded') === 'true';
+        console.log('📋 Accordion is open:', isOpen);
+        
+        if (!isOpen) {
+          console.log('🔓 Clicking accordion button');
+          (accordionButton as HTMLElement).click();
+          console.log('✅ Accordion click executed');
+          // Esperar a que se abra el acordeón antes de continuar
+          setTimeout(() => {
+            console.log('⏰ Continuing after accordion animation');
+            handleSpecificSection(sectionId);
+          }, 300);
+        } else {
+          console.log('✅ Accordion already open, handling specific section');
+          handleSpecificSection(sectionId);
+        }
+      } else {
+        console.error('❌ Accordion button not found');
+      }
+    } else {
+      // Para otras secciones, scroll directo
+      const targetElement = document.getElementById(sectionId);
+      if (targetElement) {
+        targetElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start',
+          inline: 'nearest'
+        });
+        
+        targetElement.classList.add('highlight-section');
+        setTimeout(() => {
+          targetElement.classList.remove('highlight-section');
+        }, 3000);
+      } else {
+        console.error('Target element not found:', sectionId);
+      }
+    }
+
+    function handleSpecificSection(sectionId: string) {
+      if (sectionId === 'avatar-section') {
+        console.log('🎭 Handling avatar-section');
+        // Para avatar-section, necesitamos abrir el accordion de avatar
+        const avatarAccordion = document.querySelector('#avatar-configuration button');
+        console.log('🔍 Avatar accordion button found:', avatarAccordion);
+        if (avatarAccordion) {
+          // Verificar si el accordion de avatar está cerrado
+          // Como el contenido se renderiza condicionalmente, verificamos si existe
+          const avatarContent = document.querySelector('#avatar-configuration div.p-4.pt-0.space-y-6');
+          const isAvatarOpen = avatarContent !== null;
+          console.log('📋 Avatar accordion content found:', avatarContent, 'isOpen:', isAvatarOpen);
+          
+          if (!isAvatarOpen) {
+            console.log('🔓 Clicking avatar accordion button');
+            (avatarAccordion as HTMLElement).click();
+            console.log('✅ Avatar accordion click executed');
+            // Esperar un poco más para que se abra el accordion interno
+            setTimeout(() => {
+              const targetElement = document.getElementById('avatar-configuration');
+              if (targetElement) {
+                targetElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest'
+                });
+                
+                targetElement.classList.add('highlight-section');
+                setTimeout(() => {
+                  targetElement.classList.remove('highlight-section');
+                }, 3000);
+              } else {
+                console.error('❌ Target element not found for avatar-configuration');
+              }
+            }, 300);
+          } else {
+            // Si ya está abierto, solo hacer scroll
+            console.log('✅ Avatar accordion already open, scrolling');
+            const targetElement = document.getElementById('avatar-configuration');
+            if (targetElement) {
+              targetElement.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start',
+                inline: 'nearest'
+              });
+              
+              targetElement.classList.add('highlight-section');
+              setTimeout(() => {
+                targetElement.classList.remove('highlight-section');
+              }, 3000);
+            }
+          }
+        }
+      } else if (sectionId === 'info-section') {
+        // Para info-section, necesitamos abrir el accordion de información básica
+        const infoAccordion = document.querySelector('#landing-info button');
+        if (infoAccordion) {
+          // Verificar si el accordion de información está cerrado
+          const infoSection = document.querySelector('#landing-info');
+          const isInfoOpen = infoSection?.querySelector('[class*="pt-0"]') !== null;
+          
+          if (!isInfoOpen) {
+            (infoAccordion as HTMLElement).click();
+            // Esperar un poco más para que se abra el accordion interno
+            setTimeout(() => {
+              const targetElement = document.getElementById('landing-info');
+              if (targetElement) {
+                targetElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest'
+                });
+                
+                targetElement.classList.add('highlight-section');
+                setTimeout(() => {
+                  targetElement.classList.remove('highlight-section');
+                }, 3000);
+              }
+            }, 300);
+          } else {
+            // Si ya está abierto, solo hacer scroll
+            const targetElement = document.getElementById('landing-info');
+            if (targetElement) {
+              targetElement.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start',
+                inline: 'nearest'
+              });
+              
+              targetElement.classList.add('highlight-section');
+              setTimeout(() => {
+                targetElement.classList.remove('highlight-section');
+              }, 3000);
+            }
+          }
+        }
+      } else if (sectionId === 'font-family') {
+        // Para font-family, necesitamos abrir el accordion de fuentes
+        const fontAccordion = document.querySelector('#font-configuration button');
+        if (fontAccordion) {
+          // Verificar si el accordion de fuentes está cerrado
+          const fontSection = document.querySelector('#font-configuration');
+          const isFontOpen = fontSection?.querySelector('[class*="pt-0"]') !== null;
+          
+          if (!isFontOpen) {
+            (fontAccordion as HTMLElement).click();
+            // Esperar un poco más para que se abra el accordion interno
+            setTimeout(() => {
+              const targetElement = document.getElementById('font-configuration');
+              if (targetElement) {
+                targetElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest'
+                });
+                
+                targetElement.classList.add('highlight-section');
+                setTimeout(() => {
+                  targetElement.classList.remove('highlight-section');
+                }, 3000);
+              }
+            }, 300);
+          } else {
+            // Si ya está abierto, solo hacer scroll
+            const targetElement = document.getElementById('font-configuration');
+            if (targetElement) {
+              targetElement.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start',
+                inline: 'nearest'
+              });
+              
+              targetElement.classList.add('highlight-section');
+              setTimeout(() => {
+                targetElement.classList.remove('highlight-section');
+              }, 3000);
+            }
+          }
+        }
+      } else {
+        // Para otras secciones específicas dentro del acordeón
+        const targetElement = document.getElementById(sectionId);
+        if (targetElement) {
+          targetElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+          });
+          
+          targetElement.classList.add('highlight-section');
+          setTimeout(() => {
+            targetElement.classList.remove('highlight-section');
+          }, 3000);
+        } else {
+          console.error('Target element not found:', sectionId);
+        }
+      }
+    }
+  }, []);
+
+  // Listener para eventos de guías internas
+  useEffect(() => {
+    const handleGuideClick = (event: CustomEvent) => {
+      console.log('📥 Guide event received:', event.detail);
+      const { sectionId } = event.detail;
+      console.log('🎯 Calling handleScrollToSection with:', sectionId);
+      handleScrollToSection(sectionId);
+    };
+
+    console.log('🔧 Setting up event listener on window');
+    window.addEventListener('guideClick', handleGuideClick as EventListener);
+    console.log('✅ Event listener added successfully');
+    return () => {
+      console.log('🧹 Removing event listener');
+      window.removeEventListener('guideClick', handleGuideClick as EventListener);
+    };
+  }, [handleScrollToSection]);
 
   // Protección de acceso
   if (isLoading) {
@@ -497,284 +723,6 @@ export default function AdminPage() {
     setLanding(prev => ({ ...prev, avatar_url: avatarUrl || undefined }));
   };
 
-  const handleScrollToSection = (sectionId: string) => {
-    // Casos especiales para elementos dentro del acordeón de personalización
-    if (sectionId === 'landing-info' || sectionId === 'info-section' || sectionId === 'background-gradient' || sectionId === 'background-pattern' || sectionId === 'avatar-section' || sectionId === 'link-styles' || sectionId === 'font-family') {
-      // Primero, asegurar que el acordeón esté abierto
-      const accordionButton = document.querySelector('[data-accordion="style-customization"]');
-      let isOpen = true;
-      let delay = 0;
-      
-      if (accordionButton) {
-        // Si el acordeón está cerrado, abrirlo
-        isOpen = accordionButton.getAttribute('aria-expanded') === 'true';
-        if (!isOpen) {
-          (accordionButton as HTMLElement).click();
-          delay = 300; // Esperar 300ms para que se abra
-        }
-      }
-      
-      // Esperar un momento para que el acordeón se abra, luego hacer scroll
-      setTimeout(() => {
-        // Para background-gradient, necesitamos abrir el accordion de fondos
-        if (sectionId === 'background-gradient') {
-          const backgroundAccordion = document.querySelector('#background-configuration button');
-          if (backgroundAccordion) {
-            // Verificar si el accordion de fondos está cerrado
-            const backgroundSection = document.querySelector('#background-configuration');
-            const isBackgroundOpen = backgroundSection?.querySelector('[class*="pt-0"]') !== null;
-            
-            if (!isBackgroundOpen) {
-              (backgroundAccordion as HTMLElement).click();
-              // Esperar un poco más para que se abra el accordion interno
-              setTimeout(() => {
-                const targetElement = document.getElementById('background-configuration');
-                if (targetElement) {
-                  targetElement.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start',
-                    inline: 'nearest'
-                  });
-                  
-                  targetElement.classList.add('highlight-section');
-                  setTimeout(() => {
-                    targetElement.classList.remove('highlight-section');
-                  }, 3000);
-                }
-              }, 300);
-            } else {
-              // Si ya está abierto, solo hacer scroll
-              const targetElement = document.getElementById('background-configuration');
-              if (targetElement) {
-                targetElement.scrollIntoView({ 
-                  behavior: 'smooth', 
-                  block: 'start',
-                  inline: 'nearest'
-                });
-                
-                targetElement.classList.add('highlight-section');
-                setTimeout(() => {
-                  targetElement.classList.remove('highlight-section');
-                }, 3000);
-              }
-            }
-          }
-        } else if (sectionId === 'avatar-section') {
-          // Para avatar-section, necesitamos abrir el accordion de avatar
-          const avatarAccordion = document.querySelector('#avatar-configuration button');
-          if (avatarAccordion) {
-            // Verificar si el accordion de avatar está cerrado
-            const avatarSection = document.querySelector('#avatar-configuration');
-            const isAvatarOpen = avatarSection?.querySelector('[class*="pt-0"]') !== null;
-            
-            if (!isAvatarOpen) {
-              (avatarAccordion as HTMLElement).click();
-              // Esperar un poco más para que se abra el accordion interno
-              setTimeout(() => {
-                const targetElement = document.getElementById('avatar-configuration');
-                if (targetElement) {
-                  targetElement.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start',
-                    inline: 'nearest'
-                  });
-                  
-                  targetElement.classList.add('highlight-section');
-                  setTimeout(() => {
-                    targetElement.classList.remove('highlight-section');
-                  }, 3000);
-                }
-              }, 300);
-            } else {
-              // Si ya está abierto, solo hacer scroll
-              const targetElement = document.getElementById('avatar-configuration');
-              if (targetElement) {
-                targetElement.scrollIntoView({ 
-                  behavior: 'smooth', 
-                  block: 'start',
-                  inline: 'nearest'
-                });
-                
-                targetElement.classList.add('highlight-section');
-                setTimeout(() => {
-                  targetElement.classList.remove('highlight-section');
-                }, 3000);
-              }
-            }
-          }
-        } else if (sectionId === 'info-section') {
-          // Para info-section, necesitamos abrir el accordion de información básica
-          const infoAccordion = document.querySelector('#landing-info button');
-          if (infoAccordion) {
-            // Verificar si el accordion de info está cerrado
-            const infoSection = document.querySelector('#landing-info');
-            const isInfoOpen = infoSection?.querySelector('[class*="pt-0"]') !== null;
-            
-            if (!isInfoOpen) {
-              (infoAccordion as HTMLElement).click();
-              // Esperar un poco más para que se abra el accordion interno
-              setTimeout(() => {
-                const targetElement = document.getElementById('landing-info');
-                if (targetElement) {
-                  targetElement.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start',
-                    inline: 'nearest'
-                  });
-                  
-                  targetElement.classList.add('highlight-section');
-                  setTimeout(() => {
-                    targetElement.classList.remove('highlight-section');
-                  }, 3000);
-                }
-              }, 300);
-            } else {
-              // Si ya está abierto, solo hacer scroll
-              const targetElement = document.getElementById('landing-info');
-              if (targetElement) {
-                targetElement.scrollIntoView({ 
-                  behavior: 'smooth', 
-                  block: 'start',
-                  inline: 'nearest'
-                });
-                
-                targetElement.classList.add('highlight-section');
-                setTimeout(() => {
-                  targetElement.classList.remove('highlight-section');
-                }, 3000);
-              }
-            }
-          }
-        } else if (sectionId === 'font-family') {
-          // Para font-family, necesitamos abrir el accordion de fuentes
-          const fontAccordion = document.querySelector('#font-configuration button');
-          if (fontAccordion) {
-            // Verificar si el accordion de fuentes está cerrado
-            const fontSection = document.querySelector('#font-configuration');
-            const isFontOpen = fontSection?.querySelector('[class*="pt-0"]') !== null;
-            
-            if (!isFontOpen) {
-              (fontAccordion as HTMLElement).click();
-              // Esperar un poco más para que se abra el accordion interno
-              setTimeout(() => {
-                const targetElement = document.getElementById('font-configuration');
-                if (targetElement) {
-                  targetElement.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start',
-                    inline: 'nearest'
-                  });
-                  
-                  targetElement.classList.add('highlight-section');
-                  setTimeout(() => {
-                    targetElement.classList.remove('highlight-section');
-                  }, 3000);
-                }
-              }, 300);
-            } else {
-              // Si ya está abierto, solo hacer scroll
-              const targetElement = document.getElementById('font-configuration');
-              if (targetElement) {
-                targetElement.scrollIntoView({ 
-                  behavior: 'smooth', 
-                  block: 'start',
-                  inline: 'nearest'
-                });
-                
-                targetElement.classList.add('highlight-section');
-                setTimeout(() => {
-                  targetElement.classList.remove('highlight-section');
-                }, 3000);
-              }
-            }
-          }
-        } else if (sectionId === 'link-styles') {
-          // Para link-styles, necesitamos abrir el accordion de enlaces
-          const linkAccordion = document.querySelector('#link-styles button');
-          if (linkAccordion) {
-            // Verificar si el accordion de enlaces está cerrado
-            const linkSection = document.querySelector('#link-styles');
-            const isLinkOpen = linkSection?.querySelector('[class*="pt-0"]') !== null;
-            
-            if (!isLinkOpen) {
-              (linkAccordion as HTMLElement).click();
-              // Esperar un poco más para que se abra el accordion interno
-              setTimeout(() => {
-                const targetElement = document.getElementById('link-styles');
-                if (targetElement) {
-                  targetElement.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start',
-                    inline: 'nearest'
-                  });
-                  
-                  targetElement.classList.add('highlight-section');
-                  setTimeout(() => {
-                    targetElement.classList.remove('highlight-section');
-                  }, 3000);
-                }
-              }, 300);
-            } else {
-              // Si ya está abierto, solo hacer scroll
-              const targetElement = document.getElementById('link-styles');
-              if (targetElement) {
-                targetElement.scrollIntoView({ 
-                  behavior: 'smooth', 
-                  block: 'start',
-                  inline: 'nearest'
-                });
-                
-                targetElement.classList.add('highlight-section');
-                setTimeout(() => {
-                  targetElement.classList.remove('highlight-section');
-                }, 3000);
-              }
-            }
-          }
-        } else {
-          // Para otros elementos, comportamiento normal
-          const targetElement = document.getElementById(sectionId);
-          if (targetElement) {
-            targetElement.scrollIntoView({ 
-              behavior: 'smooth', 
-              block: 'start',
-              inline: 'nearest'
-            });
-            
-            targetElement.classList.add('highlight-section');
-            setTimeout(() => {
-              targetElement.classList.remove('highlight-section');
-            }, 3000);
-          }
-        }
-      }, delay);
-      
-      return;
-    }
-
-    // Mapeo para secciones principales
-    const sectionMap: Record<string, string> = {
-      'info-section': 'landing-info',
-      'links-section': 'sections-board',
-      'social-section': 'social-links',
-      'style-customization': 'style-customization'
-    };
-
-    const targetElement = document.getElementById(sectionMap[sectionId] || sectionId);
-    if (targetElement) {
-      targetElement.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'start',
-        inline: 'nearest'
-      });
-      
-      targetElement.classList.add('highlight-section');
-      setTimeout(() => {
-        targetElement.classList.remove('highlight-section');
-      }, 3000);
-    }
-  };
-
   const landingPreview = {
     name: landing.name || "Mi landing de ejemplo",
     description: landing.description || "Descripcion de ejemplo",
@@ -806,7 +754,10 @@ export default function AdminPage() {
         <div className="text-white p-2 rounded mb-4 w-full text-center">
           <p className="font-bold text-lg md:text-xl">VISTA PREVIA</p>
         </div>
-        <div className="relative w-[50vw] sm:w-[40vw] md:w-[30vw] lg:w-[300px] max-w-[300px] aspect-[9/19.5]">
+        <div 
+          className="relative w-[50vw] sm:w-[40vw] md:w-[30vw] lg:w-[300px] max-w-[300px] aspect-[9/19.5]"
+          data-editor-container="true"
+        >
           <img
             src="/images/iphone16-frame.png"
             alt="iPhone frame"
@@ -827,7 +778,6 @@ export default function AdminPage() {
               />
             </div>
           </div>
-          <GuideOverlay onScrollToSection={handleScrollToSection} />
         </div>
       </div>
       

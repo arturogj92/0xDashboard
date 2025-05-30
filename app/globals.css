@@ -144,3 +144,21 @@ div[style*="display: inline-block"] {
 html {
   overflow-y: scroll;
 }
+
+/* Clase para resaltar secciones */
+.highlight-section {
+  animation: highlightPulse 3s ease-in-out;
+  border: 2px solid #7f5af0 !important;
+  box-shadow: 0 0 15px rgba(127, 90, 240, 0.3) !important;
+}
+
+@keyframes highlightPulse {
+  0%, 100% { 
+    border-color: #7f5af0;
+    box-shadow: 0 0 15px rgba(127, 90, 240, 0.3);
+  }
+  50% { 
+    border-color: #a855f7;
+    box-shadow: 0 0 25px rgba(127, 90, 240, 0.6);
+  }
+}

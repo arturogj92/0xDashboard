@@ -2,7 +2,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, ExternalLink, Github, Linkedin, Facebook, Globe } from "lucide-react";
 import { useTranslations } from 'next-intl';
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { LinkData, SectionData, SocialLinkData } from '@/components/editor/types';
 import { getThemeById, getDefaultTheme } from '@/lib/themes';
 import { useTypewriter } from '@/hooks/useTypewriter';
@@ -178,6 +179,87 @@ const socialIcons = {
   website: Globe,
   web: Globe,
   default: ExternalLink
+};
+
+// Componente para el tooltip usando portal
+const TooltipPortal = ({ 
+  children, 
+  show, 
+  triggerRef 
+}: { 
+  children: React.ReactNode; 
+  show: boolean; 
+  triggerRef: React.RefObject<HTMLDivElement | null>;
+}) => {
+  const [position, setPosition] = useState({ top: 0, left: 0 });
+
+  useEffect(() => {
+    if (show && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setPosition({
+        top: rect.top - 10, // Un poco arriba del elemento
+        left: rect.left + rect.width / 2 // Centrado horizontalmente
+      });
+    }
+  }, [show, triggerRef]);
+
+  if (!show) return null;
+
+  return createPortal(
+    <div 
+      className="fixed pointer-events-none"
+      style={{ 
+        top: `${position.top}px`, 
+        left: `${position.left}px`,
+        zIndex: 99999,
+        transform: 'translate(-50%, -100%)'
+      }}
+    >
+      {children}
+    </div>,
+    document.body
+  );
+};
+
+// Componente para la guía del avatar
+const AvatarGuide = () => {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const guideRef = useRef<HTMLDivElement | null>(null);
+  
+  return (
+    <>
+      <div 
+        ref={guideRef}
+        className="absolute -top-1 -right-1 w-3 h-3 cursor-pointer z-50"
+        style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        onClick={() => {
+          console.log('🔵 Avatar guide clicked');
+          const event = new CustomEvent('guideClick', { detail: { sectionId: 'avatar-section' } });
+          console.log('📤 Dispatching event to window:', event.detail);
+          window.dispatchEvent(event);
+        }}
+      >
+        {/* Pulsing dot */}
+        <div className="relative">
+          <div className="w-3 h-3 bg-orange-500 rounded-full border-2 border-white shadow-lg animate-pulse" />
+          <div className="absolute inset-0 w-3 h-3 bg-orange-500/30 rounded-full animate-ping" />
+        </div>
+      </div>
+      
+      {/* Tooltip usando portal */}
+      <TooltipPortal show={showTooltip} triggerRef={guideRef}>
+        <div 
+          className="bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg whitespace-nowrap"
+          style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+        >
+          Cambiar foto de perfil
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900" />
+        </div>
+      </TooltipPortal>
+    </>
+  );
 };
 
 export const LandingPreview = React.memo(function LandingPreview({ 
@@ -460,22 +542,27 @@ export const LandingPreview = React.memo(function LandingPreview({
       <div className={`relative z-10 flex flex-col items-center ${isPreview ? 'pt-16' : 'pt-20'} ${isPreview ? 'px-1 pb-4' : 'px-6 md:px-8 lg:px-12 pb-16'} ${isPreview ? 'min-h-full' : 'min-h-screen'} mx-auto ${isPreview ? 'max-w-lg' : 'max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-5xl'}`}>
       {/* Avatar (solo si está habilitado) */}
       {avatarDisplayConfig.showAvatar && (
-        <Avatar className={`${isPreview ? 'w-16 h-16 mb-4' : 'w-24 h-24 mb-6'} flex-shrink-0`} style={{ backgroundColor: 'var(--preview-link-background)' }}>
-          <AvatarImage 
-            src={avatarUrl} 
-            alt="Avatar de landing"
-            className="object-cover"
-          />
-          <AvatarFallback 
-            className={`${isPreview ? 'text-lg' : 'text-2xl'} font-bold`}
-            style={{ 
-              backgroundColor: 'var(--preview-link-background)',
-              color: 'var(--preview-text-primary)'
-            }}
-          >
-            <User className={`${isPreview ? 'w-8 h-8' : 'w-12 h-12'}`} style={{ color: 'var(--preview-text-muted)' }} />
-          </AvatarFallback>
-        </Avatar>
+        <div className="relative">
+          <Avatar className={`${isPreview ? 'w-16 h-16 mb-4' : 'w-24 h-24 mb-6'} flex-shrink-0`} style={{ backgroundColor: 'var(--preview-link-background)' }}>
+            <AvatarImage 
+              src={avatarUrl} 
+              alt="Avatar de landing"
+              className="object-cover"
+            />
+            <AvatarFallback 
+              className={`${isPreview ? 'text-lg' : 'text-2xl'} font-bold`}
+              style={{ 
+                backgroundColor: 'var(--preview-link-background)',
+                color: 'var(--preview-text-primary)'
+              }}
+            >
+              <User className={`${isPreview ? 'w-8 h-8' : 'w-12 h-12'}`} style={{ color: 'var(--preview-text-muted)' }} />
+            </AvatarFallback>
+          </Avatar>
+          
+          {/* Guía del avatar - solo en modo preview */}
+          {isPreview && <AvatarGuide />}
+        </div>
       )}
 
       {/* Nombre y descripción */}
