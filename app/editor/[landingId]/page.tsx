@@ -885,7 +885,7 @@ export default function AdminPage() {
         </div>
       </div>
       
-      <div className="relative w-full md:w-1/2 order-last md:order-first rounded-xl border border-white/10 bg-[#0e0b15]/70 backdrop-blur-xl shadow-2xl p-4 sm:p-6 overflow-y-auto flex flex-col items-center">
+      <div className="relative w-full md:w-1/2 order-last md:order-first rounded-xl border border-white/10 bg-[#0e0b15]/70 backdrop-blur-xl shadow-2xl p-4 sm:p-6 overflow-y-auto overflow-x-hidden flex flex-col items-center">
         <div className="text-center mb-6 w-full">
           <div className="flex items-center justify-center gap-3 mb-3">
             <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-2 rounded-lg shadow-lg">

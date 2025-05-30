@@ -275,7 +275,7 @@ export default function ThemeSelector({ currentThemeId = 'dark', onThemeChange, 
           />
           <div className="text-left">
             <div className="font-semibold text-lg">{currentTheme.name}</div>
-            <div className="text-sm text-gray-300">{currentTheme.description}</div>
+            <div className="text-sm text-gray-300 hidden sm:block">{currentTheme.description}</div>
           </div>
         </div>
         <motion.div

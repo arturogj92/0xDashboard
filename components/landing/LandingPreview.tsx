@@ -825,7 +825,7 @@ export const LandingPreview = React.memo(function LandingPreview({
                     )}
                     <div className="flex-1 px-4">
                       <h3 
-                        className={`${isPreview ? 'text-[10px] sm:text-xs' : 'text-xs sm:text-sm'} font-medium leading-tight`}
+                        className={`${isPreview ? 'text-[8px] sm:text-[10px]' : 'text-[10px] sm:text-xs'} font-medium leading-tight`}
                         style={{ 
                           color: dynamicLinkText,
                           fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
