@@ -37,11 +37,16 @@ export function UserNav() {
     <div className="flex items-center gap-1 md:gap-2">
       <Link 
         href="/" 
-        className="inline-flex items-center px-1.5 py-0.5 text-[10px] md:text-xs font-medium text-white hover:text-purple-300 transition-colors bg-indigo-600/50 hover:bg-indigo-700/60 rounded-full md:px-3 md:py-1"
+        className="inline-flex items-center px-3 py-2 text-sm font-medium text-white hover:text-white bg-transparent hover:bg-white/10 transition-all duration-200 rounded-lg border border-transparent hover:border-white/20"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 md:w-5 md:h-5 text-amber-400 mr-1 md:mr-1.5">
-          <path fillRule="evenodd" d="M14.615 1.595a.75.75 0 0 1 .359.852L12.982 9.75h7.268a.75.75 0 0 1 .548 1.262l-10.5 11.25a.75.75 0 0 1-1.272-.71l1.992-7.302H3.75a.75.75 0 0 1-.548-1.262l10.5-11.25a.75.75 0 0 1 .913-.143Z" clipRule="evenodd" />
-        </svg>
+        <div className="relative w-5 h-5 mr-2">
+          <Image 
+            src="/images/icons/automation-icon.png"
+            alt="Automation Icon"
+            fill
+            className="object-contain"
+          />
+        </div>
         <span className="hidden md:inline">{t('yourAutomations')}</span>
       </Link>
       

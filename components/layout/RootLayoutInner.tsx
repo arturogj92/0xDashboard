@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { UserNav } from "@/components/auth/UserNav";
 import { useTranslations } from 'next-intl';
 import Footer from "@/app/components/Footer";
-import { FileText } from 'lucide-react';
+import { Settings } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 export default function RootLayoutInner({ children }: { children: React.ReactNode }) {
@@ -47,9 +47,9 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
           {isAuthenticated && (
             <Link
               href="/caption-generator"
-              className="inline-flex items-center px-1.5 py-0.5 text-[10px] md:text-xs font-medium text-white hover:text-purple-300 transition-colors bg-indigo-600/50 hover:bg-indigo-700/60 rounded-full md:px-3 md:py-1"
+              className="inline-flex items-center px-3 py-2 text-sm font-medium text-white hover:text-white bg-transparent hover:bg-white/10 transition-all duration-200 rounded-lg border border-transparent hover:border-white/20"
             >
-              <div className="relative w-4 h-4 md:w-5 md:h-5 mr-1 md:mr-1.5">
+              <div className="relative w-5 h-5 mr-2">
                 <Image 
                   src="/images/icons/caption-generator-icon.png"
                   alt="Caption Generator Icon"
@@ -63,9 +63,9 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
           {isAuthenticated && (
             <Link
               href="/landing"
-              className="inline-flex items-center px-1.5 py-0.5 text-[10px] md:text-xs font-medium text-white hover:text-purple-300 transition-colors bg-indigo-600/50 hover:bg-indigo-700/60 rounded-full md:px-3 md:py-1"
+              className="inline-flex items-center px-3 py-2 text-sm font-medium text-white hover:text-white bg-transparent hover:bg-white/10 transition-all duration-200 rounded-lg border border-transparent hover:border-white/20"
             >
-              <FileText className="w-4 h-4 md:w-5 md:h-5 mr-1" />
+              <Settings className="w-5 h-5 mr-2" />
               <span className="hidden md:inline">{t('myLanding')}</span>
             </Link>
           )}
