@@ -271,9 +271,15 @@ export default function MultiSectionsItem({
         <div 
           {...attributes}
           {...listeners}
-          className="absolute top-2 left-2 p-2 cursor-grab active:cursor-grabbing hover:bg-purple-900/30 rounded transition-colors"
+          className="absolute top-2 left-2 p-2 cursor-grab active:cursor-grabbing hover:bg-purple-900/30 rounded transition-colors select-none touch-manipulation"
+          style={{ 
+            userSelect: 'none',
+            WebkitUserSelect: 'none',
+            WebkitTouchCallout: 'none',
+            WebkitTapHighlightColor: 'transparent'
+          }}
         >
-          <div className="w-3 h-3 grid grid-cols-2 gap-1">
+          <div className="w-3 h-3 grid grid-cols-2 gap-1 pointer-events-none">
             <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
             <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
             <div className="w-1 h-1 bg-gray-400 rounded-full"></div>

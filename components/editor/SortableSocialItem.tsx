@@ -84,10 +84,16 @@ export function SortableSocialItem({id, data, onToggleVisibility, onUrlChange, o
             <div
                 {...attributes}
                 {...listeners}
-                className="cursor-grab p-1 text-muted-foreground hover:text-foreground active:cursor-grabbing"
+                className="cursor-grab p-1 text-muted-foreground hover:text-foreground active:cursor-grabbing select-none touch-manipulation"
                 aria-label="Arrastrar para reordenar"
+                style={{ 
+                    userSelect: 'none',
+                    WebkitUserSelect: 'none',
+                    WebkitTouchCallout: 'none',
+                    WebkitTapHighlightColor: 'transparent'
+                }}
             >
-                <Bars2Icon className="h-5 w-5" />
+                <Bars2Icon className="h-5 w-5 pointer-events-none" />
             </div>
 
             {SocialIcon && <div className="text-xl text-muted-foreground">{SocialIcon}</div>}
