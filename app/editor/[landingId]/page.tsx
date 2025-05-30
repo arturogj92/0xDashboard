@@ -214,7 +214,59 @@ export default function AdminPage() {
     }
 
     function handleSpecificSection(sectionId: string) {
-      if (sectionId === 'avatar-section') {
+      if (sectionId === 'background-gradient') {
+        console.log('🎨 Handling background-gradient');
+        // Para background-gradient, necesitamos abrir el accordion de fondos
+        const backgroundAccordion = document.querySelector('#background-configuration button');
+        console.log('🔍 Background accordion button found:', backgroundAccordion);
+        if (backgroundAccordion) {
+          // Verificar si el accordion de fondos está cerrado
+          // Como el contenido se renderiza condicionalmente, verificamos si existe
+          const backgroundContent = document.querySelector('#background-configuration div.p-4.pt-0.space-y-6');
+          const isBackgroundOpen = backgroundContent !== null;
+          console.log('📋 Background accordion content found:', backgroundContent, 'isOpen:', isBackgroundOpen);
+          
+          if (!isBackgroundOpen) {
+            console.log('🔓 Clicking background accordion button');
+            (backgroundAccordion as HTMLElement).click();
+            console.log('✅ Background accordion click executed');
+            // Esperar un poco más para que se abra el accordion interno
+            setTimeout(() => {
+              const targetElement = document.getElementById('background-configuration');
+              if (targetElement) {
+                targetElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest'
+                });
+                
+                targetElement.classList.add('highlight-section');
+                setTimeout(() => {
+                  targetElement.classList.remove('highlight-section');
+                }, 3000);
+              } else {
+                console.error('❌ Target element not found for background-configuration');
+              }
+            }, 300);
+          } else {
+            // Si ya está abierto, solo hacer scroll
+            console.log('✅ Background accordion already open, scrolling');
+            const targetElement = document.getElementById('background-configuration');
+            if (targetElement) {
+              targetElement.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start',
+                inline: 'nearest'
+              });
+              
+              targetElement.classList.add('highlight-section');
+              setTimeout(() => {
+                targetElement.classList.remove('highlight-section');
+              }, 3000);
+            }
+          }
+        }
+      } else if (sectionId === 'avatar-section') {
         console.log('🎭 Handling avatar-section');
         // Para avatar-section, necesitamos abrir el accordion de avatar
         const avatarAccordion = document.querySelector('#avatar-configuration button');
@@ -338,6 +390,58 @@ export default function AdminPage() {
           } else {
             // Si ya está abierto, solo hacer scroll
             const targetElement = document.getElementById('font-configuration');
+            if (targetElement) {
+              targetElement.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start',
+                inline: 'nearest'
+              });
+              
+              targetElement.classList.add('highlight-section');
+              setTimeout(() => {
+                targetElement.classList.remove('highlight-section');
+              }, 3000);
+            }
+          }
+        }
+      } else if (sectionId === 'link-styles') {
+        console.log('🔗 Handling link-styles');
+        // Para link-styles, necesitamos abrir el accordion de enlaces
+        const linkAccordion = document.querySelector('#link-styles button');
+        console.log('🔍 Link accordion button found:', linkAccordion);
+        if (linkAccordion) {
+          // Verificar si el accordion de enlaces está cerrado
+          // Como el contenido se renderiza condicionalmente, verificamos si existe
+          const linkContent = document.querySelector('#link-styles div.p-4.pt-0.space-y-6');
+          const isLinkOpen = linkContent !== null;
+          console.log('📋 Link accordion content found:', linkContent, 'isOpen:', isLinkOpen);
+          
+          if (!isLinkOpen) {
+            console.log('🔓 Clicking link accordion button');
+            (linkAccordion as HTMLElement).click();
+            console.log('✅ Link accordion click executed');
+            // Esperar un poco más para que se abra el accordion interno
+            setTimeout(() => {
+              const targetElement = document.getElementById('link-styles');
+              if (targetElement) {
+                targetElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'start',
+                  inline: 'nearest'
+                });
+                
+                targetElement.classList.add('highlight-section');
+                setTimeout(() => {
+                  targetElement.classList.remove('highlight-section');
+                }, 3000);
+              } else {
+                console.error('❌ Target element not found for link-styles');
+              }
+            }, 300);
+          } else {
+            // Si ya está abierto, solo hacer scroll
+            console.log('✅ Link accordion already open, scrolling');
+            const targetElement = document.getElementById('link-styles');
             if (targetElement) {
               targetElement.scrollIntoView({ 
                 behavior: 'smooth', 

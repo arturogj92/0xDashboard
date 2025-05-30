@@ -230,7 +230,7 @@ const AvatarGuide = () => {
     <>
       <div 
         ref={guideRef}
-        className="absolute -top-1 -right-1 w-3 h-3 cursor-pointer z-50"
+        className="absolute -top-1 -right-1 w-3 h-3 cursor-pointer z-[100]"
         style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
@@ -255,6 +255,170 @@ const AvatarGuide = () => {
           style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
         >
           Cambiar foto de perfil
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900" />
+        </div>
+      </TooltipPortal>
+    </>
+  );
+};
+
+// Componente para guía de configuración de fondos
+const BackgroundGuide = () => {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const guideRef = useRef<HTMLDivElement | null>(null);
+
+  return (
+    <>
+      <div 
+        ref={guideRef}
+        className="absolute top-4 left-4 w-3 h-3 cursor-pointer z-[100]"
+        style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        onClick={() => {
+          console.log('🎨 Background guide clicked');
+          const event = new CustomEvent('guideClick', { detail: { sectionId: 'background-gradient' } });
+          console.log('📤 Dispatching background event to window:', event.detail);
+          window.dispatchEvent(event);
+        }}
+      >
+        {/* Pulsing dot */}
+        <div className="relative">
+          <div className="w-3 h-3 bg-purple-500 rounded-full border-2 border-white shadow-lg animate-pulse" />
+          <div className="absolute inset-0 w-3 h-3 bg-purple-500/30 rounded-full animate-ping" />
+        </div>
+      </div>
+      
+      {/* Tooltip usando portal */}
+      <TooltipPortal show={showTooltip} triggerRef={guideRef}>
+        <div 
+          className="bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg whitespace-nowrap"
+          style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+        >
+          Personalizar fondos
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900" />
+        </div>
+      </TooltipPortal>
+    </>
+  );
+};
+
+// Componente para guía de información básica
+const InfoGuide = () => {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const guideRef = useRef<HTMLDivElement | null>(null);
+
+  return (
+    <>
+      <div 
+        ref={guideRef}
+        className="absolute -top-1 -right-1 w-3 h-3 cursor-pointer z-[100]"
+        style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        onClick={() => {
+          console.log('ℹ️ Info guide clicked');
+          const event = new CustomEvent('guideClick', { detail: { sectionId: 'info-section' } });
+          console.log('📤 Dispatching info event to window:', event.detail);
+          window.dispatchEvent(event);
+        }}
+      >
+        {/* Pulsing dot */}
+        <div className="relative">
+          <div className="w-3 h-3 bg-blue-500 rounded-full border-2 border-white shadow-lg animate-pulse" />
+          <div className="absolute inset-0 w-3 h-3 bg-blue-500/30 rounded-full animate-ping" />
+        </div>
+      </div>
+      
+      {/* Tooltip usando portal */}
+      <TooltipPortal show={showTooltip} triggerRef={guideRef}>
+        <div 
+          className="bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg whitespace-nowrap"
+          style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+        >
+          Editar nombre y perfil
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900" />
+        </div>
+      </TooltipPortal>
+    </>
+  );
+};
+
+// Componente para guía de configuración de enlaces
+const LinksGuide = () => {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const guideRef = useRef<HTMLDivElement | null>(null);
+
+  return (
+    <>
+      <div 
+        ref={guideRef}
+        className="absolute -top-1 right-2 w-3 h-3 cursor-pointer z-[100]"
+        style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        onClick={() => {
+          console.log('🔗 Links guide clicked');
+          const event = new CustomEvent('guideClick', { detail: { sectionId: 'link-styles' } });
+          console.log('📤 Dispatching links event to window:', event.detail);
+          window.dispatchEvent(event);
+        }}
+      >
+        {/* Pulsing dot */}
+        <div className="relative">
+          <div className="w-3 h-3 bg-indigo-500 rounded-full border-2 border-white shadow-lg animate-pulse" />
+          <div className="absolute inset-0 w-3 h-3 bg-indigo-500/30 rounded-full animate-ping" />
+        </div>
+      </div>
+      
+      {/* Tooltip usando portal */}
+      <TooltipPortal show={showTooltip} triggerRef={guideRef}>
+        <div 
+          className="bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg whitespace-nowrap"
+          style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+        >
+          Personalizar enlaces
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900" />
+        </div>
+      </TooltipPortal>
+    </>
+  );
+};
+
+// Componente para guía de configuración de fuentes
+const FontGuide = () => {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const guideRef = useRef<HTMLDivElement | null>(null);
+
+  return (
+    <>
+      <div 
+        ref={guideRef}
+        className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-3 h-3 cursor-pointer z-[100]"
+        style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        onClick={() => {
+          console.log('🔤 Font guide clicked');
+          const event = new CustomEvent('guideClick', { detail: { sectionId: 'font-family' } });
+          console.log('📤 Dispatching font event to window:', event.detail);
+          window.dispatchEvent(event);
+        }}
+      >
+        {/* Pulsing dot */}
+        <div className="relative">
+          <div className="w-3 h-3 bg-green-500 rounded-full border-2 border-white shadow-lg animate-pulse" />
+          <div className="absolute inset-0 w-3 h-3 bg-green-500/30 rounded-full animate-ping" />
+        </div>
+      </div>
+      
+      {/* Tooltip usando portal */}
+      <TooltipPortal show={showTooltip} triggerRef={guideRef}>
+        <div 
+          className="bg-gray-900 text-white text-xs px-3 py-2 rounded-lg shadow-lg whitespace-nowrap"
+          style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+        >
+          Cambiar tipografía
           <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900" />
         </div>
       </TooltipPortal>
@@ -532,6 +696,9 @@ export const LandingPreview = React.memo(function LandingPreview({
         color: dynamicTextPrimary,
       }}
     >
+      {/* Guía de configuración de fondos */}
+      <BackgroundGuide />
+      
       {/* Patrón superpuesto */}
       {backgroundPatternConfig.pattern !== 'none' && (
         <div 
@@ -560,8 +727,8 @@ export const LandingPreview = React.memo(function LandingPreview({
             </AvatarFallback>
           </Avatar>
           
-          {/* Guía del avatar - solo en modo preview */}
-          {isPreview && <AvatarGuide />}
+          {/* Guía del avatar */}
+          <AvatarGuide />
         </div>
       )}
 
@@ -574,27 +741,35 @@ export const LandingPreview = React.memo(function LandingPreview({
             className={`${isPreview ? 'w-4 h-4' : 'w-6 h-6'} flex-shrink-0`}
           />
         )}
-        <h2 
-          key={`title-${titleStyleConfig.gradientEnabled}-${JSON.stringify(titleStyleConfig.gradientColors)}`}
-          className={`${isPreview ? getPreviewFontSize(titleStyleConfig.fontSize || 'text-2xl') : titleStyleConfig.fontSize} font-semibold text-center break-words leading-tight`}
-          style={getTitleStyle()}
-        >
-          {name || 'Your Name'}
-        </h2>
+        <div className="relative">
+          <h2 
+            key={`title-${titleStyleConfig.gradientEnabled}-${JSON.stringify(titleStyleConfig.gradientColors)}`}
+            className={`${isPreview ? getPreviewFontSize(titleStyleConfig.fontSize || 'text-2xl') : titleStyleConfig.fontSize} font-semibold text-center break-words leading-tight`}
+            style={getTitleStyle()}
+          >
+            {name || 'Your Name'}
+          </h2>
+          {/* Guía de información básica */}
+          <InfoGuide />
+        </div>
       </div>
       
-      <p 
-        className={`${isPreview ? 'mt-1 mb-2' : 'mt-2 mb-4'} ${isPreview ? 'text-xs' : 'text-base'} text-center break-words line-clamp-3 leading-tight px-2 ${isPreview ? 'min-h-[2rem]' : 'min-h-[3rem]'}`}
-        style={{ 
-          color: dynamicTextSecondary,
-          fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
-        }}
-      >
-        {finalDescription}
-        {effectsConfig.typewriterEffect && !isComplete && (
-          <span className="animate-pulse text-current ml-0.5">|</span>
-        )}
-      </p>
+      <div className="relative">
+        <p 
+          className={`${isPreview ? 'mt-1 mb-2' : 'mt-2 mb-4'} ${isPreview ? 'text-xs' : 'text-base'} text-center break-words line-clamp-3 leading-tight px-2 ${isPreview ? 'min-h-[2rem]' : 'min-h-[3rem]'}`}
+          style={{ 
+            color: dynamicTextSecondary,
+            fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
+          }}
+        >
+          {finalDescription}
+          {effectsConfig.typewriterEffect && !isComplete && (
+            <span className="animate-pulse text-current ml-0.5">|</span>
+          )}
+        </p>
+        {/* Guía de configuración de fuentes */}
+        <FontGuide />
+      </div>
 
       {/* Links organizados por sección */}
       <div className="w-full space-y-2 mt-2 flex-1 px-0 flex flex-col items-center">
@@ -624,7 +799,8 @@ export const LandingPreview = React.memo(function LandingPreview({
               {/* Links de la sección */}
               {sectionLinks.map((link, linkIndex) => (
                 <React.Fragment key={link.id}>
-                  <a
+                  <div className="relative w-full flex justify-center">
+                    <a
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -658,7 +834,10 @@ export const LandingPreview = React.memo(function LandingPreview({
                         {link.title || 'Untitled Link'}
                       </h3>
                     </div>
-                  </a>
+                    </a>
+                    {/* Guía de configuración de enlaces - solo en el primer enlace */}
+                    {sectionIndex === 0 && linkIndex === 0 && <LinksGuide />}
+                  </div>
                   {linkIndex < sectionLinks.length - 1 && (
                     <div className={`${isPreview ? 'w-[95%]' : 'w-full md:w-[70%] lg:w-[60%] xl:w-[50%]'} h-px bg-gradient-to-r from-transparent via-white/25 to-transparent my-1`} />
                   )}
