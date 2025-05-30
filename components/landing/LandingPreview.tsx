@@ -787,7 +787,7 @@ export const LandingPreview = React.memo(function LandingPreview({
             <React.Fragment key={section.id}>
               {/* Título de sección */}
               <div 
-                className="text-lg text-center font-medium py-2 w-full"
+                className="text-base lg:text-lg text-center font-medium py-2 w-full"
                 style={{ 
                   color: dynamicTextSecondary,
                   fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
@@ -825,7 +825,7 @@ export const LandingPreview = React.memo(function LandingPreview({
                     )}
                     <div className="flex-1 px-4">
                       <h3 
-                        className={`${isPreview ? 'text-xs' : 'text-sm'} font-medium leading-tight`}
+                        className={`${isPreview ? 'text-[10px] sm:text-xs' : 'text-xs sm:text-sm'} font-medium leading-tight`}
                         style={{ 
                           color: dynamicLinkText,
                           fontFamily: `${dynamicFontFamily}, system-ui, sans-serif`
