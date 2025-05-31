@@ -15,7 +15,8 @@ import { LandingAvatarUpload } from "@/components/editor/LandingAvatarUpload";
 import BackgroundPatternSelector from "@/components/editor/BackgroundPatternSelector";
 import LinkImageStyleSelector from "@/components/editor/LinkImageStyleSelector";
 import { LandingInfoEditor } from "@/components/editor/LandingInfoEditor";
-import { Info } from 'lucide-react';
+import CustomDomainConfiguration from "@/components/editor/CustomDomainConfiguration";
+import { Info, Globe } from 'lucide-react';
 
 interface StyleCustomizationAccordionProps {
   landing: {
@@ -51,6 +52,7 @@ export default function StyleCustomizationAccordion({
     links: false,
     fonts: false,
     effects: false,
+    domain: false,
   });
 
   const toggleSection = (section: string) => {
@@ -367,6 +369,34 @@ export default function StyleCustomizationAccordion({
                   currentConfig={landing.configurations?.effects || { showBadge: true, typewriterEffect: true }}
                   onConfigUpdate={handleConfigurationUpdate}
                   onConfigSave={handleConfigurationSave}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Configuración de Dominio Personalizado */}
+          <div id="domain-configuration" className="bg-gray-800/20 border border-gray-700/50 rounded-lg overflow-hidden">
+            <button
+              onClick={() => toggleSection('domain')}
+              className="w-full p-4 flex items-center justify-between hover:bg-gray-800/30 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg shadow-lg">
+                  <Globe className="h-5 w-5 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-white">Dominio Personalizado</h3>
+              </div>
+              {openSections.domain ? (
+                <ChevronUpIcon className="h-5 w-5 text-gray-400" />
+              ) : (
+                <ChevronDownIcon className="h-5 w-5 text-gray-400" />
+              )}
+            </button>
+            
+            {openSections.domain && (
+              <div className="p-4 pt-0">
+                <CustomDomainConfiguration
+                  landingId={landing.id || ''}
                 />
               </div>
             )}
