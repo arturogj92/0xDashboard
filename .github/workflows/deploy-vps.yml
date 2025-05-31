@@ -36,7 +36,11 @@ jobs:
             # 3. Instalar dependencias si cambiaron
             if git diff HEAD@{1} --name-only | grep -q "package-lock.json"; then
               echo "📦 Actualizando dependencias..."
-              npm ci --production
+              npm install --legacy-peer-deps
+            else
+              # Siempre verificar que las dependencias estén instaladas
+              echo "📦 Verificando dependencias..."
+              npm install --legacy-peer-deps
             fi
             
             # 4. Usar middleware VPS para el build
@@ -44,8 +48,10 @@ jobs:
               cp middleware.vps.ts middleware.ts
             fi
             
-            # 5. Build de producción
+            # 5. Build de producción con memoria limitada
             echo "🏗️ Building..."
+            export NODE_OPTIONS="--max-old-space-size=768"
+            export NEXT_TELEMETRY_DISABLED=1
             npm run build
             
             # 6. Reiniciar con PM2
