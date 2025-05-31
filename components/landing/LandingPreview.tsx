@@ -15,6 +15,7 @@ interface LandingPreviewProps {
   sections?: SectionData[];
   socialLinks?: SocialLinkData[];
   isPreview?: boolean;
+  showGuides?: boolean;
   themeId?: string;
   avatarUrl?: string;
   configurations?: {
@@ -226,6 +227,8 @@ const AvatarGuide = () => {
   const [showTooltip, setShowTooltip] = useState(false);
   const guideRef = useRef<HTMLDivElement | null>(null);
   
+  console.log('🟠 AvatarGuide component is rendering');
+  
   return (
     <>
       <div 
@@ -433,6 +436,7 @@ export const LandingPreview = React.memo(function LandingPreview({
   sections = [], 
   socialLinks = [],
   isPreview = false,
+  showGuides = false,
   themeId = 'dark',
   avatarUrl,
   configurations = {}
@@ -697,7 +701,7 @@ export const LandingPreview = React.memo(function LandingPreview({
       }}
     >
       {/* Guía de configuración de fondos */}
-      <BackgroundGuide />
+      {showGuides && <BackgroundGuide />}
       
       {/* Patrón superpuesto */}
       {backgroundPatternConfig.pattern !== 'none' && (
@@ -727,8 +731,8 @@ export const LandingPreview = React.memo(function LandingPreview({
             </AvatarFallback>
           </Avatar>
           
-          {/* Guía del avatar */}
-          <AvatarGuide />
+          {/* Guía del avatar - solo mostrar en el editor */}
+          {showGuides && <AvatarGuide />}
         </div>
       )}
 
@@ -750,7 +754,7 @@ export const LandingPreview = React.memo(function LandingPreview({
             {name || 'Your Name'}
           </h2>
           {/* Guía de información básica */}
-          <InfoGuide />
+          {showGuides && <InfoGuide />}
         </div>
       </div>
       
@@ -768,7 +772,7 @@ export const LandingPreview = React.memo(function LandingPreview({
           )}
         </p>
         {/* Guía de configuración de fuentes */}
-        <FontGuide />
+        {showGuides && <FontGuide />}
       </div>
 
       {/* Links organizados por sección */}
@@ -836,7 +840,7 @@ export const LandingPreview = React.memo(function LandingPreview({
                     </div>
                     </a>
                     {/* Guía de configuración de enlaces - solo en el primer enlace */}
-                    {sectionIndex === 0 && linkIndex === 0 && <LinksGuide />}
+                    {sectionIndex === 0 && linkIndex === 0 && showGuides && <LinksGuide />}
                   </div>
                   {linkIndex < sectionLinks.length - 1 && (
                     <div className={`${isPreview ? 'w-[95%]' : 'w-full md:w-[70%] lg:w-[60%] xl:w-[50%]'} h-px bg-gradient-to-r from-transparent via-white/25 to-transparent my-1`} />
