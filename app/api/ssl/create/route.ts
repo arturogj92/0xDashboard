@@ -12,7 +12,7 @@ function isVPSEnvironment() {
 
 function isAuthorized(request: NextRequest) {
   const vpsSecret = request.headers.get('x-vps-secret');
-  const expectedSecret = process.env.VPS_SECRET || 'creator0x-vps-secret-2025';
+  const expectedSecret = process.env.VPS_SECRET;
   
   return vpsSecret === expectedSecret;
 }
