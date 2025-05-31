@@ -2,16 +2,16 @@
   "app": {
     "name": "0xReplyer Dashboard",
     "hire": "Contratar",
-    "yourAutomations": "Tus automatizaciones",
+    "yourAutomations": "Automatizaciones",
     "pricing": "Precios",
-    "captionGenerator": "Generador de descripciones",
-    "myLanding": "Mi Landing",
+    "captionGenerator": "Descripciones",
+    "myLanding": "Landing",
     "logoAlt": "Logo de 0xReplyer",
     "privacyPolicy": "Política de Privacidad",
     "dataDeletion": "Solicitud de Eliminación de Datos",
     "userNav": {
       "login": "Acceder",
-      "yourAutomations": "Tus automatizaciones",
+      "yourAutomations": "Automatizaciones",
       "profile": "Tu Perfil",
       "logout": "Cerrar Sesión"
     },
@@ -186,7 +186,7 @@
   "dashboard": {
     "welcome": "Bienvenido, {name}",
     "manageDesc": "Gestiona tus reels y automatizaciones desde este panel",
-    "yourAutomationsTitle": "Tus automatizaciones",
+    "yourAutomationsTitle": "Automatizaciones",
     "yourAutomationsDesc": "Gestiona tus respuestas automáticas para reels e historias",
     "connectedText": "Conectado",
     "error": "Error!",

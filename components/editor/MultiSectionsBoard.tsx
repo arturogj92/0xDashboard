@@ -61,6 +61,7 @@ export default function MultiSectionsBoard({
   
   const [activeId, setActiveId] = useState<string | null>(null);
   const [highlightedLinkId, setHighlightedLinkId] = useState<string | null>(null);
+  const [justFinishedDrag, setJustFinishedDrag] = useState(false);
   /* containers SIEMPRE se recalculan a partir de links/sections.
      Con useMemo el cálculo es barato y se sincroniza en el mismo render,
      por lo que el cambio de sección se ve inmediatamente.               */
@@ -109,11 +110,18 @@ export default function MultiSectionsBoard({
   /* ─────────── Handlers de drag and drop ─────────── */
   function handleDragStart(event: DragStartEvent) {
     setActiveId(event.active.id as string);
+    setJustFinishedDrag(false);
   }
   
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     setActiveId(null);
+    setJustFinishedDrag(true);
+    
+    // Resetear el flag después de un breve momento
+    setTimeout(() => {
+      setJustFinishedDrag(false);
+    }, 100);
     
     if (!over) return;
     
@@ -594,6 +602,7 @@ export default function MultiSectionsBoard({
                   highlightedLinkId={highlightedLinkId}
                   onMoveLinkUp={moveLinkUp}
                   onMoveLinkDown={moveLinkDown}
+                  justFinishedDrag={justFinishedDrag}
                 />
               </motion.div>
             );

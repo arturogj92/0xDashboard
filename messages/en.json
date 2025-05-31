@@ -186,7 +186,7 @@
   "dashboard": {
     "welcome": "Welcome, {name}",
     "manageDesc": "Manage your reels and automations from this dashboard",
-    "yourAutomationsTitle": "Your Automations",
+    "yourAutomationsTitle": "Automations",
     "yourAutomationsDesc": "Manage your automatic replies for reels and stories",
     "connectedText": "Connected",
     "error": "Error!",

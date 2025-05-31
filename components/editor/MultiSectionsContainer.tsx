@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   SortableContext,
   verticalListSortingStrategy,
@@ -77,13 +78,14 @@ interface Props{
   highlightedLinkId:string|null;
   onMoveLinkUp?:(id:string)=>void;
   onMoveLinkDown?:(id:string)=>void;
+  justFinishedDrag?: boolean;
 }
 
 export default function MultiSectionsContainer({
   containerId,items,links,sections,moveSectionUp,moveSectionDown,idx,total,
   onUpdateLink,onDeleteLink,onCreateLinkInSection,onUpdateSection,onDeleteSection,
   reorderLinksInContainer,onMoveToSection,transitioningLinks,activeId,highlightedLinkId,
-  onMoveLinkUp,onMoveLinkDown,
+  onMoveLinkUp,onMoveLinkDown,justFinishedDrag = false,
 }:Props){
   
   const { setNodeRef, isOver } = useDroppable({
@@ -158,27 +160,65 @@ export default function MultiSectionsContainer({
       </div>
 
       <SortableContext items={order} strategy={verticalListSortingStrategy}>
-        <div className="flex flex-col gap-4">
-          {order.map((id, index)=>{
-            const link=links.find(l=>l.id===id); if(!link) return null;
-            return(
-              <MultiSectionsItem 
-                key={`${link.id}-${link.section_id || 'no-section'}`} 
-                link={link}
-                onUpdateLink={onUpdateLink} 
-                onDeleteLink={onDeleteLink}
-                onMoveToSection={onMoveToSection}
-                availableSections={availableSections}
-                isTransitioning={transitioningLinks.has(link.id)}
-                activeId={activeId}
-                highlightMoveIcon={highlightedLinkId === link.id}
-                onMoveUp={onMoveLinkUp}
-                onMoveDown={onMoveLinkDown}
-                isFirst={index === 0}
-                isLast={index === order.length - 1}
-              />
-            );
-          })}
+        <div className="flex flex-col gap-4" style={{ position: 'relative' }}>
+          <AnimatePresence>
+            {order.map((id, index)=>{
+              const link=links.find(l=>l.id===id); if(!link) return null;
+              const isDragging = activeId !== null;
+              const shouldDisableAnimations = isDragging || justFinishedDrag;
+              
+              return(
+                <motion.div
+                  key={`${link.id}-${link.section_id || 'no-section'}`}
+                  layout={!shouldDisableAnimations}
+                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  animate={{ 
+                    opacity: 1, 
+                    y: 0, 
+                    scale: 1,
+                    transition: shouldDisableAnimations ? { duration: 0 } : {
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 25,
+                      duration: 0.3
+                    }
+                  }}
+                  exit={{ 
+                    opacity: 0, 
+                    y: -20, 
+                    scale: 0.95,
+                    transition: {
+                      duration: 0.2,
+                      ease: "easeInOut"
+                    }
+                  }}
+                  transition={{
+                    layout: shouldDisableAnimations ? { duration: 0 } : {
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 25,
+                      duration: 0.4
+                    }
+                  }}
+                >
+                  <MultiSectionsItem 
+                    link={link}
+                    onUpdateLink={onUpdateLink} 
+                    onDeleteLink={onDeleteLink}
+                    onMoveToSection={onMoveToSection}
+                    availableSections={availableSections}
+                    isTransitioning={transitioningLinks.has(link.id)}
+                    activeId={activeId}
+                    highlightMoveIcon={highlightedLinkId === link.id}
+                    onMoveUp={onMoveLinkUp}
+                    onMoveDown={onMoveLinkDown}
+                    isFirst={index === 0}
+                    isLast={index === order.length - 1}
+                  />
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
         </div>
       </SortableContext>
 
