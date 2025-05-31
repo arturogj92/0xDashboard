@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Middleware condicional - Solo se activa en el VPS
+// Middlewarele condicional - Solo se activa en el VPS
 export function middleware(request: NextRequest) {
   // Si no estamos en el VPS, no hacer nada
   if (process.env.NEXT_PUBLIC_IS_VPS !== 'true') {
