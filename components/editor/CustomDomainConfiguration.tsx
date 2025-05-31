@@ -53,7 +53,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
 
   useEffect(() => {
     loadDomains();
-  }, [landingId]);
+  }, [landingId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const addDomain = async () => {
     if (!newDomain.trim()) return;
@@ -316,10 +316,10 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
                       <strong>Instrucciones:</strong>
                       <ol className="list-decimal list-inside mt-2 space-y-1">
                         <li>Ve al panel de control de tu proveedor de dominios</li>
-                        <li>Busca la sección de "DNS" o "Zona DNS"</li>
+                        <li>Busca la sección de &quot;DNS&quot; o &quot;Zona DNS&quot;</li>
                         <li>Agrega el registro DNS con los valores mostrados arriba</li>
                         <li>Espera a que se propague (puede tomar hasta 24 horas)</li>
-                        <li>Haz clic en "Verificar" para confirmar la configuración</li>
+                        <li>Haz clic en &quot;Verificar&quot; para confirmar la configuración</li>
                       </ol>
                     </div>
                   </div>
