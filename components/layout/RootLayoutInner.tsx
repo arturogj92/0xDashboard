@@ -65,7 +65,7 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
               href="/landing"
               className="inline-flex items-center px-3 py-2 text-sm font-medium text-white hover:text-white bg-white/5 hover:bg-white/15 transition-all duration-200 rounded-lg border border-white/10 hover:border-white/30"
             >
-              <Settings className="w-5 h-5 mr-2" />
+              <Settings className="w-5 h-5 mr-2" style={{ color: '#d08216' }} />
               <span className="hidden md:inline">{t('myLanding')}</span>
             </Link>
           )}
