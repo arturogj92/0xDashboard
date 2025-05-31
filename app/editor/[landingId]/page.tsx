@@ -876,6 +876,7 @@ export default function AdminPage() {
                 sections={sections}
                 socialLinks={socialLinks}
                 isPreview={true}
+                showGuides={true}
                 themeId={landingPreview.theme_id}
                 avatarUrl={landing.avatar_url}
                 configurations={landing.configurations}
