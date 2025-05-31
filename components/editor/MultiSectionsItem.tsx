@@ -135,11 +135,15 @@ export default function MultiSectionsItem({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: link.id });
+  } = useSortable({ 
+    id: link.id,
+    animateLayoutChanges: () => false, // Previene animaciones adicionales durante cambios de layout
+  });
   
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
+    transition: isDragging ? undefined : transition,
+    zIndex: isDragging ? 1000 : 1,
   };
   
   const [title,setTitle]=useState(link.title);
