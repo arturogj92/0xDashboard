@@ -30,8 +30,11 @@ jobs:
             # 1. Ir al directorio
             cd $APP_DIR
             
-            # 2. Pull últimos cambios
-            git pull origin main
+            # 2. Descartar cambios locales y forzar actualización
+            echo "🔄 Descartando cambios locales y actualizando..."
+            git fetch origin main
+            git reset --hard origin/main
+            git clean -fd
             
             # 3. Instalar dependencias si cambiaron
             if git diff HEAD@{1} --name-only | grep -q "package-lock.json"; then
@@ -43,18 +46,14 @@ jobs:
               npm install --legacy-peer-deps
             fi
             
-            # 4. Usar middleware VPS para el build
-            if [ -f "middleware.vps.ts" ]; then
-              cp middleware.vps.ts middleware.ts
-            fi
-            
-            # 5. Build de producción con memoria limitada
+            # 4. Build de producción con memoria limitada y variable VPS
             echo "🏗️ Building..."
             export NODE_OPTIONS="--max-old-space-size=768"
             export NEXT_TELEMETRY_DISABLED=1
+            export NEXT_PUBLIC_IS_VPS=true
             npm run build
             
-            # 6. Reiniciar con PM2
+            # 5. Reiniciar con PM2
             pm2 restart $PM2_APP --update-env
             pm2 save
             

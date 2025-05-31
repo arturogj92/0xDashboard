@@ -5,17 +5,7 @@
 
 echo "🚀 Preparando build para VPS (solo landings)..."
 
-# 1. Backup del middleware actual
-if [ -f "middleware.ts" ]; then
-    cp middleware.ts middleware.backup.ts
-    echo "✅ Backup del middleware creado"
-fi
-
-# 2. Usar el middleware específico del VPS
-cp middleware.vps.ts middleware.ts
-echo "✅ Middleware VPS activado"
-
-# 3. Crear/actualizar .env.production.local para el VPS
+# 1. Crear/actualizar .env.production.local para el VPS
 cat > .env.production.local << EOF
 # Configuración VPS
 NEXT_PUBLIC_IS_VPS=true
@@ -27,15 +17,9 @@ EOF
 
 echo "✅ Variables de entorno configuradas"
 
-# 4. Build de producción
+# 2. Build de producción
 echo "🏗️ Construyendo aplicación..."
-npm run build
-
-# 5. Restaurar middleware original
-if [ -f "middleware.backup.ts" ]; then
-    mv middleware.backup.ts middleware.ts
-    echo "✅ Middleware original restaurado"
-fi
+NEXT_PUBLIC_IS_VPS=true npm run build
 
 echo "✅ Build para VPS completado"
 echo ""
