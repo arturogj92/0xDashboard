@@ -20,7 +20,7 @@ export function middleware(request: NextRequest) {
     }
     
     // Reescribir a /landing/[subdomain]
-    url.pathname = `/landing/${subdomain}${pathname}`;
+    url.pathname = `/landing/${subdomain}`;
     console.log(`[VPS Middleware] Subdominio ${subdomain} → ${url.pathname}`);
     return NextResponse.rewrite(url);
   }
@@ -34,7 +34,7 @@ export function middleware(request: NextRequest) {
     const slug = customSlug || hostname.split('.')[0];
     
     if (!url.pathname.startsWith('/landing/')) {
-      url.pathname = `/landing/${slug}${pathname}`;
+      url.pathname = `/landing/${slug}`;
       console.log(`[VPS Middleware] Dominio personalizado ${hostname} → ${url.pathname}`);
       return NextResponse.rewrite(url);
     }
