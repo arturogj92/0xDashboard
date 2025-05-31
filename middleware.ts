@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Middleware para VPS - Solo maneja subdominios y dominios personalizados
-// NO necesita redirigir a Vercel porque el DNS ya lo maneja
+// Middleware condicional - Solo se activa en el VPS
 export function middleware(request: NextRequest) {
+  // Si no estamos en el VPS, no hacer nada
+  if (process.env.NEXT_PUBLIC_IS_VPS !== 'true') {
+    return NextResponse.next();
+  }
+
   const hostname = request.headers.get('host') || '';
-  const pathname = request.nextUrl.pathname;
   
   // Extraer subdominio
   const subdomain = getSubdomain(hostname);
