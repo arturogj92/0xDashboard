@@ -18,6 +18,8 @@ function isAuthorized(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  let domain: string = '';
+  
   try {
     // Verificar que estamos en el VPS
     if (!isVPSEnvironment()) {
@@ -30,7 +32,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const { domain } = await request.json();
+    const requestBody = await request.json();
+    domain = requestBody.domain;
     
     if (!domain) {
       return NextResponse.json({ error: 'Domain is required' }, { status: 400 });
@@ -105,6 +108,34 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error(`[VPS-SSL] SSL creation failed:`, error);
+    
+    // Notificar al backend sobre el error
+    try {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://0xreplyer-production.up.railway.app';
+      console.log(`[VPS-SSL] Notifying backend about SSL error: ${backendUrl}/api/custom-domains/ssl-complete`);
+      
+      const notifyResponse = await fetch(`${backendUrl}/api/custom-domains/ssl-complete`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-VPS-Secret': process.env.VPS_SECRET || ''
+        },
+        body: JSON.stringify({ 
+          domain: domain,
+          success: false,
+          error: (error as Error).message,
+          timestamp: new Date().toISOString()
+        })
+      });
+      
+      if (notifyResponse.ok) {
+        console.log(`[VPS-SSL] Backend notified about error for ${domain}`);
+      } else {
+        console.error(`[VPS-SSL] Failed to notify backend about error for ${domain}:`, notifyResponse.status);
+      }
+    } catch (notifyError) {
+      console.error(`[VPS-SSL] Error notifying backend about error for ${domain}:`, notifyError);
+    }
     
     return NextResponse.json({ 
       error: 'SSL creation failed', 
