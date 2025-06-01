@@ -19,17 +19,17 @@ export async function middleware(request: NextRequest) {
     
     // Si ya está en /landing/, no reescribir
     if (url.pathname.startsWith('/landing/')) {
-      const response = NextResponse.next();
-      response.headers.set('x-middleware-debug', 'subdomain-passthrough');
-      return response;
+      const passThroughResponse = NextResponse.next();
+      passThroughResponse.headers.set('x-middleware-debug', 'subdomain-passthrough');
+      return passThroughResponse;
     }
     
     // Reescribir a /landing/[subdomain]
     url.pathname = `/landing/${subdomain}`;
     console.log(`[VPS Middleware] Subdominio ${subdomain} → ${url.pathname}`);
-    const response = NextResponse.rewrite(url);
-    response.headers.set('x-middleware-debug', 'subdomain-rewrite');
-    return response;
+    const subdomainResponse = NextResponse.rewrite(url);
+    subdomainResponse.headers.set('x-middleware-debug', 'subdomain-rewrite');
+    return subdomainResponse;
   }
   
   // Para dominios personalizados (ej: elcaminodelprogramador.com)
@@ -57,10 +57,10 @@ export async function middleware(request: NextRequest) {
           if (data.success && data.slug) {
             url.pathname = `/landing/${data.slug}`;
             console.log(`[VPS Middleware] Dominio personalizado ${hostname} → ${url.pathname}`);
-            const response = NextResponse.rewrite(url);
-            response.headers.set('x-middleware-debug', 'custom-domain-rewrite');
-            response.headers.set('x-resolved-slug', data.slug);
-            return response;
+            const rewriteResponse = NextResponse.rewrite(url);
+            rewriteResponse.headers.set('x-middleware-debug', 'custom-domain-rewrite');
+            rewriteResponse.headers.set('x-resolved-slug', data.slug);
+            return rewriteResponse;
           }
         } else {
           const errorText = await response.text();
@@ -68,15 +68,15 @@ export async function middleware(request: NextRequest) {
         }
         
         console.warn(`[VPS Middleware] No se encontró landing activa para ${hostname}`);
-        const response = NextResponse.next();
-        response.headers.set('x-middleware-debug', 'custom-domain-not-found');
-        return response;
+        const notFoundResponse = NextResponse.next();
+        notFoundResponse.headers.set('x-middleware-debug', 'custom-domain-not-found');
+        return notFoundResponse;
         
       } catch (error) {
         console.error(`[VPS Middleware] Error consultando dominio ${hostname}:`, error);
-        const response = NextResponse.next();
-        response.headers.set('x-middleware-debug', 'custom-domain-error');
-        return response;
+        const errorResponse = NextResponse.next();
+        errorResponse.headers.set('x-middleware-debug', 'custom-domain-error');
+        return errorResponse;
       }
     }
   }
@@ -84,9 +84,9 @@ export async function middleware(request: NextRequest) {
   // Si llegamos aquí sin subdominio ni dominio personalizado,
   // probablemente sea un error de configuración
   console.warn(`[VPS Middleware] No se pudo procesar: ${hostname}`);
-  const response = NextResponse.next();
-  response.headers.set('x-middleware-debug', 'unprocessed');
-  return response;
+  const unprocessedResponse = NextResponse.next();
+  unprocessedResponse.headers.set('x-middleware-debug', 'unprocessed');
+  return unprocessedResponse;
 }
 
 function getSubdomain(hostname: string): string | null {
