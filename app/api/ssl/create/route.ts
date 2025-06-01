@@ -51,6 +51,33 @@ export async function POST(request: NextRequest) {
 
     console.log(`[VPS-SSL] SSL certificate created successfully for ${domain}`);
     
+    // Notificar al backend que el SSL se completó exitosamente
+    try {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'https://0xreplyer-production.up.railway.app';
+      console.log(`[VPS-SSL] Notifying backend about SSL completion: ${backendUrl}/api/custom-domains/ssl-complete`);
+      
+      const notifyResponse = await fetch(`${backendUrl}/api/custom-domains/ssl-complete`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-VPS-Secret': process.env.VPS_SECRET || ''
+        },
+        body: JSON.stringify({ 
+          domain,
+          success: true,
+          timestamp: new Date().toISOString()
+        })
+      });
+      
+      if (notifyResponse.ok) {
+        console.log(`[VPS-SSL] Backend notified successfully for ${domain}`);
+      } else {
+        console.error(`[VPS-SSL] Failed to notify backend for ${domain}:`, notifyResponse.status);
+      }
+    } catch (notifyError) {
+      console.error(`[VPS-SSL] Error notifying backend for ${domain}:`, notifyError);
+    }
+    
     return NextResponse.json({ 
       success: true, 
       message: 'SSL certificate created successfully',
