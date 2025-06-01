@@ -29,7 +29,7 @@ set -euo pipefail
 EMAIL="admin@creator0x.com"        # Email de contacto para Let's Encrypt
 DOMAIN="creator0x.com"            # Dominio base
 NAMECHEAP_INI="/etc/letsencrypt/namecheap.ini"
-LANDING_PORT=3000                 # Puerto del backend de landings
+LANDING_PORT=3002                 # Puerto del backend de landings
 
 install_deps() {
   apt update -y
