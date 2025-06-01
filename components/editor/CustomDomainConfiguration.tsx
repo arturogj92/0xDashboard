@@ -477,8 +477,8 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
                   </div>
                 )}
 
-
-                {domain.error_message && (
+                {/* Mostrar otros errores (no rate limit) */}
+                {domain.error_message && !domain.error_message.includes('Rate limit') && (
                   <div className="text-sm mb-3 p-3 bg-red-900/20 border border-red-800/30 rounded-lg">
                     <div className="flex items-start gap-2">
                       <XCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
