@@ -4,9 +4,19 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { API_URL } from '@/lib/api';
-import { Globe, CheckCircle, XCircle, Clock, AlertCircle, Copy, ExternalLink, RefreshCw } from 'lucide-react';
+import { Globe, CheckCircle, XCircle, Clock, AlertCircle, Copy, ExternalLink, RefreshCw, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslations } from 'next-intl';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface CustomDomain {
   id: string;
@@ -33,6 +43,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
   const [retryingDomains, setRetryingDomains] = useState<Set<string>>(new Set());
   const [checkingDomains, setCheckingDomains] = useState<Set<string>>(new Set());
   const [showInstructions, setShowInstructions] = useState<string | null>(null);
+  const [domainToDelete, setDomainToDelete] = useState<CustomDomain | null>(null);
 
   const createAuthHeaders = () => {
     const token = localStorage.getItem('token');
@@ -120,21 +131,29 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
     }
   };
 
-  const removeDomain = async (domainId: string) => {
-    if (!confirm(t('confirmRemove'))) return;
+  const confirmRemoveDomain = async () => {
+    if (!domainToDelete) return;
 
     try {
-      const response = await fetch(`${API_URL}/api/custom-domains/${domainId}`, {
+      const response = await fetch(`${API_URL}/api/custom-domains/${domainToDelete.id}`, {
         method: 'DELETE',
         headers: createAuthHeaders()
       });
 
-      if (response.ok) {
-        setDomains(prev => prev.filter(d => d.id !== domainId));
-        onDomainUpdate?.();
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to remove domain');
       }
+
+      toast.success(t('domainRemoved'));
+      setDomainToDelete(null);
+      loadDomains();
+      onDomainUpdate?.();
     } catch (error) {
       console.error('Error removing domain:', error);
+      toast.error(t('errors.removeFailed'));
+      setDomainToDelete(null);
     }
   };
 
@@ -397,7 +416,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => removeDomain(domain.id)}
+                      onClick={() => setDomainToDelete(domain)}
                       className="text-xs text-red-400 hover:text-red-300"
                     >
                       {t('remove')}
@@ -527,6 +546,33 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
           </div>
         )}
       </div>
+
+      {/* Modal de confirmación para eliminar dominio */}
+      <AlertDialog open={!!domainToDelete} onOpenChange={() => setDomainToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <Trash2 className="h-5 w-5 text-red-500" />
+              {t('confirmRemoveTitle')}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('confirmRemoveDescription').replace('{domain}', domainToDelete?.domain || '')}
+              <br />
+              <br />
+              <strong className="text-yellow-600">{t('confirmRemoveWarning')}</strong>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmRemoveDomain}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {t('confirmRemove')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
