@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
     // Ejecutar script manage_ssl.sh remove
     const scriptPath = '/var/www/landings/scripts/manage_ssl.sh';
-    const { stdout, stderr } = await execAsync(`sudo ${scriptPath} remove ${domain}`);
+    const { stdout, stderr } = await execAsync(`sudo bash ${scriptPath} remove ${domain}`);
     
     console.log(`[VPS-SSL] SSL removal output for ${domain}:`, stdout);
     
