@@ -343,18 +343,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
           <div className="mt-6 space-y-4">
             <h4 className="text-white font-medium">{t('configuredDomains')}</h4>
             
-            {domains.map((domain) => {
-              // Debug temporal - puedes remover esto después
-              if (domain.domain === 'elcaminodelprogramador.com') {
-                console.log('Debug domain status:', {
-                  domain: domain.domain,
-                  status: domain.status,
-                  ssl_status: domain.ssl_status,
-                  error_message: domain.error_message
-                });
-              }
-              
-              return (
+            {domains.map((domain) => (
               <div key={domain.id} className="border border-gray-600 rounded-lg p-4 bg-gray-900/30">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -420,12 +409,6 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
                   {getStatusText(domain.status, domain.ssl_status)}
                 </p>
 
-                {/* Debug temporal - remover después */}
-                {domain.domain === 'elcaminodelprogramador.com' && (
-                  <div className="text-xs text-blue-300 mb-2 p-2 bg-blue-900/20 rounded">
-                    DEBUG: status="{domain.status}", ssl_status="{domain.ssl_status}", error="{domain.error_message}", show_retry={(domain.status === 'failed' || domain.status === 'dns_configured' || domain.error_message) && domain.status !== 'active' && domain.status !== 'pending' ? 'YES' : 'NO'}
-                  </div>
-                )}
 
                 {domain.error_message && (
                   <div className="text-sm mb-3 p-3 bg-red-900/20 border border-red-800/30 rounded-lg">
@@ -521,8 +504,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
                   </div>
                 )}
               </div>
-              );
-            })}
+            ))}
           </div>
         )}
       </div>
