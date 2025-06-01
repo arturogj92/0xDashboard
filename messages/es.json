@@ -401,6 +401,7 @@
     "domainAddedSuccess": "Dominio agregado correctamente. Configura el DNS para continuar.",
     "dnsVerifiedSuccess": "DNS verificado correctamente. Generando certificado SSL...",
     "retrySuccess": "Reintento iniciado. El proceso puede tardar unos minutos.",
+    "retryInProgress": "Ya hay un proceso de reintento en curso para este dominio.",
     "retryHint": "💡 Puedes usar el botón \"Reintentar\" para volver a intentar la configuración SSL.",
     "noChangesDetected": "No se detectaron cambios. El dominio aún se está procesando.",
     "dnsInstructions": {
@@ -415,12 +416,21 @@
       "recordValue": "Valor",
       "ttl": "TTL",
       "note": "Nota: Los cambios DNS pueden tardar hasta 48 horas en propagarse completamente.",
-      "verificationNote": "El registro TXT es necesario para verificar que eres el propietario del dominio."
+      "verificationNote": "El registro TXT es necesario para verificar que eres el propietario del dominio.",
+      "instructionsTitle": "Instrucciones",
+      "instruction1": "Ve al panel de control de tu proveedor de dominios",
+      "instruction2": "Busca la sección de \"DNS\" o \"Zona DNS\"",
+      "instruction3": "Agrega los registros A mostrados arriba",
+      "instruction4": "Agrega el registro TXT para verificación",
+      "domainOwnershipWarning": "Asegúrate de que el dominio te pertenece y tienes acceso a su configuración DNS"
     },
     "copiedToClipboard": "Copiado al portapapeles",
     "errors": {
       "dnsVerificationFailed": "No se pudo verificar el registro {type}. Esto es normal - la propagación DNS puede tardar hasta 48 horas. Por favor espera e inténtalo de nuevo más tarde.",
       "dnsQueryError": "Error al consultar DNS. Por favor verifica tu configuración e inténtalo de nuevo.",
+      "dnsToolsUnavailable": "Verificación DNS temporalmente no disponible. Inténtalo de nuevo en unos minutos.",
+      "dnsRecordsNotFound": "Registros DNS no encontrados. Verifica que hayas agregado los registros DNS requeridos y espera la propagación (hasta 48 horas).",
+      "dnsTimeout": "La consulta DNS ha excedido el tiempo límite. Inténtalo más tarde.",
       "domainAlreadyExists": "Este dominio ya está siendo usado por otro usuario.",
       "invalidDomain": "El formato del dominio no es válido.",
       "connectionError": "Error de conexión al verificar dominio",

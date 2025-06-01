@@ -400,6 +400,7 @@
     "domainAddedSuccess": "Domain added successfully. Configure DNS to continue.",
     "dnsVerifiedSuccess": "DNS verified successfully. Generating SSL certificate...",
     "retrySuccess": "Retry initiated. The process may take a few minutes.",
+    "retryInProgress": "A retry is already in progress for this domain.",
     "retryHint": "💡 You can use the \"Retry\" button to attempt SSL configuration again.",
     "noChangesDetected": "No changes detected. The domain is still processing.",
     "dnsInstructions": {
@@ -414,12 +415,21 @@
       "recordValue": "Value",
       "ttl": "TTL",
       "note": "Note: DNS changes may take up to 48 hours to propagate completely.",
-      "verificationNote": "The TXT record is necessary to verify that you own the domain."
+      "verificationNote": "The TXT record is necessary to verify that you own the domain.",
+      "instructionsTitle": "Instructions",
+      "instruction1": "Go to your domain provider's control panel",
+      "instruction2": "Look for the \"DNS\" or \"DNS Zone\" section",
+      "instruction3": "Add the A records shown above",
+      "instruction4": "Add the TXT record for verification",
+      "domainOwnershipWarning": "Make sure you own the domain and have access to its DNS configuration"
     },
     "copiedToClipboard": "Copied to clipboard",
     "errors": {
       "dnsVerificationFailed": "Could not verify {type} record. This is normal - DNS propagation can take up to 48 hours. Please wait and try again later.",
       "dnsQueryError": "Error querying DNS. Please check your configuration and try again.",
+      "dnsToolsUnavailable": "DNS verification temporarily unavailable. Please try again in a few minutes.",
+      "dnsRecordsNotFound": "DNS records not found. Please check that you have added the required DNS records and wait for propagation (up to 48 hours).",
+      "dnsTimeout": "DNS query timed out. Please try again later.",
       "domainAlreadyExists": "This domain is already being used by another user.",
       "invalidDomain": "The domain format is not valid.",
       "connectionError": "Connection error while verifying domain",

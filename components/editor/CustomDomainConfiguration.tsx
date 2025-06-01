@@ -92,8 +92,25 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
         }
       }
       
+      // Guardar el estado anterior de retrying domains
+      const prevRetryingDomains = new Set(retryingDomains);
+      
       // Refresh general
-      loadDomains();
+      await loadDomains();
+      
+      // Limpiar retrying domains que ya no están en proceso y han cambiado de estado
+      const updatedDomains = domains; // Usar los dominios actualizados
+      prevRetryingDomains.forEach(domainId => {
+        const domain = updatedDomains.find(d => d.id === domainId);
+        if (domain && !['pending', 'dns_configured', 'ssl_issued'].includes(domain.status)) {
+          // El dominio ha terminado de procesarse (activo, fallido, etc.)
+          setRetryingDomains(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(domainId);
+            return newSet;
+          });
+        }
+      });
     }, 5000); // Refresh cada 5 segundos
 
     return () => clearInterval(interval);
@@ -187,7 +204,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
   const retryDomain = async (domainId: string) => {
     // Prevenir múltiples retries del mismo dominio
     if (retryingDomains.has(domainId)) {
-      toast.error('Ya hay un proceso de reintento en curso para este dominio');
+      toast.error(t('retryInProgress'));
       return;
     }
 
@@ -201,7 +218,8 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
 
       if (response.ok) {
         toast.success(t('retrySuccess'));
-        loadDomains(); // Reload to get updated status
+        // No llamar loadDomains inmediatamente para mantener el estado de bloqueo
+        // loadDomains(); // Se actualizará automáticamente con el auto-refresh
       } else {
         const error = await response.json();
         
@@ -218,20 +236,32 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
           const message = getErrorMessage(t, error.code, error.type) || error.message || t('errors.unknownError');
           toast.error(message);
         }
+        
+        // En caso de error, remover del estado de retry después de un tiempo
+        setTimeout(() => {
+          setRetryingDomains(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(domainId);
+            return newSet;
+          });
+        }, 2000);
       }
     } catch (error) {
       console.error('Error retrying domain:', error);
       toast.error(t('errors.connectionError'));
-    } finally {
-      // Mantener el estado de retry por más tiempo para evitar clicks múltiples
+      
+      // En caso de error de conexión, remover del estado de retry
       setTimeout(() => {
         setRetryingDomains(prev => {
           const newSet = new Set(prev);
           newSet.delete(domainId);
           return newSet;
         });
-      }, 3000); // 3 segundos de delay adicional
+      }, 2000);
     }
+    
+    // NO limpiar el estado de retry aquí - se mantendrá hasta que el dominio cambie de estado
+    // o hasta que se recargue la página
   };
 
   const checkDomainStatus = async (domainId: string, showLoading = false) => {
@@ -285,6 +315,12 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
         return t('errors.dnsVerificationFailed', { type: type?.toUpperCase() || 'DNS' });
       case 'DNS_QUERY_ERROR':
         return t('errors.dnsQueryError');
+      case 'DNS_TOOLS_UNAVAILABLE':
+        return t('errors.dnsToolsUnavailable');
+      case 'DNS_RECORDS_NOT_FOUND':
+        return t('errors.dnsRecordsNotFound');
+      case 'DNS_TIMEOUT':
+        return t('errors.dnsTimeout');
       case 'DOMAIN_ALREADY_EXISTS':
         return t('errors.domainAlreadyExists');
       case 'INVALID_DOMAIN':
@@ -385,8 +421,8 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
             </Button>
           </div>
 
-          <div className="text-xs text-gray-500">
-            ⚠️ Asegúrate de que el dominio te pertenece y tienes acceso a su configuración DNS
+          <div className="text-sm text-gray-500">
+            ⚠️ {t('dnsInstructions.domainOwnershipWarning')}
           </div>
         </div>
 
@@ -435,15 +471,25 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
                         {checkingDomains.has(domain.id) ? t('checking') : t('checkStatus')}
                       </Button>
                     )}
-                    {(domain.status === 'failed' || domain.status === 'dns_configured' || domain.status === 'removed' || domain.error_message) && domain.status !== 'active' && domain.status !== 'pending' && (
+                    {(domain.status === 'failed' || domain.status === 'dns_configured' || domain.status === 'removed' || domain.error_message) && domain.status !== 'active' && domain.status !== 'pending' && !retryingDomains.has(domain.id) && (
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => retryDomain(domain.id)}
-                        disabled={retryingDomains.has(domain.id)}
                         className="text-xs text-yellow-400 hover:text-yellow-300"
                       >
-                        {retryingDomains.has(domain.id) ? t('retrying') : t('retry')}
+                        {t('retry')}
+                      </Button>
+                    )}
+                    {retryingDomains.has(domain.id) && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={true}
+                        className="text-xs text-blue-400 opacity-50 cursor-not-allowed"
+                      >
+                        <RefreshCw className="w-3 h-3 animate-spin mr-1" />
+                        {t('retrying')}
                       </Button>
                     )}
                     <Button
@@ -498,93 +544,121 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
                 {/* DNS Instructions */}
                 {domain.status === 'pending' && (
                   <div className="bg-gray-800/40 rounded-lg p-4 space-y-4">
-                    <h5 className="text-white font-medium text-sm">
+                    <h5 className="text-white font-medium text-base">
                       {t('dnsInstructions.title')}
                     </h5>
-                    <p className="text-sm text-gray-300">
+                    <p className="text-base text-gray-300">
                       {t('dnsInstructions.description')}
                     </p>
                     
                     {/* Registro A principal */}
                     <div className="space-y-3">
-                      <h6 className="text-white font-medium text-xs">{t('dnsInstructions.step1')}</h6>
-                      <div className="bg-gray-900/50 rounded p-3 font-mono text-xs">
-                        <div className="grid grid-cols-4 gap-3 text-gray-400 mb-2">
+                      <h6 className="text-white font-medium text-sm flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-blue-400" />
+                        {t('dnsInstructions.step1')}
+                      </h6>
+                      <div className="bg-gray-900/50 rounded-lg p-4 font-mono text-sm border border-gray-700/50">
+                        <div className="grid grid-cols-3 gap-4 text-gray-400 mb-2 font-medium">
                           <span>{t('dnsInstructions.recordType')}:</span>
                           <span>{t('dnsInstructions.recordName')}:</span>
                           <span>{t('dnsInstructions.recordValue')}:</span>
-                          <span>{t('dnsInstructions.ttl')}:</span>
                         </div>
-                        <div className="grid grid-cols-4 gap-3 text-white">
-                          <span>A</span>
-                          <span>@</span>
-                          <span>142.93.40.80</span>
-                          <span>300</span>
+                        <div className="grid grid-cols-3 gap-4 text-white items-center">
+                          <span className="bg-blue-900/30 px-2 py-1 rounded text-blue-200 font-medium">A</span>
+                          <span className="font-medium">@</span>
+                          <div className="flex items-center justify-between bg-gray-800/50 px-2 py-1 rounded">
+                            <span>142.93.40.80</span>
+                            <button 
+                              onClick={() => copyToClipboard('142.93.40.80')}
+                              className="text-blue-400 hover:text-blue-300 p-1 hover:bg-blue-900/20 rounded transition-colors"
+                              title={t('copiedToClipboard')}
+                            >
+                              <Copy className="w-3 h-3" />
+                            </button>
+                          </div>
                         </div>
-                        <button 
-                          onClick={() => copyToClipboard('142.93.40.80')}
-                          className="mt-2 text-blue-400 hover:text-blue-300 flex items-center gap-1"
-                        >
-                          <Copy className="w-3 h-3" />
-                          Copiar IP
-                        </button>
                       </div>
                     </div>
 
                     {/* Registro A para www */}
                     <div className="space-y-3">
-                      <h6 className="text-white font-medium text-xs">{t('dnsInstructions.step2')}</h6>
-                      <div className="bg-gray-900/50 rounded p-3 font-mono text-xs">
-                        <div className="grid grid-cols-4 gap-3 text-gray-400 mb-2">
+                      <h6 className="text-white font-medium text-sm flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-green-400" />
+                        {t('dnsInstructions.step2')}
+                      </h6>
+                      <div className="bg-gray-900/50 rounded-lg p-4 font-mono text-sm border border-gray-700/50">
+                        <div className="grid grid-cols-3 gap-4 text-gray-400 mb-2 font-medium">
                           <span>{t('dnsInstructions.recordType')}:</span>
                           <span>{t('dnsInstructions.recordName')}:</span>
                           <span>{t('dnsInstructions.recordValue')}:</span>
-                          <span>{t('dnsInstructions.ttl')}:</span>
                         </div>
-                        <div className="grid grid-cols-4 gap-3 text-white">
-                          <span>A</span>
-                          <span>www</span>
-                          <span>142.93.40.80</span>
-                          <span>300</span>
+                        <div className="grid grid-cols-3 gap-4 text-white items-center">
+                          <span className="bg-green-900/30 px-2 py-1 rounded text-green-200 font-medium">A</span>
+                          <span className="font-medium">www</span>
+                          <div className="flex items-center justify-between bg-gray-800/50 px-2 py-1 rounded">
+                            <span>142.93.40.80</span>
+                            <button 
+                              onClick={() => copyToClipboard('142.93.40.80')}
+                              className="text-green-400 hover:text-green-300 p-1 hover:bg-green-900/20 rounded transition-colors"
+                              title={t('copiedToClipboard')}
+                            >
+                              <Copy className="w-3 h-3" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
 
                     {/* Registro TXT para verificación */}
                     <div className="space-y-3">
-                      <h6 className="text-white font-medium text-xs">{t('dnsInstructions.step3')}</h6>
-                      <div className="bg-gray-900/50 rounded p-3 font-mono text-xs">
-                        <div className="grid grid-cols-3 gap-4 text-gray-400 mb-2">
+                      <h6 className="text-white font-medium text-sm flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4 text-yellow-400" />
+                        {t('dnsInstructions.step3')}
+                      </h6>
+                      <div className="bg-gray-900/50 rounded-lg p-4 font-mono text-sm border border-gray-700/50">
+                        <div className="grid grid-cols-3 gap-4 text-gray-400 mb-2 font-medium">
                           <span>{t('dnsInstructions.recordType')}:</span>
                           <span>{t('dnsInstructions.recordName')}:</span>
                           <span>{t('dnsInstructions.recordValue')}:</span>
                         </div>
-                        <div className="grid grid-cols-3 gap-4 text-white">
-                          <span>TXT</span>
-                          <span>_creator0x-verify</span>
-                          <span className="break-all">{domain.verification_token}</span>
+                        <div className="grid grid-cols-3 gap-4 text-white items-center">
+                          <span className="bg-yellow-900/30 px-2 py-1 rounded text-yellow-200 font-medium">TXT</span>
+                          <div className="flex items-center justify-between bg-gray-800/50 px-2 py-1 rounded">
+                            <span className="font-medium">_creator0x-verify</span>
+                            <button 
+                              onClick={() => copyToClipboard('_creator0x-verify')}
+                              className="text-yellow-400 hover:text-yellow-300 p-1 hover:bg-yellow-900/20 rounded transition-colors flex-shrink-0"
+                              title={t('copiedToClipboard')}
+                            >
+                              <Copy className="w-3 h-3" />
+                            </button>
+                          </div>
+                          <div className="flex items-center justify-between bg-gray-800/50 px-2 py-1 rounded">
+                            <span className="break-all truncate">{domain.verification_token}</span>
+                            <button 
+                              onClick={() => copyToClipboard(domain.verification_token)}
+                              className="text-yellow-400 hover:text-yellow-300 p-1 hover:bg-yellow-900/20 rounded transition-colors ml-2 flex-shrink-0"
+                              title={t('copiedToClipboard')}
+                            >
+                              <Copy className="w-3 h-3" />
+                            </button>
+                          </div>
                         </div>
-                        <button 
-                          onClick={() => copyToClipboard(domain.verification_token)}
-                          className="mt-2 text-blue-400 hover:text-blue-300 flex items-center gap-1"
-                        >
-                          <Copy className="w-3 h-3" />
-                          Copiar token
-                        </button>
                       </div>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm text-gray-500 flex items-start gap-2">
+                        <AlertCircle className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
                         {t('dnsInstructions.verificationNote')}
                       </p>
                     </div>
 
-                    <div className="text-xs text-gray-500 bg-gray-900/40 p-3 rounded">
+                    <div className="text-sm text-gray-500 bg-gray-900/40 p-3 rounded">
                       <p className="font-medium mb-2">⚠️ {t('dnsInstructions.note')}</p>
-                      <strong>Instrucciones:</strong>
+                      <strong>{t('dnsInstructions.instructionsTitle')}:</strong>
                       <ol className="list-decimal list-inside mt-2 space-y-1">
-                        <li>Ve al panel de control de tu proveedor de dominios</li>
-                        <li>Busca la sección de &quot;DNS&quot; o &quot;Zona DNS&quot;</li>
-                        <li>Agrega los registros A mostrados arriba</li>
-                        <li>Agrega el registro TXT para verificación</li>
+                        <li>{t('dnsInstructions.instruction1')}</li>
+                        <li>{t('dnsInstructions.instruction2')}</li>
+                        <li>{t('dnsInstructions.instruction3')}</li>
+                        <li>{t('dnsInstructions.instruction4')}</li>
                         <li>{t('dnsInstructions.step4')}</li>
                       </ol>
                     </div>
