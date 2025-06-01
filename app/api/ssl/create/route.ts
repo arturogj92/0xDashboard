@@ -47,9 +47,12 @@ export async function POST(request: NextRequest) {
     if (stderr) {
       console.error(`[VPS-SSL] SSL script stderr for ${domain}:`, stderr);
       
-      // Detectar rate limit de Let's Encrypt
+      // Detectar rate limit de Let's Encrypt y extraer fecha
       if (stderr.includes('too many certificates') || stderr.includes('rate limit')) {
-        throw new Error('RATE_LIMIT_EXCEEDED');
+        // Extraer la fecha de reinicio del rate limit
+        const retryMatch = stderr.match(/retry after (\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) UTC/);
+        const retryDate = retryMatch ? retryMatch[1] : null;
+        throw new Error(`RATE_LIMIT_EXCEEDED|${retryDate}`);
       }
       
       // Detectar instancia de Certbot ya ejecutándose

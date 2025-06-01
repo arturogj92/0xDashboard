@@ -204,8 +204,20 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
         loadDomains(); // Reload to get updated status
       } else {
         const error = await response.json();
-        const message = getErrorMessage(t, error.code, error.type) || error.message || t('errors.unknownError');
-        toast.error(message);
+        
+        // Para rate limit, mostrar el mensaje directo del backend que incluye la fecha
+        if (error.code === 'SSL_RATE_LIMIT' && error.message) {
+          toast.error(error.message, {
+            duration: 10000, // Mostrar más tiempo para rate limits
+            style: {
+              maxWidth: '500px',
+              fontSize: '14px',
+            }
+          });
+        } else {
+          const message = getErrorMessage(t, error.code, error.type) || error.message || t('errors.unknownError');
+          toast.error(message);
+        }
       }
     } catch (error) {
       console.error('Error retrying domain:', error);
@@ -451,6 +463,19 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
                 <p className="text-sm text-gray-400 mb-3">
                   {getStatusText(domain.status, domain.ssl_status)}
                 </p>
+                
+                {/* Mostrar alerta de rate limit si hay error específico */}
+                {domain.error_message && domain.error_message.includes('Rate limit') && (
+                  <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-3 mb-3">
+                    <div className="flex items-start gap-2">
+                      <AlertCircle className="h-4 w-4 text-yellow-500 mt-0.5 flex-shrink-0" />
+                      <div className="text-sm text-yellow-200">
+                        <p className="font-medium mb-1">Límite de certificados alcanzado</p>
+                        <p className="text-xs opacity-90">{domain.error_message}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
 
                 {domain.error_message && (
