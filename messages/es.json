@@ -378,5 +378,48 @@
   "social": {
     "title": "Redes Sociales",
     "description": "Agrega y organiza los enlaces a tus redes sociales. Activa las que quieras mostrar en tu landing page y reordénalas arrastrando y soltando."
+  },
+  "customDomains": {
+    "title": "Dominio Personalizado",
+    "description": "Conecta tu propio dominio (ej: midominio.com) para que tus visitantes puedan acceder a tu landing page desde tu URL personalizada.",
+    "addDomain": "Agregar Dominio",
+    "adding": "Agregando...",
+    "domainPlaceholder": "ej: midominio.com",
+    "configuredDomains": "Dominios configurados:",
+    "verify": "Verificar",
+    "remove": "Eliminar",
+    "retry": "Reintentar",
+    "retrying": "Reintentando...",
+    "checkStatus": "Verificar Estado",
+    "checking": "Verificando...",
+    "confirmRemove": "¿Estás seguro de que quieres eliminar este dominio?",
+    "domainAddedSuccess": "Dominio agregado correctamente. Configura el DNS para continuar.",
+    "dnsVerifiedSuccess": "DNS verificado correctamente. Generando certificado SSL...",
+    "retrySuccess": "Reintento iniciado. El proceso puede tardar unos minutos.",
+    "retryHint": "💡 Puedes usar el botón \"Reintentar\" para volver a intentar la configuración SSL.",
+    "noChangesDetected": "No se detectaron cambios. El dominio aún se está procesando.",
+    "copiedToClipboard": "Copiado al portapapeles",
+    "errors": {
+      "dnsVerificationFailed": "No se pudo verificar el registro {type}. Esto es normal - la propagación DNS puede tardar hasta 48 horas. Por favor espera e inténtalo de nuevo más tarde.",
+      "dnsQueryError": "Error al consultar DNS. Por favor verifica tu configuración e inténtalo de nuevo.",
+      "domainAlreadyExists": "Este dominio ya está siendo usado por otro usuario.",
+      "invalidDomain": "El formato del dominio no es válido.",
+      "connectionError": "Error de conexión al verificar dominio",
+      "unknownError": "Error desconocido. Por favor inténtalo de nuevo.",
+      "sslGenerationFailed": "Error al generar certificado SSL. Puedes reintentar.",
+      "sslTimeout": "El proceso de SSL ha tardado más de lo esperado. Puedes reintentar.",
+      "sslRateLimit": "Límite de intentos excedido. Espera antes de reintentar.",
+      "sslValidationFailed": "Error de validación del dominio. Verifica la configuración DNS.",
+      "invalidRetryState": "Este dominio no se puede reintentar en su estado actual.",
+      "vpsConnectionFailed": "No se puede conectar al servidor VPS. Inténtalo más tarde."
+    },
+    "status": {
+      "pending": "Pendiente de configuración DNS",
+      "dnsConfigured": "DNS configurado, generando certificado SSL...",
+      "sslIssued": "Certificado SSL emitido, activando...",
+      "active": "Dominio activo y funcionando",
+      "failed": "Error en la configuración",
+      "removed": "Dominio removido, se puede reintentar"
+    }
   }
 }
