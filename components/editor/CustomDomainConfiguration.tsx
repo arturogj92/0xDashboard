@@ -429,76 +429,95 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
 
                 {/* DNS Instructions */}
                 {domain.status === 'pending' && (
-                  <div className="bg-gray-800/40 rounded-lg p-4 space-y-3">
+                  <div className="bg-gray-800/40 rounded-lg p-4 space-y-4">
                     <h5 className="text-white font-medium text-sm">
-                      Configuración DNS requerida:
+                      {t('dnsInstructions.title')}
                     </h5>
+                    <p className="text-sm text-gray-300">
+                      {t('dnsInstructions.description')}
+                    </p>
                     
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-gray-400">Tipo:</span>
-                        <div className="flex items-center gap-2">
-                          <code className="bg-gray-700 px-2 py-1 rounded">
-                            {domain.verification_type.toUpperCase()}
-                          </code>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => copyToClipboard(domain.verification_type.toUpperCase())}
-                          >
-                            <Copy className="w-3 h-3" />
-                          </Button>
+                    {/* Registro A principal */}
+                    <div className="space-y-3">
+                      <h6 className="text-white font-medium text-xs">{t('dnsInstructions.step1')}</h6>
+                      <div className="bg-gray-900/50 rounded p-3 font-mono text-xs">
+                        <div className="grid grid-cols-4 gap-3 text-gray-400 mb-2">
+                          <span>{t('dnsInstructions.recordType')}:</span>
+                          <span>{t('dnsInstructions.recordName')}:</span>
+                          <span>{t('dnsInstructions.recordValue')}:</span>
+                          <span>{t('dnsInstructions.ttl')}:</span>
                         </div>
-                      </div>
-
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-gray-400">Nombre:</span>
-                        <div className="flex items-center gap-2">
-                          <code className="bg-gray-700 px-2 py-1 rounded">
-                            {domain.verification_type === 'txt' ? '_creator0x-verification' : '@'}
-                          </code>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => copyToClipboard(domain.verification_type === 'txt' ? '_creator0x-verification' : '@')}
-                          >
-                            <Copy className="w-3 h-3" />
-                          </Button>
+                        <div className="grid grid-cols-4 gap-3 text-white">
+                          <span>A</span>
+                          <span>@</span>
+                          <span>142.93.40.80</span>
+                          <span>300</span>
                         </div>
+                        <button 
+                          onClick={() => copyToClipboard('142.93.40.80')}
+                          className="mt-2 text-blue-400 hover:text-blue-300 flex items-center gap-1"
+                        >
+                          <Copy className="w-3 h-3" />
+                          Copiar IP
+                        </button>
                       </div>
+                    </div>
 
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-gray-400">Valor:</span>
-                        <div className="flex items-center gap-2">
-                          <code className="bg-gray-700 px-2 py-1 rounded max-w-40 truncate">
-                            {domain.verification_type === 'txt' 
-                              ? domain.verification_token 
-                              : 'vps.creator0x.com'
-                            }
-                          </code>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => copyToClipboard(
-                              domain.verification_type === 'txt' 
-                                ? domain.verification_token 
-                                : 'vps.creator0x.com'
-                            )}
-                          >
-                            <Copy className="w-3 h-3" />
-                          </Button>
+                    {/* Registro A para www */}
+                    <div className="space-y-3">
+                      <h6 className="text-white font-medium text-xs">{t('dnsInstructions.step2')}</h6>
+                      <div className="bg-gray-900/50 rounded p-3 font-mono text-xs">
+                        <div className="grid grid-cols-4 gap-3 text-gray-400 mb-2">
+                          <span>{t('dnsInstructions.recordType')}:</span>
+                          <span>{t('dnsInstructions.recordName')}:</span>
+                          <span>{t('dnsInstructions.recordValue')}:</span>
+                          <span>{t('dnsInstructions.ttl')}:</span>
+                        </div>
+                        <div className="grid grid-cols-4 gap-3 text-white">
+                          <span>A</span>
+                          <span>www</span>
+                          <span>142.93.40.80</span>
+                          <span>300</span>
                         </div>
                       </div>
                     </div>
 
+                    {/* Registro TXT para verificación */}
+                    <div className="space-y-3">
+                      <h6 className="text-white font-medium text-xs">{t('dnsInstructions.step3')}</h6>
+                      <div className="bg-gray-900/50 rounded p-3 font-mono text-xs">
+                        <div className="grid grid-cols-3 gap-4 text-gray-400 mb-2">
+                          <span>{t('dnsInstructions.recordType')}:</span>
+                          <span>{t('dnsInstructions.recordName')}:</span>
+                          <span>{t('dnsInstructions.recordValue')}:</span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-4 text-white">
+                          <span>TXT</span>
+                          <span>_creator0x-verify</span>
+                          <span className="break-all">{domain.verification_token}</span>
+                        </div>
+                        <button 
+                          onClick={() => copyToClipboard(domain.verification_token)}
+                          className="mt-2 text-blue-400 hover:text-blue-300 flex items-center gap-1"
+                        >
+                          <Copy className="w-3 h-3" />
+                          Copiar token
+                        </button>
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        {t('dnsInstructions.verificationNote')}
+                      </p>
+                    </div>
+
                     <div className="text-xs text-gray-500 bg-gray-900/40 p-3 rounded">
+                      <p className="font-medium mb-2">⚠️ {t('dnsInstructions.note')}</p>
                       <strong>Instrucciones:</strong>
                       <ol className="list-decimal list-inside mt-2 space-y-1">
                         <li>Ve al panel de control de tu proveedor de dominios</li>
                         <li>Busca la sección de &quot;DNS&quot; o &quot;Zona DNS&quot;</li>
-                        <li>Agrega el registro DNS con los valores mostrados arriba</li>
-                        <li>Espera a que se propague (puede tomar hasta 24 horas)</li>
-                        <li>Haz clic en &quot;Verificar&quot; para confirmar la configuración</li>
+                        <li>Agrega los registros A mostrados arriba</li>
+                        <li>Agrega el registro TXT para verificación</li>
+                        <li>{t('dnsInstructions.step4')}</li>
                       </ol>
                     </div>
                   </div>

@@ -397,6 +397,20 @@
     "retrySuccess": "Retry initiated. The process may take a few minutes.",
     "retryHint": "💡 You can use the \"Retry\" button to attempt SSL configuration again.",
     "noChangesDetected": "No changes detected. The domain is still processing.",
+    "dnsInstructions": {
+      "title": "Required DNS configuration:",
+      "description": "For your domain to work correctly, you need to configure these DNS records with your provider:",
+      "step1": "Configure the main A record:",
+      "step2": "Configure the A record for www (optional but recommended):",
+      "step3": "Keep the TXT record for verification:",
+      "step4": "Click \"Verify\" to confirm the configuration",
+      "recordType": "Type",
+      "recordName": "Name",
+      "recordValue": "Value",
+      "ttl": "TTL",
+      "note": "Note: DNS changes may take up to 48 hours to propagate completely.",
+      "verificationNote": "The TXT record is necessary to verify that you own the domain."
+    },
     "copiedToClipboard": "Copied to clipboard",
     "errors": {
       "dnsVerificationFailed": "Could not verify {type} record. This is normal - DNS propagation can take up to 48 hours. Please wait and try again later.",

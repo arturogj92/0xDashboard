@@ -398,6 +398,20 @@
     "retrySuccess": "Reintento iniciado. El proceso puede tardar unos minutos.",
     "retryHint": "💡 Puedes usar el botón \"Reintentar\" para volver a intentar la configuración SSL.",
     "noChangesDetected": "No se detectaron cambios. El dominio aún se está procesando.",
+    "dnsInstructions": {
+      "title": "Configuración DNS requerida:",
+      "description": "Para que tu dominio funcione correctamente, necesitas configurar estos registros DNS en tu proveedor:",
+      "step1": "Configura el registro A principal:",
+      "step2": "Configura el registro A para www (opcional pero recomendado):",
+      "step3": "Mantén el registro TXT para verificación:",
+      "step4": "Haz clic en \"Verificar\" para confirmar la configuración",
+      "recordType": "Tipo",
+      "recordName": "Nombre",
+      "recordValue": "Valor",
+      "ttl": "TTL",
+      "note": "Nota: Los cambios DNS pueden tardar hasta 48 horas en propagarse completamente.",
+      "verificationNote": "El registro TXT es necesario para verificar que eres el propietario del dominio."
+    },
     "copiedToClipboard": "Copiado al portapapeles",
     "errors": {
       "dnsVerificationFailed": "No se pudo verificar el registro {type}. Esto es normal - la propagación DNS puede tardar hasta 48 horas. Por favor espera e inténtalo de nuevo más tarde.",
