@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 
 // Middlewarele condicional - Solo se activa en el VPS
 export async function middleware(request: NextRequest) {
@@ -35,32 +34,26 @@ export async function middleware(request: NextRequest) {
     
     if (!url.pathname.startsWith('/landing/')) {
       try {
-        // Buscar en la base de datos qué landing corresponde a este dominio
-        const supabase = createClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL!,
-          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-        );
+        // Consultar al backend para resolver el dominio
+        const backendUrl = process.env.BACKEND_URL || 'http://localhost:3001';
+        const response = await fetch(`${backendUrl}/api/custom-domains/resolve/${hostname}`, {
+          headers: {
+            'User-Agent': 'VPS-Middleware/1.0'
+          }
+        });
         
-        const { data: customDomain } = await supabase
-          .from('custom_domains')
-          .select(`
-            landing_id,
-            landings!inner(slug)
-          `)
-          .eq('domain', hostname)
-          .eq('status', 'active')
-          .single();
-        
-        if (customDomain?.landings && typeof customDomain.landings === 'object' && 'slug' in customDomain.landings) {
-          const landingSlug = (customDomain.landings as any).slug;
-          url.pathname = `/landing/${landingSlug}`;
-          console.log(`[VPS Middleware] Dominio personalizado ${hostname} → ${url.pathname}`);
-          return NextResponse.rewrite(url);
-        } else {
-          console.warn(`[VPS Middleware] No se encontró landing activa para ${hostname}`);
-          // Fallback: mostrar página de error o página principal
-          return NextResponse.next();
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.slug) {
+            url.pathname = `/landing/${data.slug}`;
+            console.log(`[VPS Middleware] Dominio personalizado ${hostname} → ${url.pathname}`);
+            return NextResponse.rewrite(url);
+          }
         }
+        
+        console.warn(`[VPS Middleware] No se encontró landing activa para ${hostname}`);
+        return NextResponse.next();
+        
       } catch (error) {
         console.error(`[VPS Middleware] Error consultando dominio ${hostname}:`, error);
         return NextResponse.next();
