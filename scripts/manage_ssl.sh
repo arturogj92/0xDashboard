@@ -78,6 +78,11 @@ issue_custom() {
   # Borra blackhole si existe
   rm -f "/etc/nginx/sites-enabled/${dom}_gone.conf" "/etc/nginx/sites-available/${dom}_gone.conf"
 
+  # Usar staging para pruebas (descomentar la línea de abajo)
+  # certbot certonly --nginx -d "$dom" -d "www.$dom" \
+  #   --agree-tos --non-interactive --email "$EMAIL" --staging
+  
+  # Producción (comentar si usas staging)
   certbot certonly --nginx -d "$dom" -d "www.$dom" \
     --agree-tos --non-interactive --email "$EMAIL"
 

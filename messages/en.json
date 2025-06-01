@@ -429,7 +429,8 @@
       "sslRateLimit": "Rate limit exceeded. Please wait before retrying.",
       "sslValidationFailed": "Domain validation failed. Check DNS configuration.",
       "invalidRetryState": "This domain cannot be retried in its current state.",
-      "vpsConnectionFailed": "Cannot connect to VPS server. Please try again later."
+      "vpsConnectionFailed": "Cannot connect to VPS server. Please try again later.",
+      "sslProcessBusy": "SSL generation is already in progress. Please wait a moment and try again."
     },
     "status": {
       "pending": "Pending DNS configuration",

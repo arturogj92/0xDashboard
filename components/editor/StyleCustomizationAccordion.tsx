@@ -397,6 +397,7 @@ export default function StyleCustomizationAccordion({
               <div className="p-4 pt-0">
                 <CustomDomainConfiguration
                   landingId={landing.id || ''}
+                  hideHeader={true}
                 />
               </div>
             )}

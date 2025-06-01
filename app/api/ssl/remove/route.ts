@@ -44,9 +44,16 @@ export async function POST(request: NextRequest) {
     
     console.log(`[VPS-SSL] SSL removal output for ${domain}:`, stdout);
     
-    if (stderr && stderr.includes('error')) {
-      console.error(`[VPS-SSL] SSL removal error for ${domain}:`, stderr);
-      throw new Error(`SSL removal script failed: ${stderr}`);
+    if (stderr) {
+      console.error(`[VPS-SSL] SSL removal stderr for ${domain}:`, stderr);
+      
+      // No fallar si el certificado ya no existe o el dominio no está configurado
+      if (!stderr.includes('No such file or directory') && 
+          !stderr.includes('not found') && 
+          !stderr.includes('does not exist') &&
+          stderr.includes('error')) {
+        throw new Error(`SSL removal script failed: ${stderr}`);
+      }
     }
 
     console.log(`[VPS-SSL] SSL certificate removed successfully for ${domain}`);

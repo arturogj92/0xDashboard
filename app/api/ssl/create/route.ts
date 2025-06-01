@@ -44,9 +44,23 @@ export async function POST(request: NextRequest) {
     
     console.log(`[VPS-SSL] SSL script output for ${domain}:`, stdout);
     
-    if (stderr && stderr.includes('error')) {
-      console.error(`[VPS-SSL] SSL script error for ${domain}:`, stderr);
-      throw new Error(`SSL script failed: ${stderr}`);
+    if (stderr) {
+      console.error(`[VPS-SSL] SSL script stderr for ${domain}:`, stderr);
+      
+      // Detectar rate limit de Let's Encrypt
+      if (stderr.includes('too many certificates') || stderr.includes('rate limit')) {
+        throw new Error('RATE_LIMIT_EXCEEDED');
+      }
+      
+      // Detectar instancia de Certbot ya ejecutándose
+      if (stderr.includes('Another instance of Certbot is already running')) {
+        throw new Error('CERTBOT_ALREADY_RUNNING');
+      }
+      
+      // Otros errores de SSL
+      if (stderr.includes('error') || stderr.includes('failed')) {
+        throw new Error(`SSL script failed: ${stderr}`);
+      }
     }
 
     console.log(`[VPS-SSL] SSL certificate created successfully for ${domain}`);

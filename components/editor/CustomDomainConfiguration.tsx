@@ -32,10 +32,11 @@ interface CustomDomain {
 interface CustomDomainConfigurationProps {
   landingId: string;
   onDomainUpdate?: () => void;
+  hideHeader?: boolean; // Para usar dentro de accordeon
 }
 
 
-export default function CustomDomainConfiguration({ landingId, onDomainUpdate }: CustomDomainConfigurationProps) {
+export default function CustomDomainConfiguration({ landingId, onDomainUpdate, hideHeader = false }: CustomDomainConfigurationProps) {
   const t = useTranslations('customDomains');
   const [domains, setDomains] = useState<CustomDomain[]>([]);
   const [newDomain, setNewDomain] = useState('');
@@ -44,6 +45,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
   const [checkingDomains, setCheckingDomains] = useState<Set<string>>(new Set());
   const [showInstructions, setShowInstructions] = useState<string | null>(null);
   const [domainToDelete, setDomainToDelete] = useState<CustomDomain | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const createAuthHeaders = () => {
     const token = localStorage.getItem('token');
@@ -132,8 +134,11 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
   };
 
   const confirmRemoveDomain = async () => {
-    if (!domainToDelete) return;
+    if (!domainToDelete || isDeleting) return;
 
+    console.log('Confirming domain deletion:', domainToDelete);
+    setIsDeleting(true);
+    
     try {
       const response = await fetch(`${API_URL}/api/custom-domains/${domainToDelete.id}`, {
         method: 'DELETE',
@@ -146,14 +151,15 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
         throw new Error(data.error || 'Failed to remove domain');
       }
 
-      toast.success(t('domainRemoved'));
+      toast.success('Dominio eliminado correctamente');
       setDomainToDelete(null);
       loadDomains();
       onDomainUpdate?.();
     } catch (error) {
       console.error('Error removing domain:', error);
-      toast.error(t('errors.removeFailed'));
-      setDomainToDelete(null);
+      toast.error('Error al eliminar el dominio');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -179,6 +185,12 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
   };
 
   const retryDomain = async (domainId: string) => {
+    // Prevenir múltiples retries del mismo dominio
+    if (retryingDomains.has(domainId)) {
+      toast.error('Ya hay un proceso de reintento en curso para este dominio');
+      return;
+    }
+
     setRetryingDomains(prev => new Set(prev.add(domainId)));
     
     try {
@@ -199,11 +211,14 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
       console.error('Error retrying domain:', error);
       toast.error(t('errors.connectionError'));
     } finally {
-      setRetryingDomains(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(domainId);
-        return newSet;
-      });
+      // Mantener el estado de retry por más tiempo para evitar clicks múltiples
+      setTimeout(() => {
+        setRetryingDomains(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(domainId);
+          return newSet;
+        });
+      }, 3000); // 3 segundos de delay adicional
     }
   };
 
@@ -274,6 +289,8 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
         return t('errors.invalidRetryState');
       case 'VPS_CONNECTION_FAILED':
         return t('errors.vpsConnectionFailed');
+      case 'SSL_PROCESS_BUSY':
+        return t('errors.sslProcessBusy');
       default:
         return t('errors.unknownError');
     }
@@ -322,17 +339,21 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
 
   return (
     <div className="space-y-6">
-      <div className="border border-gray-700/50 rounded-lg p-6 bg-gray-800/20">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg shadow-lg">
-            <Globe className="h-5 w-5 text-white" />
-          </div>
-          <h3 className="text-lg font-semibold text-white">{t('title')}</h3>
-        </div>
+      <div className={`${hideHeader ? '' : 'border border-gray-700/50 rounded-lg bg-gray-800/20'} p-6`}>
+        {!hideHeader && (
+          <>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg shadow-lg">
+                <Globe className="h-5 w-5 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-white">{t('title')}</h3>
+            </div>
 
-        <p className="text-gray-400 text-sm mb-6">
-          {t('description')}
-        </p>
+            <p className="text-gray-400 text-sm mb-6">
+              {t('description')}
+            </p>
+          </>
+        )}
 
         {/* Add new domain */}
         <div className="space-y-4">
@@ -416,7 +437,10 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => setDomainToDelete(domain)}
+                      onClick={() => {
+                        console.log('Remove button clicked for domain:', domain);
+                        setDomainToDelete(domain);
+                      }}
                       className="text-xs text-red-400 hover:text-red-300"
                     >
                       {t('remove')}
@@ -548,27 +572,44 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
       </div>
 
       {/* Modal de confirmación para eliminar dominio */}
-      <AlertDialog open={!!domainToDelete} onOpenChange={() => setDomainToDelete(null)}>
+      <AlertDialog open={!!domainToDelete} onOpenChange={(open) => {
+        if (!open && !isDeleting) {
+          setDomainToDelete(null);
+        }
+      }}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <Trash2 className="h-5 w-5 text-red-500" />
-              {t('confirmRemoveTitle')}
+              Eliminar Dominio Personalizado
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {t('confirmRemoveDescription').replace('{domain}', domainToDelete?.domain || '')}
-              <br />
-              <br />
-              <strong className="text-yellow-600">{t('confirmRemoveWarning')}</strong>
+              <div className="space-y-2">
+                <p>
+                  ¿Estás seguro de que quieres eliminar el dominio <strong>{domainToDelete?.domain}</strong>?
+                </p>
+                <p>Esta acción no se puede deshacer.</p>
+                <p className="text-yellow-600 font-semibold">
+                  ⚠️ Esto eliminará permanentemente el dominio y su certificado SSL de nuestros servidores.
+                </p>
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmRemoveDomain}
-              className="bg-red-600 hover:bg-red-700"
+              disabled={isDeleting}
+              className="bg-red-600 hover:bg-red-700 disabled:opacity-50"
             >
-              {t('confirmRemove')}
+              {isDeleting ? (
+                <div className="flex items-center gap-2">
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  Eliminando...
+                </div>
+              ) : (
+                'Eliminar Dominio'
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

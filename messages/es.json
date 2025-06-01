@@ -430,7 +430,8 @@
       "sslRateLimit": "Límite de intentos excedido. Espera antes de reintentar.",
       "sslValidationFailed": "Error de validación del dominio. Verifica la configuración DNS.",
       "invalidRetryState": "Este dominio no se puede reintentar en su estado actual.",
-      "vpsConnectionFailed": "No se puede conectar al servidor VPS. Inténtalo más tarde."
+      "vpsConnectionFailed": "No se puede conectar al servidor VPS. Inténtalo más tarde.",
+      "sslProcessBusy": "La generación SSL ya está en progreso. Espera un momento e inténtalo de nuevo."
     },
     "status": {
       "pending": "Pendiente de configuración DNS",
