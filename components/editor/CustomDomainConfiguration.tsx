@@ -64,7 +64,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
   // Auto-refresh para dominios en proceso
   useEffect(() => {
     const processingDomains = domains.filter(d => 
-      ['dns_configured', 'ssl_issued'].includes(d.status) || 
+      ['pending', 'dns_configured', 'ssl_issued'].includes(d.status) || 
       retryingDomains.has(d.id) ||
       checkingDomains.has(d.id)
     );
@@ -81,7 +81,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
       
       // Refresh general
       loadDomains();
-    }, 30000); // Refresh cada 30 segundos
+    }, 5000); // Refresh cada 5 segundos
 
     return () => clearInterval(interval);
   }, [domains, retryingDomains, checkingDomains]); // eslint-disable-line react-hooks/exhaustive-deps
