@@ -35,7 +35,7 @@ export async function middleware(request: NextRequest) {
     if (!url.pathname.startsWith('/landing/')) {
       try {
         // Consultar al backend para resolver el dominio
-        const backendUrl = process.env.BACKEND_URL || 'http://localhost:3001';
+        const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
         const response = await fetch(`${backendUrl}/api/custom-domains/resolve/${hostname}`, {
           headers: {
             'User-Agent': 'VPS-Middleware/1.0'
