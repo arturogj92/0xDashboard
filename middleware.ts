@@ -51,8 +51,9 @@ export async function middleware(request: NextRequest) {
           .eq('status', 'active')
           .single();
         
-        if (customDomain?.landings?.slug) {
-          url.pathname = `/landing/${customDomain.landings.slug}`;
+        if (customDomain?.landings && typeof customDomain.landings === 'object' && 'slug' in customDomain.landings) {
+          const landingSlug = (customDomain.landings as any).slug;
+          url.pathname = `/landing/${landingSlug}`;
           console.log(`[VPS Middleware] Dominio personalizado ${hostname} → ${url.pathname}`);
           return NextResponse.rewrite(url);
         } else {

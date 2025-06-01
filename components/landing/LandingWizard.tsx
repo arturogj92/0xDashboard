@@ -53,7 +53,7 @@ export default function LandingWizard() {
       }
     }, 400);
     return () => clearTimeout(handler);
-  }, [slug]);
+  }, [slug, slugRegex]);
 
   const handleSave = async () => {
     if (!name.trim() || !slug.trim() || slugStatus !== 'free') return;
