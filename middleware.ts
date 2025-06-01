@@ -36,19 +36,28 @@ export async function middleware(request: NextRequest) {
       try {
         // Consultar al backend para resolver el dominio
         const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        console.log(`[VPS Middleware] Consultando: ${backendUrl}/api/custom-domains/resolve/${hostname}`);
+        
         const response = await fetch(`${backendUrl}/api/custom-domains/resolve/${hostname}`, {
           headers: {
             'User-Agent': 'VPS-Middleware/1.0'
           }
         });
         
+        console.log(`[VPS Middleware] Response status: ${response.status}`);
+        
         if (response.ok) {
           const data = await response.json();
+          console.log(`[VPS Middleware] Response data:`, data);
+          
           if (data.success && data.slug) {
             url.pathname = `/landing/${data.slug}`;
             console.log(`[VPS Middleware] Dominio personalizado ${hostname} → ${url.pathname}`);
             return NextResponse.rewrite(url);
           }
+        } else {
+          const errorText = await response.text();
+          console.error(`[VPS Middleware] Error response: ${errorText}`);
         }
         
         console.warn(`[VPS Middleware] No se encontró landing activa para ${hostname}`);
