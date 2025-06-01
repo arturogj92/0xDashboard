@@ -377,5 +377,48 @@
   "social": {
     "title": "Social Media",
     "description": "Add and organize your social media links. Enable the ones you want to display on your landing page and reorder them by dragging and dropping."
+  },
+  "customDomains": {
+    "title": "Custom Domain",
+    "description": "Connect your own domain (e.g., mydomain.com) so visitors can access your landing page from your custom URL.",
+    "addDomain": "Add Domain",
+    "adding": "Adding...",
+    "domainPlaceholder": "e.g., mydomain.com",
+    "configuredDomains": "Configured domains:",
+    "verify": "Verify",
+    "remove": "Remove",
+    "retry": "Retry",
+    "retrying": "Retrying...",
+    "checkStatus": "Check Status",
+    "checking": "Checking...",
+    "confirmRemove": "Are you sure you want to remove this domain?",
+    "domainAddedSuccess": "Domain added successfully. Configure DNS to continue.",
+    "dnsVerifiedSuccess": "DNS verified successfully. Generating SSL certificate...",
+    "retrySuccess": "Retry initiated. The process may take a few minutes.",
+    "retryHint": "💡 You can use the \"Retry\" button to attempt SSL configuration again.",
+    "noChangesDetected": "No changes detected. The domain is still processing.",
+    "copiedToClipboard": "Copied to clipboard",
+    "errors": {
+      "dnsVerificationFailed": "Could not verify {type} record. This is normal - DNS propagation can take up to 48 hours. Please wait and try again later.",
+      "dnsQueryError": "Error querying DNS. Please check your configuration and try again.",
+      "domainAlreadyExists": "This domain is already being used by another user.",
+      "invalidDomain": "The domain format is not valid.",
+      "connectionError": "Connection error while verifying domain",
+      "unknownError": "Unknown error. Please try again.",
+      "sslGenerationFailed": "Failed to generate SSL certificate. You can retry.",
+      "sslTimeout": "SSL process took longer than expected. You can retry.",
+      "sslRateLimit": "Rate limit exceeded. Please wait before retrying.",
+      "sslValidationFailed": "Domain validation failed. Check DNS configuration.",
+      "invalidRetryState": "This domain cannot be retried in its current state.",
+      "vpsConnectionFailed": "Cannot connect to VPS server. Please try again later."
+    },
+    "status": {
+      "pending": "Pending DNS configuration",
+      "dnsConfigured": "DNS configured, generating SSL certificate...",
+      "sslIssued": "SSL certificate issued, activating...",
+      "active": "Domain active and working",
+      "failed": "Configuration error",
+      "removed": "Domain removed, can be retried"
+    }
   }
 }

@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     console.log(`[VPS-SSL] Creating SSL certificate for: ${domain}`);
 
     // Ejecutar script manage_ssl.sh custom
-    const scriptPath = '/var/www/0xreplyer-frontend/scripts/manage_ssl.sh';
+    const scriptPath = '/var/www/landings/manage_ssl.sh';
     const { stdout, stderr } = await execAsync(`sudo ${scriptPath} custom ${domain}`);
     
     console.log(`[VPS-SSL] SSL script output for ${domain}:`, stdout);

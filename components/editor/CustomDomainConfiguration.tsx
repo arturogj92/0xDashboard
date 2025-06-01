@@ -4,7 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { API_URL } from '@/lib/api';
-import { Globe, CheckCircle, XCircle, Clock, AlertCircle, Copy, ExternalLink } from 'lucide-react';
+import { Globe, CheckCircle, XCircle, Clock, AlertCircle, Copy, ExternalLink, RefreshCw } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { useTranslations } from 'next-intl';
 
 interface CustomDomain {
   id: string;
@@ -22,10 +24,14 @@ interface CustomDomainConfigurationProps {
   onDomainUpdate?: () => void;
 }
 
+
 export default function CustomDomainConfiguration({ landingId, onDomainUpdate }: CustomDomainConfigurationProps) {
+  const t = useTranslations('customDomains');
   const [domains, setDomains] = useState<CustomDomain[]>([]);
   const [newDomain, setNewDomain] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [retryingDomains, setRetryingDomains] = useState<Set<string>>(new Set());
+  const [checkingDomains, setCheckingDomains] = useState<Set<string>>(new Set());
   const [showInstructions, setShowInstructions] = useState<string | null>(null);
 
   const createAuthHeaders = () => {
@@ -55,6 +61,31 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
     loadDomains();
   }, [landingId]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Auto-refresh para dominios en proceso
+  useEffect(() => {
+    const processingDomains = domains.filter(d => 
+      ['dns_configured', 'ssl_issued'].includes(d.status) || 
+      retryingDomains.has(d.id) ||
+      checkingDomains.has(d.id)
+    );
+
+    if (processingDomains.length === 0) return;
+
+    const interval = setInterval(async () => {
+      // Verificar estado de dominios que llevan mucho tiempo procesando
+      for (const domain of processingDomains) {
+        if (domain.status === 'ssl_issued' && !checkingDomains.has(domain.id)) {
+          await checkDomainStatus(domain.id);
+        }
+      }
+      
+      // Refresh general
+      loadDomains();
+    }, 30000); // Refresh cada 30 segundos
+
+    return () => clearInterval(interval);
+  }, [domains, retryingDomains, checkingDomains]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const addDomain = async () => {
     if (!newDomain.trim()) return;
 
@@ -75,9 +106,11 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
         setNewDomain('');
         setShowInstructions(data.id);
         onDomainUpdate?.();
+        toast.success(t('domainAddedSuccess'));
       } else {
         const error = await response.json();
-        alert(error.message || 'Error adding domain');
+        const message = getErrorMessage(t, error.code, error.type) || error.message || t('errors.unknownError');
+        toast.error(message);
       }
     } catch (error) {
       console.error('Error adding domain:', error);
@@ -88,7 +121,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
   };
 
   const removeDomain = async (domainId: string) => {
-    if (!confirm('¿Estás seguro de que quieres eliminar este dominio?')) return;
+    if (!confirm(t('confirmRemove'))) return;
 
     try {
       const response = await fetch(`${API_URL}/api/custom-domains/${domainId}`, {
@@ -113,23 +146,134 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
       });
 
       if (response.ok) {
+        toast.success(t('dnsVerifiedSuccess'));
         loadDomains(); // Reload to get updated status
+      } else {
+        const error = await response.json();
+        const message = getErrorMessage(t, error.code, error.type) || error.message || t('errors.unknownError');
+        toast.error(message);
       }
     } catch (error) {
       console.error('Error verifying domain:', error);
+      toast.error(t('errors.connectionError'));
+    }
+  };
+
+  const retryDomain = async (domainId: string) => {
+    setRetryingDomains(prev => new Set(prev.add(domainId)));
+    
+    try {
+      const response = await fetch(`${API_URL}/api/custom-domains/${domainId}/retry`, {
+        method: 'POST',
+        headers: createAuthHeaders()
+      });
+
+      if (response.ok) {
+        toast.success(t('retrySuccess'));
+        loadDomains(); // Reload to get updated status
+      } else {
+        const error = await response.json();
+        const message = getErrorMessage(t, error.code, error.type) || error.message || t('errors.unknownError');
+        toast.error(message);
+      }
+    } catch (error) {
+      console.error('Error retrying domain:', error);
+      toast.error(t('errors.connectionError'));
+    } finally {
+      setRetryingDomains(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(domainId);
+        return newSet;
+      });
+    }
+  };
+
+  const checkDomainStatus = async (domainId: string, showLoading = false) => {
+    if (showLoading) {
+      setCheckingDomains(prev => new Set(prev.add(domainId)));
+    }
+    
+    try {
+      const response = await fetch(`${API_URL}/api/custom-domains/${domainId}/check-status`, {
+        method: 'POST',
+        headers: createAuthHeaders()
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.status === 'updated') {
+          toast.success(result.message);
+          loadDomains(); // Reload to get updated status
+        } else {
+          console.log('Domain status check:', result);
+          if (showLoading) {
+            toast(t('noChangesDetected'), { icon: 'ℹ️' });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error checking domain status:', error);
+      if (showLoading) {
+        toast.error(t('errors.connectionError'));
+      }
+    } finally {
+      if (showLoading) {
+        setCheckingDomains(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(domainId);
+          return newSet;
+        });
+      }
     }
   };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
+    toast.success(t('copiedToClipboard'));
   };
 
-  const getStatusIcon = (status: string, sslStatus?: string) => {
+  // Función para traducir códigos de error
+  const getErrorMessage = (t: any, code: string, type?: string) => {
+    switch (code) {
+      case 'DNS_VERIFICATION_FAILED':
+        return t('errors.dnsVerificationFailed', { type: type?.toUpperCase() || 'DNS' });
+      case 'DNS_QUERY_ERROR':
+        return t('errors.dnsQueryError');
+      case 'DOMAIN_ALREADY_EXISTS':
+        return t('errors.domainAlreadyExists');
+      case 'INVALID_DOMAIN':
+        return t('errors.invalidDomain');
+      case 'SSL_GENERATION_FAILED':
+        return t('errors.sslGenerationFailed');
+      case 'SSL_TIMEOUT':
+        return t('errors.sslTimeout');
+      case 'SSL_RATE_LIMIT':
+        return t('errors.sslRateLimit');
+      case 'SSL_VALIDATION_FAILED':
+        return t('errors.sslValidationFailed');
+      case 'INVALID_RETRY_STATE':
+        return t('errors.invalidRetryState');
+      case 'VPS_CONNECTION_FAILED':
+        return t('errors.vpsConnectionFailed');
+      default:
+        return t('errors.unknownError');
+    }
+  };
+
+  const getStatusIcon = (status: string, domainId: string) => {
+    if (retryingDomains.has(domainId) || checkingDomains.has(domainId)) {
+      return <RefreshCw className="w-5 h-5 text-blue-500 animate-spin" />;
+    }
+    
     switch (status) {
       case 'active':
         return <CheckCircle className="w-5 h-5 text-green-500" />;
       case 'failed':
         return <XCircle className="w-5 h-5 text-red-500" />;
+      case 'removed':
+        return <AlertCircle className="w-5 h-5 text-orange-500" />;
+      case 'ssl_issued':
+        return <RefreshCw className="w-5 h-5 text-blue-500 animate-spin" />;
       case 'pending':
       case 'dns_configured':
         return <Clock className="w-5 h-5 text-yellow-500" />;
@@ -141,17 +285,19 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
   const getStatusText = (status: string, sslStatus?: string) => {
     switch (status) {
       case 'pending':
-        return 'Pendiente de configuración DNS';
+        return t('status.pending');
       case 'dns_configured':
-        return 'DNS configurado, generando certificado SSL...';
+        return t('status.dnsConfigured');
       case 'ssl_issued':
-        return 'Certificado SSL emitido, activando...';
+        return t('status.sslIssued');
       case 'active':
-        return 'Dominio activo y funcionando';
+        return t('status.active');
       case 'failed':
-        return 'Error en la configuración';
+        return t('status.failed');
+      case 'removed':
+        return t('status.removed');
       default:
-        return 'Estado desconocido';
+        return t('status.failed');
     }
   };
 
@@ -162,12 +308,11 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
           <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg shadow-lg">
             <Globe className="h-5 w-5 text-white" />
           </div>
-          <h3 className="text-lg font-semibold text-white">Dominio Personalizado</h3>
+          <h3 className="text-lg font-semibold text-white">{t('title')}</h3>
         </div>
 
         <p className="text-gray-400 text-sm mb-6">
-          Conecta tu propio dominio (ej: midominio.com) para que tus visitantes puedan acceder 
-          a tu landing page desde tu URL personalizada.
+          {t('description')}
         </p>
 
         {/* Add new domain */}
@@ -176,7 +321,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
             <Input
               value={newDomain}
               onChange={(e) => setNewDomain(e.target.value)}
-              placeholder="ej: midominio.com"
+              placeholder={t('domainPlaceholder')}
               className="flex-1 bg-gray-900/50 border-gray-600 text-white"
             />
             <Button 
@@ -184,7 +329,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
               disabled={isLoading || !newDomain.trim()}
               className="bg-blue-600 hover:bg-blue-700"
             >
-              {isLoading ? 'Agregando...' : 'Agregar Dominio'}
+              {isLoading ? t('adding') : t('addDomain')}
             </Button>
           </div>
 
@@ -196,13 +341,24 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
         {/* Existing domains */}
         {domains.length > 0 && (
           <div className="mt-6 space-y-4">
-            <h4 className="text-white font-medium">Dominios configurados:</h4>
+            <h4 className="text-white font-medium">{t('configuredDomains')}</h4>
             
-            {domains.map((domain) => (
+            {domains.map((domain) => {
+              // Debug temporal - puedes remover esto después
+              if (domain.domain === 'elcaminodelprogramador.com') {
+                console.log('Debug domain status:', {
+                  domain: domain.domain,
+                  status: domain.status,
+                  ssl_status: domain.ssl_status,
+                  error_message: domain.error_message
+                });
+              }
+              
+              return (
               <div key={domain.id} className="border border-gray-600 rounded-lg p-4 bg-gray-900/30">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    {getStatusIcon(domain.status, domain.ssl_status)}
+                    {getStatusIcon(domain.status, domain.id)}
                     <span className="text-white font-medium">{domain.domain}</span>
                     {domain.status === 'active' && (
                       <a 
@@ -224,7 +380,29 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
                         onClick={() => verifyDomain(domain.id)}
                         className="text-xs"
                       >
-                        Verificar
+                        {t('verify')}
+                      </Button>
+                    )}
+                    {domain.status === 'ssl_issued' && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => checkDomainStatus(domain.id, true)}
+                        disabled={checkingDomains.has(domain.id)}
+                        className="text-xs text-blue-400 hover:text-blue-300"
+                      >
+                        {checkingDomains.has(domain.id) ? t('checking') : t('checkStatus')}
+                      </Button>
+                    )}
+                    {(domain.status === 'failed' || domain.status === 'dns_configured' || domain.status === 'removed' || domain.error_message) && domain.status !== 'active' && domain.status !== 'pending' && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => retryDomain(domain.id)}
+                        disabled={retryingDomains.has(domain.id)}
+                        className="text-xs text-yellow-400 hover:text-yellow-300"
+                      >
+                        {retryingDomains.has(domain.id) ? t('retrying') : t('retry')}
                       </Button>
                     )}
                     <Button
@@ -233,7 +411,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
                       onClick={() => removeDomain(domain.id)}
                       className="text-xs text-red-400 hover:text-red-300"
                     >
-                      Eliminar
+                      {t('remove')}
                     </Button>
                   </div>
                 </div>
@@ -242,9 +420,27 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
                   {getStatusText(domain.status, domain.ssl_status)}
                 </p>
 
+                {/* Debug temporal - remover después */}
+                {domain.domain === 'elcaminodelprogramador.com' && (
+                  <div className="text-xs text-blue-300 mb-2 p-2 bg-blue-900/20 rounded">
+                    DEBUG: status="{domain.status}", ssl_status="{domain.ssl_status}", error="{domain.error_message}", show_retry={(domain.status === 'failed' || domain.status === 'dns_configured' || domain.error_message) && domain.status !== 'active' && domain.status !== 'pending' ? 'YES' : 'NO'}
+                  </div>
+                )}
+
                 {domain.error_message && (
-                  <div className="text-sm text-red-400 mb-3 p-2 bg-red-900/20 rounded">
-                    Error: {domain.error_message}
+                  <div className="text-sm mb-3 p-3 bg-red-900/20 border border-red-800/30 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <XCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <p className="text-red-400 font-medium">Error:</p>
+                        <p className="text-red-300 mt-1">{domain.error_message}</p>
+                        {domain.status === 'failed' && (
+                          <p className="text-red-400/70 text-xs mt-2">
+                            {t('retryHint')}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 )}
 
@@ -325,7 +521,8 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate }:
                   </div>
                 )}
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
