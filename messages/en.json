@@ -386,7 +386,7 @@
   },
   "customDomains": {
     "title": "Custom Domain",
-    "description": "Connect your own domain (e.g., mydomain.com) so visitors can access your landing page from your custom URL.",
+    "description": "Connect your own domain (e.g., mydomain.com)",
     "addDomain": "Add Domain",
     "adding": "Adding...",
     "domainPlaceholder": "e.g., mydomain.com",

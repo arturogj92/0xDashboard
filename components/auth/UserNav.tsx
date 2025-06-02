@@ -25,7 +25,7 @@ export function UserNav() {
       <div className="flex items-center">
         <Link 
           href="/login" 
-          className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-indigo-600/70 hover:bg-indigo-700 rounded-full transition-colors"
+          className="inline-flex items-center px-3 py-2 text-sm font-medium text-white hover:text-white bg-white/5 hover:bg-white/15 transition-all duration-200 rounded-lg border border-white/10 hover:border-white/30"
         >
           <span>{t('login')}</span>
         </Link>

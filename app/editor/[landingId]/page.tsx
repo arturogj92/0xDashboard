@@ -7,14 +7,17 @@ import SocialLinksPanel from "@/components/editor/SocialLinksPanel";
 import { LandingPreview } from "@/components/landing/LandingPreview";
 import { LinkData, SectionData, SocialLinkData } from "@/components/editor/types";
 import StyleCustomizationAccordion from "@/components/editor/StyleCustomizationAccordion";
+import CustomDomainConfiguration from "@/components/editor/CustomDomainConfiguration";
 import { useParams, useRouter } from 'next/navigation';
-import { PencilSquareIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import { Globe } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/AuthContext';
 import { getThemeById } from '@/lib/themes';
 
 export default function AdminPage() {
   const t = useTranslations('editor');
+  const tCustomDomains = useTranslations('customDomains');
   const params = useParams();
   const router = useRouter();
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -25,6 +28,7 @@ export default function AdminPage() {
   const [landing, setLanding] = useState<{id?: string; name: string; description: string; theme_id?: string; avatar_url?: string; configurations?: any; user_id?: string}>({name: '', description: ''});
   const [previewPosition, setPreviewPosition] = useState('fixed');
   const [isOwnershipVerified, setIsOwnershipVerified] = useState(false);
+  const [isCustomDomainOpen, setIsCustomDomainOpen] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
 
   // Protección de autenticación y ownership
@@ -909,6 +913,52 @@ export default function AdminPage() {
             onAvatarUpdate={handleAvatarUpdate}
             onLandingInfoUpdate={handleLandingInfoUpdate}
           />
+        </div>
+
+        <div id="custom-domain" className="w-full mb-8">
+          {/* Header del accordion de dominio personalizado */}
+          <button
+            onClick={() => setIsCustomDomainOpen(!isCustomDomainOpen)}
+            data-accordion="custom-domain"
+            aria-expanded={isCustomDomainOpen}
+            className="w-full flex items-center justify-between p-4 bg-gray-800/30 border border-gray-700/50 rounded-lg hover:bg-gray-800/40 transition-all duration-200"
+          >
+            <div className="flex items-center gap-3">
+              <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg shadow-lg">
+                <Globe className="h-5 w-5 text-white" />
+              </div>
+              <div className="text-left">
+                <h3 className="text-lg font-semibold text-white">
+                  {tCustomDomains('title')}
+                </h3>
+                <p className="text-sm text-gray-400">
+                  {tCustomDomains('description')}
+                </p>
+              </div>
+            </div>
+            
+            <div className="text-gray-400">
+              {isCustomDomainOpen ? (
+                <ChevronUpIcon className="h-5 w-5" />
+              ) : (
+                <ChevronDownIcon className="h-5 w-5" />
+              )}
+            </div>
+          </button>
+
+          {/* Contenido del accordion */}
+          <div 
+            className={`transition-all duration-300 ease-in-out ${
+              isCustomDomainOpen ? 'max-h-none opacity-100 overflow-visible' : 'max-h-0 opacity-0 overflow-hidden'
+            }`}
+          >
+            <div className="mt-4">
+              <CustomDomainConfiguration
+                landingId={landingId}
+                hideHeader={true}
+              />
+            </div>
+          </div>
         </div>
 
         <div id="sections-board" className="w-full">

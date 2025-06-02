@@ -53,7 +53,7 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
             {!isAuthenticated && (
               <Link 
                 href="/precios" 
-                className="flex items-center px-4 py-1.5 rounded-full text-sm font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-500 hover:to-purple-500 transition-colors shadow-md shadow-indigo-900/30"
+                className="inline-flex items-center px-3 py-2 text-sm font-medium text-white hover:text-white bg-white/5 hover:bg-white/15 transition-all duration-200 rounded-lg border border-white/10 hover:border-white/30"
               >
                 {t('pricing')}
               </Link>
