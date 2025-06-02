@@ -15,6 +15,12 @@
       "profile": "Your Profile",
       "logout": "Log Out"
     },
+    "mobileNav": {
+      "captionGeneratorDesc": "Generate captions automatically",
+      "myLandingDesc": "Configure your personal page",
+      "automationsDesc": "Manage your automations",
+      "profileDesc": "Your user profile"
+    },
     "profile": {
       "title": "User Profile",
       "accountInfo": "Account Information",

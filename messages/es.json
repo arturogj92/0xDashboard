@@ -15,6 +15,12 @@
       "profile": "Tu Perfil",
       "logout": "Cerrar Sesión"
     },
+    "mobileNav": {
+      "captionGeneratorDesc": "Genera descripciones automáticamente",
+      "myLandingDesc": "Configura tu página personal",
+      "automationsDesc": "Gestiona tus automatizaciones",
+      "profileDesc": "Tu perfil de usuario"
+    },
     "profile": {
       "title": "Perfil de Usuario",
       "accountInfo": "Información de la cuenta",
