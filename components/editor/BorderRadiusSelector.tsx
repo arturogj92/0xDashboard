@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 
 interface BorderRadiusSelectorProps {
   value: string;
@@ -40,6 +41,7 @@ export default function BorderRadiusSelector({
   onSave,
   className = "" 
 }: BorderRadiusSelectorProps) {
+  const t = useTranslations('borderRadius');
   const [sliderValue, setSliderValue] = useState(0);
   const [pendingValue, setPendingValue] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -107,10 +109,10 @@ export default function BorderRadiusSelector({
 
 
   const presets = [
-    { value: 0, label: 'Cuadrado' },
-    { value: 8, label: 'Poco' },
-    { value: 16, label: 'Mediano' },
-    { value: 50, label: 'Redondeado' }
+    { value: 0, label: t('presets.square') },
+    { value: 8, label: t('presets.little') },
+    { value: 16, label: t('presets.medium') },
+    { value: 50, label: t('presets.rounded') }
   ];
 
   const handlePresetClick = (value: number) => {
@@ -143,7 +145,7 @@ export default function BorderRadiusSelector({
     <div className={`space-y-4 ${className}`}>
       <div className="flex items-center justify-between">
         <label className="text-sm font-medium text-white">
-          Bordes de los Links
+          {t('title')}
         </label>
       </div>
       
@@ -181,7 +183,7 @@ export default function BorderRadiusSelector({
 
       {/* Presets */}
       <div className="space-y-2">
-        <span className="text-xs text-gray-400">Valores rápidos:</span>
+        <span className="text-xs text-gray-400">{t('quickValues')}:</span>
         <div className="grid grid-cols-4 gap-2">
           {presets.map((preset) => (
             <button

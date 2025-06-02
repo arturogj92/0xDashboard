@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 
 interface FontFamilySelectorProps {
   value: {
@@ -17,15 +18,16 @@ export default function FontFamilySelector({
   onSave,
   className = "" 
 }: FontFamilySelectorProps) {
+  const t = useTranslations('fontFamily');
   const [localFont, setLocalFont] = useState(value);
   const [pendingValue, setPendingValue] = useState<{ family: string; url: string } | null>(null);
   const [fontsLoaded, setFontsLoaded] = useState<Set<string>>(new Set());
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [, startTransition] = React.useTransition();
 
-  // Google Fonts populares
+  // Popular Google Fonts
   const googleFonts = [
-    // Sans Serif Modernas
+    // Modern Sans Serif
     { 
       name: 'Inter', 
       family: 'Inter', 
@@ -87,7 +89,7 @@ export default function FontFamilySelector({
       category: 'Sans Serif'
     },
     
-    // Serif Elegantes
+    // Elegant Serif
     { 
       name: 'Playfair Display', 
       family: 'Playfair Display', 
@@ -119,7 +121,7 @@ export default function FontFamilySelector({
       category: 'Serif'
     },
     
-    // Display y Creativas
+    // Display and Creative
     { 
       name: 'Oswald', 
       family: 'Oswald', 
@@ -180,12 +182,12 @@ export default function FontFamilySelector({
     }
   ];
 
-  // Sincronizar con valor prop
+  // Synchronize with prop value
   useEffect(() => {
     setLocalFont(value);
   }, [value]);
 
-  // Cargar fuente dinámicamente
+  // Load font dynamically
   const loadFont = React.useCallback((url: string, family: string) => {
     if (fontsLoaded.has(family)) return;
 
@@ -198,7 +200,7 @@ export default function FontFamilySelector({
     document.head.appendChild(link);
   }, [fontsLoaded]);
 
-  // Limpiar timeouts al desmontar
+  // Clean up timeouts on unmount
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {
@@ -211,7 +213,7 @@ export default function FontFamilySelector({
     setLocalFont(font);
     setPendingValue(font);
     
-    // Cargar la fuente si no está cargada
+    // Load font if not already loaded
     loadFont(font.url, font.family);
     
     // Actualizar inmediatamente en baja prioridad
@@ -219,7 +221,7 @@ export default function FontFamilySelector({
       onChange(font);
     });
     
-    // Configurar guardado con debounce
+    // Configure saving with debounce
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
@@ -235,14 +237,14 @@ export default function FontFamilySelector({
     }
   };
 
-  // Cargar fuente actual al montar el componente
+  // Load current font when mounting component
   useEffect(() => {
     if (localFont.url && localFont.family) {
       loadFont(localFont.url, localFont.family);
     }
   }, [localFont.url, localFont.family, loadFont]);
 
-  // Cargar todas las fuentes para mostrar previews
+  // Load all fonts to show previews
   useEffect(() => {
     googleFonts.forEach(font => {
       loadFont(font.url, font.family);
@@ -254,34 +256,34 @@ export default function FontFamilySelector({
     <div className={`space-y-4 ${className}`}>
       <div className="flex items-center justify-between">
         <label className="text-sm font-medium text-white">
-          Tipo de Fuente
+          {t('title')}
         </label>
       </div>
       
-      {/* Vista previa de la fuente */}
+      {/* Font preview */}
       <div className="space-y-3">
         <div className="bg-gray-900 rounded-lg p-4 border border-gray-600">
           <div 
             className="text-lg font-semibold mb-2"
             style={{ fontFamily: `${localFont.family}, system-ui, sans-serif` }}
           >
-            Mi Nombre Aquí
+            {t('previewName')}
           </div>
           <div 
             className="text-sm text-gray-300"
             style={{ fontFamily: `${localFont.family}, system-ui, sans-serif` }}
           >
-            Esta es la descripción de mi landing page con la fuente seleccionada.
+            {t('previewDescription')}
           </div>
           <div className="text-xs text-gray-500 mt-2">
-            Fuente actual: {localFont.family}
+            {t('currentFont')} {localFont.family}
           </div>
         </div>
       </div>
 
-      {/* Selector de fuentes */}
+      {/* Font selector */}
       <div className="space-y-2">
-        <span className="text-xs text-gray-400">Fuentes disponibles ({googleFonts.length}):</span>
+        <span className="text-xs text-gray-400">{t('availableFonts')} ({googleFonts.length}):</span>
         <div className="max-h-64 overflow-y-auto space-y-2 border border-gray-600 rounded-lg p-2">
           {googleFonts.map((font) => {
             const isActive = localFont.family === font.family;
@@ -310,14 +312,14 @@ export default function FontFamilySelector({
                     fontFamily: fontsLoaded.has(font.family) ? `${font.family}, system-ui, sans-serif` : 'system-ui, sans-serif'
                   }}
                 >
-                  Mi Landing Page Ejemplo
+                  {t('exampleText')}
                 </div>
                 <div className="text-xs text-gray-500">
                   {font.category} • Google Fonts
                 </div>
                 {!fontsLoaded.has(font.family) && isActive && (
                   <div className="text-xs text-blue-400 mt-1">
-                    Cargando fuente...
+                    {t('loadingFont')}
                   </div>
                 )}
               </button>

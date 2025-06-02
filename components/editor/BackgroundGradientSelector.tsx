@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 
 interface BackgroundGradientSelectorProps {
   value: {
@@ -17,6 +18,7 @@ export default function BackgroundGradientSelector({
   onSave,
   className = "" 
 }: BackgroundGradientSelectorProps) {
+  const t = useTranslations('backgroundGradientSelector');
   const [localColors, setLocalColors] = useState(value);
   const [pendingValue, setPendingValue] = useState<{ color1: string; color2: string } | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -64,22 +66,22 @@ export default function BackgroundGradientSelector({
 
   const presets = [
     { 
-      name: 'Morado Clásico', 
+      name: t('presets.classicPurple'), 
       color1: '#000000', 
       color2: '#4a044d' 
     },
     { 
-      name: 'Azul Océano', 
+      name: t('presets.oceanBlue'), 
       color1: '#1e3a8a', 
       color2: '#06b6d4' 
     },
     { 
-      name: 'Amanecer', 
+      name: t('presets.sunrise'), 
       color1: '#f97316', 
       color2: '#fbbf24' 
     },
     { 
-      name: 'Verde Bosque', 
+      name: t('presets.forestGreen'), 
       color1: '#064e3b', 
       color2: '#10b981' 
     }
@@ -115,7 +117,7 @@ export default function BackgroundGradientSelector({
     <div className={`space-y-4 ${className}`}>
       <div className="flex items-center justify-between">
         <label className="text-sm font-medium text-white">
-          Fondo de la Landing
+          {t('title')}
         </label>
       </div>
       
@@ -129,7 +131,7 @@ export default function BackgroundGradientSelector({
         {/* Controles de color */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-xs text-gray-400">Color Superior</label>
+            <label className="text-xs text-gray-400">{t('topColor')}</label>
             <div className="flex items-center space-x-2">
               <input
                 type="color"
@@ -148,7 +150,7 @@ export default function BackgroundGradientSelector({
           </div>
           
           <div className="space-y-2">
-            <label className="text-xs text-gray-400">Color Inferior</label>
+            <label className="text-xs text-gray-400">{t('bottomColor')}</label>
             <div className="flex items-center space-x-2">
               <input
                 type="color"
@@ -170,7 +172,7 @@ export default function BackgroundGradientSelector({
 
       {/* Presets */}
       <div className="space-y-2">
-        <span className="text-xs text-gray-400">Gradientes predefinidos:</span>
+        <span className="text-xs text-gray-400">{t('presetsTitle')}</span>
         <div className="grid grid-cols-2 gap-2">
           {presets.map((preset) => {
             const isActive = localColors.color1 === preset.color1 && localColors.color2 === preset.color2;

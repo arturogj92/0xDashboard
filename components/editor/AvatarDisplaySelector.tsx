@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { UserIcon } from '@heroicons/react/24/outline';
+import { useTranslations } from 'next-intl';
 
 interface AvatarDisplayConfiguration {
   showAvatar?: boolean;
@@ -14,6 +15,7 @@ interface AvatarDisplaySelectorProps {
 }
 
 export default function AvatarDisplaySelector({ value, onChange, onSave }: AvatarDisplaySelectorProps) {
+  const t = useTranslations('avatarDisplaySelector');
   const [localConfig, setLocalConfig] = useState<AvatarDisplayConfiguration>({
     showAvatar: value.showAvatar ?? true,
   });
@@ -46,16 +48,16 @@ export default function AvatarDisplaySelector({ value, onChange, onSave }: Avata
           <div className="bg-gradient-to-br from-indigo-500 to-blue-600 p-2 rounded-lg shadow-lg">
             <UserIcon className="h-5 w-5 text-white" />
           </div>
-          <h3 className="text-lg font-semibold text-white">Configuración del Avatar</h3>
+          <h3 className="text-lg font-semibold text-white">{t('title')}</h3>
         </div>
         <p className="text-sm text-gray-400 max-w-xl mx-auto leading-relaxed">
-          Elige si quieres mostrar tu foto de perfil o solo el nombre
+          {t('description')}
         </p>
       </div>
 
       {/* Preview */}
       <div className="mb-6 p-4 bg-gray-900/50 rounded-lg border border-gray-700/50">
-        <p className="text-xs text-gray-400 mb-3 text-center">Vista previa:</p>
+        <p className="text-xs text-gray-400 mb-3 text-center">{t('preview')}:</p>
         <div className="flex flex-col items-center gap-2">
           {localConfig.showAvatar && (
             <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center">
@@ -63,7 +65,7 @@ export default function AvatarDisplaySelector({ value, onChange, onSave }: Avata
             </div>
           )}
           <h2 className="text-lg font-semibold text-white">
-            Mi Nombre Ejemplo
+            {t('exampleName')}
           </h2>
         </div>
       </div>
@@ -84,10 +86,10 @@ export default function AvatarDisplaySelector({ value, onChange, onSave }: Avata
             </div>
             <div className="flex-1">
               <h4 className={`font-medium ${localConfig.showAvatar ? 'text-purple-300' : 'text-white'}`}>
-                Con Avatar
+                {t('withAvatar.title')}
               </h4>
               <p className="text-sm text-gray-400">
-                Muestra tu foto de perfil arriba del nombre
+                {t('withAvatar.description')}
               </p>
             </div>
             {localConfig.showAvatar && (
@@ -114,10 +116,10 @@ export default function AvatarDisplaySelector({ value, onChange, onSave }: Avata
             </div>
             <div className="flex-1">
               <h4 className={`font-medium ${!localConfig.showAvatar ? 'text-purple-300' : 'text-white'}`}>
-                Solo Nombre
+                {t('nameOnly.title')}
               </h4>
               <p className="text-sm text-gray-400">
-                Muestra únicamente el nombre sin foto de perfil
+                {t('nameOnly.description')}
               </p>
             </div>
             {!localConfig.showAvatar && (

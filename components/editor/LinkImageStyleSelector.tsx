@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 
 interface LinkImageStyleConfig {
   style: 'rectangle' | 'circle' | 'rectangle-padded';
@@ -19,6 +20,7 @@ export default function LinkImageStyleSelector({
   onSave,
   className = ""
 }: LinkImageStyleSelectorProps) {
+  const t = useTranslations('linkImageStyle');
   const [selectedStyle, setSelectedStyle] = useState(value.style);
 
   useEffect(() => {
@@ -37,8 +39,8 @@ export default function LinkImageStyleSelector({
   const styles = [
     {
       id: 'rectangle',
-      name: 'Rectangular',
-      description: 'Imagen completa sin padding',
+      name: t('styles.rectangular.name'),
+      description: t('styles.rectangular.description'),
       preview: (
         <div className="w-full h-20 bg-gray-800 rounded-lg border border-gray-600 flex items-center overflow-hidden">
           <div className="w-20 h-full bg-gradient-to-br from-purple-500 to-pink-500" />
@@ -51,8 +53,8 @@ export default function LinkImageStyleSelector({
     },
     {
       id: 'circle',
-      name: 'Circular',
-      description: 'Imagen en forma circular',
+      name: t('styles.circular.name'),
+      description: t('styles.circular.description'),
       preview: (
         <div className="w-full h-20 bg-gray-800 rounded-lg border border-gray-600 flex items-center overflow-hidden px-3">
           <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex-shrink-0" />
@@ -65,8 +67,8 @@ export default function LinkImageStyleSelector({
     },
     {
       id: 'rectangle-padded',
-      name: 'Rectangular con Padding',
-      description: 'Imagen con espacio alrededor',
+      name: t('styles.rectangularPadded.name'),
+      description: t('styles.rectangularPadded.description'),
       preview: (
         <div className="w-full h-20 bg-gray-800 rounded-lg border border-gray-600 flex items-center overflow-hidden">
           <div className="w-20 h-full p-2 flex-shrink-0">
@@ -85,7 +87,7 @@ export default function LinkImageStyleSelector({
     <div className={`space-y-4 ${className}`}>
       <div>
         <label className="text-sm font-medium text-white mb-4 block">
-          Estilo de Imagen en Links
+          {t('title')}
         </label>
         
         <div className="space-y-3">

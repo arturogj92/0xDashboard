@@ -17,6 +17,7 @@ import LinkImageStyleSelector from "@/components/editor/LinkImageStyleSelector";
 import { LandingInfoEditor } from "@/components/editor/LandingInfoEditor";
 import CustomDomainConfiguration from "@/components/editor/CustomDomainConfiguration";
 import { Info, Globe } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface StyleCustomizationAccordionProps {
   landing: {
@@ -44,6 +45,7 @@ export default function StyleCustomizationAccordion({
   onLandingInfoUpdate,
   className = "" 
 }: StyleCustomizationAccordionProps) {
+  const t = useTranslations('styleCustomization');
   const [isOpen, setIsOpen] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     info: false,
@@ -77,10 +79,10 @@ export default function StyleCustomizationAccordion({
           </div>
           <div className="text-left">
             <h3 className="text-lg font-semibold text-white">
-              Personaliza el Estilo
+              {t('title')}
             </h3>
             <p className="text-sm text-gray-400">
-              Cambia colores, fuentes y bordes de tu landing
+              {t('description')}
             </p>
           </div>
         </div>
@@ -108,8 +110,8 @@ export default function StyleCustomizationAccordion({
                 <Paintbrush2 className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white">Seleccionar Tema</h3>
-                <p className="text-sm text-indigo-200">Elige el estilo perfecto para tu landing</p>
+                <h3 className="text-xl font-bold text-white">{t('themeSelector.title')}</h3>
+                <p className="text-sm text-indigo-200">{t('themeSelector.description')}</p>
               </div>
             </div>
             <ThemeSelector
@@ -130,7 +132,7 @@ export default function StyleCustomizationAccordion({
                 <div className="bg-gradient-to-br from-blue-500 to-cyan-600 p-2 rounded-lg shadow-lg">
                   <Info className="h-5 w-5 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">Información Básica</h3>
+                <h3 className="text-lg font-semibold text-white">{t('basicInfo.title')}</h3>
               </div>
               {openSections.info ? (
                 <ChevronUpIcon className="h-5 w-5 text-gray-400" />
@@ -163,7 +165,7 @@ export default function StyleCustomizationAccordion({
                 <div className="bg-gradient-to-br from-indigo-500 to-blue-600 p-2 rounded-lg shadow-lg">
                   <User className="h-5 w-5 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">Configuración de Avatar</h3>
+                <h3 className="text-lg font-semibold text-white">{t('avatar.title')}</h3>
               </div>
               {openSections.avatar ? (
                 <ChevronUpIcon className="h-5 w-5 text-gray-400" />
@@ -176,8 +178,8 @@ export default function StyleCustomizationAccordion({
               <div className="p-4 pt-0 space-y-6">
                 {/* Avatar Upload */}
                 <div>
-                  <div className="text-white text-sm mb-3">Subir Avatar</div>
-                  <p className="text-gray-400 text-xs mb-4">Sube un avatar específico para esta landing page que se mostrará públicamente.</p>
+                  <div className="text-white text-sm mb-3">{t('avatar.upload.title')}</div>
+                  <p className="text-gray-400 text-xs mb-4">{t('avatar.upload.description')}</p>
                   <LandingAvatarUpload
                     landingId={landing.id || ''}
                     currentAvatarUrl={landing.avatar_url}
@@ -210,7 +212,7 @@ export default function StyleCustomizationAccordion({
                 <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-2 rounded-lg shadow-lg">
                   <Palette className="h-5 w-5 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">Configuración de Fondos</h3>
+                <h3 className="text-lg font-semibold text-white">{t('backgrounds.title')}</h3>
               </div>
               {openSections.backgrounds ? (
                 <ChevronUpIcon className="h-5 w-5 text-gray-400" />
@@ -252,7 +254,7 @@ export default function StyleCustomizationAccordion({
                 <div className="bg-gradient-to-br from-violet-500 to-purple-600 p-2 rounded-lg shadow-lg">
                   <Link2 className="h-5 w-5 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">Configuración de Enlaces</h3>
+                <h3 className="text-lg font-semibold text-white">{t('links.title')}</h3>
               </div>
               {openSections.links ? (
                 <ChevronUpIcon className="h-5 w-5 text-gray-400" />
@@ -303,7 +305,7 @@ export default function StyleCustomizationAccordion({
                 <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-2 rounded-lg shadow-lg">
                   <Type className="h-5 w-5 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">Configuración de Fuentes</h3>
+                <h3 className="text-lg font-semibold text-white">{t('fonts.title')}</h3>
               </div>
               {openSections.fonts ? (
                 <ChevronUpIcon className="h-5 w-5 text-gray-400" />
@@ -354,7 +356,7 @@ export default function StyleCustomizationAccordion({
                 <div className="bg-gradient-to-br from-yellow-500 to-orange-600 p-2 rounded-lg shadow-lg">
                   <Sparkles className="h-5 w-5 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">Configuración de Efectos</h3>
+                <h3 className="text-lg font-semibold text-white">{t('effects.title')}</h3>
               </div>
               {openSections.effects ? (
                 <ChevronUpIcon className="h-5 w-5 text-gray-400" />
@@ -384,7 +386,7 @@ export default function StyleCustomizationAccordion({
                 <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg shadow-lg">
                   <Globe className="h-5 w-5 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-white">Dominio Personalizado</h3>
+                <h3 className="text-lg font-semibold text-white">{t('domain.title')}</h3>
               </div>
               {openSections.domain ? (
                 <ChevronUpIcon className="h-5 w-5 text-gray-400" />

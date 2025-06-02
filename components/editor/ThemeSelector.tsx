@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { themes, Theme, getThemeById } from '@/lib/themes';
 import { SwatchIcon, CheckIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/components/ui/button';
+import { useTranslations } from 'next-intl';
 
 interface ThemeSelectorProps {
   currentThemeId?: string;
@@ -27,6 +28,7 @@ interface ThemePreviewProps {
 }
 
 function ThemePreview({ theme, isSelected, onClick, landingName = "Mi Landing", landingDescription = "Descripción" }: ThemePreviewProps) {
+  const t = useTranslations('themes');
   const getThemeIcon = (themeId: string) => {
     switch (themeId) {
       case 'dark': return '🌙';
@@ -139,7 +141,7 @@ function ThemePreview({ theme, isSelected, onClick, landingName = "Mi Landing", 
             <span className="text-lg">{getThemeIcon(theme.id)}</span>
             <h3 className="font-bold text-base text-white">{theme.name}</h3>
           </div>
-          <p className="text-xs text-gray-400 leading-relaxed">{theme.description}</p>
+          <p className="text-xs text-gray-400 leading-relaxed">{t(`${theme.id}.description`)}</p>
         </div>
         
         {/* Visual Preview */}
@@ -235,6 +237,7 @@ function ThemePreview({ theme, isSelected, onClick, landingName = "Mi Landing", 
 }
 
 export default function ThemeSelector({ currentThemeId = 'dark', onThemeChange, className = '', landingName, landingDescription }: ThemeSelectorProps) {
+  const t = useTranslations('themes');
   const [isOpen, setIsOpen] = useState(false);
   const currentTheme = getThemeById(currentThemeId) || themes[0];
 
@@ -275,7 +278,7 @@ export default function ThemeSelector({ currentThemeId = 'dark', onThemeChange, 
           />
           <div className="text-left">
             <div className="font-semibold text-lg">{currentTheme.name}</div>
-            <div className="text-sm text-gray-300 hidden sm:block">{currentTheme.description}</div>
+            <div className="text-sm text-gray-300 hidden sm:block">{t(`${currentTheme.id}.description`)}</div>
           </div>
         </div>
         <motion.div
@@ -308,8 +311,8 @@ export default function ThemeSelector({ currentThemeId = 'dark', onThemeChange, 
             >
               <div className="p-6">
                 <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold text-white mb-2">🎨 Selecciona tu tema</h3>
-                  <p className="text-gray-300">Elige el estilo que mejor represente tu personalidad</p>
+                  <h3 className="text-2xl font-bold text-white mb-2">🎨 {t('selectTheme.title')}</h3>
+                  <p className="text-gray-300">{t('selectTheme.description')}</p>
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -337,7 +340,7 @@ export default function ThemeSelector({ currentThemeId = 'dark', onThemeChange, 
                     onClick={() => setIsOpen(false)}
                     className="w-full border-gray-600 text-gray-300 hover:bg-gray-700/50 hover:text-white bg-gray-800/50"
                   >
-                    ✨ Cerrar selector
+                    ✨ {t('selectTheme.close')}
                   </Button>
                 </div>
               </div>

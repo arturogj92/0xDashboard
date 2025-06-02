@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { SparklesIcon } from '@heroicons/react/24/outline';
+import { useTranslations } from 'next-intl';
 
 interface TitleStyleConfiguration {
   fontSize?: string;
@@ -20,13 +21,7 @@ interface TitleStyleSelectorProps {
   onSave: (config: TitleStyleConfiguration) => void;
 }
 
-const fontSizeOptions = [
-  { label: 'Pequeño', value: 'text-lg', px: '18px' },
-  { label: 'Normal', value: 'text-xl', px: '20px' },
-  { label: 'Grande', value: 'text-2xl', px: '24px' },
-  { label: 'Extra Grande', value: 'text-3xl', px: '30px' },
-  { label: 'Gigante', value: 'text-4xl', px: '36px' },
-];
+// Note: fontSizeOptions will be moved inside component to use translations
 
 const gradientPresets = [
   {
@@ -72,6 +67,16 @@ const gradientPresets = [
 ];
 
 export default function TitleStyleSelector({ value, onChange, onSave }: TitleStyleSelectorProps) {
+  const t = useTranslations('titleStyle');
+  
+  const fontSizeOptions = [
+    { label: t('fontSizes.small'), value: 'text-lg', px: '18px' },
+    { label: t('fontSizes.normal'), value: 'text-xl', px: '20px' },
+    { label: t('fontSizes.large'), value: 'text-2xl', px: '24px' },
+    { label: t('fontSizes.extraLarge'), value: 'text-3xl', px: '30px' },
+    { label: t('fontSizes.giant'), value: 'text-4xl', px: '36px' },
+  ];
+  
   const [localConfig, setLocalConfig] = useState<TitleStyleConfiguration>({
     fontSize: value.fontSize || 'text-2xl',
     gradientEnabled: value.gradientEnabled ?? false,
@@ -155,29 +160,29 @@ export default function TitleStyleSelector({ value, onChange, onSave }: TitleSty
           <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg shadow-lg">
             <SparklesIcon className="h-5 w-5 text-white" />
           </div>
-          <h3 className="text-lg font-semibold text-white">Estilo del Título</h3>
+          <h3 className="text-lg font-semibold text-white">{t('title')}</h3>
         </div>
         <p className="text-sm text-gray-400 max-w-xl mx-auto leading-relaxed">
-          Personaliza el tamaño y gradiente del título
+          {t('description')}
         </p>
       </div>
 
       {/* Preview del título */}
       <div className="mb-6 p-4 bg-gray-900/50 rounded-lg border border-gray-700/50">
-        <p className="text-xs text-gray-400 mb-2 text-center">Vista previa:</p>
+        <p className="text-xs text-gray-400 mb-2 text-center">{t('preview')}:</p>
         <h2 
           key={`preview-${localConfig.gradientEnabled}-${JSON.stringify(localConfig.gradientColors)}`}
           className={`${localConfig.fontSize} font-semibold text-center`}
           style={getGradientStyle()}
         >
-          Mi Nombre Ejemplo
+          {t('exampleName')}
         </h2>
       </div>
 
       <div className="space-y-4">
         {/* Tamaño de fuente */}
         <div className="space-y-2">
-          <label className="text-white font-medium text-sm">Tamaño del Título</label>
+          <label className="text-white font-medium text-sm">{t('titleSize')}</label>
           <div className="grid grid-cols-2 gap-2">
             {fontSizeOptions.map((option) => (
               <button
@@ -198,8 +203,8 @@ export default function TitleStyleSelector({ value, onChange, onSave }: TitleSty
         {/* Toggle gradiente */}
         <div className="flex items-center justify-between">
           <div>
-            <h4 className="text-white font-medium">Gradiente Activado</h4>
-            <p className="text-gray-400 text-sm">Aplicar gradiente de color al título</p>
+            <h4 className="text-white font-medium">{t('gradientEnabled')}</h4>
+            <p className="text-gray-400 text-sm">{t('gradientDescription')}</p>
           </div>
           <input
             type="checkbox"
@@ -212,7 +217,7 @@ export default function TitleStyleSelector({ value, onChange, onSave }: TitleSty
         {/* Gradientes predefinidos */}
         {localConfig.gradientEnabled && (
           <div className="space-y-3">
-            <label className="text-white font-medium text-sm">Gradientes Predefinidos</label>
+            <label className="text-white font-medium text-sm">{t('predefinedGradients')}</label>
             <div className="grid grid-cols-2 gap-2">
               {gradientPresets.map((preset) => (
                 <button
@@ -235,10 +240,10 @@ export default function TitleStyleSelector({ value, onChange, onSave }: TitleSty
 
             {/* Colores personalizados */}
             <div className="space-y-3 border-t border-gray-700 pt-3">
-              <label className="text-white font-medium text-sm">Colores Personalizados</label>
+              <label className="text-white font-medium text-sm">{t('customColors')}</label>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-gray-400 mb-1 block">Color inicial</label>
+                  <label className="text-xs text-gray-400 mb-1 block">{t('initialColor')}</label>
                   <input
                     type="color"
                     value={localConfig.gradientColors!.from}
@@ -249,7 +254,7 @@ export default function TitleStyleSelector({ value, onChange, onSave }: TitleSty
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-400 mb-1 block">Color final</label>
+                  <label className="text-xs text-gray-400 mb-1 block">{t('finalColor')}</label>
                   <input
                     type="color"
                     value={localConfig.gradientColors!.to}
@@ -263,7 +268,7 @@ export default function TitleStyleSelector({ value, onChange, onSave }: TitleSty
               
               {/* Color intermedio opcional */}
               <div>
-                <label className="text-xs text-gray-400 mb-1 block">Color intermedio (opcional)</label>
+                <label className="text-xs text-gray-400 mb-1 block">{t('intermediateColor')}</label>
                 <input
                   type="color"
                   value={localConfig.gradientColors!.via || '#ffffff'}

@@ -3,6 +3,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import { useTranslations } from 'next-intl';
 
 interface BackgroundPatternConfiguration {
   pattern: string;
@@ -16,75 +17,10 @@ interface BackgroundPatternSelectorProps {
   onSave: (config: BackgroundPatternConfiguration) => void;
 }
 
-const patterns = [
-  {
-    id: 'none',
-    name: 'Sin patrón',
-    description: 'Fondo sólido sin patrones',
-    type: 'none'
-  },
-  {
-    id: 'grid',
-    name: 'Grid',
-    description: 'Patrón de cuadrícula moderna',
-    type: 'css'
-  },
-  {
-    id: 'dots',
-    name: 'Puntos',
-    description: 'Patrón de puntos elegante',
-    type: 'css'
-  },
-  {
-    id: 'diagonal',
-    name: 'Líneas diagonales',
-    description: 'Líneas diagonales dinámicas',
-    type: 'css'
-  },
-  {
-    id: 'waves',
-    name: 'Ondas',
-    description: 'Patrón de ondas suaves',
-    type: 'css'
-  },
-  {
-    id: 'geometric',
-    name: 'Geométrico',
-    description: 'Formas geométricas modernas',
-    type: 'image'
-  },
-  {
-    id: 'circuit',
-    name: 'Circuitos',
-    description: 'Patrón tecnológico de circuitos',
-    type: 'css'
-  },
-  {
-    id: 'dark_marble',
-    name: 'Mármol oscuro',
-    description: 'Textura de mármol oscuro elegante',
-    type: 'image'
-  },
-  {
-    id: 'white_marble',
-    name: 'Mármol blanco',
-    description: 'Textura de mármol blanco clásico',
-    type: 'image'
-  }
-];
 
-const colors = [
-  { name: 'Snow', value: '#ffffff' },
-  { name: 'Midnight', value: '#000000' },
-  { name: 'Ocean', value: '#3b82f6' },
-  { name: 'Electric', value: '#8b5cf6' },
-  { name: 'Neon', value: '#ec4899' },
-  { name: 'Mint', value: '#10b981' },
-  { name: 'Sunset', value: '#f97316' },
-  { name: 'Custom', value: 'custom' }
-];
+// Colors will be defined inside the component to access translations
 
-// Función para generar el CSS del patrón (solo para preview en selector)
+// Function to generate pattern CSS (for preview in selector)
 const generatePatternCSS = (pattern: string, color: string, opacity: number) => {
   const colorWithOpacity = `${color}${Math.round(opacity * 255).toString(16).padStart(2, '0')}`;
   
@@ -164,12 +100,83 @@ const generatePatternCSS = (pattern: string, color: string, opacity: number) => 
 };
 
 export default function BackgroundPatternSelector({ value, onChange, onSave }: BackgroundPatternSelectorProps) {
+  const t = useTranslations('backgroundPattern');
   const [isOpen, setIsOpen] = useState(false);
   const [localConfig, setLocalConfig] = useState(value);
   const [customColor, setCustomColor] = useState('#3b82f6');
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Debounced onChange para evitar muchas llamadas
+  const getPatterns = () => [
+    {
+      id: 'none',
+      name: t('patterns.none.name'),
+      description: t('patterns.none.description'),
+      type: 'none'
+    },
+    {
+      id: 'grid',
+      name: t('patterns.grid.name'),
+      description: t('patterns.grid.description'),
+      type: 'css'
+    },
+    {
+      id: 'dots',
+      name: t('patterns.dots.name'),
+      description: t('patterns.dots.description'),
+      type: 'css'
+    },
+    {
+      id: 'diagonal',
+      name: t('patterns.diagonal.name'),
+      description: t('patterns.diagonal.description'),
+      type: 'css'
+    },
+    {
+      id: 'waves',
+      name: t('patterns.waves.name'),
+      description: t('patterns.waves.description'),
+      type: 'css'
+    },
+    {
+      id: 'geometric',
+      name: t('patterns.geometric.name'),
+      description: t('patterns.geometric.description'),
+      type: 'image'
+    },
+    {
+      id: 'circuit',
+      name: t('patterns.circuit.name'),
+      description: t('patterns.circuit.description'),
+      type: 'css'
+    },
+    {
+      id: 'dark_marble',
+      name: t('patterns.darkMarble.name'),
+      description: t('patterns.darkMarble.description'),
+      type: 'image'
+    },
+    {
+      id: 'white_marble',
+      name: t('patterns.whiteMarble.name'),
+      description: t('patterns.whiteMarble.description'),
+      type: 'image'
+    }
+  ];
+
+  const patterns = getPatterns();
+
+  const colors = [
+    { name: t('colors.snow'), value: '#ffffff' },
+    { name: t('colors.midnight'), value: '#000000' },
+    { name: t('colors.ocean'), value: '#3b82f6' },
+    { name: t('colors.electric'), value: '#8b5cf6' },
+    { name: t('colors.neon'), value: '#ec4899' },
+    { name: t('colors.mint'), value: '#10b981' },
+    { name: t('colors.sunset'), value: '#f97316' },
+    { name: t('colors.custom'), value: 'custom' }
+  ];
+
+  // Debounced onChange to avoid many calls
   const debouncedOnChange = useCallback((config: BackgroundPatternConfiguration) => {
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
@@ -210,7 +217,7 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
   };
 
 
-  // Sincronizar con el valor del padre cuando cambie
+  // Synchronize with parent value when it changes
   useEffect(() => {
     setLocalConfig(value);
     // Si el color actual es un color personalizado, actualizar customColor
@@ -267,11 +274,11 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
 
       {isOpen && (
         <div className="space-y-6 p-6 bg-gradient-to-br from-gray-800/60 to-gray-900/60 rounded-xl border border-gray-500/30 backdrop-blur-sm shadow-2xl">
-          {/* Selector de patrón */}
+          {/* Pattern selector */}
           <div>
             <label className="block text-base font-semibold text-white mb-4 flex items-center gap-2">
               <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"></div>
-              Patrón de fondo
+              {t('title')}
             </label>
             <div className="grid grid-cols-2 gap-3">
               {patterns.map((pattern) => (
@@ -301,12 +308,12 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
             </div>
           </div>
 
-          {/* Selector de color (solo si no es 'none' y es tipo 'css') */}
+          {/* Color selector (only if not 'none' and type is 'css') */}
           {localConfig.pattern !== 'none' && selectedPattern.type === 'css' && (
             <div>
               <label className="block text-base font-semibold text-white mb-4 flex items-center gap-2">
                 <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full"></div>
-                Color del patrón
+                {t('patternColor')}
               </label>
               <div className="grid grid-cols-4 gap-3">
                 {colors.map((color) => (
@@ -341,12 +348,12 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
                 ))}
               </div>
               
-              {/* Selector de color personalizado */}
+              {/* Custom color selector */}
               {!colors.some(c => c.value === localConfig.color && c.value !== 'custom') && (
                 <div className="mt-4 p-4 bg-gray-800/50 rounded-xl border border-gray-600/30">
                   <label className="block text-sm font-semibold text-white mb-3 flex items-center gap-2">
                     <div className="w-2 h-2 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full"></div>
-                    Color personalizado
+                    {t('customColor')}
                   </label>
                   <div className="flex items-center gap-3">
                     <input
@@ -368,12 +375,12 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
             </div>
           )}
 
-          {/* Slider de opacidad (solo si no es 'none') */}
+          {/* Opacity slider (only if not 'none') */}
           {localConfig.pattern !== 'none' && (
             <div>
               <label className="block text-base font-semibold text-white mb-4 flex items-center gap-2">
                 <div className="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full"></div>
-                Opacidad: 
+                {t('opacity')} 
                 <span className="text-purple-400 font-bold">{Math.round(localConfig.opacity * 100)}%</span>
               </label>
               <div className="relative">
@@ -401,7 +408,7 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
         </div>
       )}
       
-      {/* Estilos CSS para el slider personalizado */}
+      {/* CSS styles for custom slider */}
       <style jsx>{`
         .opacity-slider {
           -webkit-appearance: none;

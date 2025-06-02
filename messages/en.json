@@ -449,6 +449,292 @@
       "active": "Domain active and working",
       "failed": "Configuration error",
       "removed": "Domain removed, can be retried"
+    },
+    "errorAddingDomain": "Error adding domain",
+    "domainDeletedSuccess": "Domain deleted successfully",
+    "errorDeletingDomain": "Error deleting domain",
+    "rateLimitReached": "Certificate limit reached",
+    "errorLabel": "Error:",
+    "confirmDeleteTitle": "Delete Custom Domain",
+    "confirmDeleteMessage": "Are you sure you want to delete the domain {domain}? This action cannot be undone.",
+    "confirmDeleteWarningMessage": "⚠️ This will permanently remove the domain and its SSL certificate from our servers.",
+    "deleting": "Deleting...",
+    "deleteDomain": "Delete Domain"
+  },
+  "styleCustomization": {
+    "title": "Customize Style",
+    "description": "Change colors, fonts and borders of your landing",
+    "themeSelector": {
+      "title": "Select Theme",
+      "description": "Choose the perfect style for your landing"
+    },
+    "basicInfo": {
+      "title": "Basic Information"
+    },
+    "avatar": {
+      "title": "Avatar Configuration",
+      "upload": {
+        "title": "Upload Avatar",
+        "description": "Upload a specific avatar for this landing page that will be shown publicly."
+      }
+    },
+    "backgrounds": {
+      "title": "Background Configuration"
+    },
+    "links": {
+      "title": "Links Configuration"
+    },
+    "fonts": {
+      "title": "Font Configuration"
+    },
+    "effects": {
+      "title": "Effects Configuration"
+    },
+    "domain": {
+      "title": "Custom Domain"
     }
+  },
+  "themes": {
+    "selectTheme": {
+      "title": "Select your theme",
+      "description": "Choose the style that best represents your personality",
+      "close": "Close selector"
+    },
+    "dark": {
+      "description": "Total black background, black links with white borders"
+    },
+    "light": {
+      "description": "Clean light theme with minimalist design"
+    },
+    "neon-cyber": {
+      "description": "Cyberpunk style with neons and glowing effects"
+    },
+    "sunset-dream": {
+      "description": "Warm sunset colors with elegant typography"
+    },
+    "forest-zen": {
+      "description": "Minimalist nature with relaxing green tones"
+    },
+    "royal-luxury": {
+      "description": "Golden elegance with classic serif typography"
+    },
+    "gradient": {
+      "description": "Colorful gradient with modern style"
+    }
+  },
+  "landingInfoEditor": {
+    "nameLabel": "Landing Name",
+    "descriptionLabel": "Description",
+    "namePlaceholder": "Your landing page name",
+    "descriptionPlaceholder": "Describe your landing page...",
+    "noName": "No name",
+    "noDescription": "No description",
+    "save": "Save",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "shortcuts": "Ctrl+Enter to save, Esc to cancel",
+    "errors": {
+      "updateError": "Error updating",
+      "networkError": "Network error while updating"
+    }
+  },
+  "avatarDisplaySelector": {
+    "title": "Avatar Configuration",
+    "description": "Choose whether to show your profile picture or just the name",
+    "preview": "Preview",
+    "exampleName": "My Example Name",
+    "withAvatar": {
+      "title": "With Avatar",
+      "description": "Show your profile picture above the name"
+    },
+    "nameOnly": {
+      "title": "Name Only",
+      "description": "Show only the name without profile picture"
+    }
+  },
+  "effectsSelector": {
+    "title": "Visual Effects",
+    "description": "Enable or disable special effects for your landing page",
+    "badge": {
+      "title": "Verification Badge",
+      "description": "Shows a blue verified badge next to the name"
+    },
+    "typewriter": {
+      "title": "Typewriter Effect",
+      "description": "The description appears as if being typed in real time"
+    }
+  },
+  "backgroundGradientSelector": {
+    "title": "Landing Background",
+    "topColor": "Top Color",
+    "bottomColor": "Bottom Color",
+    "presetsTitle": "Predefined gradients:",
+    "presets": {
+      "classicPurple": "Classic Purple",
+      "oceanBlue": "Ocean Blue",
+      "sunrise": "Sunrise",
+      "forestGreen": "Forest Green"
+    }
+  },
+  "borderRadius": {
+    "title": "Link Borders",
+    "quickValues": "Quick values:",
+    "presets": {
+      "square": "Square",
+      "little": "Little",
+      "medium": "Medium",
+      "rounded": "Rounded"
+    }
+  },
+  "fontColor": {
+    "title": "Font Color",
+    "previewTitle": "Main Title",
+    "previewDescription": "Description and section titles",
+    "primaryColor": "Primary Color",
+    "secondaryColor": "Secondary Color",
+    "predefinedCombinations": "Predefined combinations:",
+    "presets": {
+      "classicWhite": "Classic White",
+      "elegantBlack": "Elegant Black",
+      "modernGray": "Modern Gray",
+      "softBlue": "Soft Blue"
+    },
+    "preview": {
+      "title": "Title",
+      "subtitle": "Subtitle",
+      "mainTitle": "Main Title",
+      "description": "Description and section titles"
+    }
+  },
+  "fontFamily": {
+    "title": "Font Type",
+    "previewName": "My Name Here",
+    "previewDescription": "This is the description of my landing page with the selected font.",
+    "currentFont": "Current font:",
+    "availableFonts": "Available fonts",
+    "exampleText": "My Landing Page Example",
+    "loadingFont": "Loading font..."
+  },
+  "linkColor": {
+    "title": "Link Color",
+    "exampleLink": "My Example Link",
+    "linkBackground": "Link Background",
+    "linkText": "Link Text",
+    "backgroundOpacity": "Background opacity",
+    "transparent": "Transparent",
+    "solid": "Solid",
+    "predefinedCombinations": "Predefined combinations:",
+    "presets": {
+      "classicBlack": "Classic Black",
+      "cleanWhite": "Clean White",
+      "darkGray": "Dark Gray",
+      "elegantBlue": "Elegant Blue"
+    },
+    "preview": {
+      "link": "Link",
+      "exampleLink": "My Example Link"
+    }
+  },
+  "linkImageStyle": {
+    "title": "Link Image Style",
+    "styles": {
+      "rectangular": {
+        "name": "Rectangular",
+        "description": "Full image without padding"
+      },
+      "circular": {
+        "name": "Circular",
+        "description": "Circular shaped image"
+      },
+      "rectangularPadded": {
+        "name": "Rectangular with Padding",
+        "description": "Image with space around"
+      }
+    }
+  },
+  "titleStyle": {
+    "title": "Title Style",
+    "description": "Customize title size and gradient",
+    "preview": "Preview:",
+    "exampleName": "My Example Name",
+    "titleSize": "Title Size",
+    "gradientEnabled": "Gradient Enabled",
+    "gradientDescription": "Apply color gradient to title",
+    "predefinedGradients": "Predefined Gradients",
+    "customColors": "Custom Colors",
+    "initialColor": "Initial color",
+    "finalColor": "Final color",
+    "intermediateColor": "Intermediate color (optional)",
+    "sizes": {
+      "small": "Small",
+      "normal": "Normal",
+      "large": "Large",
+      "extraLarge": "Extra Large",
+      "giant": "Giant"
+    }
+  },
+  "backgroundPattern": {
+    "title": "Background Pattern",
+    "patternColor": "Pattern color",
+    "customColor": "Custom color",
+    "opacity": "Opacity:",
+    "patterns": {
+      "none": {
+        "name": "No pattern",
+        "description": "Solid background without patterns"
+      },
+      "grid": {
+        "name": "Grid",
+        "description": "Modern grid pattern"
+      },
+      "dots": {
+        "name": "Dots",
+        "description": "Elegant dot pattern"
+      },
+      "diagonal": {
+        "name": "Diagonal lines",
+        "description": "Dynamic diagonal lines"
+      },
+      "waves": {
+        "name": "Waves",
+        "description": "Soft wave pattern"
+      },
+      "geometric": {
+        "name": "Geometric",
+        "description": "Modern geometric shapes"
+      },
+      "circuit": {
+        "name": "Circuits",
+        "description": "Technological circuit pattern"
+      },
+      "darkMarble": {
+        "name": "Dark marble",
+        "description": "Elegant dark marble texture"
+      },
+      "whiteMarble": {
+        "name": "White marble",
+        "description": "Classic white marble texture"
+      }
+    },
+    "colors": {
+      "snow": "Snow",
+      "midnight": "Midnight",
+      "ocean": "Ocean",
+      "electric": "Electric",
+      "neon": "Neon",
+      "mint": "Mint",
+      "sunset": "Sunset",
+      "custom": "Custom"
+    }
+  },
+  "landingAvatarUpload": {
+    "selectValidImage": "Please select a valid image",
+    "imageTooLarge": "The image cannot be larger than 10MB",
+    "changing": "Changing...",
+    "uploading": "Uploading...",
+    "change": "Change",
+    "uploadAvatar": "Upload Avatar",
+    "errorUploading": "Error uploading avatar",
+    "errorRemoving": "Error removing avatar"
   }
 }

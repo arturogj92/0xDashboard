@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 
 interface FontColorSelectorProps {
   value: {
@@ -17,6 +18,7 @@ export default function FontColorSelector({
   onSave,
   className = "" 
 }: FontColorSelectorProps) {
+  const t = useTranslations('fontColor');
   const [localColors, setLocalColors] = useState(value);
   const [pendingValue, setPendingValue] = useState<{ primary: string; secondary: string } | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -64,22 +66,22 @@ export default function FontColorSelector({
 
   const presets = [
     { 
-      name: 'Blanco Clásico', 
+      name: t('presets.classicWhite'), 
       primary: '#ffffff', 
       secondary: '#e2e8f0' 
     },
     { 
-      name: 'Negro Elegante', 
+      name: t('presets.elegantBlack'), 
       primary: '#000000', 
       secondary: '#1e293b' 
     },
     { 
-      name: 'Gris Moderno', 
+      name: t('presets.modernGray'), 
       primary: '#374151', 
       secondary: '#6b7280' 
     },
     { 
-      name: 'Azul Suave', 
+      name: t('presets.softBlue'), 
       primary: '#1e40af', 
       secondary: '#3b82f6' 
     }
@@ -113,7 +115,7 @@ export default function FontColorSelector({
     <div className={`space-y-4 ${className}`}>
       <div className="flex items-center justify-between">
         <label className="text-sm font-medium text-white">
-          Color de las Fuentes
+          {t('title')}
         </label>
       </div>
       
@@ -124,20 +126,20 @@ export default function FontColorSelector({
             className="text-lg font-semibold mb-2"
             style={{ color: localColors.primary }}
           >
-            Título Principal
+            {t('preview.mainTitle')}
           </div>
           <div 
             className="text-sm"
             style={{ color: localColors.secondary }}
           >
-            Descripción y títulos de sección
+            {t('preview.description')}
           </div>
         </div>
         
         {/* Controles de color */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-xs text-gray-400">Color Principal</label>
+            <label className="text-xs text-gray-400">{t('primaryColor')}</label>
             <div className="flex items-center space-x-2">
               <input
                 type="color"
@@ -156,7 +158,7 @@ export default function FontColorSelector({
           </div>
           
           <div className="space-y-2">
-            <label className="text-xs text-gray-400">Color Secundario</label>
+            <label className="text-xs text-gray-400">{t('secondaryColor')}</label>
             <div className="flex items-center space-x-2">
               <input
                 type="color"
@@ -178,7 +180,7 @@ export default function FontColorSelector({
 
       {/* Presets */}
       <div className="space-y-2">
-        <span className="text-xs text-gray-400">Combinaciones predefinidas:</span>
+        <span className="text-xs text-gray-400">{t('predefinedCombinations')}:</span>
         <div className="grid grid-cols-2 gap-2">
           {presets.map((preset) => {
             const isActive = localColors.primary === preset.primary && localColors.secondary === preset.secondary;
@@ -199,13 +201,13 @@ export default function FontColorSelector({
                     className="text-xs font-semibold text-center"
                     style={{ color: preset.primary }}
                   >
-                    Título
+                    {t('preview.title')}
                   </div>
                   <div 
                     className="text-xs text-center"
                     style={{ color: preset.secondary }}
                   >
-                    Subtítulo
+                    {t('preview.subtitle')}
                   </div>
                 </div>
                 <span className="text-xs font-medium text-center">{preset.name}</span>

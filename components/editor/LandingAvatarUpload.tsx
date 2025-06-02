@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Camera, Upload, X } from "lucide-react";
 import { ImageCropModal } from './ImageCropModal';
 import { API_URL } from '@/lib/api';
+import { useTranslations } from 'next-intl';
 
 interface LandingAvatarUploadProps {
   landingId: string;
@@ -22,6 +23,7 @@ export function LandingAvatarUpload({
   className = '', 
   size = 'md' 
 }: LandingAvatarUploadProps) {
+  const t = useTranslations('landingAvatarUpload');
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -38,14 +40,14 @@ export function LandingAvatarUpload({
     if (file) {
       // Validar tipo de archivo
       if (!file.type.startsWith('image/')) {
-        alert('Por favor selecciona una imagen válida');
+        alert(t('selectValidImage'));
         return;
       }
 
       // Validar tamaño máximo (10MB)
       const MAX_SIZE = 10 * 1024 * 1024;
       if (file.size > MAX_SIZE) {
-        alert('La imagen no puede ser mayor a 10MB');
+        alert(t('imageTooLarge'));
         return;
       }
 
@@ -85,11 +87,11 @@ export function LandingAvatarUpload({
         console.log('Avatar de landing subido exitosamente:', data.data.avatarUrl);
       } else {
         console.error('Error subiendo avatar de landing:', data.message);
-        alert(data.message || 'Error al subir el avatar');
+        alert(data.message || t('errorUploading'));
       }
     } catch (error) {
       console.error('Error subiendo avatar de landing:', error);
-      alert('Error al subir el avatar');
+      alert(t('errorUploading'));
     } finally {
       setIsLoading(false);
       // Limpiar URL del objeto
@@ -125,11 +127,11 @@ export function LandingAvatarUpload({
         console.log('Avatar de landing eliminado exitosamente');
       } else {
         console.error('Error eliminando avatar de landing:', data.message);
-        alert(data.message || 'Error al eliminar el avatar');
+        alert(data.message || t('errorRemoving'));
       }
     } catch (error) {
       console.error('Error eliminando avatar de landing:', error);
-      alert('Error al eliminar el avatar');
+      alert(t('errorRemoving'));
     } finally {
       setIsLoading(false);
     }
@@ -193,12 +195,12 @@ export function LandingAvatarUpload({
           {isLoading ? (
             <>
               <div className="animate-spin w-3 h-3 border border-white border-t-transparent rounded-full mr-1" />
-              {currentAvatarUrl ? 'Cambiando...' : 'Subiendo...'}
+              {currentAvatarUrl ? t('changing') : t('uploading')}
             </>
           ) : (
             <>
               <Upload className="w-3 h-3 mr-1" />
-              {currentAvatarUrl ? 'Cambiar' : 'Subir Avatar'}
+              {currentAvatarUrl ? t('change') : t('uploadAvatar')}
             </>
           )}
         </Button>

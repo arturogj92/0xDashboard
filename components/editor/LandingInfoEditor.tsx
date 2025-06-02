@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Edit2, Check, X, Save } from 'lucide-react';
 import { API_URL, createAuthHeaders } from '@/lib/api';
+import { useTranslations } from 'next-intl';
 
 interface LandingInfoEditorProps {
   landingId: string;
@@ -21,6 +22,7 @@ export function LandingInfoEditor({
   onUpdate, 
   className = '' 
 }: LandingInfoEditorProps) {
+  const t = useTranslations('landingInfoEditor');
   const [name, setName] = useState(initialName);
   const [description, setDescription] = useState(initialDescription);
   const [isEditingName, setIsEditingName] = useState(false);
@@ -69,7 +71,7 @@ export function LandingInfoEditor({
         );
       } else {
         console.error('Error actualizando landing:', data.message);
-        alert(data.message || 'Error al actualizar');
+        alert(data.message || t('errors.updateError'));
         
         // Revertir cambios temporales
         if (updates.name !== undefined) setTempName(name);
@@ -77,7 +79,7 @@ export function LandingInfoEditor({
       }
     } catch (error) {
       console.error('Error actualizando landing:', error);
-      alert('Error de red al actualizar');
+      alert(t('errors.networkError'));
       
       // Revertir cambios temporales
       if (updates.name !== undefined) setTempName(name);
@@ -133,14 +135,14 @@ export function LandingInfoEditor({
     <div className={`space-y-4 ${className}`}>
       {/* Edición del nombre */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-gray-300">Nombre de la Landing</label>
+        <label className="text-sm font-medium text-gray-300">{t('nameLabel')}</label>
         {isEditingName ? (
           <div className="flex items-center gap-2">
             <Input
               value={tempName}
               onChange={(e) => setTempName(e.target.value)}
               onKeyDown={handleNameKeyDown}
-              placeholder="Nombre de tu landing page"
+              placeholder={t('namePlaceholder')}
               className="flex-1 bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 focus:border-purple-500"
               disabled={isLoading}
               autoFocus
@@ -169,7 +171,7 @@ export function LandingInfoEditor({
               className="flex-1 p-2 bg-gray-800/30 border border-gray-700 rounded-md text-white min-h-[40px] flex items-center cursor-pointer hover:bg-gray-800/50 transition-colors"
               onClick={() => setIsEditingName(true)}
             >
-              {name || 'Sin nombre'}
+              {name || t('noName')}
             </div>
             <Button
               onClick={() => setIsEditingName(true)}
@@ -185,14 +187,14 @@ export function LandingInfoEditor({
 
       {/* Edición de la descripción */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-gray-300">Descripción</label>
+        <label className="text-sm font-medium text-gray-300">{t('descriptionLabel')}</label>
         {isEditingDescription ? (
           <div className="space-y-2">
             <textarea
               value={tempDescription}
               onChange={(e) => setTempDescription(e.target.value)}
               onKeyDown={handleDescriptionKeyDown}
-              placeholder="Describe tu landing page..."
+              placeholder={t('descriptionPlaceholder')}
               className="w-full p-2 bg-gray-800/50 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none resize-none"
               rows={3}
               disabled={isLoading}
@@ -206,7 +208,7 @@ export function LandingInfoEditor({
                 className="bg-green-600 hover:bg-green-700 text-white"
               >
                 <Check className="w-4 h-4 mr-1" />
-                Guardar
+                {t('save')}
               </Button>
               <Button
                 onClick={handleDescriptionCancel}
@@ -216,10 +218,10 @@ export function LandingInfoEditor({
                 className="border-gray-600 text-gray-300 hover:bg-gray-700"
               >
                 <X className="w-4 h-4 mr-1" />
-                Cancelar
+                {t('cancel')}
               </Button>
               <span className="text-xs text-gray-400 ml-auto">
-                Ctrl+Enter para guardar, Esc para cancelar
+                {t('shortcuts')}
               </span>
             </div>
           </div>
@@ -229,7 +231,7 @@ export function LandingInfoEditor({
               className="flex-1 p-2 bg-gray-800/30 border border-gray-700 rounded-md text-white min-h-[60px] cursor-pointer hover:bg-gray-800/50 transition-colors"
               onClick={() => setIsEditingDescription(true)}
             >
-              {description || 'Sin descripción'}
+              {description || t('noDescription')}
             </div>
             <Button
               onClick={() => setIsEditingDescription(true)}
@@ -246,7 +248,7 @@ export function LandingInfoEditor({
       {isLoading && (
         <div className="flex items-center gap-2 text-sm text-gray-400">
           <div className="animate-spin w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full" />
-          Guardando...
+          {t('saving')}
         </div>
       )}
     </div>

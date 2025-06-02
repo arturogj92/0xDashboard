@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 
 interface LinkColorSelectorProps {
   value: {
@@ -18,6 +19,7 @@ export default function LinkColorSelector({
   onSave,
   className = "" 
 }: LinkColorSelectorProps) {
+  const t = useTranslations('linkColor');
   const [localColors, setLocalColors] = useState({
     ...value,
     backgroundOpacity: value.backgroundOpacity ?? 1
@@ -119,22 +121,22 @@ export default function LinkColorSelector({
 
   const presets = [
     { 
-      name: 'Negro Clásico', 
+      name: t('presets.classicBlack'), 
       background: '#000000', 
       text: '#ffffff' 
     },
     { 
-      name: 'Blanco Limpio', 
+      name: t('presets.cleanWhite'), 
       background: '#ffffff', 
       text: '#000000' 
     },
     { 
-      name: 'Gris Oscuro', 
+      name: t('presets.darkGray'), 
       background: '#374151', 
       text: '#ffffff' 
     },
     { 
-      name: 'Azul Elegante', 
+      name: t('presets.elegantBlue'), 
       background: '#1e40af', 
       text: '#ffffff' 
     }
@@ -169,7 +171,7 @@ export default function LinkColorSelector({
     <div className={`space-y-4 ${className}`}>
       <div className="flex items-center justify-between">
         <label className="text-sm font-medium text-white">
-          Color de los Links
+          {t('title')}
         </label>
       </div>
       
@@ -184,14 +186,14 @@ export default function LinkColorSelector({
               borderColor: 'rgba(148, 163, 184, 0.2)'
             }}
           >
-            Mi Link de Ejemplo
+            {t('preview.exampleLink')}
           </div>
         </div>
         
         {/* Controles de color */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-xs text-gray-400">Fondo del Link</label>
+            <label className="text-xs text-gray-400">{t('linkBackground')}</label>
             <div className="flex items-center space-x-2">
               <input
                 type="color"
@@ -210,7 +212,7 @@ export default function LinkColorSelector({
           </div>
           
           <div className="space-y-2">
-            <label className="text-xs text-gray-400">Texto del Link</label>
+            <label className="text-xs text-gray-400">{t('linkText')}</label>
             <div className="flex items-center space-x-2">
               <input
                 type="color"
@@ -232,7 +234,7 @@ export default function LinkColorSelector({
         {/* Control de opacidad */}
         <div className="space-y-2 mt-4">
           <label className="text-xs text-gray-400 flex items-center justify-between">
-            <span>Opacidad del fondo</span>
+            <span>{t('backgroundOpacity')}</span>
             <span className="text-purple-400 font-medium">{Math.round((localColors.backgroundOpacity || 1) * 100)}%</span>
           </label>
           <div className="relative">
@@ -253,15 +255,15 @@ export default function LinkColorSelector({
             />
           </div>
           <div className="flex justify-between text-xs text-gray-500">
-            <span>Transparente</span>
-            <span>Sólido</span>
+            <span>{t('transparent')}</span>
+            <span>{t('solid')}</span>
           </div>
         </div>
       </div>
 
       {/* Presets */}
       <div className="space-y-2">
-        <span className="text-xs text-gray-400">Combinaciones predefinidas:</span>
+        <span className="text-xs text-gray-400">{t('predefinedCombinations')}:</span>
         <div className="grid grid-cols-2 gap-2">
           {presets.map((preset) => {
             const isActive = localColors.background === preset.background && localColors.text === preset.text;
@@ -286,7 +288,7 @@ export default function LinkColorSelector({
                       borderColor: 'rgba(148, 163, 184, 0.3)'
                     }}
                   >
-                    Link
+                    {t('preview.link')}
                   </div>
                 </div>
                 <span className="text-xs font-medium text-center">{preset.name}</span>

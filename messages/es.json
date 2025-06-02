@@ -450,6 +450,292 @@
       "active": "Dominio activo y funcionando",
       "failed": "Error en la configuración",
       "removed": "Dominio removido, se puede reintentar"
+    },
+    "errorAddingDomain": "Error al agregar dominio",
+    "domainDeletedSuccess": "Dominio eliminado correctamente",
+    "errorDeletingDomain": "Error al eliminar el dominio",
+    "rateLimitReached": "Límite de certificados alcanzado",
+    "errorLabel": "Error:",
+    "confirmDeleteTitle": "Eliminar Dominio Personalizado",
+    "confirmDeleteMessage": "¿Estás seguro de que quieres eliminar el dominio {domain}? Esta acción no se puede deshacer.",
+    "confirmDeleteWarningMessage": "⚠️ Esto eliminará permanentemente el dominio y su certificado SSL de nuestros servidores.",
+    "deleting": "Eliminando...",
+    "deleteDomain": "Eliminar Dominio"
+  },
+  "styleCustomization": {
+    "title": "Personaliza el Estilo",
+    "description": "Cambia colores, fuentes y bordes de tu landing",
+    "themeSelector": {
+      "title": "Seleccionar Tema",
+      "description": "Elige el estilo perfecto para tu landing"
+    },
+    "basicInfo": {
+      "title": "Información Básica"
+    },
+    "avatar": {
+      "title": "Configuración de Avatar",
+      "upload": {
+        "title": "Subir Avatar",
+        "description": "Sube un avatar específico para esta landing page que se mostrará públicamente."
+      }
+    },
+    "backgrounds": {
+      "title": "Configuración de Fondos"
+    },
+    "links": {
+      "title": "Configuración de Enlaces"
+    },
+    "fonts": {
+      "title": "Configuración de Fuentes"
+    },
+    "effects": {
+      "title": "Configuración de Efectos"
+    },
+    "domain": {
+      "title": "Dominio Personalizado"
     }
+  },
+  "themes": {
+    "selectTheme": {
+      "title": "Selecciona tu tema",
+      "description": "Elige el estilo que mejor represente tu personalidad",
+      "close": "Cerrar selector"
+    },
+    "dark": {
+      "description": "Fondo negro total, links negros con bordes blancos"
+    },
+    "light": {
+      "description": "Tema claro con diseño limpio y minimalista"
+    },
+    "neon-cyber": {
+      "description": "Estilo cyberpunk con neones y efectos brillantes"
+    },
+    "sunset-dream": {
+      "description": "Colores cálidos de atardecer con tipografía elegante"
+    },
+    "forest-zen": {
+      "description": "Naturaleza minimalista con tonos verdes relajantes"
+    },
+    "royal-luxury": {
+      "description": "Elegancia dorada con tipografía serif clásica"
+    },
+    "gradient": {
+      "description": "Gradiente colorido con estilo moderno"
+    }
+  },
+  "landingInfoEditor": {
+    "nameLabel": "Nombre de la Landing",
+    "descriptionLabel": "Descripción",
+    "namePlaceholder": "Nombre de tu landing page",
+    "descriptionPlaceholder": "Describe tu landing page...",
+    "noName": "Sin nombre",
+    "noDescription": "Sin descripción",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "saving": "Guardando...",
+    "shortcuts": "Ctrl+Enter para guardar, Esc para cancelar",
+    "errors": {
+      "updateError": "Error al actualizar",
+      "networkError": "Error de red al actualizar"
+    }
+  },
+  "avatarDisplaySelector": {
+    "title": "Configuración del Avatar",
+    "description": "Elige si quieres mostrar tu foto de perfil o solo el nombre",
+    "preview": "Vista previa",
+    "exampleName": "Mi Nombre Ejemplo",
+    "withAvatar": {
+      "title": "Con Avatar",
+      "description": "Muestra tu foto de perfil arriba del nombre"
+    },
+    "nameOnly": {
+      "title": "Solo Nombre",
+      "description": "Muestra únicamente el nombre sin foto de perfil"
+    }
+  },
+  "effectsSelector": {
+    "title": "Efectos Visuales",
+    "description": "Activa o desactiva efectos especiales para tu landing page",
+    "badge": {
+      "title": "Badge de Verificación",
+      "description": "Muestra un badge azul de verificado al lado del nombre"
+    },
+    "typewriter": {
+      "title": "Efecto Máquina de Escribir",
+      "description": "La descripción aparece como si se estuviera escribiendo en tiempo real"
+    }
+  },
+  "backgroundGradientSelector": {
+    "title": "Fondo de la Landing",
+    "topColor": "Color Superior",
+    "bottomColor": "Color Inferior",
+    "presetsTitle": "Gradientes predefinidos:",
+    "presets": {
+      "classicPurple": "Morado Clásico",
+      "oceanBlue": "Azul Océano",
+      "sunrise": "Amanecer",
+      "forestGreen": "Verde Bosque"
+    }
+  },
+  "borderRadius": {
+    "title": "Bordes de los Links",
+    "quickValues": "Valores rápidos:",
+    "presets": {
+      "square": "Cuadrado",
+      "little": "Poco",
+      "medium": "Mediano",
+      "rounded": "Redondeado"
+    }
+  },
+  "fontColor": {
+    "title": "Color de las Fuentes",
+    "previewTitle": "Título Principal",
+    "previewDescription": "Descripción y títulos de sección",
+    "primaryColor": "Color Principal",
+    "secondaryColor": "Color Secundario",
+    "predefinedCombinations": "Combinaciones predefinidas:",
+    "presets": {
+      "classicWhite": "Blanco Clásico",
+      "elegantBlack": "Negro Elegante",
+      "modernGray": "Gris Moderno",
+      "softBlue": "Azul Suave"
+    },
+    "preview": {
+      "title": "Título",
+      "subtitle": "Subtítulo",
+      "mainTitle": "Título Principal",
+      "description": "Descripción y títulos de sección"
+    }
+  },
+  "fontFamily": {
+    "title": "Tipo de Fuente",
+    "previewName": "Mi Nombre Aquí",
+    "previewDescription": "Esta es la descripción de mi landing page con la fuente seleccionada.",
+    "currentFont": "Fuente actual:",
+    "availableFonts": "Fuentes disponibles",
+    "exampleText": "Mi Landing Page Ejemplo",
+    "loadingFont": "Cargando fuente..."
+  },
+  "linkColor": {
+    "title": "Color de los Links",
+    "exampleLink": "Mi Link de Ejemplo",
+    "linkBackground": "Fondo del Link",
+    "linkText": "Texto del Link",
+    "backgroundOpacity": "Opacidad del fondo",
+    "transparent": "Transparente",
+    "solid": "Sólido",
+    "predefinedCombinations": "Combinaciones predefinidas:",
+    "presets": {
+      "classicBlack": "Negro Clásico",
+      "cleanWhite": "Blanco Limpio",
+      "darkGray": "Gris Oscuro",
+      "elegantBlue": "Azul Elegante"
+    },
+    "preview": {
+      "link": "Link",
+      "exampleLink": "Mi Link de Ejemplo"
+    }
+  },
+  "linkImageStyle": {
+    "title": "Estilo de Imagen en Links",
+    "styles": {
+      "rectangular": {
+        "name": "Rectangular",
+        "description": "Imagen completa sin padding"
+      },
+      "circular": {
+        "name": "Circular",
+        "description": "Imagen en forma circular"
+      },
+      "rectangularPadded": {
+        "name": "Rectangular con Padding",
+        "description": "Imagen con espacio alrededor"
+      }
+    }
+  },
+  "titleStyle": {
+    "title": "Estilo del Título",
+    "description": "Personaliza el tamaño y gradiente del título",
+    "preview": "Vista previa:",
+    "exampleName": "Mi Nombre Ejemplo",
+    "titleSize": "Tamaño del Título",
+    "gradientEnabled": "Gradiente Activado",
+    "gradientDescription": "Aplicar gradiente de color al título",
+    "predefinedGradients": "Gradientes Predefinidos",
+    "customColors": "Colores Personalizados",
+    "initialColor": "Color inicial",
+    "finalColor": "Color final",
+    "intermediateColor": "Color intermedio (opcional)",
+    "sizes": {
+      "small": "Pequeño",
+      "normal": "Normal",
+      "large": "Grande",
+      "extraLarge": "Extra Grande",
+      "giant": "Gigante"
+    }
+  },
+  "backgroundPattern": {
+    "title": "Patrón de fondo",
+    "patternColor": "Color del patrón",
+    "customColor": "Color personalizado",
+    "opacity": "Opacidad:",
+    "patterns": {
+      "none": {
+        "name": "Sin patrón",
+        "description": "Fondo sólido sin patrones"
+      },
+      "grid": {
+        "name": "Grid",
+        "description": "Patrón de cuadrícula moderna"
+      },
+      "dots": {
+        "name": "Puntos",
+        "description": "Patrón de puntos elegante"
+      },
+      "diagonal": {
+        "name": "Líneas diagonales",
+        "description": "Líneas diagonales dinámicas"
+      },
+      "waves": {
+        "name": "Ondas",
+        "description": "Patrón de ondas suaves"
+      },
+      "geometric": {
+        "name": "Geométrico",
+        "description": "Formas geométricas modernas"
+      },
+      "circuit": {
+        "name": "Circuitos",
+        "description": "Patrón tecnológico de circuitos"
+      },
+      "darkMarble": {
+        "name": "Mármol oscuro",
+        "description": "Textura de mármol oscuro elegante"
+      },
+      "whiteMarble": {
+        "name": "Mármol blanco",
+        "description": "Textura de mármol blanco clásico"
+      }
+    },
+    "colors": {
+      "snow": "Nieve",
+      "midnight": "Medianoche",
+      "ocean": "Océano",
+      "electric": "Eléctrico",
+      "neon": "Neón",
+      "mint": "Menta",
+      "sunset": "Atardecer",
+      "custom": "Personalizado"
+    }
+  },
+  "landingAvatarUpload": {
+    "selectValidImage": "Por favor selecciona una imagen válida",
+    "imageTooLarge": "La imagen no puede ser mayor a 10MB",
+    "changing": "Cambiando...",
+    "uploading": "Subiendo...",
+    "change": "Cambiar",
+    "uploadAvatar": "Subir Avatar",
+    "errorUploading": "Error al subir el avatar",
+    "errorRemoving": "Error al eliminar el avatar"
   }
 }

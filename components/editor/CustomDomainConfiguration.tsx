@@ -144,7 +144,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
       }
     } catch (error) {
       console.error('Error adding domain:', error);
-      alert('Error adding domain');
+      toast.error(t('errorAddingDomain'));
     } finally {
       setIsLoading(false);
     }
@@ -168,13 +168,13 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
         throw new Error(data.error || 'Failed to remove domain');
       }
 
-      toast.success('Dominio eliminado correctamente');
+      toast.success(t('domainDeletedSuccess'));
       setDomainToDelete(null);
       loadDomains();
       onDomainUpdate?.();
     } catch (error) {
       console.error('Error removing domain:', error);
-      toast.error('Error al eliminar el dominio');
+      toast.error(t('errorDeletingDomain'));
     } finally {
       setIsDeleting(false);
     }
@@ -433,10 +433,10 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
             
             {domains.map((domain) => (
               <div key={domain.id} className="border border-gray-600 rounded-lg p-4 bg-gray-900/30">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
                     {getStatusIcon(domain.status, domain.id)}
-                    <span className="text-white font-medium">{domain.domain}</span>
+                    <span className="text-white font-medium truncate">{domain.domain}</span>
                     {domain.status === 'active' && (
                       <a 
                         href={`https://${domain.domain}`} 
@@ -449,7 +449,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
                     )}
                   </div>
                   
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     {domain.status === 'pending' && (
                       <Button
                         size="sm"
@@ -516,7 +516,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
                     <div className="flex items-start gap-2">
                       <AlertCircle className="h-4 w-4 text-yellow-500 mt-0.5 flex-shrink-0" />
                       <div className="text-sm text-yellow-200">
-                        <p className="font-medium mb-1">Límite de certificados alcanzado</p>
+                        <p className="font-medium mb-1">{t('rateLimitReached')}</p>
                         <p className="text-xs opacity-90">{domain.error_message}</p>
                       </div>
                     </div>
@@ -529,7 +529,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
                     <div className="flex items-start gap-2">
                       <XCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
                       <div className="flex-1">
-                        <p className="text-red-400 font-medium">Error:</p>
+                        <p className="text-red-400 font-medium">{t('errorLabel')}</p>
                         <p className="text-red-300 mt-1">{domain.error_message}</p>
                         {domain.status === 'failed' && (
                           <p className="text-red-400/70 text-xs mt-2">
@@ -680,22 +680,21 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <Trash2 className="h-5 w-5 text-red-500" />
-              Eliminar Dominio Personalizado
+              {t('confirmDeleteTitle')}
             </AlertDialogTitle>
             <AlertDialogDescription>
               <div className="space-y-2">
                 <p>
-                  ¿Estás seguro de que quieres eliminar el dominio <strong>{domainToDelete?.domain}</strong>?
+                  {t('confirmDeleteMessage', { domain: domainToDelete?.domain })}
                 </p>
-                <p>Esta acción no se puede deshacer.</p>
                 <p className="text-yellow-600 font-semibold">
-                  ⚠️ Esto eliminará permanentemente el dominio y su certificado SSL de nuestros servidores.
+                  {t('confirmDeleteWarningMessage')}
                 </p>
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>{t('cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmRemoveDomain}
               disabled={isDeleting}
@@ -704,10 +703,10 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
               {isDeleting ? (
                 <div className="flex items-center gap-2">
                   <RefreshCw className="h-4 w-4 animate-spin" />
-                  Eliminando...
+                  {t('deleting')}
                 </div>
               ) : (
-                'Eliminar Dominio'
+                t('deleteDomain')
               )}
             </AlertDialogAction>
           </AlertDialogFooter>

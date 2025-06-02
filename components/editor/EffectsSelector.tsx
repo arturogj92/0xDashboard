@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { SparklesIcon } from '@heroicons/react/24/outline';
+import { useTranslations } from 'next-intl';
 
 interface EffectsConfiguration {
   showBadge?: boolean;
@@ -19,6 +20,7 @@ export default function EffectsSelector({
   onConfigUpdate, 
   onConfigSave 
 }: EffectsSelectorProps) {
+  const t = useTranslations('effectsSelector');
   console.log('EffectsSelector render:', currentConfig);
   const [localConfig, setLocalConfig] = useState<EffectsConfiguration>({
     showBadge: currentConfig.showBadge ?? true,
@@ -52,10 +54,10 @@ export default function EffectsSelector({
           <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-2 rounded-lg shadow-lg">
             <SparklesIcon className="h-5 w-5 text-white" />
           </div>
-          <h3 className="text-lg font-semibold text-white">Efectos Visuales</h3>
+          <h3 className="text-lg font-semibold text-white">{t('title')}</h3>
         </div>
         <p className="text-sm text-gray-400 max-w-xl mx-auto leading-relaxed">
-          Activa o desactiva efectos especiales para tu landing page
+          {t('description')}
         </p>
       </div>
 
@@ -63,8 +65,8 @@ export default function EffectsSelector({
         {/* Badge de verificación */}
         <div className="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg border border-gray-700/50">
           <div className="flex-1">
-            <h4 className="text-white font-medium mb-1">Badge de Verificación</h4>
-            <p className="text-gray-400 text-sm">Muestra un badge azul de verificado al lado del nombre</p>
+            <h4 className="text-white font-medium mb-1">{t('badge.title')}</h4>
+            <p className="text-gray-400 text-sm">{t('badge.description')}</p>
           </div>
           <input
             type="checkbox"
@@ -77,8 +79,8 @@ export default function EffectsSelector({
         {/* Efecto typewriter */}
         <div className="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg border border-gray-700/50">
           <div className="flex-1">
-            <h4 className="text-white font-medium mb-1">Efecto Máquina de Escribir</h4>
-            <p className="text-gray-400 text-sm">La descripción aparece como si se estuviera escribiendo en tiempo real</p>
+            <h4 className="text-white font-medium mb-1">{t('typewriter.title')}</h4>
+            <p className="text-gray-400 text-sm">{t('typewriter.description')}</p>
           </div>
           <input
             type="checkbox"
