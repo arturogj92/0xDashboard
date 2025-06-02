@@ -90,29 +90,44 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
           <div className="lg:hidden flex-grow flex items-center justify-end">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-white hover:bg-white/10 transition-colors"
+              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-white hover:bg-white/10 transition-all duration-200 hover:scale-105"
               aria-label="Toggle mobile menu"
             >
-              {isMobileMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
+              <div className={`transform transition-all duration-300 ${isMobileMenuOpen ? 'rotate-180' : 'rotate-0'}`}>
+                {isMobileMenuOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </div>
             </button>
           </div>
         </div>
 
         {/* Mobile Collapsible Menu */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-white/10 bg-black/20 backdrop-blur-sm">
-            <div className="px-4 py-4 space-y-3">
+        <div className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          isMobileMenuOpen 
+            ? 'max-h-96 opacity-100' 
+            : 'max-h-0 opacity-0'
+        }`}>
+          <div className="border-t border-white/10 bg-black/20 backdrop-blur-sm">
+            <div className={`px-4 py-4 space-y-3 transform transition-all duration-300 ease-in-out ${
+              isMobileMenuOpen 
+                ? 'translate-y-0 opacity-100' 
+                : '-translate-y-4 opacity-0'
+            }`}>
               
               {/* Navigation Links */}
               {!isAuthenticated && (
                 <Link 
                   href="/precios"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-colors"
+                  className={`flex items-center px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all duration-200 transform ${
+                    isMobileMenuOpen 
+                      ? 'translate-x-0 opacity-100' 
+                      : 'translate-x-4 opacity-0'
+                  }`}
+                  style={{ transitionDelay: '100ms' }}
                 >
                   <div className="w-6 h-6 mr-3 flex items-center justify-center">
                     <span className="text-lg">💰</span>
@@ -125,7 +140,12 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                 <Link
                   href="/caption-generator"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-colors"
+                  className={`flex items-center px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all duration-200 transform ${
+                    isMobileMenuOpen 
+                      ? 'translate-x-0 opacity-100' 
+                      : 'translate-x-4 opacity-0'
+                  }`}
+                  style={{ transitionDelay: '100ms' }}
                 >
                   <div className="relative w-6 h-6 mr-3">
                     <Image 
@@ -146,7 +166,12 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                 <Link
                   href="/landing"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-colors"
+                  className={`flex items-center px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all duration-200 transform ${
+                    isMobileMenuOpen 
+                      ? 'translate-x-0 opacity-100' 
+                      : 'translate-x-4 opacity-0'
+                  }`}
+                  style={{ transitionDelay: '150ms' }}
                 >
                   <Settings className="w-6 h-6 mr-3" style={{ color: '#d08216' }} />
                   <div>
@@ -162,7 +187,12 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                   <Link
                     href="/"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-colors"
+                    className={`flex items-center px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all duration-200 transform ${
+                      isMobileMenuOpen 
+                        ? 'translate-x-0 opacity-100' 
+                        : 'translate-x-4 opacity-0'
+                    }`}
+                    style={{ transitionDelay: '200ms' }}
                   >
                     <div className="w-6 h-6 mr-3 flex items-center justify-center">
                       <span className="text-lg">⚡</span>
@@ -176,7 +206,12 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                   <Link
                     href="/profile"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-colors"
+                    className={`flex items-center px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all duration-200 transform ${
+                      isMobileMenuOpen 
+                        ? 'translate-x-0 opacity-100' 
+                        : 'translate-x-4 opacity-0'
+                    }`}
+                    style={{ transitionDelay: '250ms' }}
                   >
                     <div className="relative w-6 h-6 mr-3 rounded-full overflow-hidden bg-indigo-900/60 flex items-center justify-center">
                       {user?.avatar_url ? (
@@ -206,7 +241,12 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                   <Link
                     href="/login"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-colors"
+                    className={`flex items-center px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all duration-200 transform ${
+                      isMobileMenuOpen 
+                        ? 'translate-x-0 opacity-100' 
+                        : 'translate-x-4 opacity-0'
+                    }`}
+                    style={{ transitionDelay: '300ms' }}
                   >
                     <div className="w-6 h-6 mr-3 flex items-center justify-center">
                       <span className="text-lg">🔑</span>
@@ -221,7 +261,12 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                       logout();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="flex items-center w-full px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-colors"
+                    className={`flex items-center w-full px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all duration-200 transform ${
+                      isMobileMenuOpen 
+                        ? 'translate-x-0 opacity-100' 
+                        : 'translate-x-4 opacity-0'
+                    }`}
+                    style={{ transitionDelay: '300ms' }}
                   >
                     <div className="w-6 h-6 mr-3 flex items-center justify-center">
                       <span className="text-lg">🚪</span>
@@ -232,7 +277,7 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
               )}
             </div>
           </div>
-        )}
+        </div>
       </nav>
       <main className="flex-grow w-full py-6 sm:px-6 lg:px-8">
         {children}
