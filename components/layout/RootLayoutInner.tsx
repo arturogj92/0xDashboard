@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { UserNav } from "@/components/auth/UserNav";
 import { useTranslations } from 'next-intl';
 import Footer from "@/app/components/Footer";
-import { Settings, Menu, X, User } from 'lucide-react';
+import { Settings, Menu, X, User, LogOut } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 export default function RootLayoutInner({ children }: { children: React.ReactNode }) {
@@ -268,9 +268,7 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                     }`}
                     style={{ transitionDelay: '300ms' }}
                   >
-                    <div className="w-6 h-6 mr-3 flex items-center justify-center">
-                      <span className="text-lg">🚪</span>
-                    </div>
+                    <LogOut className="w-6 h-6 mr-3 text-red-400" />
                     <span className="font-medium">{t('userNav.logout')}</span>
                   </button>
                 </div>
