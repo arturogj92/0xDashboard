@@ -30,7 +30,9 @@ export default function AdminPage() {
   const [isOwnershipVerified, setIsOwnershipVerified] = useState(false);
   const [isCustomDomainOpen, setIsCustomDomainOpen] = useState(false);
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
+  const [showUrlBar, setShowUrlBar] = useState(true);
   const previewRef = useRef<HTMLDivElement>(null);
+  const previewContentRef = useRef<HTMLDivElement>(null);
 
   // Protección de autenticación y ownership
   useEffect(() => {
@@ -185,6 +187,25 @@ export default function AdminPage() {
     handleScroll();
     
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Manejar scroll dentro del preview para mostrar/ocultar URL bar
+  useEffect(() => {
+    const handlePreviewScroll = () => {
+      const previewContent = previewContentRef.current;
+      if (!previewContent) return;
+      
+      const scrollTop = previewContent.scrollTop;
+      // Ocultar la URL bar cuando el usuario hace scroll hacia abajo (>20px)
+      // Mostrarla cuando está cerca del top (<=20px)
+      setShowUrlBar(scrollTop <= 20);
+    };
+
+    const previewContent = previewContentRef.current;
+    if (previewContent) {
+      previewContent.addEventListener('scroll', handlePreviewScroll);
+      return () => previewContent.removeEventListener('scroll', handlePreviewScroll);
+    }
   }, []);
 
   // Función para manejar scroll a secciones - definida con useCallback
@@ -908,7 +929,35 @@ export default function AdminPage() {
             className="absolute w-full h-full z-20 pointer-events-none object-contain"
           />
           <div className="absolute inset-[4%] z-10 rounded-[20px] md:rounded-[24px] lg:rounded-[28px] xl:rounded-[32px] overflow-hidden">
-            <div className="h-full overflow-y-auto overflow-x-hidden scrollbar-hide">
+            {/* URL Bar - Aparece en la parte inferior */}
+            {landing.slug && (
+              <div 
+                className={`absolute bottom-0 left-0 right-0 z-30 transition-all duration-300 ease-in-out ${
+                  showUrlBar ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+                }`}
+              >
+                <a
+                  href={activeDomain ? `https://${activeDomain}` : `https://${landing.slug}.creator0x.com`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pb-4 block w-full flex items-center justify-center gap-1 bg-slate-800/95 hover:bg-slate-700/95 backdrop-blur-sm px-3 py-2 rounded-b-[20px] md:rounded-b-[24px] lg:rounded-b-[28px] xl:rounded-b-[32px] shadow-sm transition-colors duration-200 border-t border-slate-600/50"
+                >
+                  <Lock className="h-2.5 w-2.5 text-green-400 flex-shrink-0" />
+                  <span className="text-[10px] font-medium text-slate-400 flex-shrink-0">https://</span>
+                  <span className="text-[10px] font-medium text-slate-50 truncate overflow-hidden">
+                    {activeDomain || `${landing.slug}.creator0x.com`}
+                  </span>
+                </a>
+              </div>
+            )}
+            
+            {/* Contenido scrolleable */}
+            <div 
+              ref={previewContentRef}
+              className={`h-full overflow-y-auto overflow-x-hidden scrollbar-hide transition-all duration-300 ${
+                landing.slug && showUrlBar ? 'pb-12' : 'pb-0'
+              }`}
+            >
               <LandingPreview 
                 name={landingPreview.name}
                 description={landingPreview.description}
@@ -925,23 +974,6 @@ export default function AdminPage() {
           </div>
         </div>
         
-        {/* URL Preview */}
-        <div className="mt-3 flex justify-center">
-          {landing.slug && (
-            <a
-              href={activeDomain ? `https://${activeDomain}` : `https://${landing.slug}.creator0x.com`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 bg-slate-800/90 hover:bg-slate-700/90 px-3 py-1.5 rounded-full shadow-inner transition-colors duration-200 w-[280px] sm:w-[250px] md:w-[280px] lg:w-[300px]"
-            >
-              <Lock className="h-3 w-3 text-green-400 flex-shrink-0" />
-              <span className="text-xs font-medium text-slate-400 flex-shrink-0">https://</span>
-              <span className="text-xs font-medium text-slate-50 truncate overflow-hidden">
-                {activeDomain || `${landing.slug}.creator0x.com`}
-              </span>
-            </a>
-          )}
-        </div>
       </div>
       
       <div className="relative w-full md:w-1/2 order-last md:order-first rounded-xl border border-white/10 bg-[#0e0b15]/70 backdrop-blur-xl shadow-2xl p-4 sm:p-6 overflow-y-auto overflow-x-hidden flex flex-col items-center">
