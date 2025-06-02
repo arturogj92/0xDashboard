@@ -685,7 +685,7 @@ export default function CustomDomainConfiguration({ landingId, onDomainUpdate, h
             <AlertDialogDescription>
               <div className="space-y-2">
                 <p>
-                  {t('confirmDeleteMessage', { domain: domainToDelete?.domain })}
+                  {t('confirmDeleteMessage').replace('{domain}', domainToDelete?.domain || '')}
                 </p>
                 <p className="text-yellow-600 font-semibold">
                   {t('confirmDeleteWarningMessage')}

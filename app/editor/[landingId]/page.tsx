@@ -10,7 +10,7 @@ import StyleCustomizationAccordion from "@/components/editor/StyleCustomizationA
 import CustomDomainConfiguration from "@/components/editor/CustomDomainConfiguration";
 import { useParams, useRouter } from 'next/navigation';
 import { PencilSquareIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
-import { Globe } from 'lucide-react';
+import { Globe, Lock } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/AuthContext';
 import { getThemeById } from '@/lib/themes';
@@ -25,10 +25,11 @@ export default function AdminPage() {
   const [links, setLinks] = useState<LinkData[]>([]);
   const [sections, setSections] = useState<SectionData[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLinkData[]>([]);
-  const [landing, setLanding] = useState<{id?: string; name: string; description: string; theme_id?: string; avatar_url?: string; configurations?: any; user_id?: string}>({name: '', description: ''});
+  const [landing, setLanding] = useState<{id?: string; name: string; description: string; theme_id?: string; avatar_url?: string; configurations?: any; user_id?: string; slug?: string}>({name: '', description: ''});
   const [previewPosition, setPreviewPosition] = useState('fixed');
   const [isOwnershipVerified, setIsOwnershipVerified] = useState(false);
   const [isCustomDomainOpen, setIsCustomDomainOpen] = useState(false);
+  const [activeDomain, setActiveDomain] = useState<string | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
   // Protección de autenticación y ownership
@@ -95,6 +96,7 @@ export default function AdminPage() {
             theme_id: data.data.theme_id || 'dark',
             avatar_url: data.data.avatar_url,
             user_id: data.data.user_id,
+            slug: data.data.slug || '',
             configurations: {
               ...existingConfigurations,
               effects: {
@@ -115,6 +117,23 @@ export default function AdminPage() {
               }
             }
           });
+
+          // Cargar custom domains activos
+          try {
+            const customDomainsRes = await fetch(`${API_URL}/api/custom-domains?landingId=${lid}`, { 
+              headers: createAuthHeaders() 
+            });
+            if (customDomainsRes.ok) {
+              const customDomainsData = await customDomainsRes.json();
+              // Buscar dominio activo
+              const activeCustomDomain = customDomainsData.data?.find((domain: any) => domain.status === 'active');
+              if (activeCustomDomain) {
+                setActiveDomain(activeCustomDomain.domain);
+              }
+            }
+          } catch (err) {
+            console.error('Error cargando custom domains:', err);
+          }
 
           // Solo después de verificar ownership, cargar el resto de datos
           try {
@@ -831,6 +850,23 @@ export default function AdminPage() {
     setLanding(prev => ({ ...prev, avatar_url: avatarUrl || undefined }));
   };
 
+  const handleDomainUpdate = async () => {
+    // Recargar custom domains cuando se actualicen
+    try {
+      const customDomainsRes = await fetch(`${API_URL}/api/custom-domains?landingId=${landingId}`, { 
+        headers: createAuthHeaders() 
+      });
+      if (customDomainsRes.ok) {
+        const customDomainsData = await customDomainsRes.json();
+        // Buscar dominio activo
+        const activeCustomDomain = customDomainsData.data?.find((domain: any) => domain.status === 'active');
+        setActiveDomain(activeCustomDomain ? activeCustomDomain.domain : null);
+      }
+    } catch (err) {
+      console.error('Error actualizando custom domains:', err);
+    }
+  };
+
   const landingPreview = {
     name: landing.name || "Mi landing de ejemplo",
     description: landing.description || "Descripcion de ejemplo",
@@ -859,8 +895,8 @@ export default function AdminPage() {
           transform: 'translateY(-100px)',
         } : {}}
       >
-        <div className="text-white p-2 rounded mb-4 w-full text-center">
-          <p className="font-bold text-lg md:text-xl">VISTA PREVIA</p>
+        <div className="text-white mb-2 w-full text-center">
+          <p className="font-medium text-xs sm:text-sm md:text-base opacity-70">VISTA PREVIA</p>
         </div>
         <div 
           className="relative w-[50vw] sm:w-[40vw] md:w-[30vw] lg:w-[300px] max-w-[300px] aspect-[9/19.5]"
@@ -887,6 +923,24 @@ export default function AdminPage() {
               />
             </div>
           </div>
+        </div>
+        
+        {/* URL Preview */}
+        <div className="mt-3 flex justify-center">
+          {landing.slug && (
+            <a
+              href={activeDomain ? `https://${activeDomain}` : `https://${landing.slug}.creator0x.com`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 bg-slate-800/90 hover:bg-slate-700/90 px-3 py-1.5 rounded-full shadow-inner transition-colors duration-200 w-[280px] sm:w-[250px] md:w-[280px] lg:w-[300px]"
+            >
+              <Lock className="h-3 w-3 text-green-400 flex-shrink-0" />
+              <span className="text-xs font-medium text-slate-400 flex-shrink-0">https://</span>
+              <span className="text-xs font-medium text-slate-50 truncate overflow-hidden">
+                {activeDomain || `${landing.slug}.creator0x.com`}
+              </span>
+            </a>
+          )}
         </div>
       </div>
       
@@ -956,6 +1010,7 @@ export default function AdminPage() {
               <CustomDomainConfiguration
                 landingId={landingId}
                 hideHeader={true}
+                onDomainUpdate={handleDomainUpdate}
               />
             </div>
           </div>
