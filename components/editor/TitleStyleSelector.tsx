@@ -70,11 +70,11 @@ export default function TitleStyleSelector({ value, onChange, onSave }: TitleSty
   const t = useTranslations('titleStyle');
   
   const fontSizeOptions = [
-    { label: t('fontSizes.small'), value: 'text-lg', px: '18px' },
-    { label: t('fontSizes.normal'), value: 'text-xl', px: '20px' },
-    { label: t('fontSizes.large'), value: 'text-2xl', px: '24px' },
-    { label: t('fontSizes.extraLarge'), value: 'text-3xl', px: '30px' },
-    { label: t('fontSizes.giant'), value: 'text-4xl', px: '36px' },
+    { label: t('sizes.small'), value: 'text-lg', px: '18px' },
+    { label: t('sizes.normal'), value: 'text-xl', px: '20px' },
+    { label: t('sizes.large'), value: 'text-2xl', px: '24px' },
+    { label: t('sizes.extraLarge'), value: 'text-3xl', px: '30px' },
+    { label: t('sizes.giant'), value: 'text-4xl', px: '36px' },
   ];
   
   const [localConfig, setLocalConfig] = useState<TitleStyleConfiguration>({
