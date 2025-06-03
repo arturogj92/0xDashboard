@@ -194,18 +194,18 @@ export default function LinkColorSelector({
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <label className="text-xs text-gray-400">{t('linkBackground')}</label>
-            <div className="flex items-center space-x-2">
+            <div className="grid grid-cols-2 gap-2">
               <input
                 type="color"
                 value={localColors.background}
                 onChange={(e) => handleColorChange('background', e.target.value)}
-                className="w-10 h-10 rounded-lg border border-gray-600 bg-transparent cursor-pointer"
+                className="w-full h-12 rounded-lg border border-gray-600 bg-transparent cursor-pointer"
               />
               <input
                 type="text"
                 value={localColors.background}
                 onChange={(e) => handleColorChange('background', e.target.value)}
-                className="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white text-sm"
+                className="w-full px-2 py-2 h-12 bg-gray-800 border border-gray-600 rounded-lg text-white text-xs sm:text-sm"
                 placeholder="#000000"
               />
             </div>
@@ -213,18 +213,18 @@ export default function LinkColorSelector({
           
           <div className="space-y-2">
             <label className="text-xs text-gray-400">{t('linkText')}</label>
-            <div className="flex items-center space-x-2">
+            <div className="grid grid-cols-2 gap-2">
               <input
                 type="color"
                 value={localColors.text}
                 onChange={(e) => handleColorChange('text', e.target.value)}
-                className="w-10 h-10 rounded-lg border border-gray-600 bg-transparent cursor-pointer"
+                className="w-full h-12 rounded-lg border border-gray-600 bg-transparent cursor-pointer"
               />
               <input
                 type="text"
                 value={localColors.text}
                 onChange={(e) => handleColorChange('text', e.target.value)}
-                className="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white text-sm"
+                className="w-full px-2 py-2 h-12 bg-gray-800 border border-gray-600 rounded-lg text-white text-xs sm:text-sm"
                 placeholder="#ffffff"
               />
             </div>
