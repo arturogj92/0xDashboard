@@ -45,7 +45,10 @@ describe('CaptionHistoryPage', () => {
 
     render(<CaptionHistoryPage />)
 
-    await waitFor(() => expect(screen.getByText('tweet1')).toBeTruthy())
+    // Wait for the API call to complete and UI to render
+    await new Promise(resolve => setTimeout(resolve, 100))
+    
+    expect(screen.getByText('tweet1')).toBeTruthy()
     expect(screen.getByText('tweet2')).toBeTruthy()
     expect(screen.getByText('copyAllButton')).toBeTruthy()
   })
@@ -60,7 +63,10 @@ describe('CaptionHistoryPage', () => {
 
     render(<CaptionHistoryPage />)
 
-    await waitFor(() => expect(screen.getByText('hello tweet')).toBeTruthy())
+    // Wait for the API call to complete and UI to render
+    await new Promise(resolve => setTimeout(resolve, 100))
+    
+    expect(screen.getByText('hello tweet')).toBeTruthy()
     expect(screen.queryByText('copyAllButton')).toBeNull()
   })
 })
