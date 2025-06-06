@@ -7,6 +7,7 @@ Instagram automation and content creation platform that helps users manage autom
 - **Instagram Automation**: Set up automated DM responses triggered by keywords in comments
 - **Caption Generator**: AI-powered caption creation with transcription and optimization
 - **Landing Page Builder**: Drag-and-drop editor with custom domain support
+- **URL Shortener**: Custom short links with analytics (username.creator0x.com/custom-slug)
 - **Analytics Dashboard**: Track engagement metrics and automation performance
 
 ## Tech Stack
@@ -108,6 +109,8 @@ Instagram automation and content creation platform that helps users manage autom
 
 The project uses a hybrid deployment architecture:
 
+- **Frontend** (0xreplyer-frontend): Next.js dashboard, editor, and UI components
+- **Backend** (0xreplyer-backend): API logic, authentication, and business logic including URL shortener redirects
 - **Main Application** (Railway): Dashboard, editor, authentication, and core features
 - **VPS Server**: Dedicated to serving landing pages with custom domain support
 
