@@ -957,4 +957,214 @@ export const getCaptionHistory = async (): Promise<ApiResponse<Array<{ id: numbe
     headers: createAuthHeaders(),
   });
   return response.json();
+};
+
+// -------------------- URL SHORTENER API --------------------
+
+export interface ShortUrl {
+  id: string;
+  slug: string;
+  originalUrl: string;
+  title?: string;
+  description?: string;
+  clickCount: number;
+  isActive: boolean;
+  createdAt: string;
+  shortUrl: string;
+  username?: string;
+}
+
+export interface CreateShortUrlData {
+  originalUrl: string;
+  slug?: string;
+  title?: string;
+  description?: string;
+}
+
+export interface ShortUrlFilters {
+  page?: number;
+  limit?: number;
+  search?: string;
+  isActive?: boolean | null;
+  sortBy?: string;
+  sortOrder?: string;
+}
+
+export interface ShortUrlStats {
+  totalUrls: number;
+  totalClicks: number;
+  todayClicks: number;
+  last7DaysClicks: number;
+}
+
+export interface ShortUrlStatsDetailed {
+  hourly_stats: Array<{ hour: string; count: number }>;
+  daily_stats: Array<{ date: string; count: number }>;
+  today_total: number;
+  last_7_days_total: number;
+  last_28_days_total: number;
+  all_time_total: number;
+}
+
+// Crear URL acortada
+export const createShortUrl = async (data: CreateShortUrlData): Promise<ApiResponse<ShortUrl>> => {
+  const response = await fetch(`${API_URL}/api/short-urls`, {
+    method: 'POST',
+    headers: createAuthHeaders(),
+    body: JSON.stringify(data),
+  });
+  return response.json();
+};
+
+// Obtener URLs acortadas del usuario
+export const getShortUrls = async (filters: ShortUrlFilters = {}): Promise<ApiResponse<{
+  urls: ShortUrl[];
+  pagination: {
+    page: number;
+    totalPages: number;
+    totalCount: number;
+    limit: number;
+  };
+}>> => {
+  const params = new URLSearchParams();
+  if (filters.page) params.append('page', filters.page.toString());
+  if (filters.limit) params.append('limit', filters.limit.toString());
+  if (filters.search) params.append('search', filters.search);
+  if (filters.isActive !== null && filters.isActive !== undefined) params.append('isActive', filters.isActive.toString());
+  if (filters.sortBy) params.append('sortBy', filters.sortBy);
+  if (filters.sortOrder) params.append('sortOrder', filters.sortOrder);
+
+  const response = await fetch(`${API_URL}/api/short-urls?${params.toString()}`, {
+    headers: createAuthHeaders(),
+  });
+  return response.json();
+};
+
+// Obtener una URL acortada específica
+export const getShortUrl = async (id: string): Promise<ApiResponse<ShortUrl>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/${id}`, {
+    headers: createAuthHeaders(),
+  });
+  return response.json();
+};
+
+// Actualizar URL acortada
+export const updateShortUrl = async (id: string, data: Partial<{ title: string; description: string; isActive: boolean }>): Promise<ApiResponse<ShortUrl>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/${id}`, {
+    method: 'PUT',
+    headers: createAuthHeaders(),
+    body: JSON.stringify(data),
+  });
+  return response.json();
+};
+
+// Eliminar URL acortada
+export const deleteShortUrl = async (id: string): Promise<ApiResponse<{ success: boolean }>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/${id}`, {
+    method: 'DELETE',
+    headers: createAuthHeaders(),
+  });
+  return response.json();
+};
+
+// Verificar disponibilidad de slug
+export const checkSlugAvailability = async (slug: string): Promise<ApiResponse<{ slug: string; available: boolean }>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/check-slug`, {
+    method: 'POST',
+    headers: createAuthHeaders(),
+    body: JSON.stringify({ slug }),
+  });
+  return response.json();
+};
+
+// Obtener estadísticas generales del usuario
+export const getShortUrlOverviewStats = async (): Promise<ApiResponse<ShortUrlStats>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/stats/overview`, {
+    headers: createAuthHeaders(),
+  });
+  return response.json();
+};
+
+// Obtener estadísticas globales del usuario (similares a media stats)
+export const getShortUrlGlobalStats = async (timezone?: string): Promise<ApiResponse<{
+  last_28_days_total: number;
+  last_7_days_total: number;
+  yesterday_total: number;
+  today_total: number;
+}>> => {
+  const tz = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  const response = await fetch(`${API_URL}/api/short-urls/stats/global?timezone=${encodeURIComponent(tz)}`, {
+    headers: createAuthHeaders(),
+  });
+  return response.json();
+};
+
+// Obtener estadísticas diarias de clicks (similares a daily-visits)
+export const getShortUrlDailyStats = async (days: number = 28, timezone?: string): Promise<ApiResponse<Array<{ date: string; count: number }>>> => {
+  const tz = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  const response = await fetch(`${API_URL}/api/short-urls/stats/daily-clicks?days=${days}&timezone=${encodeURIComponent(tz)}`, {
+    headers: createAuthHeaders(),
+  });
+  return response.json();
+};
+
+// Obtener estadísticas detalladas de una URL específica
+export const getShortUrlDetailedStats = async (id: string, timezone?: string): Promise<ApiResponse<ShortUrlStatsDetailed>> => {
+  const tz = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  const response = await fetch(`${API_URL}/api/short-urls/${id}/stats?timezone=${encodeURIComponent(tz)}`, {
+    headers: createAuthHeaders(),
+  });
+  return response.json();
+};
+
+// Obtener historial de clicks de una URL
+export const getShortUrlClicks = async (
+  id: string, 
+  filters: { page?: number; limit?: number; startDate?: string; endDate?: string } = {}
+): Promise<ApiResponse<{
+  clicks: Array<{
+    id: string;
+    clickedAt: string;
+    ip: string;
+    userAgent: string;
+    country?: string;
+    city?: string;
+    device?: string;
+    browser?: string;
+    os?: string;
+  }>;
+  pagination: {
+    page: number;
+    totalPages: number;
+    totalCount: number;
+    limit: number;
+  };
+}>> => {
+  const params = new URLSearchParams();
+  if (filters.page) params.append('page', filters.page.toString());
+  if (filters.limit) params.append('limit', filters.limit.toString());
+  if (filters.startDate) params.append('startDate', filters.startDate);
+  if (filters.endDate) params.append('endDate', filters.endDate);
+
+  const response = await fetch(`${API_URL}/api/short-urls/${id}/clicks?${params.toString()}`, {
+    headers: createAuthHeaders(),
+  });
+  return response.json();
+};
+
+// User Slug Management
+export const getUserSlug = async (): Promise<ApiResponse<{ slug: string | null; landingId: string | null }>> => {
+  const response = await fetch(`${API_URL}/api/auth/slug`, {
+    headers: createAuthHeaders()
+  });
+  return response.json();
+};
+
+export const updateUserSlug = async (slug: string): Promise<ApiResponse<{ slug: string; landingId: string | null; stored_as_preference?: boolean }>> => {
+  const response = await fetch(`${API_URL}/api/auth/slug`, {
+    method: 'PUT',
+    headers: createAuthHeaders(),
+    body: JSON.stringify({ slug })
+  });
+  return response.json();
 }; 

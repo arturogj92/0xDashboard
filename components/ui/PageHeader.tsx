@@ -7,8 +7,8 @@ export interface PageHeaderProps {
   icon: React.ReactNode;
   title: string;
   description: string;
-  imageSrc: string;
-  imageAlt: string;
+  imageSrc?: string;
+  imageAlt?: string;
 }
 
 export function PageHeader({ icon, title, description, imageSrc, imageAlt }: PageHeaderProps) {
@@ -26,16 +26,18 @@ export function PageHeader({ icon, title, description, imageSrc, imageAlt }: Pag
             </p>
           </div>
         </div>
-        <div className="hidden md:flex items-center">
-          <Image
-            src={imageSrc}
-            alt={imageAlt}
-            width={200}
-            height={120}
-            className="object-contain"
-            onError={(e) => { e.currentTarget.style.display = 'none'; }}
-          />
-        </div>
+        {imageSrc && imageAlt && (
+          <div className="hidden md:flex items-center">
+            <Image
+              src={imageSrc}
+              alt={imageAlt}
+              width={200}
+              height={120}
+              className="object-contain"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

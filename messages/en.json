@@ -5,6 +5,7 @@
     "yourAutomations": "Your Automations",
     "pricing": "Pricing",
     "captionGenerator": "Caption Generator",
+    "urlShortener": "URL Shortener",
     "myLanding": "My Landing",
     "logoAlt": "0xReplyer Logo",
     "privacyPolicy": "Privacy Policy",
@@ -17,6 +18,7 @@
     },
     "mobileNav": {
       "captionGeneratorDesc": "Generate captions automatically",
+      "urlShortenerDesc": "Create and manage short URLs",
       "myLandingDesc": "Configure your personal page",
       "automationsDesc": "Manage your automations",
       "profileDesc": "Your user profile"
@@ -35,7 +37,9 @@
       "goToDashboard": "Go to Dashboard",
       "accountDescription": "Your account information",
       "languageSpanish": "Español",
-      "languageEnglish": "English"
+      "languageEnglish": "English",
+      "slugConfiguration": "Slug Configuration",
+      "slugConfigurationDescription": "Your slug is your unique identifier used for your short URLs and landing page. It appears in URLs like your-slug.creator0x.com"
     }
   },
   "home": {
@@ -125,6 +129,31 @@
     "passwordMismatch": "Passwords do not match"
   },
   "components": {
+    "userSlugConfiguration": {
+      "title": "Configure user slug",
+      "titleEdit": "Edit user slug",
+      "titleCreated": "Your user slug",
+      "descriptionModal": "You need a slug to create short URLs. This will be your unique identifier, also used as the URL for your landing page.",
+      "descriptionProfile": "Your slug is your unique identifier for short URLs and landing page. It appears at art0x.creator0x.com",
+      "descriptionWizard": "Choose a unique identifier for your landing page and short URLs",
+      "currentUrl": "Current URL:",
+      "preview": "Preview:",
+      "createSlug": "Create Slug",
+      "updateSlug": "Update",
+      "changeSlug": "Change Slug",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "placeholder": "my-username",
+      "errorMinLength": "Slug must be at least 3 characters",
+      "errorSaving": "Error saving slug",
+      "errorLoading": "Error loading current slug",
+      "successPreference": "Slug saved. It will be applied when you create your landing page.",
+      "successUpdated": "Slug updated successfully",
+      "tipsProfile": "Also editable from profile",
+      "tipsWizard": "Used for landing and short URLs",
+      "tipsModal": "You can also configure it from your user profile",
+      "tipsModalWizard": "This slug will also be used for your short URLs"
+    },
     "createMediaModal": {
       "titleReel": "New Reel Automation",
       "titleStory": "New Story Automation",

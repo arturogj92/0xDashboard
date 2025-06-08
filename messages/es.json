@@ -5,6 +5,7 @@
     "yourAutomations": "Automatizaciones",
     "pricing": "Precios",
     "captionGenerator": "Descripciones",
+    "urlShortener": "Acortador URLs",
     "myLanding": "Landing",
     "logoAlt": "Logo de 0xReplyer",
     "privacyPolicy": "Política de Privacidad",
@@ -17,6 +18,7 @@
     },
     "mobileNav": {
       "captionGeneratorDesc": "Genera descripciones automáticamente",
+      "urlShortenerDesc": "Crea y gestiona enlaces cortos",
       "myLandingDesc": "Configura tu página personal",
       "automationsDesc": "Gestiona tus automatizaciones",
       "profileDesc": "Tu perfil de usuario"
@@ -35,7 +37,9 @@
       "goToDashboard": "Ir al Dashboard",
       "accountDescription": "Información de tu cuenta",
       "languageSpanish": "Español",
-      "languageEnglish": "English"
+      "languageEnglish": "English",
+      "slugConfiguration": "Configuración de Slug",
+      "slugConfigurationDescription": "Tu slug es tu identificador único que se usa para tus URLs cortas y tu landing page. Es lo que aparece en las URLs como tu-slug.creator0x.com"
     }
   },
   "home": {
@@ -125,6 +129,31 @@
     "passwordMismatch": "Las contraseñas no coinciden"
   },
   "components": {
+    "userSlugConfiguration": {
+      "title": "Configurar slug de usuario",
+      "titleEdit": "Editar slug de usuario",
+      "titleCreated": "Tu slug de usuario",
+      "descriptionModal": "Necesitas un slug para crear URLs cortas. Este será tu identificador único, también es lo que se utiliza como url de tu landing.",
+      "descriptionProfile": "Tu slug es tu identificador único para URLs cortas y landing page. Aparece en art0x.creator0x.com",
+      "descriptionWizard": "Elige un identificador único para tu landing page y URLs cortas",
+      "currentUrl": "URL actual:",
+      "preview": "Vista previa:",
+      "createSlug": "Crear Slug",
+      "updateSlug": "Actualizar",
+      "changeSlug": "Cambiar Slug",
+      "cancel": "Cancelar",
+      "saving": "Guardando...",
+      "placeholder": "mi-usuario",
+      "errorMinLength": "El slug debe tener al menos 3 caracteres",
+      "errorSaving": "Error al guardar el slug",
+      "errorLoading": "Error al cargar el slug actual",
+      "successPreference": "Slug guardado. Se aplicará cuando crees tu landing page.",
+      "successUpdated": "Slug actualizado correctamente",
+      "tipsProfile": "También editable desde el perfil",
+      "tipsWizard": "Usado para landing y URLs cortas",
+      "tipsModal": "También puedes configurarlo desde tu perfil de usuario",
+      "tipsModalWizard": "Este slug también se usará para tus URLs cortas"
+    },
     "createMediaModal": {
       "titleReel": "Nueva automatización de Reel",
       "titleStory": "Nueva automatización de Historia",

@@ -2,7 +2,7 @@
 
 ## ¿Qué son los dominios personalizados?
 
-Los dominios personalizados te permiten usar tu propia URL (como `midominio.com`) para mostrar tu landing page de Creator0x, en lugar de usar `tuusuario.creator0x.com`.
+Los dominios personalizados te permiten usar tu propia URL (como `midominio.com`) para mostrar tu landing page de Creator0x, en lugar de usar `usuario.creator0x.com`.
 
 ## Beneficios
 
@@ -32,6 +32,7 @@ Los dominios personalizados te permiten usar tu propia URL (como `midominio.com`
 Después de agregar tu dominio, verás las instrucciones específicas para configurar DNS. Necesitarás agregar uno de estos registros:
 
 #### Opción A: Registro TXT (Recomendado)
+
 ```
 Tipo: TXT
 Nombre: _creator0x-verification
@@ -39,6 +40,7 @@ Valor: [token único que te proporcionamos]
 ```
 
 #### Opción B: Registro CNAME (Para subdominios)
+
 ```
 Tipo: CNAME
 Nombre: @ (o tu subdominio)
@@ -48,6 +50,7 @@ Valor: vps.creator0x.com
 ### 3. Configuración por Proveedor
 
 #### GoDaddy
+
 1. Inicia sesión en GoDaddy
 2. Ve a **"My Products"** → **"DNS"**
 3. Busca **"Records"**
@@ -55,6 +58,7 @@ Valor: vps.creator0x.com
 5. Guarda los cambios
 
 #### Namecheap
+
 1. Inicia sesión en Namecheap
 2. Ve a **"Domain List"** → **"Manage"**
 3. Busca **"Advanced DNS"**
@@ -62,6 +66,7 @@ Valor: vps.creator0x.com
 5. Guarda los cambios
 
 #### Cloudflare
+
 1. Inicia sesión en Cloudflare
 2. Selecciona tu dominio
 3. Ve a **"DNS"** → **"Records"**
@@ -69,6 +74,7 @@ Valor: vps.creator0x.com
 5. Asegúrate de que esté en modo **"DNS only"** (nube gris)
 
 #### Google Domains
+
 1. Inicia sesión en Google Domains
 2. Selecciona tu dominio
 3. Ve a **"DNS"**
@@ -85,31 +91,35 @@ Valor: vps.creator0x.com
 ### 5. ¡Listo!
 
 Una vez verificado y con SSL activo:
+
 - ✅ Tu dominio mostrará tu landing page
 - ✅ Tendrás HTTPS automático
 - ✅ Todo funcionará perfectamente
 
 ## Estados del Dominio
 
-| Estado | Descripción |
-|--------|-------------|
-| **Pendiente** | Esperando configuración DNS |
-| **DNS Configurado** | DNS correcto, generando SSL |
-| **Activo** | ¡Todo funcionando! |
-| **Error** | Problema en la configuración |
+| Estado              | Descripción                  |
+| ------------------- | ---------------------------- |
+| **Pendiente**       | Esperando configuración DNS  |
+| **DNS Configurado** | DNS correcto, generando SSL  |
+| **Activo**          | ¡Todo funcionando!           |
+| **Error**           | Problema en la configuración |
 
 ## Problemas Comunes
 
 ### El dominio no verifica
+
 - **Solución**: Verifica que el registro DNS esté correcto
 - **Tiempo**: Puede tomar hasta 48 horas en propagarse
 - **Herramienta**: Usa [whatsmydns.net](https://whatsmydns.net) para verificar propagación
 
 ### Error de SSL
+
 - **Causa**: El DNS no está propagado completamente
 - **Solución**: Espera unas horas más y vuelve a verificar
 
 ### El dominio no carga
+
 - **Verifica**: Que el registro CNAME apunte a `vps.creator0x.com`
 - **Cache**: Limpia el cache de tu navegador
 
@@ -157,4 +167,4 @@ nslookup tudominio.com 8.8.8.8
 
 ---
 
-*¿Te fue útil esta guía? ¡Déjanos saber cómo podemos mejorarla!*
+_¿Te fue útil esta guía? ¡Déjanos saber cómo podemos mejorarla!_

@@ -14,6 +14,7 @@ import { FaInstagram, FaPlug } from 'react-icons/fa';
 import { useLocale } from '@/contexts/I18nContext';
 import { useTranslations } from 'next-intl';
 import { updatePreference } from '@/lib/api';
+import { UserSlugConfiguration } from '@/components/auth/UserSlugConfiguration';
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
@@ -90,6 +91,19 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Configuración del Slug de Usuario */}
+              <div>
+                <h3 className="text-lg font-medium text-white mb-3">{t('slugConfiguration')}</h3>
+                <p className="text-sm text-gray-400 mb-4">
+                  {t('slugConfigurationDescription')}
+                </p>
+                <UserSlugConfiguration
+                  variant="profile"
+                  showTitle={false}
+                  autoLoad={true}
+                />
               </div>
 
               <div>

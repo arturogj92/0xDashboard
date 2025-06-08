@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { UserNav } from "@/components/auth/UserNav";
 import { useTranslations } from 'next-intl';
 import Footer from "@/app/components/Footer";
-import { Settings, Menu, X, User, LogOut } from 'lucide-react';
+import { Settings, Menu, X, User, LogOut, Link as LinkIconLucide } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 export default function RootLayoutInner({ children }: { children: React.ReactNode }) {
@@ -72,6 +72,15 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                   />
                 </div>
                 {t('captionGenerator')}
+              </Link>
+            )}
+            {isAuthenticated && (
+              <Link
+                href="/short-urls"
+                className="inline-flex items-center px-3 py-2 text-sm font-medium text-white hover:text-white bg-white/5 hover:bg-white/15 transition-all duration-200 rounded-lg border border-white/10 hover:border-white/30"
+              >
+                <LinkIconLucide className="w-5 h-5 mr-2" style={{ color: '#d08216' }} />
+                {t('urlShortener')}
               </Link>
             )}
             {isAuthenticated && (
@@ -164,7 +173,7 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
               
               {isAuthenticated && (
                 <Link
-                  href="/landing"
+                  href="/short-urls"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`flex items-center px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all duration-200 transform ${
                     isMobileMenuOpen 
@@ -172,6 +181,25 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
                       : 'translate-x-4 opacity-0'
                   }`}
                   style={{ transitionDelay: '150ms' }}
+                >
+                  <LinkIconLucide className="w-6 h-6 mr-3" style={{ color: '#d08216' }} />
+                  <div>
+                    <div className="font-medium">{t('urlShortener')}</div>
+                    <div className="text-xs text-gray-400">{tMobile('urlShortenerDesc')}</div>
+                  </div>
+                </Link>
+              )}
+              
+              {isAuthenticated && (
+                <Link
+                  href="/landing"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`flex items-center px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all duration-200 transform ${
+                    isMobileMenuOpen 
+                      ? 'translate-x-0 opacity-100' 
+                      : 'translate-x-4 opacity-0'
+                  }`}
+                  style={{ transitionDelay: '175ms' }}
                 >
                   <Settings className="w-6 h-6 mr-3" style={{ color: '#d08216' }} />
                   <div>

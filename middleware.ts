@@ -24,7 +24,47 @@ export async function middleware(request: NextRequest) {
       return passThroughResponse;
     }
     
-    // Reescribir a /landing/[subdomain]
+    // NUEVO: Verificar si es una URL acortada (ej: art0xdev.creator0x.com/mi-enlace)
+    const pathParts = url.pathname.split('/').filter(part => part.length > 0);
+    if (pathParts.length === 1) {
+      const slug = pathParts[0];
+      
+      // Intentar redirigir como URL acortada
+      try {
+        const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        console.log(`[VPS Middleware] Intentando URL acortada: ${subdomain}/${slug}`);
+        
+        const redirectResponse = await fetch(`${backendUrl}/api/url-redirect/${slug}?username=${subdomain}`, {
+          method: 'GET',
+          redirect: 'manual', // No seguir redirects automáticamente
+          headers: {
+            'User-Agent': request.headers.get('user-agent') || 'VPS-Middleware/1.0',
+            'X-Forwarded-For': request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
+            'X-Original-URL': `${hostname}${url.pathname}`
+          }
+        });
+        
+        console.log(`[VPS Middleware] URL redirect response status: ${redirectResponse.status}`);
+        
+        // Si es un redirect 302, seguir la redirección
+        if (redirectResponse.status === 302) {
+          const location = redirectResponse.headers.get('location');
+          if (location) {
+            console.log(`[VPS Middleware] Redirigiendo URL acortada ${subdomain}/${slug} → ${location}`);
+            return NextResponse.redirect(location);
+          }
+        }
+        
+        // Si no es un redirect válido, continuar con lógica de landing
+        console.log(`[VPS Middleware] No es URL acortada válida, continuando con landing`);
+        
+      } catch (error) {
+        console.warn(`[VPS Middleware] Error verificando URL acortada: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        // Continuar con lógica de landing en caso de error
+      }
+    }
+    
+    // Reescribir a /landing/[subdomain] (comportamiento original)
     url.pathname = `/landing/${subdomain}`;
     console.log(`[VPS Middleware] Subdominio ${subdomain} → ${url.pathname}`);
     const subdomainResponse = NextResponse.rewrite(url);
@@ -32,15 +72,53 @@ export async function middleware(request: NextRequest) {
     return subdomainResponse;
   }
   
-  // Para dominios personalizados (ej: elcaminodelprogramador.com)
+  // Para dominios personalizados (ej: elcaminodelprogramador.com o art0x.link)
   if (isCustomDomain(hostname)) {
     const url = request.nextUrl.clone();
     
     if (!url.pathname.startsWith('/landing/')) {
+      const pathParts = url.pathname.split('/').filter(part => part.length > 0);
+      
+      // NUEVO: Verificar si es una URL acortada con dominio personalizado (ej: art0x.link/mi-enlace)
+      if (pathParts.length === 1) {
+        const slug = pathParts[0];
+        
+        try {
+          const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+          console.log(`[VPS Middleware] Intentando URL acortada con dominio personalizado: ${hostname}/${slug}`);
+          
+          const redirectResponse = await fetch(`${backendUrl}/api/url-redirect/${slug}?domain=${hostname}`, {
+            method: 'GET',
+            redirect: 'manual',
+            headers: {
+              'User-Agent': request.headers.get('user-agent') || 'VPS-Middleware/1.0',
+              'X-Forwarded-For': request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
+              'X-Original-URL': `${hostname}${url.pathname}`
+            }
+          });
+          
+          console.log(`[VPS Middleware] URL redirect response status: ${redirectResponse.status}`);
+          
+          // Si es un redirect 302, seguir la redirección
+          if (redirectResponse.status === 302) {
+            const location = redirectResponse.headers.get('location');
+            if (location) {
+              console.log(`[VPS Middleware] Redirigiendo URL acortada ${hostname}/${slug} → ${location}`);
+              return NextResponse.redirect(location);
+            }
+          }
+          
+          console.log(`[VPS Middleware] No es URL acortada válida para dominio personalizado, continuando con landing`);
+          
+        } catch (error) {
+          console.warn(`[VPS Middleware] Error verificando URL acortada en dominio personalizado: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+      }
+      
+      // Si no es URL acortada, intentar resolver como landing page
       try {
-        // Consultar al backend para resolver el dominio
         const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-        console.log(`[VPS Middleware] Consultando: ${backendUrl}/api/custom-domains/resolve/${hostname}`);
+        console.log(`[VPS Middleware] Consultando landing page: ${backendUrl}/api/custom-domains/resolve/${hostname}`);
         
         const response = await fetch(`${backendUrl}/api/custom-domains/resolve/${hostname}`, {
           headers: {
@@ -48,11 +126,11 @@ export async function middleware(request: NextRequest) {
           }
         });
         
-        console.log(`[VPS Middleware] Response status: ${response.status}`);
+        console.log(`[VPS Middleware] Landing response status: ${response.status}`);
         
         if (response.ok) {
           const data = await response.json();
-          console.log(`[VPS Middleware] Response data:`, data);
+          console.log(`[VPS Middleware] Landing response data:`, data);
           
           if (data.success && data.slug) {
             url.pathname = `/landing/${data.slug}`;
