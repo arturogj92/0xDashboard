@@ -8,10 +8,14 @@ vi.mock('next-intl', () => ({ useTranslations: () => (key: string) => key }))
 describe('ThemeSelector', () => {
   it('calls onThemeChange when clicking a theme', () => {
     const onThemeChange = vi.fn()
-    const { getAllByRole } = render(
+    const { getByRole, getAllByText } = render(
       <ThemeSelector onThemeChange={onThemeChange} />
     )
-    fireEvent.click(getAllByRole('button')[0])
+
+    // open modal
+    fireEvent.click(getByRole('button'))
+
+    fireEvent.click(getAllByText('Dark')[1])
     expect(onThemeChange).toHaveBeenCalled()
   })
 })

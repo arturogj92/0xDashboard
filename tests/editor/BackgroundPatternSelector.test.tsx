@@ -11,10 +11,19 @@ describe('BackgroundPatternSelector', () => {
   it('selects a pattern option', () => {
     const onChange = vi.fn()
     const onSave = vi.fn()
-    const { getAllByRole } = render(
-      <BackgroundPatternSelector value={{ pattern:'none', color:'#000', opacity:1 }} onChange={onChange} onSave={onSave} />
+    const { getByRole, getAllByRole } = render(
+      <BackgroundPatternSelector
+        value={{ pattern: 'none', color: '#000', opacity: 1 }}
+        onChange={onChange}
+        onSave={onSave}
+      />
     )
+
+    // open selector
+    fireEvent.click(getByRole('button'))
     fireEvent.click(getAllByRole('button')[1])
+    vi.runAllTimers()
+
     expect(onChange).toHaveBeenCalled()
   })
 })

@@ -12,7 +12,11 @@ describe('TitleStyleSelector', () => {
     const onChange = vi.fn()
     const onSave = vi.fn()
     const { getByText } = render(
-      <TitleStyleSelector value={{ fontSize:'text-sm', fontWeight:'normal', gradient:null }} onChange={onChange} onSave={onSave} />
+      <TitleStyleSelector
+        value={{ fontSize: 'text-sm', gradientEnabled: true }}
+        onChange={onChange}
+        onSave={onSave}
+      />
     )
     fireEvent.click(getByText('Apple Blue'))
     expect(onChange).toHaveBeenCalled()
