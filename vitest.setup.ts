@@ -1,6 +1,10 @@
 
+import React from 'react'
 import { configure } from '@testing-library/react'
 import { beforeAll, afterAll } from 'vitest'
+
+// Make React available globally for components using the automatic runtime
+(globalThis as any).React = React
 
 // Disable act() warnings in test environment
 configure({ 
