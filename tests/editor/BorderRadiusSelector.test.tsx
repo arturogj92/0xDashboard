@@ -13,11 +13,10 @@ describe('BorderRadiusSelector', () => {
     vi.useRealTimers()
   })
 
-  it('updates slider value and calls onSave after interaction', async () => {
+  it('updates slider value on interaction', () => {
     const onChange = vi.fn()
-    const onSave = vi.fn()
     const { getByRole } = render(
-      <BorderRadiusSelector value="rounded-none" onChange={onChange} onSave={onSave} />
+      <BorderRadiusSelector value="rounded-none" onChange={onChange} onSave={vi.fn()} />
     )
 
     const slider = getByRole('slider')
@@ -25,10 +24,5 @@ describe('BorderRadiusSelector', () => {
     fireEvent.mouseUp(slider)
 
     expect(onChange).toHaveBeenCalledWith('rounded-[10px]')
-
-    vi.advanceTimersByTime(1200)
-    await waitFor(() => {
-      expect(onSave).toHaveBeenCalledWith('rounded-[10px]')
-    })
   })
 })

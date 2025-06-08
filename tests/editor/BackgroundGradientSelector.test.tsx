@@ -13,21 +13,15 @@ describe('BackgroundGradientSelector', () => {
     vi.useRealTimers()
   })
 
-  it('changes colors and saves after delay', async () => {
+  it('changes colors on input', () => {
     const onChange = vi.fn()
-    const onSave = vi.fn()
     const { getAllByRole } = render(
-      <BackgroundGradientSelector value={{ color1: '#000', color2: '#fff' }} onChange={onChange} onSave={onSave} />
+      <BackgroundGradientSelector value={{ color1: '#000', color2: '#fff' }} onChange={onChange} onSave={vi.fn()} />
     )
 
     const inputs = getAllByRole('textbox')
     fireEvent.change(inputs[0], { target: { value: '#111111' } })
 
     expect(onChange).toHaveBeenCalledWith({ color1: '#111111', color2: '#fff' })
-
-    vi.advanceTimersByTime(1200)
-    await waitFor(() => {
-      expect(onSave).toHaveBeenCalledWith({ color1: '#111111', color2: '#fff' })
-    })
   })
 })

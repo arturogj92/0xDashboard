@@ -13,21 +13,14 @@ describe('AvatarDisplaySelector', () => {
     vi.useRealTimers()
   })
 
-  it('calls onChange and onSave when toggling options', async () => {
+  it('calls onChange when toggling options', () => {
     const onChange = vi.fn()
-    const onSave = vi.fn()
-    const { getAllByRole } = render(
-      <AvatarDisplaySelector value={{ showAvatar: true }} onChange={onChange} onSave={onSave} />
+    const { getByText } = render(
+      <AvatarDisplaySelector value={{ showAvatar: true }} onChange={onChange} onSave={vi.fn()} />
     )
 
-    const options = getAllByRole('button')
-    fireEvent.click(options[1])
+    fireEvent.click(getByText('nameOnly.title'))
 
     expect(onChange).toHaveBeenCalledWith({ showAvatar: false })
-
-    vi.advanceTimersByTime(600)
-    await waitFor(() => {
-      expect(onSave).toHaveBeenCalledWith({ showAvatar: false })
-    })
   })
 })

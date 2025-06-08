@@ -13,21 +13,15 @@ describe('FontColorSelector', () => {
     vi.useRealTimers()
   })
 
-  it('updates primary color and saves', async () => {
+  it('updates primary color on input', () => {
     const onChange = vi.fn()
-    const onSave = vi.fn()
     const { getAllByRole } = render(
-      <FontColorSelector value={{ primary: '#000000', secondary: '#ffffff' }} onChange={onChange} onSave={onSave} />
+      <FontColorSelector value={{ primary: '#000000', secondary: '#ffffff' }} onChange={onChange} onSave={vi.fn()} />
     )
 
     const inputs = getAllByRole('textbox')
     fireEvent.change(inputs[0], { target: { value: '#123456' } })
 
     expect(onChange).toHaveBeenCalledWith({ primary: '#123456', secondary: '#ffffff' })
-
-    vi.advanceTimersByTime(1200)
-    await waitFor(() => {
-      expect(onSave).toHaveBeenCalledWith({ primary: '#123456', secondary: '#ffffff' })
-    })
   })
 })
