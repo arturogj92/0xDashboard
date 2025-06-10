@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { CreateShortUrlModal } from '@/components/shortUrls/CreateShortUrlModal';
 import { ShortUrlsTable } from '@/components/shortUrls/ShortUrlsTable';
+import UrlCustomDomainConfiguration from '@/components/shortUrls/UrlCustomDomainConfiguration';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { 
@@ -14,7 +15,10 @@ import {
   ClipboardDocumentIcon,
   ArrowRightIcon,
   InformationCircleIcon,
-  ShareIcon
+  ShareIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  GlobeAltIcon
 } from '@heroicons/react/24/outline';
 import { 
   getShortUrls, 
@@ -29,15 +33,20 @@ import {
 
 export default function ShortUrlsPage() {
   const [isLoading, setIsLoading] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [shortUrls, setShortUrls] = useState<ShortUrl[]>([]);
+  const [allUrls, setAllUrls] = useState<ShortUrl[]>([]); // All loaded URLs
+  const [shortUrls, setShortUrls] = useState<ShortUrl[]>([]); // Displayed URLs
   const [stats, setStats] = useState<ShortUrlStats | null>(null);
   const [copyMessage, setCopyMessage] = useState<string | null>(null);
+  const [localSearch, setLocalSearch] = useState(''); // Local search term
+  const [backendSearch, setBackendSearch] = useState(''); // Backend search term
+  const [customDomainsOpen, setCustomDomainsOpen] = useState(false);
   const [pagination, setPagination] = useState({
     page: 1,
     totalPages: 1,
     totalCount: 0,
-    limit: 20
+    limit: 10 // Changed to 10 as requested
   });
   const [filters, setFilters] = useState({
     search: '',
@@ -46,39 +55,124 @@ export default function ShortUrlsPage() {
     sortOrder: 'desc'
   });
 
+  // Smart search: only search backend if no local results found
   useEffect(() => {
-    loadData();
-  }, [filters, pagination.page]);
+    if (!localSearch.trim()) {
+      setBackendSearch('');
+      return;
+    }
+
+    // First check if we have local results
+    const searchTerm = localSearch.toLowerCase();
+    const localResults = allUrls.filter(url => 
+      url.slug?.toLowerCase().includes(searchTerm) ||
+      url.title?.toLowerCase().includes(searchTerm) ||
+      url.originalUrl.toLowerCase().includes(searchTerm) ||
+      url.description?.toLowerCase().includes(searchTerm)
+    );
+
+    if (localResults.length > 0) {
+      // Found local results, no need for backend search
+      setBackendSearch('');
+    } else {
+      // No local results, search in backend with debounce
+      const timer = setTimeout(() => {
+        setBackendSearch(localSearch);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [localSearch, allUrls]);
+
+  // Load data when backend search or other filters change (NOT pagination.page)
+  useEffect(() => {
+    const filtersForBackend = { ...filters, search: backendSearch };
+    const isSearchContext = backendSearch !== filters.search; // It's a search if backend search differs from current filter
+    loadData(filtersForBackend, isSearchContext);
+  }, [backendSearch, filters.isActive, filters.sortBy, filters.sortOrder]);
+
+  // Filter displayed URLs locally
+  const filteredUrls = useMemo(() => {
+    if (!localSearch.trim()) {
+      return allUrls;
+    }
+
+    // Local search in loaded URLs
+    const searchTerm = localSearch.toLowerCase();
+    return allUrls.filter(url => 
+      url.slug?.toLowerCase().includes(searchTerm) ||
+      url.title?.toLowerCase().includes(searchTerm) ||
+      url.originalUrl.toLowerCase().includes(searchTerm) ||
+      url.description?.toLowerCase().includes(searchTerm)
+    );
+  }, [allUrls, localSearch]);
+
+  // Apply local pagination to filtered URLs
+  const paginatedUrls = useMemo(() => {
+    const startIndex = (pagination.page - 1) * pagination.limit;
+    const endIndex = startIndex + pagination.limit;
+    return filteredUrls.slice(startIndex, endIndex);
+  }, [filteredUrls, pagination.page, pagination.limit]);
 
   useEffect(() => {
-    // Carga inicial
+    setShortUrls(paginatedUrls);
+    
+    // Update pagination info based on filtered results
+    const totalCount = filteredUrls.length;
+    const totalPages = Math.ceil(totalCount / pagination.limit);
+    
+    setPagination(prev => ({
+      ...prev,
+      totalCount,
+      totalPages
+    }));
+  }, [paginatedUrls, filteredUrls, pagination.limit]);
+
+  useEffect(() => {
+    // Initial load delay
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1000);
     return () => clearTimeout(timer);
   }, []);
 
-  const loadData = async () => {
+  const loadData = async (customFilters = filters, isSearchContext = false) => {
     try {
-      setIsLoading(true);
+      // Use different loading states to avoid full page reload feeling
+      if (isSearchContext) {
+        setIsSearching(true);
+      } else {
+        setIsLoading(true);
+      }
       
+      // Load all data at once (no backend pagination)
       const [urlsResponse, statsResponse] = await Promise.all([
-        getShortUrls({ ...filters, page: pagination.page, limit: pagination.limit }),
-        getShortUrlOverviewStats()
+        getShortUrls({ ...customFilters, page: 1, limit: 1000 }), // Get all URLs
+        // Only fetch stats on initial load, not on search
+        isSearchContext ? Promise.resolve({ success: true, data: stats }) : getShortUrlOverviewStats()
       ]);
       
       if (urlsResponse.success) {
-        setShortUrls(urlsResponse.data.urls);
-        setPagination(urlsResponse.data.pagination);
+        setAllUrls(urlsResponse.data.urls); // Store all loaded URLs
+        // Don't override pagination state for local pagination
+        if (!isSearchContext) {
+          setPagination(prev => ({
+            ...prev,
+            page: 1 // Reset to first page only on initial load
+          }));
+        }
       }
       
-      if (statsResponse.success) {
+      if (statsResponse.success && !isSearchContext) {
         setStats(statsResponse.data);
       }
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
-      setIsLoading(false);
+      if (isSearchContext) {
+        setIsSearching(false);
+      } else {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -86,8 +180,33 @@ export default function ShortUrlsPage() {
     try {
       const response = await createShortUrl(data);
       if (response.success) {
+        const newUrl = response.data;
+        
+        // Add new URL to the beginning of the lists (most recent first)
+        setAllUrls(prev => [newUrl, ...prev]);
+        setShortUrls(prev => [newUrl, ...prev]);
+        
+        // Update pagination count and calculate new total pages
+        setPagination(prev => {
+          const newTotalCount = prev.totalCount + 1;
+          const newTotalPages = Math.ceil(newTotalCount / prev.limit);
+          return {
+            ...prev,
+            page: 1, // Reset to first page to show new item
+            totalCount: newTotalCount,
+            totalPages: newTotalPages
+          };
+        });
+        
+        // Update stats if available
+        if (stats) {
+          setStats(prev => ({
+            ...prev,
+            totalUrls: (prev?.totalUrls || 0) + 1
+          }));
+        }
+        
         setShowCreateModal(false);
-        loadData();
       } else {
         console.error('Error creating URL:', response.message);
       }
@@ -100,7 +219,31 @@ export default function ShortUrlsPage() {
     try {
       const response = await deleteShortUrl(id);
       if (response.success) {
-        loadData();
+        // Remove URL from both lists
+        setAllUrls(prev => prev.filter(url => url.id !== id));
+        setShortUrls(prev => prev.filter(url => url.id !== id));
+        
+        // Update pagination count and calculate new total pages
+        setPagination(prev => {
+          const newTotalCount = Math.max(prev.totalCount - 1, 0);
+          const newTotalPages = Math.ceil(newTotalCount / prev.limit);
+          // If current page becomes empty, go to previous page
+          const newPage = prev.page > newTotalPages ? Math.max(newTotalPages, 1) : prev.page;
+          return {
+            ...prev,
+            page: newPage,
+            totalCount: newTotalCount,
+            totalPages: newTotalPages
+          };
+        });
+        
+        // Update stats if available
+        if (stats) {
+          setStats(prev => ({
+            ...prev,
+            totalUrls: Math.max((prev?.totalUrls || 0) - 1, 0)
+          }));
+        }
       }
     } catch (error) {
       console.error('Error deleting URL:', error);
@@ -111,10 +254,20 @@ export default function ShortUrlsPage() {
     try {
       const response = await updateShortUrl(id, data);
       if (response.success) {
-        loadData();
+        // Update local data instead of reloading
+        const updateFunction = (prev: any[]) => 
+          prev.map(url => 
+            url.id === id 
+              ? { ...url, ...data }
+              : url
+          );
+        
+        setAllUrls(updateFunction);
+        setShortUrls(updateFunction);
       }
     } catch (error) {
       console.error('Error updating URL:', error);
+      throw error; // Re-throw so the table component can handle the error
     }
   };
 
@@ -122,6 +275,43 @@ export default function ShortUrlsPage() {
     navigator.clipboard.writeText(url);
     setCopyMessage(url);
     setTimeout(() => setCopyMessage(null), 2000);
+  };
+
+  // Handle filters change - update local search immediately, backend search with debounce
+  const handleFiltersChange = useCallback((newFilters: any) => {
+    if (newFilters.search !== undefined) {
+      // Update local search immediately for instant feedback
+      setLocalSearch(newFilters.search);
+      // Don't update filters.search yet - let debounce handle backend search
+      const { search, ...otherFilters } = newFilters;
+      setFilters(prev => ({ ...prev, ...otherFilters }));
+    } else {
+      setFilters(prev => ({ ...prev, ...newFilters }));
+    }
+  }, []);
+
+  // Reset to page 1 when search changes
+  useEffect(() => {
+    if (backendSearch !== filters.search) {
+      setPagination(prev => ({ ...prev, page: 1 }));
+      setFilters(prev => ({ ...prev, search: backendSearch }));
+    }
+  }, [backendSearch]);
+
+  // Handle page change locally (no backend call)
+  const handlePageChange = (newPage: number) => {
+    setPagination(prev => ({ ...prev, page: newPage }));
+    
+    // Wait for the new content to render before scrolling
+    setTimeout(() => {
+      const tableElement = document.querySelector('[data-table-container]');
+      if (tableElement) {
+        tableElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }
+    }, 50); // Small delay to let React update the DOM
   };
 
   if (isLoading) {
@@ -277,6 +467,52 @@ export default function ShortUrlsPage() {
             </div>
           </div>
 
+          {/* Custom Domains Configuration Accordion */}
+          <div className="w-full max-w-4xl mb-6 sm:mb-8 px-2 sm:px-0">
+            <div className="bg-[#120724] border border-indigo-900/30 rounded-lg overflow-hidden">
+              <button
+                onClick={() => setCustomDomainsOpen(!customDomainsOpen)}
+                className="w-full p-4 flex items-center justify-between hover:bg-[#1a0b2e] transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="bg-gradient-to-br from-purple-500 to-indigo-600 p-2 rounded-lg shadow-lg">
+                    <GlobeAltIcon className="h-5 w-5 text-white" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="text-lg font-semibold text-white">
+                      Dominios Personalizados
+                    </h3>
+                    <p className="text-sm text-gray-400">
+                      Configura dominios personalizados para tus enlaces cortos
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="text-gray-400">
+                  {customDomainsOpen ? (
+                    <ChevronUpIcon className="h-5 w-5" />
+                  ) : (
+                    <ChevronDownIcon className="h-5 w-5" />
+                  )}
+                </div>
+              </button>
+
+              {/* Contenido del accordion */}
+              <div 
+                className={`transition-all duration-300 ease-in-out ${
+                  customDomainsOpen ? 'max-h-none opacity-100 overflow-visible' : 'max-h-0 opacity-0 overflow-hidden'
+                }`}
+              >
+                <div className="border-t border-indigo-900/30 p-4">
+                  <UrlCustomDomainConfiguration 
+                    onDomainUpdate={loadData}
+                    hideHeader={true}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Botón crear URL - Responsivo */}
           <Button
             onClick={() => setShowCreateModal(true)}
@@ -292,14 +528,15 @@ export default function ShortUrlsPage() {
             <ShortUrlsTable
               urls={shortUrls}
               pagination={pagination}
-              filters={filters}
-              onFiltersChange={setFilters}
-              onPageChange={(page) => setPagination(prev => ({ ...prev, page }))}
+              filters={{ ...filters, search: localSearch }} // Use local search for immediate display
+              onFiltersChange={handleFiltersChange}
+              onPageChange={handlePageChange}
               onCopyUrl={handleCopyToClipboard}
               onDeleteUrl={handleDeleteUrl}
               onUpdateUrl={handleUpdateUrl}
               onRefresh={loadData}
               copyMessage={copyMessage}
+              isSearching={isSearching}
             />
           </div>
         </div>

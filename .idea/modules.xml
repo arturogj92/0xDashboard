@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/art0x-link.iml" filepath="$PROJECT_DIR$/.idea/art0x-link.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../0xreplyer-backend/0xreplyer-backend.iml" filepath="$PROJECT_DIR$/../0xreplyer-backend/0xreplyer-backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/0xreplyer-frontend.iml" filepath="$PROJECT_DIR$/0xreplyer-frontend.iml" />
     </modules>
   </component>
 </project>
