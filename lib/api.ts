@@ -1167,4 +1167,105 @@ export const updateUserSlug = async (slug: string): Promise<ApiResponse<{ slug: 
     body: JSON.stringify({ slug })
   });
   return response.json();
-}; 
+};
+
+// ============================================
+// URL CUSTOM DOMAINS
+// ============================================
+
+export interface UrlCustomDomain {
+  id: string;
+  domain: string;
+  status: 'pending' | 'dns_configured' | 'ssl_issued' | 'active' | 'failed' | 'removed';
+  supports_landing: boolean;
+  supports_urls: boolean;
+  resource_type: 'landing' | 'url_shortener' | 'shared';
+  verification_token: string;
+  verification_type: 'txt' | 'cname';
+  ssl_status: 'pending' | 'issued' | 'failed' | 'expired';
+  ssl_issued_at?: string;
+  ssl_expires_at?: string;
+  error_message?: string;
+  error_code?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AvailableDomain extends UrlCustomDomain {
+  landings: {
+    user_id: string;
+    title?: string;
+  };
+}
+
+// Get all custom domains that support URL shortener
+export const getUrlCustomDomains = async (): Promise<ApiResponse<UrlCustomDomain[]>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/custom-domains`, {
+    headers: createAuthHeaders()
+  });
+  return response.json();
+};
+
+// Get domains from landing pages that can be activated for URLs
+export const getAvailableDomainsForUrls = async (): Promise<ApiResponse<AvailableDomain[]>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/custom-domains/available`, {
+    headers: createAuthHeaders()
+  });
+  return response.json();
+};
+
+// Activate existing landing domain for URL shortener
+export const activateDomainForUrls = async (domainId: string): Promise<ApiResponse<UrlCustomDomain>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/custom-domains/activate`, {
+    method: 'POST',
+    headers: createAuthHeaders(),
+    body: JSON.stringify({ domainId })
+  });
+  return response.json();
+};
+
+// Add new custom domain specifically for URL shortener
+export const createUrlCustomDomain = async (domain: string): Promise<ApiResponse<UrlCustomDomain>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/custom-domains`, {
+    method: 'POST',
+    headers: createAuthHeaders(),
+    body: JSON.stringify({ domain })
+  });
+  return response.json();
+};
+
+// Verify DNS configuration for URL custom domain
+export const verifyUrlCustomDomain = async (domainId: string): Promise<ApiResponse<{ message: string }>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/custom-domains/${domainId}/verify`, {
+    method: 'POST',
+    headers: createAuthHeaders()
+  });
+  return response.json();
+};
+
+// Retry SSL certificate generation for URL custom domain
+export const retryUrlCustomDomain = async (domainId: string): Promise<ApiResponse<{ message: string }>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/custom-domains/${domainId}/retry`, {
+    method: 'POST',
+    headers: createAuthHeaders()
+  });
+  return response.json();
+};
+
+// Check status of URL custom domain configuration
+export const checkUrlCustomDomainStatus = async (domainId: string): Promise<ApiResponse<{ status: string; message: string }>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/custom-domains/${domainId}/check-status`, {
+    method: 'POST',
+    headers: createAuthHeaders()
+  });
+  return response.json();
+};
+
+// Remove custom domain for URL shortener (deactivate or delete)
+export const removeUrlCustomDomain = async (domainId: string): Promise<ApiResponse<{ message: string }>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/custom-domains/${domainId}`, {
+    method: 'DELETE',
+    headers: createAuthHeaders()
+  });
+  return response.json();
+};

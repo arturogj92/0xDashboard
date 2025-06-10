@@ -22,8 +22,6 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
   const [error, setError] = useState<string | null>(null);
   const [originalUrl, setOriginalUrl] = useState('');
   const [slug, setSlug] = useState('');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
   const [slugAvailable, setSlugAvailable] = useState<boolean | null>(null);
   const [checkingSlug, setCheckingSlug] = useState(false);
   const [slugTouched, setSlugTouched] = useState(false);
@@ -104,6 +102,40 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
     setSlugAvailable(null);
   };
 
+  // Función para normalizar URL agregando https:// y www. automáticamente
+  const normalizeUrl = (url: string) => {
+    let normalized = url.trim();
+    
+    // Agregar https:// si no tiene protocolo
+    if (!normalized.match(/^https?:\/\//)) {
+      normalized = 'https://' + normalized;
+    }
+    
+    try {
+      // Agregar www. si no lo tiene y es un dominio principal
+      const urlObj = new URL(normalized);
+      const hostname = urlObj.hostname;
+      
+      // No agregar www. si:
+      // - Ya tiene www.
+      // - Es localhost o IP
+      // - Ya tiene un subdominio (más de 2 partes antes del TLD)
+      if (!hostname.startsWith('www.') && 
+          !hostname.includes('localhost') && 
+          !hostname.match(/^\d+\.\d+\.\d+\.\d+/) && 
+          hostname.split('.').length === 2) {
+        urlObj.hostname = 'www.' + hostname;
+        normalized = urlObj.toString();
+      }
+      
+      return normalized;
+    } catch (error) {
+      // Si hay error al parsear la URL, devolver la versión con https://
+      console.warn('Error parsing URL, returning with https only:', error);
+      return normalized;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -122,11 +154,8 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
       return;
     }
 
-    // Validar y añadir https si no tiene protocolo
-    let validatedUrl = originalUrl.trim();
-    if (!validatedUrl.startsWith('http://') && !validatedUrl.startsWith('https://')) {
-      validatedUrl = 'https://' + validatedUrl;
-    }
+    // Normalizar URL agregando https:// y www. automáticamente
+    const validatedUrl = normalizeUrl(originalUrl);
 
     setLoading(true);
     setError(null);
@@ -134,9 +163,7 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
     try {
       const data: CreateShortUrlData = {
         originalUrl: validatedUrl,
-        slug: slug || undefined,
-        title: title || undefined,
-        description: description || undefined
+        slug: slug || undefined
       };
 
       await onSubmit(data);
@@ -151,8 +178,6 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
   const resetForm = () => {
     setOriginalUrl('');
     setSlug('');
-    setTitle('');
-    setDescription('');
     setError(null);
     setSlugAvailable(null);
     setSlugTouched(false);
@@ -179,9 +204,38 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
     return `${baseUrl}/${urlSlug}`;
   };
 
+  // Determinar si el botón de crear debe estar deshabilitado
+  const isCreateButtonDisabled = () => {
+    // Si está cargando, deshabilitar
+    if (loading || loadingUsername) return true;
+    
+    // Si no hay URL original, deshabilitar
+    if (!originalUrl.trim()) return true;
+    
+    // Si no hay username configurado, deshabilitar
+    if (!userUsername) return true;
+    
+    // Si hay slug personalizado pero no está validado
+    if (slug.trim()) {
+      // Si el slug es muy corto, deshabilitar
+      if (slug.length < 3) return true;
+      
+      // Si estamos verificando el slug, deshabilitar
+      if (checkingSlug) return true;
+      
+      // Si el slug ha sido tocado pero no está disponible, deshabilitar
+      if (slugTouched && slugAvailable === false) return true;
+      
+      // Si el slug ha sido tocado pero aún no sabemos si está disponible, deshabilitar
+      if (slugTouched && slugAvailable === null) return true;
+    }
+    
+    return false;
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-lg bg-[#120724] border border-indigo-900/30 rounded-xl shadow-xl">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-[#120724] border border-indigo-900/30 rounded-xl shadow-xl fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <DialogHeader className="mb-4">
           <div className="flex items-center gap-3">
             <LinkIcon className="w-8 h-8" style={{ color: '#d08216' }} />
@@ -211,7 +265,7 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
               <GlobeAltIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <Input
                 id="originalUrl"
-                type="url"
+                type="text"
                 value={originalUrl}
                 onChange={(e) => setOriginalUrl(e.target.value)}
                 className="pl-10 bg-[#1c1033] border-gray-700 text-gray-200 focus:border-indigo-500"
@@ -219,6 +273,9 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
                 required
               />
             </div>
+            <p className="text-xs text-gray-400 mt-1">
+              💡 Se agregará automáticamente https://www. si no los tienes
+            </p>
           </div>
 
           {/* Slug personalizado */}
@@ -281,7 +338,7 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
               </p>
               {!loadingUsername && userUsername && (
                 <p className="text-xs text-gray-400 mt-2">
-                  💡 Tip: Usa slugs descriptivos como "ofertas", "descuento", "curso-gratis" para mayor memorabilidad
+                  💡 Tip: Usa slugs descriptivos como &quot;ofertas&quot;, &quot;descuento&quot;, &quot;curso-gratis&quot; para mayor memorabilidad
                 </p>
               )}
               {!userUsername && !loadingUsername && (
@@ -292,37 +349,6 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
             </div>
           )}
 
-          {/* Título (opcional) */}
-          <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-200 mb-2">
-              Título (opcional)
-            </label>
-            <Input
-              id="title"
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="bg-[#1c1033] border-gray-700 text-gray-200 focus:border-indigo-500"
-              placeholder="Título descriptivo del enlace"
-              maxLength={100}
-            />
-          </div>
-
-          {/* Descripción (opcional) */}
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-200 mb-2">
-              Descripción (opcional)
-            </label>
-            <textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="block w-full rounded-md border-gray-700 bg-[#1c1033] py-2.5 px-3 text-gray-200 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm"
-              placeholder="Breve descripción del contenido del enlace"
-              rows={3}
-              maxLength={200}
-            />
-          </div>
 
           {/* Información sobre redes sociales */}
           <div className="bg-blue-900/20 border border-blue-800/30 rounded-lg p-4">
@@ -353,10 +379,10 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
             </Button>
             <Button 
               type="submit" 
-              disabled={loading || (slugTouched && slugAvailable === false)}
-              className="rounded-md bg-indigo-600 text-white hover:bg-indigo-700 px-8 py-2.5 disabled:opacity-50"
+              disabled={isCreateButtonDisabled()}
+              className="rounded-md bg-indigo-600 text-white hover:bg-indigo-700 px-8 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Creando...' : 'Crear enlace'}
+              {loading ? 'Creando...' : checkingSlug ? 'Validando...' : 'Crear enlace'}
             </Button>
           </div>
         </form>

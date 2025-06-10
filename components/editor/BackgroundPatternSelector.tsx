@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import { useTranslations } from 'next-intl';
@@ -165,7 +165,7 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
 
   const patterns = getPatterns();
 
-  const colors = [
+  const colors = useMemo(() => [
     { name: t('colors.snow'), value: '#ffffff' },
     { name: t('colors.midnight'), value: '#000000' },
     { name: t('colors.ocean'), value: '#3b82f6' },
@@ -174,7 +174,7 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
     { name: t('colors.mint'), value: '#10b981' },
     { name: t('colors.sunset'), value: '#f97316' },
     { name: t('colors.custom'), value: 'custom' }
-  ];
+  ], [t]);
 
   // Debounced onChange to avoid many calls
   const debouncedOnChange = useCallback((config: BackgroundPatternConfiguration) => {
@@ -225,7 +225,7 @@ export default function BackgroundPatternSelector({ value, onChange, onSave }: B
     if (isCustomColor && value.color) {
       setCustomColor(value.color);
     }
-  }, [value]);
+  }, [value, colors]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
