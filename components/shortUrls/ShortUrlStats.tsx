@@ -8,8 +8,8 @@ import {
   FireIcon,
   HeartIcon,
   SparklesIcon,
-  TrendingUpIcon,
-  TrendingDownIcon,
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon,
   CalendarDaysIcon,
   GlobeAltIcon
 } from '@heroicons/react/24/outline';
@@ -111,16 +111,18 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl p-8 text-center"
       >
+        <div className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl p-8 text-center">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="inline-block"
         >
-          <SparklesIcon className="h-8 w-8 text-indigo-400 mb-4" />
+          <div className="inline-block">
+            <SparklesIcon className="h-8 w-8 text-indigo-400 mb-4" />
+          </div>
         </motion.div>
         <p className="text-gray-300">Cargando estadísticas mágicas... ✨</p>
+        </div>
       </motion.div>
     );
   }
@@ -130,18 +132,19 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-gradient-to-br from-red-900/20 to-pink-900/20 border border-red-500/30 rounded-xl p-8 text-center"
       >
+        <div className="bg-gradient-to-br from-red-900/20 to-pink-900/20 border border-red-500/30 rounded-xl p-8 text-center">
         <div className="text-red-400 mb-4">❌</div>
         <p className="text-red-300">Oops! No pudimos cargar las estadísticas</p>
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={loadStats}
-          className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
         >
-          🔄 Reintentar
+          <div className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors" onClick={loadStats}>
+            🔄 Reintentar
+          </div>
         </motion.button>
+        </div>
       </motion.div>
     );
   }
@@ -155,11 +158,11 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           whileHover={{ scale: 1.02, y: -2 }}
-          className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl p-6 relative overflow-hidden group"
         >
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          />
+          <div className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl p-6 relative overflow-hidden group">
+          <motion.div>
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </motion.div>
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-2">
               <motion.div
@@ -177,9 +180,9 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
               </motion.div>
               <div className="flex items-center gap-1">
                 {isPositive ? (
-                  <TrendingUpIcon className="h-4 w-4 text-green-400" />
+                  <ArrowTrendingUpIcon className="h-4 w-4 text-green-400" />
                 ) : (
-                  <TrendingDownIcon className="h-4 w-4 text-red-400" />
+                  <ArrowTrendingDownIcon className="h-4 w-4 text-red-400" />
                 )}
                 <span className={`text-xs font-medium ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
                   {trend.toFixed(1)}%
@@ -188,14 +191,16 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
             </div>
             <div className="text-xs font-medium text-gray-400 mb-1">Hoy</div>
             <motion.div 
-              className="text-2xl font-bold text-white"
               key={globalStats?.today_total}
               initial={{ scale: 1.2, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", stiffness: 500, damping: 25 }}
             >
-              {globalStats?.today_total || 0}
+              <div className="text-2xl font-bold text-white">
+                {globalStats?.today_total || 0}
+              </div>
             </motion.div>
+          </div>
           </div>
         </motion.div>
 
@@ -204,11 +209,11 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           whileHover={{ scale: 1.02, y: -2 }}
-          className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl p-6 relative overflow-hidden group"
         >
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-yellow-600/10 to-orange-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          />
+          <div className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl p-6 relative overflow-hidden group">
+          <motion.div>
+            <div className="absolute inset-0 bg-gradient-to-br from-yellow-600/10 to-orange-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </motion.div>
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-2">
               <motion.div
@@ -226,14 +231,16 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
             </div>
             <div className="text-xs font-medium text-gray-400 mb-1">7 días</div>
             <motion.div 
-              className="text-2xl font-bold text-white"
               key={globalStats?.last_7_days_total}
               initial={{ scale: 1.2, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", stiffness: 500, damping: 25 }}
             >
-              {globalStats?.last_7_days_total || 0}
+              <div className="text-2xl font-bold text-white">
+                {globalStats?.last_7_days_total || 0}
+              </div>
             </motion.div>
+          </div>
           </div>
         </motion.div>
 
@@ -242,11 +249,11 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           whileHover={{ scale: 1.02, y: -2 }}
-          className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl p-6 relative overflow-hidden group"
         >
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-green-600/10 to-emerald-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          />
+          <div className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl p-6 relative overflow-hidden group">
+          <motion.div>
+            <div className="absolute inset-0 bg-gradient-to-br from-green-600/10 to-emerald-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </motion.div>
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-2">
               <motion.div
@@ -264,14 +271,16 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
             </div>
             <div className="text-xs font-medium text-gray-400 mb-1">28 días</div>
             <motion.div 
-              className="text-2xl font-bold text-white"
               key={globalStats?.last_28_days_total}
               initial={{ scale: 1.2, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", stiffness: 500, damping: 25 }}
             >
-              {globalStats?.last_28_days_total || 0}
+              <div className="text-2xl font-bold text-white">
+                {globalStats?.last_28_days_total || 0}
+              </div>
             </motion.div>
+          </div>
           </div>
         </motion.div>
 
@@ -280,11 +289,11 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           whileHover={{ scale: 1.02, y: -2 }}
-          className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl p-6 relative overflow-hidden group"
         >
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-purple-600/10 to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          />
+          <div className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl p-6 relative overflow-hidden group">
+          <motion.div>
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </motion.div>
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-2">
               <motion.div
@@ -302,14 +311,16 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
             </div>
             <div className="text-xs font-medium text-gray-400 mb-1">Ayer</div>
             <motion.div 
-              className="text-2xl font-bold text-white"
               key={globalStats?.yesterday_total}
               initial={{ scale: 1.2, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", stiffness: 500, damping: 25 }}
             >
-              {globalStats?.yesterday_total || 0}
+              <div className="text-2xl font-bold text-white">
+                {globalStats?.yesterday_total || 0}
+              </div>
             </motion.div>
+          </div>
           </div>
         </motion.div>
       </div>
@@ -319,8 +330,8 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl p-6 relative overflow-hidden"
       >
+        <div className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl p-6 relative overflow-hidden">
         {/* Elementos decorativos de fondo */}
         <div className="absolute inset-0 overflow-hidden">
           <motion.div
@@ -332,8 +343,9 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
               repeat: Infinity, 
               ease: "linear" 
             }}
-            className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br from-indigo-600/20 to-purple-600/20 rounded-full blur-xl"
-          />
+          >
+            <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br from-indigo-600/20 to-purple-600/20 rounded-full blur-xl" />
+          </motion.div>
         </div>
 
         <div className="relative z-10">
@@ -364,14 +376,17 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
                   key={period}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setSelectedPeriod(period)}
-                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all duration-200 ${
-                    selectedPeriod === period
-                      ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-900/30'
-                      : 'bg-[#1c1033] text-gray-300 hover:bg-[#2c1b4d] border border-gray-700'
-                  }`}
                 >
-                  {period}d
+                  <div 
+                    onClick={() => setSelectedPeriod(period)}
+                    className={`px-3 py-1 rounded-lg text-xs font-medium transition-all duration-200 ${
+                      selectedPeriod === period
+                        ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-900/30'
+                        : 'bg-[#1c1033] text-gray-300 hover:bg-[#2c1b4d] border border-gray-700'
+                    }`}
+                  >
+                    {period}d
+                  </div>
                 </motion.button>
               ))}
             </div>
@@ -404,7 +419,8 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
                       scale: 1.1,
                       y: -2
                     }}
-                    className={`relative group cursor-pointer ${
+                  >
+                    <div className={`relative group cursor-pointer ${
                       dailyStats.length > 20 ? 'w-2' : 'w-4'
                     } min-h-[4px] rounded-t-lg ${
                       isToday 
@@ -415,29 +431,33 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
                         ? 'bg-gradient-to-t from-indigo-600 to-blue-400'
                         : 'bg-gradient-to-t from-gray-600 to-gray-400'
                     }`}
-                  >
+                    >
                     {/* Tooltip animado */}
                     <motion.div
                       initial={{ opacity: 0, y: 10, scale: 0.8 }}
                       whileHover={{ opacity: 1, y: -8, scale: 1 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black/90 text-white text-xs rounded-lg shadow-lg whitespace-nowrap pointer-events-none z-20"
                     >
-                      <div className="font-medium">{stat.date}</div>
-                      <div className="text-yellow-300">{stat.count} clicks</div>
-                      <motion.div
-                        animate={{ rotate: [0, 360] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                        className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black/90 rotate-45"
-                      />
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black/90 text-white text-xs rounded-lg shadow-lg whitespace-nowrap pointer-events-none z-20">
+                        <div className="font-medium">{stat.date}</div>
+                        <div className="text-yellow-300">{stat.count} clicks</div>
+                        <motion.div
+                          animate={{ rotate: [0, 360] }}
+                          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                        >
+                          <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black/90 rotate-45" />
+                        </motion.div>
+                      </div>
                     </motion.div>
                     
                     {/* Efecto de brillo al hacer hover */}
                     <motion.div
                       initial={{ opacity: 0 }}
                       whileHover={{ opacity: 0.3 }}
-                      className="absolute inset-0 bg-white rounded-t-lg"
-                    />
+                    >
+                      <div className="absolute inset-0 bg-white rounded-t-lg" />
+                    </motion.div>
+                    </div>
                   </motion.div>
                 );
               })}
@@ -455,6 +475,7 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
             </span>
           </div>
         </div>
+        </div>
       </motion.div>
 
       {/* Mensaje motivacional dinámico */}
@@ -462,10 +483,9 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8 }}
-        className="text-center"
       >
+        <div className="text-center">
         <motion.p 
-          className="text-sm bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent font-medium"
           animate={{ 
             opacity: [0.7, 1, 0.7] 
           }}
@@ -475,13 +495,16 @@ export function ShortUrlStats({ userId, refreshTrigger }: ShortUrlStatsProps) {
             ease: "easeInOut" 
           }}
         >
+          <span className="text-sm bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent font-medium">
           {globalStats?.today_total === 0 
             ? "🌟 ¡Hoy puede ser tu día de más clicks!" 
             : globalStats && globalStats.today_total > globalStats.yesterday_total
             ? "🚀 ¡Vas por buen camino! Más clicks que ayer"
             : "💪 Sigue creando contenido increíble, ¡los clicks vendrán!"
           }
+          </span>
         </motion.p>
+        </div>
       </motion.div>
     </div>
   );

@@ -803,16 +803,14 @@ export function ShortUrlsTable({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={handleCancelDelete}
           >
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={handleCancelDelete}>
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-[#120724] border border-red-500/30 rounded-xl p-6 max-w-md w-full shadow-2xl fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
             >
+              <div className="bg-[#120724] border border-red-500/30 rounded-xl p-6 max-w-md w-full shadow-2xl fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center gap-3 mb-4">
                 <div className="bg-red-500/20 p-3 rounded-lg">
                   <TrashIcon className="h-6 w-6 text-red-400" />
@@ -846,7 +844,9 @@ export function ShortUrlsTable({
                   Eliminar
                 </Button>
               </div>
+              </div>
             </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
