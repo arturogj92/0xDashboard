@@ -337,7 +337,7 @@ export default function Home() {
           {/* Paginación reels */}
           {!reelsLoading && reelsPagination && reelsPagination.totalPages >= 1 && (
             <Pagination
-              page={reelsPagination.page}
+              currentPage={reelsPagination.page}
               totalPages={reelsPagination.totalPages}
               onPageChange={(page) => {
                 handleReelsPageChange(page);
@@ -506,7 +506,7 @@ export default function Home() {
           {/* Paginación stories */}
           {!storiesLoading && storiesPagination && (
             <Pagination
-              page={storiesPagination.page}
+              currentPage={storiesPagination.page}
               totalPages={storiesPagination.totalPages}
               onPageChange={(page) => {
                 handleStoriesPageChange(page);

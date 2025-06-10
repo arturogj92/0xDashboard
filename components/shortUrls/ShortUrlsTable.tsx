@@ -164,8 +164,8 @@ export function ShortUrlsTable({
         bValue = bValue.toLowerCase();
       }
 
-      if (aValue < bValue) return localSortOrder === 'asc' ? -1 : 1;
-      if (aValue > bValue) return localSortOrder === 'asc' ? 1 : -1;
+      if ((aValue ?? '') < (bValue ?? '')) return localSortOrder === 'asc' ? -1 : 1;
+      if ((aValue ?? '') > (bValue ?? '')) return localSortOrder === 'asc' ? 1 : -1;
       return 0;
     });
   }, [localUrls, localSortBy, localSortOrder]);
@@ -261,23 +261,28 @@ export function ShortUrlsTable({
             </motion.div>
             <div className="min-w-0 flex-1">
               {editingUrl === url.id ? (
-                <motion.input
+                <motion.div
                   initial={{ scale: 0.95 }}
                   animate={{ scale: 1 }}
-                  type="text"
-                  value={editData.slug}
-                  onChange={(e) => setEditData({ ...editData, slug: e.target.value })}
-                  className="w-full bg-[#1c1033] border border-indigo-500 rounded px-2 py-1 text-sm text-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/20"
-                  placeholder="🔗 Editar slug"
-                  autoFocus
-                />
+                >
+                  <input
+                    type="text"
+                    value={editData.slug}
+                    onChange={(e) => setEditData({ ...editData, slug: e.target.value })}
+                    className="w-full bg-[#1c1033] border border-indigo-500 rounded px-2 py-1 text-sm text-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/20"
+                    placeholder="🔗 Editar slug"
+                    autoFocus
+                  />
+                </motion.div>
               ) : (
-                <motion.button 
-                  className="text-sm font-medium text-white truncate hover:text-indigo-300 transition-colors cursor-pointer text-left w-full"
+                <motion.div
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => handleCopyWithAnimation(getShortUrl(url))}
                 >
+                  <button 
+                    className="text-sm font-medium text-white truncate hover:text-indigo-300 transition-colors cursor-pointer text-left w-full"
+                    onClick={() => handleCopyWithAnimation(getShortUrl(url))}
+                  >
                   <AnimatePresence mode="wait">
                     {(() => {
                       const currentUrl = getShortUrl(url);
@@ -285,25 +290,27 @@ export function ShortUrlsTable({
                       console.log('URL:', currentUrl, 'copyMessage:', copyMessage, 'shouldShow:', shouldShowCopied);
                       return shouldShowCopied;
                     })() ? (
-                      <motion.span
+                      <motion.div
                         key={`copied-${url.id}`}
                         initial={{ opacity: 0, y: -10, scale: 0.9 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.9 }}
-                        className="text-green-400 font-semibold flex items-center"
                         transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
                       >
-                        <motion.span
-                          initial={{ rotate: 0 }}
-                          animate={{ rotate: [0, 15, -15, 0] }}
-                          transition={{ duration: 0.5, delay: 0.1 }}
-                        >
-                          ✨
-                        </motion.span>
-                        <span className="ml-1">¡Enlace copiado!</span>
-                      </motion.span>
+                        <span className="text-green-400 font-semibold flex items-center">
+                          <motion.div
+                            initial={{ rotate: 0 }}
+                            animate={{ rotate: [0, 15, -15, 0] }}
+                            transition={{ duration: 0.5, delay: 0.1 }}
+                            style={{ display: 'inline-block' }}
+                          >
+                            ✨
+                          </motion.div>
+                          <span className="ml-1">¡Enlace copiado!</span>
+                        </span>
+                      </motion.div>
                     ) : (
-                      <motion.span
+                      <motion.div
                         key={`url-${url.id}`}
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -311,10 +318,11 @@ export function ShortUrlsTable({
                         transition={{ duration: 0.2 }}
                       >
                         {getShortUrl(url)}
-                      </motion.span>
+                      </motion.div>
                     )}
                   </AnimatePresence>
-                </motion.button>
+                  </button>
+                </motion.div>
               )}
             </div>
           </div>
@@ -324,15 +332,18 @@ export function ShortUrlsTable({
         return (
           <div>
             {editingUrl === url.id ? (
-              <motion.input
+              <motion.div
                 initial={{ scale: 0.95 }}
                 animate={{ scale: 1 }}
-                type="text"
-                value={editData.originalUrl}
-                onChange={(e) => setEditData({ ...editData, originalUrl: e.target.value })}
-                className="w-full bg-[#1c1033] border border-indigo-500 rounded px-2 py-1 text-sm text-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/20"
-                placeholder="🎯 Editar URL destino"
-              />
+              >
+                <input
+                  type="text"
+                  value={editData.originalUrl}
+                  onChange={(e) => setEditData({ ...editData, originalUrl: e.target.value })}
+                  className="w-full bg-[#1c1033] border border-indigo-500 rounded px-2 py-1 text-sm text-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/20"
+                  placeholder="🎯 Editar URL destino"
+                />
+              </motion.div>
             ) : (
               <div className="text-sm text-gray-300 truncate max-w-xs group-hover:text-white transition-colors">
                 {url.originalUrl}
@@ -344,12 +355,12 @@ export function ShortUrlsTable({
       case 'clicks':
         return (
           <motion.div 
-            className="flex items-center gap-1 min-h-[2rem]"
+            style={{ display: 'flex', alignItems: 'center', gap: '4px', minHeight: '2rem' }}
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
           >
             <motion.div
-              className="flex-shrink-0 flex items-center justify-center"
+              style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               whileHover={{ scale: 1.1 }}
               transition={{ duration: 0.2 }}
             >
@@ -363,16 +374,18 @@ export function ShortUrlsTable({
 
       case 'status':
         return (
-          <motion.button
+          <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => handleToggleStatus(url.id, url.isActive)}
-            className={`inline-flex items-center px-3 py-2 rounded-full text-xs font-medium transition-all duration-300 w-24 justify-center whitespace-nowrap ${
-              url.isActive
-                ? 'bg-gradient-to-r from-green-900/40 to-emerald-900/40 text-green-300 border border-green-500/30 hover:from-green-800/50 hover:to-emerald-800/50 shadow-lg shadow-green-900/20'
-                : 'bg-gradient-to-r from-red-900/40 to-pink-900/40 text-red-300 border border-red-500/30 hover:from-red-800/50 hover:to-pink-800/50 shadow-lg shadow-red-900/20'
-            }`}
           >
+            <button
+              onClick={() => handleToggleStatus(url.id, url.isActive)}
+              className={`inline-flex items-center px-3 py-2 rounded-full text-xs font-medium transition-all duration-300 w-24 justify-center whitespace-nowrap ${
+                url.isActive
+                  ? 'bg-gradient-to-r from-green-900/40 to-emerald-900/40 text-green-300 border border-green-500/30 hover:from-green-800/50 hover:to-emerald-800/50 shadow-lg shadow-green-900/20'
+                  : 'bg-gradient-to-r from-red-900/40 to-pink-900/40 text-red-300 border border-red-500/30 hover:from-red-800/50 hover:to-pink-800/50 shadow-lg shadow-red-900/20'
+              }`}
+            >
             <motion.div
               animate={{ rotate: url.isActive ? 0 : 180 }}
               transition={{ duration: 0.3 }}
@@ -384,7 +397,8 @@ export function ShortUrlsTable({
               )}
             </motion.div>
             {url.isActive ? 'Activo' : 'Inactivo'}
-          </motion.button>
+            </button>
+          </motion.div>
         );
 
       case 'actions':
@@ -392,7 +406,7 @@ export function ShortUrlsTable({
           <div className="flex items-center justify-end gap-2">
             {editingUrl === url.id ? (
               <motion.div 
-                className="flex gap-2"
+                style={{ display: 'flex', gap: '8px' }}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
               >
@@ -558,17 +572,17 @@ export function ShortUrlsTable({
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col sm:flex-row gap-4 mb-6"
       >
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="flex-1">
           <motion.div 
-            className="relative"
+            style={{ position: 'relative' }}
             whileFocus={{ scale: 1.02 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
             {isSearching ? (
               <motion.div
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-indigo-400"
+                style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', height: '20px', width: '20px', color: '#818cf8' }}
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
               >
@@ -595,11 +609,11 @@ export function ShortUrlsTable({
         </div>
         
         <motion.div 
-          className="flex gap-3"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
         >
+          <div className="flex gap-3">
           <Button
             onClick={resetColumnOrder}
             variant="outline"
@@ -608,7 +622,9 @@ export function ShortUrlsTable({
           >
             🔄 Reset columnas
           </Button>
+          </div>
         </motion.div>
+        </div>
       </motion.div>
 
       {/* Tabla responsive con animaciones */}
@@ -616,9 +632,8 @@ export function ShortUrlsTable({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl overflow-hidden shadow-2xl min-h-[600px]"
-        data-table-container
       >
+        <div className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl overflow-hidden shadow-2xl min-h-[600px]" data-table-container>
         <div className="overflow-x-auto">
           <DndContext
             sensors={sensors}
@@ -639,7 +654,7 @@ export function ShortUrlsTable({
                         isActionColumn={column.isActionColumn}
                         minWidth={column.minWidth}
                         onSort={handleColumnSort}
-                        sortBy={localSortBy}
+                        sortBy={localSortBy || undefined}
                         sortOrder={localSortOrder}
                       >
                         {column.label}
@@ -658,18 +673,17 @@ export function ShortUrlsTable({
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 20 }}
                       transition={{ delay: index * 0.05 }}
-                      className="hover:bg-gradient-to-r hover:from-[#1c1033]/50 hover:to-[#2c1b4d]/50 transition-all duration-300 group"
-                      onMouseEnter={() => setHoveredUrl(url.id)}
-                      onMouseLeave={() => setHoveredUrl(null)}
                     >
                       {columns.map((column) => (
                         <td 
                           key={column.id}
-                          className={`px-6 py-4 whitespace-nowrap ${
+                          className={`px-6 py-4 whitespace-nowrap hover:bg-gradient-to-r hover:from-[#1c1033]/50 hover:to-[#2c1b4d]/50 transition-all duration-300 group ${
                             column.isActionColumn ? 'text-right text-sm font-medium' : ''
                           } ${
                             column.minWidth || ''
                           }`}
+                          onMouseEnter={() => setHoveredUrl(url.id)}
+                          onMouseLeave={() => setHoveredUrl(null)}
                         >
                           {renderCellContent(column, url)}
                         </td>
@@ -680,9 +694,8 @@ export function ShortUrlsTable({
                   <motion.tr
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-gradient-to-r from-[#120724] to-[#1c1033]"
                   >
-                    <td colSpan={columns.length} className="px-6 py-12 text-center">
+                    <td colSpan={columns.length} className="px-6 py-12 text-center bg-gradient-to-r from-[#120724] to-[#1c1033]">
                       <div className="flex flex-col items-center justify-center space-y-4">
                         <motion.div
                           initial={{ scale: 0 }}
@@ -705,8 +718,8 @@ export function ShortUrlsTable({
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.4 }}
-                          className="text-center"
                         >
+                          <div className="text-center">
                           <h3 className="text-lg font-bold text-white mb-2 bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">
                             {filters.search ? '🔍 No encontramos nada' : '✨ Tu primer enlace te espera'}
                           </h3>
@@ -734,6 +747,7 @@ export function ShortUrlsTable({
                               </Button>
                             </motion.div>
                           )}
+                          </div>
                         </motion.div>
                       </div>
                     </td>
@@ -744,31 +758,33 @@ export function ShortUrlsTable({
           </table>
         </DndContext>
         </div>
+        </div>
       </motion.div>
 
       {/* Paginación con animaciones */}
       {pagination.totalPages > 1 && (
         <motion.div 
-          className="flex justify-center mt-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
+          <div className="flex justify-center mt-8">
           <Pagination
             currentPage={pagination.page}
             totalPages={pagination.totalPages}
             onPageChange={onPageChange}
           />
+          </div>
         </motion.div>
       )}
 
       {/* Información de resultados con estilo emocional */}
       <motion.div 
-        className="text-center text-sm text-gray-400"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
       >
+        <div className="text-center text-sm text-gray-400">
         <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent font-medium">
           ✨ Mostrando {sortedUrls.length} de {pagination.totalCount || 0} enlace{(pagination.totalCount || 0) !== 1 ? 's' : ''} mágico{(pagination.totalCount || 0) !== 1 ? 's' : ''}
         </span>
@@ -777,6 +793,7 @@ export function ShortUrlsTable({
             para &quot;{filters.search}&quot; 🔍
           </span>
         )}
+        </div>
       </motion.div>
 
       {/* Modal de confirmación de borrado */}

@@ -338,7 +338,7 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
               </p>
               {!loadingUsername && userUsername && (
                 <p className="text-xs text-gray-400 mt-2">
-                  💡 Tip: Usa slugs descriptivos como "ofertas", "descuento", "curso-gratis" para mayor memorabilidad
+                  💡 Tip: Usa slugs descriptivos como &quot;ofertas&quot;, &quot;descuento&quot;, &quot;curso-gratis&quot; para mayor memorabilidad
                 </p>
               )}
               {!userUsername && !loadingUsername && (

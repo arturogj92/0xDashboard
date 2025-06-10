@@ -200,10 +200,10 @@ export default function ShortUrlsPage() {
         
         // Update stats if available
         if (stats) {
-          setStats(prev => ({
+          setStats(prev => prev ? ({
             ...prev,
-            totalUrls: (prev?.totalUrls || 0) + 1
-          }));
+            totalUrls: (prev.totalUrls || 0) + 1
+          }) : null);
         }
         
         setShowCreateModal(false);
@@ -239,10 +239,10 @@ export default function ShortUrlsPage() {
         
         // Update stats if available
         if (stats) {
-          setStats(prev => ({
+          setStats(prev => prev ? ({
             ...prev,
-            totalUrls: Math.max((prev?.totalUrls || 0) - 1, 0)
-          }));
+            totalUrls: Math.max((prev.totalUrls || 0) - 1, 0)
+          }) : null);
         }
       }
     } catch (error) {
@@ -352,7 +352,7 @@ export default function ShortUrlsPage() {
                   son <strong>fáciles de recordar</strong> y transmiten confianza.
                 </p>
                 <p className="text-gray-400 text-xs">
-                  💡 Tip: Usa slugs descriptivos como "ofertas", "curso-gratis", "descuento" para mayor memorabilidad
+                  💡 Tip: Usa slugs descriptivos como &quot;ofertas&quot;, &quot;curso-gratis&quot;, &quot;descuento&quot; para mayor memorabilidad
                 </p>
               </div>
             </div>
