@@ -26,6 +26,8 @@ export async function middleware(request: NextRequest) {
     
     // NUEVO: Verificar si es una URL acortada (ej: art0xdev.creator0x.com/mi-enlace)
     const pathParts = url.pathname.split('/').filter(part => part.length > 0);
+    console.log(`[VPS Middleware] Path parts:`, pathParts, `Length: ${pathParts.length}`);
+    
     if (pathParts.length === 1) {
       const slug = pathParts[0];
       
@@ -33,6 +35,7 @@ export async function middleware(request: NextRequest) {
       try {
         const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
         console.log(`[VPS Middleware] Intentando URL acortada: ${subdomain}/${slug}`);
+        console.log(`[VPS Middleware] Backend URL: ${backendUrl}`);
         
         const redirectResponse = await fetch(`${backendUrl}/api/url-redirect/${slug}?username=${subdomain}`, {
           method: 'GET',
@@ -50,18 +53,21 @@ export async function middleware(request: NextRequest) {
         if (redirectResponse.status === 302) {
           const location = redirectResponse.headers.get('location');
           if (location) {
-            console.log(`[VPS Middleware] Redirigiendo URL acortada ${subdomain}/${slug} → ${location}`);
+            console.log(`[VPS Middleware] ✅ Redirigiendo URL acortada ${subdomain}/${slug} → ${location}`);
             return NextResponse.redirect(location);
           }
         }
         
-        // Si no es un redirect válido, continuar con lógica de landing
-        console.log(`[VPS Middleware] No es URL acortada válida, continuando con landing`);
+        // Log more details about non-redirect response
+        const responseText = await redirectResponse.text();
+        console.log(`[VPS Middleware] No es URL acortada válida. Status: ${redirectResponse.status}, Response: ${responseText.substring(0, 200)}`);
         
       } catch (error) {
         console.warn(`[VPS Middleware] Error verificando URL acortada: ${error instanceof Error ? error.message : 'Unknown error'}`);
         // Continuar con lógica de landing en caso de error
       }
+    } else {
+      console.log(`[VPS Middleware] No es una URL de un solo segmento, saltando verificación de URL acortada`);
     }
     
     // Reescribir a /landing/[subdomain] (comportamiento original)
