@@ -276,7 +276,7 @@ export function ShortUrlsTable({
             >
               <LinkIcon className="h-5 w-5 text-indigo-400 mr-3 flex-shrink-0" />
             </motion.div>
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 relative">
               {editingUrl === url.id ? (
                 <motion.div
                   initial={{ scale: 0.95 }}
@@ -292,54 +292,40 @@ export function ShortUrlsTable({
                   />
                 </motion.div>
               ) : (
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <button 
-                    className="text-sm font-medium text-white truncate hover:text-indigo-300 transition-colors cursor-pointer text-left w-full"
-                    onClick={() => handleCopyWithAnimation(getShortUrl(url))}
+                <div className="relative">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                  <AnimatePresence mode="wait">
-                    {(() => {
-                      const currentUrl = getShortUrl(url);
-                      const shouldShowCopied = copyMessage === currentUrl;
-                      console.log('URL:', currentUrl, 'copyMessage:', copyMessage, 'shouldShow:', shouldShowCopied);
-                      return shouldShowCopied;
-                    })() ? (
+                    <button 
+                      className="text-sm font-medium text-white hover:text-indigo-300 transition-colors cursor-pointer text-left w-full truncate"
+                      onClick={() => handleCopyWithAnimation(getShortUrl(url))}
+                    >
+                      {getShortUrl(url)}
+                    </button>
+                  </motion.div>
+                  <AnimatePresence>
+                    {copyMessage === getShortUrl(url) && (
                       <motion.div
-                        key={`copied-${url.id}`}
-                        initial={{ opacity: 0, y: -10, scale: 0.9 }}
+                        initial={{ opacity: 0, y: 10, scale: 0.9 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.9 }}
                         transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
+                        className="absolute -top-8 left-0 bg-green-600 text-white px-3 py-1 rounded-lg shadow-lg flex items-center whitespace-nowrap z-10"
                       >
-                        <span className="text-green-400 font-semibold flex items-center">
-                          <motion.div
-                            initial={{ rotate: 0 }}
-                            animate={{ rotate: [0, 15, -15, 0] }}
-                            transition={{ duration: 0.5, delay: 0.1 }}
-                            style={{ display: 'inline-block' }}
-                          >
-                            ✨
-                          </motion.div>
-                          <span className="ml-1">¡Enlace copiado!</span>
-                        </span>
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key={`url-${url.id}`}
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        {getShortUrl(url)}
+                        <motion.div
+                          initial={{ rotate: 0 }}
+                          animate={{ rotate: [0, 15, -15, 0] }}
+                          transition={{ duration: 0.5, delay: 0.1 }}
+                          className="mr-1"
+                        >
+                          ✨
+                        </motion.div>
+                        <span className="text-sm font-medium">¡Enlace copiado!</span>
                       </motion.div>
                     )}
                   </AnimatePresence>
-                  </button>
-                </motion.div>
+                </div>
               )}
             </div>
           </div>

@@ -497,6 +497,37 @@
     "deleting": "Eliminando...",
     "deleteDomain": "Eliminar Dominio"
   },
+  "shortUrls": {
+    "createModal": {
+      "title": "Crear enlace corto",
+      "description": "Convierte cualquier URL larga en un enlace corto y fácil de recordar",
+      "originalUrlLabel": "URL Original",
+      "slugLabel": "Slug personalizado (opcional)",
+      "originalUrlPlaceholder": "https://ejemplo.com/enlace-muy-largo...",
+      "slugPlaceholder": "mi-enlace-personalizado",
+      "urlHelpText": "Se agregará automáticamente https://www. si no los tienes. Debe incluir extensión válida (.com, .es, .org, etc.)",
+      "slugHelpText": "Solo letras minúsculas, números y guiones. Mínimo 3 caracteres.",
+      "previewLabel": "Vista previa:",
+      "socialMediaInfo": "Perfecto para redes sociales",
+      "socialMediaDescription": "Las URLs cortas son ideales para Instagram, TikTok y Twitter donde los enlaces largos son difíciles de recordar y compartir.",
+      "createButton": "Crear enlace",
+      "creating": "Creando...",
+      "validating": "Validando...",
+      "cancel": "Cancelar",
+      "errors": {
+        "urlRequired": "La URL original es requerida",
+        "slugRequired": "Necesitas configurar tu slug de usuario antes de crear URLs cortas",
+        "slugUnavailable": "El slug seleccionado no está disponible",
+        "invalidTld": "La URL debe tener una extensión de dominio válida (.com, .es, .org, etc.)",
+        "invalidUrl": "URL inválida: debe incluir un dominio con extensión válida (.com, .es, .org, etc.)",
+        "generic": "Error al crear la URL corta"
+      },
+      "slugStatus": {
+        "available": "✓ Slug disponible",
+        "unavailable": "✗ Slug no disponible"
+      }
+    }
+  },
   "urlCustomDomains": {
     "title": "Dominios Personalizados para URLs",
     "description": "Conecta tu propio dominio (ej: art0x.link) para tus URLs cortas",
