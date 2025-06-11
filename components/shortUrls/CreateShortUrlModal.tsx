@@ -250,8 +250,8 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-[#120724] border border-indigo-900/30 rounded-xl shadow-xl fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <DialogHeader className="mb-4">
+      <DialogContent className="w-[95vw] sm:w-full max-w-lg max-h-[95vh] sm:max-h-[90vh] overflow-y-auto bg-[#120724] border border-indigo-900/30 rounded-xl shadow-xl p-4 sm:p-6">
+        <DialogHeader className="mb-4 flex-shrink-0">
           <div className="flex items-center gap-3">
             <LinkIcon className="w-8 h-8" style={{ color: '#d08216' }} />
             <DialogTitle className="text-xl font-semibold text-white">
@@ -263,7 +263,7 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 flex-1 min-h-0">
           {error && (
             <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded relative" role="alert">
               <strong className="font-bold">Error: </strong>
@@ -383,19 +383,19 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
           </div>
 
           {/* Botones */}
-          <div className="flex justify-end space-x-3 mt-6 pt-3">
+          <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 mt-4 sm:mt-6 pt-3 flex-shrink-0">
             <Button 
               type="button" 
               variant="outline" 
               onClick={handleClose}
-              className="rounded-md border-gray-700 bg-[#1c1033] text-white hover:bg-[#2c1b4d] px-8 py-2.5"
+              className="rounded-md border-gray-700 bg-[#1c1033] text-white hover:bg-[#2c1b4d] px-6 sm:px-8 py-2.5 w-full sm:w-auto"
             >
               {t('cancel')}
             </Button>
             <Button 
               type="submit" 
               disabled={isCreateButtonDisabled()}
-              className="rounded-md bg-indigo-600 text-white hover:bg-indigo-700 px-8 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-md bg-indigo-600 text-white hover:bg-indigo-700 px-6 sm:px-8 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
             >
               {loading ? t('creating') : checkingSlug ? t('validating') : t('createButton')}
             </Button>

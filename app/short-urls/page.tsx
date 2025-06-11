@@ -8,6 +8,8 @@ import { ShortUrlsTable } from '@/components/shortUrls/ShortUrlsTable';
 import UrlCustomDomainConfiguration from '@/components/shortUrls/UrlCustomDomainConfiguration';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
+import { TutorialTooltip } from '@/components/ui/TutorialTooltip';
 import { 
   LinkIcon, 
   PlusIcon,
@@ -134,6 +136,7 @@ export default function ShortUrlsPage() {
     }, 1000);
     return () => clearTimeout(timer);
   }, []);
+
 
   const loadData = async (customFilters = filters, isSearchContext = false) => {
     try {
@@ -419,11 +422,11 @@ export default function ShortUrlsPage() {
           {/* Stats Cards - Mejoradas para responsive */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 w-full max-w-4xl mb-6 sm:mb-8 px-2 sm:px-0">
             <div className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors">
-              <div className="flex items-center">
+              <div className="flex items-center justify-center sm:justify-start min-h-[60px] sm:min-h-0">
                 <div className="flex-shrink-0">
                   <LinkIcon className="h-5 w-5 sm:h-6 sm:w-6 text-indigo-400" />
                 </div>
-                <div className="ml-2 sm:ml-3 min-w-0">
+                <div className="ml-2 sm:ml-3 min-w-0 text-center sm:text-left">
                   <div className="text-xs font-medium text-gray-400 truncate">Total URLs</div>
                   <div className="text-lg sm:text-xl font-bold text-white">{stats?.totalUrls || 0}</div>
                 </div>
@@ -431,11 +434,11 @@ export default function ShortUrlsPage() {
             </div>
 
             <div className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors">
-              <div className="flex items-center">
+              <div className="flex items-center justify-center sm:justify-start min-h-[60px] sm:min-h-0">
                 <div className="flex-shrink-0">
                   <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-green-400" />
                 </div>
-                <div className="ml-2 sm:ml-3 min-w-0">
+                <div className="ml-2 sm:ml-3 min-w-0 text-center sm:text-left">
                   <div className="text-xs font-medium text-gray-400 truncate">Total Clicks</div>
                   <div className="text-lg sm:text-xl font-bold text-white">{stats?.totalClicks || 0}</div>
                 </div>
@@ -443,11 +446,11 @@ export default function ShortUrlsPage() {
             </div>
 
             <div className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors">
-              <div className="flex items-center">
+              <div className="flex items-center justify-center sm:justify-start min-h-[60px] sm:min-h-0">
                 <div className="flex-shrink-0">
                   <ClipboardDocumentIcon className="h-5 w-5 sm:h-6 sm:w-6 text-blue-400" />
                 </div>
-                <div className="ml-2 sm:ml-3 min-w-0">
+                <div className="ml-2 sm:ml-3 min-w-0 text-center sm:text-left">
                   <div className="text-xs font-medium text-gray-400 truncate">Hoy</div>
                   <div className="text-lg sm:text-xl font-bold text-white">{stats?.todayClicks || 0}</div>
                 </div>
@@ -455,11 +458,11 @@ export default function ShortUrlsPage() {
             </div>
 
             <div className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors">
-              <div className="flex items-center">
+              <div className="flex items-center justify-center sm:justify-start min-h-[60px] sm:min-h-0">
                 <div className="flex-shrink-0">
                   <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-400" />
                 </div>
-                <div className="ml-2 sm:ml-3 min-w-0">
+                <div className="ml-2 sm:ml-3 min-w-0 text-center sm:text-left">
                   <div className="text-xs font-medium text-gray-400 truncate">7 días</div>
                   <div className="text-lg sm:text-xl font-bold text-white">{stats?.last7DaysClicks || 0}</div>
                 </div>
@@ -513,15 +516,29 @@ export default function ShortUrlsPage() {
             </div>
           </div>
 
-          {/* Botón crear URL - Responsivo */}
-          <Button
-            onClick={() => setShowCreateModal(true)}
-            className="mb-6 sm:mb-8 mx-auto flex items-center px-4 sm:px-6 py-2 sm:py-3 border border-transparent rounded-md text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-md shadow-indigo-900/30 hover:shadow-lg hover:shadow-indigo-900/40 transform hover:scale-[1.02]"
-          >
-            <PlusIcon className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-            <span className="hidden sm:inline">Crear enlace corto</span>
-            <span className="sm:hidden">Nuevo enlace</span>
-          </Button>
+          {/* Botón crear URL - Responsivo con animación de primera vez */}
+          <div className="mb-6 sm:mb-8 flex justify-center">
+            <TutorialTooltip
+              message="¡Crea tu primer enlace!"
+              leftIcon="🎉"
+              rightIcon="⬇️"
+              storageKey="shortUrls_firstLinkHintSeen"
+              duration={20000}
+              delay={1500}
+              showCondition={allUrls.length === 0 && !isLoading}
+              onParentClick={() => setShowCreateModal(true)}
+              position="top"
+              gradient="yellow-orange"
+            >
+              <Button
+                className="flex items-center px-4 sm:px-6 py-2 sm:py-3 border border-transparent rounded-md text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-md shadow-indigo-900/30 hover:shadow-lg hover:shadow-indigo-900/40 transform hover:scale-[1.02]"
+              >
+                <PlusIcon className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                <span className="hidden sm:inline">Crear enlace corto</span>
+                <span className="sm:hidden">Nuevo enlace</span>
+              </Button>
+            </TutorialTooltip>
+          </div>
 
           {/* URLs Table - Responsivo */}
           <div className="w-full max-w-5xl px-2 sm:px-0">

@@ -46,12 +46,12 @@ interface ColumnConfig {
 
 // Default column order
 const DEFAULT_COLUMNS: ColumnConfig[] = [
-  { id: 'url', label: '🔗 URL Corta' },
-  { id: 'destination', label: '🎯 Destino' },
-  { id: 'clicks', label: '📊 Clicks', minWidth: 'min-w-[140px]' },
-  { id: 'status', label: '⚡ Estado', minWidth: 'min-w-[110px]' },
-  { id: 'actions', label: '🛠️ Acciones', isActionColumn: true },
-  { id: 'created', label: '📅 Creado' }
+  { id: 'url', label: '🔗 URL Corta', minWidth: 'min-w-[200px]' },
+  { id: 'destination', label: '🎯 Destino', minWidth: 'min-w-[180px]' },
+  { id: 'clicks', label: '📊 Clicks', minWidth: 'min-w-[120px]' },
+  { id: 'status', label: '⚡ Estado', minWidth: 'min-w-[100px]' },
+  { id: 'actions', label: '🛠️ Acciones', isActionColumn: true, minWidth: 'min-w-[120px]' },
+  { id: 'created', label: '📅 Creado', minWidth: 'min-w-[130px]' }
 ];
 
 // localStorage key for column order
@@ -630,13 +630,51 @@ export function ShortUrlsTable({
         </div>
       </motion.div>
 
+
       {/* Tabla responsive con animaciones */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <div className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl shadow-2xl min-h-[600px] overflow-hidden" data-table-container>
+        <div className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl shadow-2xl min-h-[600px] overflow-hidden relative" data-table-container>
+        {/* Animación de flecha para indicar scroll horizontal (solo una vez, solo si hay URLs) */}
+        {urls.length > 0 && (
+          <motion.div 
+            className="absolute top-1/2 right-8 transform -translate-y-1/2 z-20 pointer-events-none"
+            initial={{ opacity: 0, x: -15 }}
+            animate={{ 
+              opacity: [0, 1, 1, 0],
+              x: [-15, 5, 20, 35]
+            }}
+            transition={{ 
+              duration: 2.5,
+              delay: 1,
+              ease: "easeInOut"
+            }}
+          >
+            <div className="flex items-center">
+              <motion.div
+                animate={{ x: [0, 10, 0] }}
+                transition={{ 
+                  duration: 0.6,
+                  repeat: 3,
+                  ease: "easeInOut"
+                }}
+                className="flex items-center"
+              >
+                <svg className="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                </svg>
+                <svg className="w-6 h-6 text-indigo-400 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                </svg>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+        {/* Gradiente de fade en el borde derecho */}
+        <div className="absolute top-0 right-0 w-6 h-full bg-gradient-to-l from-[#120724] via-[#120724]/60 to-transparent pointer-events-none z-10"></div>
         <div className="overflow-x-auto max-h-[600px] overflow-y-auto relative">
           <DndContext
             sensors={sensors}
