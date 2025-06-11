@@ -636,8 +636,8 @@ export function ShortUrlsTable({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <div className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl overflow-hidden shadow-2xl min-h-[600px]" data-table-container>
-        <div className="overflow-x-auto">
+        <div className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl shadow-2xl min-h-[600px] overflow-hidden" data-table-container>
+        <div className="overflow-x-auto max-h-[600px] overflow-y-auto relative">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -648,7 +648,7 @@ export function ShortUrlsTable({
                 items={columns.map(col => col.id)} 
                 strategy={horizontalListSortingStrategy}
               >
-                <thead className="bg-gradient-to-r from-[#1c1033] to-[#2c1b4d]">
+                <thead className="bg-gradient-to-r from-[#1c1033] to-[#2c1b4d] sticky top-0 z-10 shadow-lg shadow-[#120724]/50 after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gradient-to-r after:from-indigo-500/0 after:via-indigo-500/50 after:to-indigo-500/0">
                   <tr>
                     {columns.map((column) => (
                       <SortableColumnHeader
