@@ -34,7 +34,7 @@ import {
   HeartIcon,
   FireIcon
 } from '@heroicons/react/24/outline';
-import { type ShortUrl } from '@/lib/api';
+import { type ShortUrl, getUserSlug } from '@/lib/api';
 
 // Column configuration type
 interface ColumnConfig {
@@ -97,6 +97,7 @@ export function ShortUrlsTable({
   const [editingUrl, setEditingUrl] = useState<string | null>(null);
   const [editData, setEditData] = useState<{ originalUrl: string; slug: string }>({ originalUrl: '', slug: '' });
   const [hoveredUrl, setHoveredUrl] = useState<string | null>(null);
+  const [userSlug, setUserSlug] = useState<string | null>(null);
   const [clickedUrl, setClickedUrl] = useState<string | null>(null);
   const [deleteConfirmUrl, setDeleteConfirmUrl] = useState<string | null>(null);
   
@@ -142,6 +143,22 @@ export function ShortUrlsTable({
   useEffect(() => {
     setLocalUrls(urls);
   }, [urls]);
+
+  // Load user slug for URL generation
+  useEffect(() => {
+    const loadUserSlug = async () => {
+      try {
+        const response = await getUserSlug();
+        if (response.success && response.data.slug) {
+          setUserSlug(response.data.slug);
+        }
+      } catch (error) {
+        console.error('Error loading user slug:', error);
+      }
+    };
+
+    loadUserSlug();
+  }, []);
 
   // Sort URLs locally
   const sortedUrls = useMemo(() => {
@@ -548,7 +565,7 @@ export function ShortUrlsTable({
   };
 
   const getShortUrl = (url: ShortUrl) => {
-    return url.shortUrl || `${url.username || 'user'}.creator0x.com/${url.slug}`;
+    return url.shortUrl || `${userSlug || 'user'}.creator0x.com/${url.slug}`;
   };
 
   const getClicksIcon = (clickCount: number) => {
