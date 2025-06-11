@@ -128,7 +128,16 @@ export function TutorialTooltip({
                 ease: "easeInOut"
               }
             }}
-            className={positionClasses[position]}
+            style={{
+              position: 'absolute',
+              ...(position === 'top' && { top: '-64px', left: '50%', transform: 'translateX(-50%)' }),
+              ...(position === 'bottom' && { bottom: '-64px', left: '50%', transform: 'translateX(-50%)' }),
+              ...(position === 'left' && { left: '-256px', top: '50%', transform: 'translateY(-50%)' }),
+              ...(position === 'right' && { right: '-256px', top: '50%', transform: 'translateY(-50%)' }),
+              pointerEvents: 'none',
+              zIndex: 30,
+              width: 'fit-content'
+            }}
           >
             <div className={`${gradientClasses[gradient]} text-black px-4 py-2 rounded-lg shadow-lg font-semibold text-sm whitespace-nowrap relative`}>
               <div className="flex items-center gap-2">

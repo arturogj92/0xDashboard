@@ -8,8 +8,9 @@ import { ShortUrlsTable } from '@/components/shortUrls/ShortUrlsTable';
 import UrlCustomDomainConfiguration from '@/components/shortUrls/UrlCustomDomainConfiguration';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
 import { TutorialTooltip } from '@/components/ui/TutorialTooltip';
+import ShortUrlStatsModal from '@/components/shortUrls/ShortUrlStatsModal';
+import { useShortUrlGlobalStats } from '@/hooks/useShortUrlStats';
 import { 
   LinkIcon, 
   PlusIcon,
@@ -44,6 +45,15 @@ export default function ShortUrlsPage() {
   const [localSearch, setLocalSearch] = useState(''); // Local search term
   const [backendSearch, setBackendSearch] = useState(''); // Backend search term
   const [customDomainsOpen, setCustomDomainsOpen] = useState(false);
+  const [globalStatsInfo, setGlobalStatsInfo] = useState<
+    { period: '28d'|'7d'|'yesterday'|'today' } | null
+  >(null);
+  const [urlStatsInfo, setUrlStatsInfo] = useState<
+    { period: '28d'|'7d'|'yesterday'|'today'; url: ShortUrl } | null
+  >(null);
+  
+  // Hook para estadísticas globales de URLs
+  const { stats: globalUrlStats, loading: loadingGlobalStats, error: errorGlobalStats } = useShortUrlGlobalStats();
   const [pagination, setPagination] = useState({
     page: 1,
     totalPages: 1,
@@ -280,6 +290,17 @@ export default function ShortUrlsPage() {
     setTimeout(() => setCopyMessage(null), 2000);
   };
 
+  const handleUrlStatsClick = (url: ShortUrl) => {
+    // Por defecto mostrar estadísticas de 28 días
+    setUrlStatsInfo({ period: '28d', url });
+  };
+
+  const handleUrlPeriodChange = (period: '28d'|'7d'|'yesterday'|'today') => {
+    if (urlStatsInfo) {
+      setUrlStatsInfo({ ...urlStatsInfo, period });
+    }
+  };
+
   // Handle filters change - update local search immediately, backend search with debounce
   const handleFiltersChange = useCallback((newFilters: any) => {
     if (newFilters.search !== undefined) {
@@ -419,9 +440,13 @@ export default function ShortUrlsPage() {
             </div>
           </div>
 
-          {/* Stats Cards - Mejoradas para responsive */}
+          {/* Stats Cards - Mejoradas para responsive y clickeables */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 w-full max-w-4xl mb-6 sm:mb-8 px-2 sm:px-0">
-            <div className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors">
+            {/* Total URLs - muestra estadísticas de 28 días */}
+            <div 
+              className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors cursor-pointer"
+              onClick={() => setGlobalStatsInfo({ period: '28d' })}
+            >
               <div className="flex items-center justify-center sm:justify-start min-h-[60px] sm:min-h-0">
                 <div className="flex-shrink-0">
                   <LinkIcon className="h-5 w-5 sm:h-6 sm:w-6 text-indigo-400" />
@@ -433,38 +458,50 @@ export default function ShortUrlsPage() {
               </div>
             </div>
 
-            <div className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors">
+            {/* Total Clicks - muestra estadísticas de 28 días */}
+            <div 
+              className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors cursor-pointer"
+              onClick={() => setGlobalStatsInfo({ period: '28d' })}
+            >
               <div className="flex items-center justify-center sm:justify-start min-h-[60px] sm:min-h-0">
                 <div className="flex-shrink-0">
                   <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-green-400" />
                 </div>
                 <div className="ml-2 sm:ml-3 min-w-0 text-center sm:text-left">
                   <div className="text-xs font-medium text-gray-400 truncate">Total Clicks</div>
-                  <div className="text-lg sm:text-xl font-bold text-white">{stats?.totalClicks || 0}</div>
+                  <div className="text-lg sm:text-xl font-bold text-white">{globalUrlStats?.last_28_days_total || stats?.totalClicks || 0}</div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors">
+            {/* Hoy - muestra estadísticas por hora */}
+            <div 
+              className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors cursor-pointer"
+              onClick={() => setGlobalStatsInfo({ period: 'today' })}
+            >
               <div className="flex items-center justify-center sm:justify-start min-h-[60px] sm:min-h-0">
                 <div className="flex-shrink-0">
                   <ClipboardDocumentIcon className="h-5 w-5 sm:h-6 sm:w-6 text-blue-400" />
                 </div>
                 <div className="ml-2 sm:ml-3 min-w-0 text-center sm:text-left">
                   <div className="text-xs font-medium text-gray-400 truncate">Hoy</div>
-                  <div className="text-lg sm:text-xl font-bold text-white">{stats?.todayClicks || 0}</div>
+                  <div className="text-lg sm:text-xl font-bold text-white">{globalUrlStats?.today_total || stats?.todayClicks || 0}</div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors">
+            {/* 7 días - muestra estadísticas diarias */}
+            <div 
+              className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors cursor-pointer"
+              onClick={() => setGlobalStatsInfo({ period: '7d' })}
+            >
               <div className="flex items-center justify-center sm:justify-start min-h-[60px] sm:min-h-0">
                 <div className="flex-shrink-0">
                   <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-400" />
                 </div>
                 <div className="ml-2 sm:ml-3 min-w-0 text-center sm:text-left">
                   <div className="text-xs font-medium text-gray-400 truncate">7 días</div>
-                  <div className="text-lg sm:text-xl font-bold text-white">{stats?.last7DaysClicks || 0}</div>
+                  <div className="text-lg sm:text-xl font-bold text-white">{globalUrlStats?.last_7_days_total || stats?.last7DaysClicks || 0}</div>
                 </div>
               </div>
             </div>
@@ -552,6 +589,7 @@ export default function ShortUrlsPage() {
               onDeleteUrl={handleDeleteUrl}
               onUpdateUrl={handleUpdateUrl}
               onRefresh={loadData}
+              onStatsClick={handleUrlStatsClick}
               copyMessage={copyMessage}
               isSearching={isSearching}
             />
@@ -571,6 +609,27 @@ export default function ShortUrlsPage() {
           isOpen={showCreateModal}
           onClose={() => setShowCreateModal(false)}
           onSubmit={handleCreateUrl}
+        />
+      )}
+
+      {/* Global Stats Modal */}
+      {globalStatsInfo && (
+        <ShortUrlStatsModal
+          open={true}
+          onOpenChange={(open) => !open && setGlobalStatsInfo(null)}
+          period={globalStatsInfo.period}
+        />
+      )}
+
+      {/* URL Stats Modal */}
+      {urlStatsInfo && (
+        <ShortUrlStatsModal
+          open={true}
+          onOpenChange={(open) => !open && setUrlStatsInfo(null)}
+          period={urlStatsInfo.period}
+          urlId={urlStatsInfo.url.id}
+          urlTitle={urlStatsInfo.url.title || urlStatsInfo.url.slug || 'URL'}
+          onPeriodChange={handleUrlPeriodChange}
         />
       )}
     </ProtectedRoute>

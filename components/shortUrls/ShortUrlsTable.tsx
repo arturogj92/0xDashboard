@@ -32,7 +32,8 @@ import {
   MagnifyingGlassIcon,
   SparklesIcon,
   HeartIcon,
-  FireIcon
+  FireIcon,
+  ChartPieIcon
 } from '@heroicons/react/24/outline';
 import { type ShortUrl, getUserSlug } from '@/lib/api';
 
@@ -77,6 +78,7 @@ interface ShortUrlsTableProps {
   onDeleteUrl: (id: string) => void;
   onUpdateUrl: (id: string, data: any) => void;
   onRefresh: () => void;
+  onStatsClick?: (url: ShortUrl) => void;
   copyMessage: string | null;
   isSearching?: boolean;
 }
@@ -91,6 +93,7 @@ export function ShortUrlsTable({
   onDeleteUrl,
   onUpdateUrl,
   onRefresh,
+  onStatsClick,
   copyMessage,
   isSearching = false
 }: ShortUrlsTableProps) {
@@ -311,13 +314,26 @@ export function ShortUrlsTable({
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -10, scale: 0.9 }}
                         transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
-                        className="absolute -top-8 left-0 bg-green-600 text-white px-3 py-1 rounded-lg shadow-lg flex items-center whitespace-nowrap z-10"
+                        style={{ 
+                          position: 'absolute',
+                          top: '-32px',
+                          left: '0',
+                          backgroundColor: '#16a34a',
+                          color: 'white',
+                          padding: '4px 12px',
+                          borderRadius: '8px',
+                          boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          whiteSpace: 'nowrap',
+                          zIndex: 10
+                        }}
                       >
                         <motion.div
                           initial={{ rotate: 0 }}
                           animate={{ rotate: [0, 15, -15, 0] }}
                           transition={{ duration: 0.5, delay: 0.1 }}
-                          className="mr-1"
+                          style={{ marginRight: '4px' }}
                         >
                           ✨
                         </motion.div>
@@ -435,6 +451,20 @@ export function ShortUrlsTable({
               </motion.div>
             ) : (
               <>
+                {/* Botón de estadísticas */}
+                {onStatsClick && (
+                  <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                    <Button
+                      onClick={() => onStatsClick(url)}
+                      size="sm"
+                      className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-900/30"
+                      title="Ver estadísticas"
+                    >
+                      <ChartPieIcon className="h-4 w-4" />
+                    </Button>
+                  </motion.div>
+                )}
+                
                 <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                   <Button
                     onClick={() => handleStartEdit(url)}
@@ -641,7 +671,14 @@ export function ShortUrlsTable({
         {/* Animación de flecha para indicar scroll horizontal (solo una vez, solo si hay URLs) */}
         {urls.length > 0 && (
           <motion.div 
-            className="absolute top-1/2 right-8 transform -translate-y-1/2 z-20 pointer-events-none"
+            style={{
+              position: 'absolute',
+              top: '50%',
+              right: '32px',
+              transform: 'translateY(-50%)',
+              zIndex: 20,
+              pointerEvents: 'none'
+            }}
             initial={{ opacity: 0, x: -15 }}
             animate={{ 
               opacity: [0, 1, 1, 0],
@@ -661,7 +698,7 @@ export function ShortUrlsTable({
                   repeat: 3,
                   ease: "easeInOut"
                 }}
-                className="flex items-center"
+                style={{ display: 'flex', alignItems: 'center' }}
               >
                 <svg className="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
