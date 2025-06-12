@@ -32,7 +32,8 @@ import {
   MagnifyingGlassIcon,
   SparklesIcon,
   HeartIcon,
-  FireIcon
+  FireIcon,
+  ChartPieIcon
 } from '@heroicons/react/24/outline';
 import { type ShortUrl, getUserSlug } from '@/lib/api';
 
@@ -46,12 +47,12 @@ interface ColumnConfig {
 
 // Default column order
 const DEFAULT_COLUMNS: ColumnConfig[] = [
-  { id: 'url', label: '🔗 URL Corta' },
-  { id: 'destination', label: '🎯 Destino' },
-  { id: 'clicks', label: '📊 Clicks', minWidth: 'min-w-[140px]' },
-  { id: 'status', label: '⚡ Estado', minWidth: 'min-w-[110px]' },
-  { id: 'actions', label: '🛠️ Acciones', isActionColumn: true },
-  { id: 'created', label: '📅 Creado' }
+  { id: 'url', label: '🔗 URL Corta', minWidth: 'min-w-[200px]' },
+  { id: 'destination', label: '🎯 Destino', minWidth: 'min-w-[180px]' },
+  { id: 'clicks', label: '📊 Clicks', minWidth: 'min-w-[120px]' },
+  { id: 'status', label: '⚡ Estado', minWidth: 'min-w-[100px]' },
+  { id: 'actions', label: '🛠️ Acciones', isActionColumn: true, minWidth: 'min-w-[120px]' },
+  { id: 'created', label: '📅 Creado', minWidth: 'min-w-[130px]' }
 ];
 
 // localStorage key for column order
@@ -77,6 +78,7 @@ interface ShortUrlsTableProps {
   onDeleteUrl: (id: string) => void;
   onUpdateUrl: (id: string, data: any) => void;
   onRefresh: () => void;
+  onStatsClick?: (url: ShortUrl) => void;
   copyMessage: string | null;
   isSearching?: boolean;
 }
@@ -91,6 +93,7 @@ export function ShortUrlsTable({
   onDeleteUrl,
   onUpdateUrl,
   onRefresh,
+  onStatsClick,
   copyMessage,
   isSearching = false
 }: ShortUrlsTableProps) {
@@ -276,7 +279,7 @@ export function ShortUrlsTable({
             >
               <LinkIcon className="h-5 w-5 text-indigo-400 mr-3 flex-shrink-0" />
             </motion.div>
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 relative">
               {editingUrl === url.id ? (
                 <motion.div
                   initial={{ scale: 0.95 }}
@@ -292,54 +295,53 @@ export function ShortUrlsTable({
                   />
                 </motion.div>
               ) : (
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <button 
-                    className="text-sm font-medium text-white truncate hover:text-indigo-300 transition-colors cursor-pointer text-left w-full"
-                    onClick={() => handleCopyWithAnimation(getShortUrl(url))}
+                <div className="relative">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                  <AnimatePresence mode="wait">
-                    {(() => {
-                      const currentUrl = getShortUrl(url);
-                      const shouldShowCopied = copyMessage === currentUrl;
-                      console.log('URL:', currentUrl, 'copyMessage:', copyMessage, 'shouldShow:', shouldShowCopied);
-                      return shouldShowCopied;
-                    })() ? (
+                    <button 
+                      className="text-sm font-medium text-white hover:text-indigo-300 transition-colors cursor-pointer text-left w-full truncate"
+                      onClick={() => handleCopyWithAnimation(getShortUrl(url))}
+                    >
+                      {getShortUrl(url)}
+                    </button>
+                  </motion.div>
+                  <AnimatePresence>
+                    {copyMessage === getShortUrl(url) && (
                       <motion.div
-                        key={`copied-${url.id}`}
-                        initial={{ opacity: 0, y: -10, scale: 0.9 }}
+                        initial={{ opacity: 0, y: 10, scale: 0.9 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.9 }}
                         transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
+                        style={{ 
+                          position: 'absolute',
+                          top: '-32px',
+                          left: '0',
+                          backgroundColor: '#16a34a',
+                          color: 'white',
+                          padding: '4px 12px',
+                          borderRadius: '8px',
+                          boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          whiteSpace: 'nowrap',
+                          zIndex: 10
+                        }}
                       >
-                        <span className="text-green-400 font-semibold flex items-center">
-                          <motion.div
-                            initial={{ rotate: 0 }}
-                            animate={{ rotate: [0, 15, -15, 0] }}
-                            transition={{ duration: 0.5, delay: 0.1 }}
-                            style={{ display: 'inline-block' }}
-                          >
-                            ✨
-                          </motion.div>
-                          <span className="ml-1">¡Enlace copiado!</span>
-                        </span>
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key={`url-${url.id}`}
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        {getShortUrl(url)}
+                        <motion.div
+                          initial={{ rotate: 0 }}
+                          animate={{ rotate: [0, 15, -15, 0] }}
+                          transition={{ duration: 0.5, delay: 0.1 }}
+                          style={{ marginRight: '4px' }}
+                        >
+                          ✨
+                        </motion.div>
+                        <span className="text-sm font-medium">¡Enlace copiado!</span>
                       </motion.div>
                     )}
                   </AnimatePresence>
-                  </button>
-                </motion.div>
+                </div>
               )}
             </div>
           </div>
@@ -449,6 +451,20 @@ export function ShortUrlsTable({
               </motion.div>
             ) : (
               <>
+                {/* Botón de estadísticas */}
+                {onStatsClick && (
+                  <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                    <Button
+                      onClick={() => onStatsClick(url)}
+                      size="sm"
+                      className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-900/30"
+                      title="Ver estadísticas"
+                    >
+                      <ChartPieIcon className="h-4 w-4" />
+                    </Button>
+                  </motion.div>
+                )}
+                
                 <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                   <Button
                     onClick={() => handleStartEdit(url)}
@@ -644,14 +660,59 @@ export function ShortUrlsTable({
         </div>
       </motion.div>
 
+
       {/* Tabla responsive con animaciones */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <div className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl overflow-hidden shadow-2xl min-h-[600px]" data-table-container>
-        <div className="overflow-x-auto">
+        <div className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl shadow-2xl min-h-[600px] overflow-hidden relative" data-table-container>
+        {/* Animación de flecha para indicar scroll horizontal (solo una vez, solo si hay URLs) */}
+        {urls.length > 0 && (
+          <motion.div 
+            style={{
+              position: 'absolute',
+              top: '50%',
+              right: '32px',
+              transform: 'translateY(-50%)',
+              zIndex: 20,
+              pointerEvents: 'none'
+            }}
+            initial={{ opacity: 0, x: -15 }}
+            animate={{ 
+              opacity: [0, 1, 1, 0],
+              x: [-15, 5, 20, 35]
+            }}
+            transition={{ 
+              duration: 2.5,
+              delay: 1,
+              ease: "easeInOut"
+            }}
+          >
+            <div className="flex items-center">
+              <motion.div
+                animate={{ x: [0, 10, 0] }}
+                transition={{ 
+                  duration: 0.6,
+                  repeat: 3,
+                  ease: "easeInOut"
+                }}
+                style={{ display: 'flex', alignItems: 'center' }}
+              >
+                <svg className="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                </svg>
+                <svg className="w-6 h-6 text-indigo-400 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                </svg>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+        {/* Gradiente de fade en el borde derecho */}
+        <div className="absolute top-0 right-0 w-6 h-full bg-gradient-to-l from-[#120724] via-[#120724]/60 to-transparent pointer-events-none z-10"></div>
+        <div className="overflow-x-auto max-h-[600px] overflow-y-auto relative">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -662,7 +723,7 @@ export function ShortUrlsTable({
                 items={columns.map(col => col.id)} 
                 strategy={horizontalListSortingStrategy}
               >
-                <thead className="bg-gradient-to-r from-[#1c1033] to-[#2c1b4d]">
+                <thead className="bg-gradient-to-r from-[#1c1033] to-[#2c1b4d] sticky top-0 z-10 shadow-lg shadow-[#120724]/50 after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gradient-to-r after:from-indigo-500/0 after:via-indigo-500/50 after:to-indigo-500/0">
                   <tr>
                     {columns.map((column) => (
                       <SortableColumnHeader

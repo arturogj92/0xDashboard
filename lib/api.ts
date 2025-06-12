@@ -1108,6 +1108,15 @@ export const getShortUrlDailyStats = async (days: number = 28, timezone?: string
   return response.json();
 };
 
+// Obtener estadísticas por horas de clicks (para today)
+export const getShortUrlHourlyStats = async (hours: number = 24, timezone?: string): Promise<ApiResponse<Array<{ hour: string; count: number }>>> => {
+  const tz = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  const response = await fetch(`${API_URL}/api/short-urls/stats/hourly-clicks?hours=${hours}&timezone=${encodeURIComponent(tz)}`, {
+    headers: createAuthHeaders(),
+  });
+  return response.json();
+};
+
 // Obtener estadísticas detalladas de una URL específica
 export const getShortUrlDetailedStats = async (id: string, timezone?: string): Promise<ApiResponse<ShortUrlStatsDetailed>> => {
   const tz = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';

@@ -9,6 +9,7 @@ import { checkSlugAvailability, getUserSlug, type CreateShortUrlData } from '@/l
 import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 import { UserSlugConfiguration } from '@/components/auth/UserSlugConfiguration';
+import { useTranslations } from 'next-intl';
 
 interface CreateShortUrlModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ interface CreateShortUrlModalProps {
 
 export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUrlModalProps) {
   const { user } = useAuth();
+  const t = useTranslations('shortUrls.createModal');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [originalUrl, setOriginalUrl] = useState('');
@@ -112,9 +114,14 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
     }
     
     try {
-      // Agregar www. si no lo tiene y es un dominio principal
       const urlObj = new URL(normalized);
       const hostname = urlObj.hostname;
+      
+      // Validar que el hostname tenga un TLD válido
+      const tldPattern = /\.[a-z]{2,}$/i;
+      if (!hostname.match(tldPattern)) {
+        throw new Error(t('errors.invalidTld'));
+      }
       
       // No agregar www. si:
       // - Ya tiene www.
@@ -130,9 +137,11 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
       
       return normalized;
     } catch (error) {
-      // Si hay error al parsear la URL, devolver la versión con https://
-      console.warn('Error parsing URL, returning with https only:', error);
-      return normalized;
+      // Si hay error al parsear la URL o falta TLD válido, lanzar error
+      if (error instanceof Error && error.message === t('errors.invalidTld')) {
+        throw error;
+      }
+      throw new Error(t('errors.invalidUrl'));
     }
   };
 
@@ -140,22 +149,28 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
     e.preventDefault();
     
     if (!originalUrl) {
-      setError('La URL original es requerida');
+      setError(t('errors.urlRequired'));
       return;
     }
 
     if (!userUsername) {
-      setError('Necesitas configurar tu slug de usuario antes de crear URLs cortas');
+      setError(t('errors.slugRequired'));
       return;
     }
 
     if (slug && slugAvailable === false) {
-      setError('El slug seleccionado no está disponible');
+      setError(t('errors.slugUnavailable'));
       return;
     }
 
-    // Normalizar URL agregando https:// y www. automáticamente
-    const validatedUrl = normalizeUrl(originalUrl);
+    // Validar y normalizar URL agregando https:// y www. automáticamente
+    let validatedUrl;
+    try {
+      validatedUrl = normalizeUrl(originalUrl);
+    } catch (urlError: any) {
+      setError(urlError.message || t('errors.invalidUrl'));
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -169,7 +184,7 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
       await onSubmit(data);
       resetForm();
     } catch (err: any) {
-      setError(err.message || 'Error al crear la URL corta');
+      setError(err.message || t('errors.generic'));
     } finally {
       setLoading(false);
     }
@@ -235,20 +250,20 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto bg-[#120724] border border-indigo-900/30 rounded-xl shadow-xl fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        <DialogHeader className="mb-4">
+      <DialogContent className="w-[95vw] sm:w-full max-w-lg max-h-[95vh] sm:max-h-[90vh] overflow-y-auto bg-[#120724] border border-indigo-900/30 rounded-xl shadow-xl p-4 sm:p-6">
+        <DialogHeader className="mb-4 flex-shrink-0">
           <div className="flex items-center gap-3">
             <LinkIcon className="w-8 h-8" style={{ color: '#d08216' }} />
             <DialogTitle className="text-xl font-semibold text-white">
-              Crear enlace corto
+              {t('title')}
             </DialogTitle>
           </div>
           <DialogDescription className="text-gray-400 mt-1">
-            Convierte cualquier URL larga en un enlace corto y fácil de recordar
+            {t('description')}
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 flex-1 min-h-0">
           {error && (
             <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded relative" role="alert">
               <strong className="font-bold">Error: </strong>
@@ -259,7 +274,7 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
           {/* URL Original */}
           <div>
             <label htmlFor="originalUrl" className="block text-sm font-medium text-gray-200 mb-2">
-              URL Original *
+              {t('originalUrlLabel')} *
             </label>
             <div className="relative">
               <GlobeAltIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -269,19 +284,19 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
                 value={originalUrl}
                 onChange={(e) => setOriginalUrl(e.target.value)}
                 className="pl-10 bg-[#1c1033] border-gray-700 text-gray-200 focus:border-indigo-500"
-                placeholder="https://ejemplo.com/enlace-muy-largo..."
+                placeholder={t('originalUrlPlaceholder')}
                 required
               />
             </div>
             <p className="text-xs text-gray-400 mt-1">
-              💡 Se agregará automáticamente https://www. si no los tienes
+              💡 {t('urlHelpText')}
             </p>
           </div>
 
           {/* Slug personalizado */}
           <div>
             <label htmlFor="slug" className="block text-sm font-medium text-gray-200 mb-2">
-              Slug personalizado (opcional)
+              {t('slugLabel')}
             </label>
             <div className="relative">
               <LinkIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -291,7 +306,7 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
                 value={slug}
                 onChange={(e) => handleSlugChange(e.target.value)}
                 className="pl-10 bg-[#1c1033] border-gray-700 text-gray-200 focus:border-indigo-500"
-                placeholder="mi-enlace-personalizado"
+                placeholder={t('slugPlaceholder')}
                 minLength={3}
                 maxLength={50}
               />
@@ -312,11 +327,11 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
             </div>
             {slugTouched && !checkingSlug && slugAvailable !== null && (
               <p className={`text-xs mt-1 ${slugAvailable ? 'text-green-400' : 'text-red-400'}`}>
-                {slugAvailable ? '✓ Slug disponible' : '✗ Slug no disponible'}
+                {slugAvailable ? t('slugStatus.available') : t('slugStatus.unavailable')}
               </p>
             )}
             <p className="text-xs text-gray-400 mt-1">
-              Solo letras minúsculas, números y guiones. Mínimo 3 caracteres.
+              {t('slugHelpText')}
             </p>
           </div>
 
@@ -332,7 +347,7 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
           {/* Preview de la URL */}
           {user?.id && (
             <div className="bg-[#1c1033]/50 border border-indigo-900/30 rounded-lg p-4">
-              <p className="text-xs font-medium text-gray-300 mb-2">Vista previa:</p>
+              <p className="text-xs font-medium text-gray-300 mb-2">{t('previewLabel')}</p>
               <p className="text-sm text-indigo-300 font-mono break-all">
                 {getPreviewUrl()}
               </p>
@@ -358,31 +373,31 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
               </div>
               <div>
                 <p className="text-sm text-blue-200 font-medium mb-1">
-                  Perfecto para redes sociales
+                  {t('socialMediaInfo')}
                 </p>
                 <p className="text-xs text-blue-300/80 leading-relaxed">
-                  Las URLs cortas son ideales para Instagram, TikTok y Twitter donde los enlaces largos son difíciles de recordar y compartir.
+                  {t('socialMediaDescription')}
                 </p>
               </div>
             </div>
           </div>
 
           {/* Botones */}
-          <div className="flex justify-end space-x-3 mt-6 pt-3">
+          <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 mt-4 sm:mt-6 pt-3 flex-shrink-0">
             <Button 
               type="button" 
               variant="outline" 
               onClick={handleClose}
-              className="rounded-md border-gray-700 bg-[#1c1033] text-white hover:bg-[#2c1b4d] px-8 py-2.5"
+              className="rounded-md border-gray-700 bg-[#1c1033] text-white hover:bg-[#2c1b4d] px-6 sm:px-8 py-2.5 w-full sm:w-auto"
             >
-              Cancelar
+              {t('cancel')}
             </Button>
             <Button 
               type="submit" 
               disabled={isCreateButtonDisabled()}
-              className="rounded-md bg-indigo-600 text-white hover:bg-indigo-700 px-8 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-md bg-indigo-600 text-white hover:bg-indigo-700 px-6 sm:px-8 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
             >
-              {loading ? 'Creando...' : checkingSlug ? 'Validando...' : 'Crear enlace'}
+              {loading ? t('creating') : checkingSlug ? t('validating') : t('createButton')}
             </Button>
           </div>
         </form>

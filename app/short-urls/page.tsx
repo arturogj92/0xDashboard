@@ -8,6 +8,9 @@ import { ShortUrlsTable } from '@/components/shortUrls/ShortUrlsTable';
 import UrlCustomDomainConfiguration from '@/components/shortUrls/UrlCustomDomainConfiguration';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import { TutorialTooltip } from '@/components/ui/TutorialTooltip';
+import ShortUrlStatsModal from '@/components/shortUrls/ShortUrlStatsModal';
+import { useShortUrlGlobalStats } from '@/hooks/useShortUrlStats';
 import { 
   LinkIcon, 
   PlusIcon,
@@ -42,6 +45,15 @@ export default function ShortUrlsPage() {
   const [localSearch, setLocalSearch] = useState(''); // Local search term
   const [backendSearch, setBackendSearch] = useState(''); // Backend search term
   const [customDomainsOpen, setCustomDomainsOpen] = useState(false);
+  const [globalStatsInfo, setGlobalStatsInfo] = useState<
+    { period: '28d'|'7d'|'yesterday'|'today' } | null
+  >(null);
+  const [urlStatsInfo, setUrlStatsInfo] = useState<
+    { period: '28d'|'7d'|'yesterday'|'today'; url: ShortUrl } | null
+  >(null);
+  
+  // Hook para estadísticas globales de URLs
+  const { stats: globalUrlStats, loading: loadingGlobalStats, error: errorGlobalStats } = useShortUrlGlobalStats();
   const [pagination, setPagination] = useState({
     page: 1,
     totalPages: 1,
@@ -134,6 +146,7 @@ export default function ShortUrlsPage() {
     }, 1000);
     return () => clearTimeout(timer);
   }, []);
+
 
   const loadData = async (customFilters = filters, isSearchContext = false) => {
     try {
@@ -277,6 +290,17 @@ export default function ShortUrlsPage() {
     setTimeout(() => setCopyMessage(null), 2000);
   };
 
+  const handleUrlStatsClick = (url: ShortUrl) => {
+    // Por defecto mostrar estadísticas de 28 días
+    setUrlStatsInfo({ period: '28d', url });
+  };
+
+  const handleUrlPeriodChange = (period: '28d'|'7d'|'yesterday'|'today') => {
+    if (urlStatsInfo) {
+      setUrlStatsInfo({ ...urlStatsInfo, period });
+    }
+  };
+
   // Handle filters change - update local search immediately, backend search with debounce
   const handleFiltersChange = useCallback((newFilters: any) => {
     if (newFilters.search !== undefined) {
@@ -334,7 +358,7 @@ export default function ShortUrlsPage() {
         description="Crea enlaces cortos memorables para tus redes sociales y rastrea su rendimiento"
       />
 
-      <div className="mb-16 relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-visible">
+      <div className="mb-16 relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-hidden">
         <div className="relative w-full max-w-6xl rounded-xl border border-white/10 bg-[#0e0b15]/70 backdrop-blur-xl shadow-2xl p-4 sm:p-6 flex flex-col items-center">
           
           {/* Explicación del valor para redes sociales */}
@@ -416,52 +440,68 @@ export default function ShortUrlsPage() {
             </div>
           </div>
 
-          {/* Stats Cards - Mejoradas para responsive */}
+          {/* Stats Cards - Mejoradas para responsive y clickeables */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 w-full max-w-4xl mb-6 sm:mb-8 px-2 sm:px-0">
-            <div className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors">
-              <div className="flex items-center">
+            {/* Total URLs - muestra estadísticas de 28 días */}
+            <div 
+              className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors cursor-pointer"
+              onClick={() => setGlobalStatsInfo({ period: '28d' })}
+            >
+              <div className="flex items-center justify-center sm:justify-start min-h-[60px] sm:min-h-0">
                 <div className="flex-shrink-0">
                   <LinkIcon className="h-5 w-5 sm:h-6 sm:w-6 text-indigo-400" />
                 </div>
-                <div className="ml-2 sm:ml-3 min-w-0">
+                <div className="ml-2 sm:ml-3 min-w-0 text-center sm:text-left">
                   <div className="text-xs font-medium text-gray-400 truncate">Total URLs</div>
                   <div className="text-lg sm:text-xl font-bold text-white">{stats?.totalUrls || 0}</div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors">
-              <div className="flex items-center">
+            {/* Total Clicks - muestra estadísticas de 28 días */}
+            <div 
+              className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors cursor-pointer"
+              onClick={() => setGlobalStatsInfo({ period: '28d' })}
+            >
+              <div className="flex items-center justify-center sm:justify-start min-h-[60px] sm:min-h-0">
                 <div className="flex-shrink-0">
                   <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-green-400" />
                 </div>
-                <div className="ml-2 sm:ml-3 min-w-0">
+                <div className="ml-2 sm:ml-3 min-w-0 text-center sm:text-left">
                   <div className="text-xs font-medium text-gray-400 truncate">Total Clicks</div>
-                  <div className="text-lg sm:text-xl font-bold text-white">{stats?.totalClicks || 0}</div>
+                  <div className="text-lg sm:text-xl font-bold text-white">{globalUrlStats?.last_28_days_total || stats?.totalClicks || 0}</div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors">
-              <div className="flex items-center">
+            {/* Hoy - muestra estadísticas por hora */}
+            <div 
+              className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors cursor-pointer"
+              onClick={() => setGlobalStatsInfo({ period: 'today' })}
+            >
+              <div className="flex items-center justify-center sm:justify-start min-h-[60px] sm:min-h-0">
                 <div className="flex-shrink-0">
                   <ClipboardDocumentIcon className="h-5 w-5 sm:h-6 sm:w-6 text-blue-400" />
                 </div>
-                <div className="ml-2 sm:ml-3 min-w-0">
+                <div className="ml-2 sm:ml-3 min-w-0 text-center sm:text-left">
                   <div className="text-xs font-medium text-gray-400 truncate">Hoy</div>
-                  <div className="text-lg sm:text-xl font-bold text-white">{stats?.todayClicks || 0}</div>
+                  <div className="text-lg sm:text-xl font-bold text-white">{globalUrlStats?.today_total || stats?.todayClicks || 0}</div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors">
-              <div className="flex items-center">
+            {/* 7 días - muestra estadísticas diarias */}
+            <div 
+              className="bg-[#120724] border border-indigo-900/30 rounded-lg p-3 sm:p-4 hover:bg-[#1a0b2e] transition-colors cursor-pointer"
+              onClick={() => setGlobalStatsInfo({ period: '7d' })}
+            >
+              <div className="flex items-center justify-center sm:justify-start min-h-[60px] sm:min-h-0">
                 <div className="flex-shrink-0">
                   <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-400" />
                 </div>
-                <div className="ml-2 sm:ml-3 min-w-0">
+                <div className="ml-2 sm:ml-3 min-w-0 text-center sm:text-left">
                   <div className="text-xs font-medium text-gray-400 truncate">7 días</div>
-                  <div className="text-lg sm:text-xl font-bold text-white">{stats?.last7DaysClicks || 0}</div>
+                  <div className="text-lg sm:text-xl font-bold text-white">{globalUrlStats?.last_7_days_total || stats?.last7DaysClicks || 0}</div>
                 </div>
               </div>
             </div>
@@ -513,15 +553,29 @@ export default function ShortUrlsPage() {
             </div>
           </div>
 
-          {/* Botón crear URL - Responsivo */}
-          <Button
-            onClick={() => setShowCreateModal(true)}
-            className="mb-6 sm:mb-8 mx-auto flex items-center px-4 sm:px-6 py-2 sm:py-3 border border-transparent rounded-md text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-md shadow-indigo-900/30 hover:shadow-lg hover:shadow-indigo-900/40 transform hover:scale-[1.02]"
-          >
-            <PlusIcon className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-            <span className="hidden sm:inline">Crear enlace corto</span>
-            <span className="sm:hidden">Nuevo enlace</span>
-          </Button>
+          {/* Botón crear URL - Responsivo con animación de primera vez */}
+          <div className="mb-6 sm:mb-8 flex justify-center">
+            <TutorialTooltip
+              message="¡Crea tu primer enlace!"
+              leftIcon="🎉"
+              rightIcon="⬇️"
+              storageKey="shortUrls_firstLinkHintSeen"
+              duration={20000}
+              delay={1500}
+              showCondition={allUrls.length === 0 && !isLoading}
+              onParentClick={() => setShowCreateModal(true)}
+              position="top"
+              gradient="yellow-orange"
+            >
+              <Button
+                className="flex items-center px-4 sm:px-6 py-2 sm:py-3 border border-transparent rounded-md text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-md shadow-indigo-900/30 hover:shadow-lg hover:shadow-indigo-900/40 transform hover:scale-[1.02]"
+              >
+                <PlusIcon className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                <span className="hidden sm:inline">Crear enlace corto</span>
+                <span className="sm:hidden">Nuevo enlace</span>
+              </Button>
+            </TutorialTooltip>
+          </div>
 
           {/* URLs Table - Responsivo */}
           <div className="w-full max-w-5xl px-2 sm:px-0">
@@ -535,6 +589,7 @@ export default function ShortUrlsPage() {
               onDeleteUrl={handleDeleteUrl}
               onUpdateUrl={handleUpdateUrl}
               onRefresh={loadData}
+              onStatsClick={handleUrlStatsClick}
               copyMessage={copyMessage}
               isSearching={isSearching}
             />
@@ -542,10 +597,10 @@ export default function ShortUrlsPage() {
         </div>
 
         {/* Sombra radial principal más grande (oculta en móvil) */}
-        <div className="hidden sm:block absolute -inset-24 bg-[radial-gradient(circle,_rgba(88,28,135,0.45)_0%,_rgba(17,24,39,0)_80%)] blur-[250px] pointer-events-none"></div>
+        <div className="hidden sm:block absolute inset-0 bg-[radial-gradient(circle,_rgba(88,28,135,0.45)_0%,_rgba(17,24,39,0)_80%)] blur-[250px] pointer-events-none -z-10"></div>
 
         {/* Radiales hacia afuera (bordes, ocultos en móvil) */}
-        <div className="hidden sm:block absolute -inset-32 bg-[radial-gradient(circle,_rgba(17,24,39,0)_60%,_rgba(88,28,135,0.35)_100%)] blur-[300px] opacity-50 pointer-events-none"></div>
+        <div className="hidden sm:block absolute inset-0 bg-[radial-gradient(circle,_rgba(17,24,39,0)_60%,_rgba(88,28,135,0.35)_100%)] blur-[300px] opacity-50 pointer-events-none -z-10"></div>
       </div>
 
       {/* Create URL Modal */}
@@ -554,6 +609,27 @@ export default function ShortUrlsPage() {
           isOpen={showCreateModal}
           onClose={() => setShowCreateModal(false)}
           onSubmit={handleCreateUrl}
+        />
+      )}
+
+      {/* Global Stats Modal */}
+      {globalStatsInfo && (
+        <ShortUrlStatsModal
+          open={true}
+          onOpenChange={(open) => !open && setGlobalStatsInfo(null)}
+          period={globalStatsInfo.period}
+        />
+      )}
+
+      {/* URL Stats Modal */}
+      {urlStatsInfo && (
+        <ShortUrlStatsModal
+          open={true}
+          onOpenChange={(open) => !open && setUrlStatsInfo(null)}
+          period={urlStatsInfo.period}
+          urlId={urlStatsInfo.url.id}
+          urlTitle={urlStatsInfo.url.title || urlStatsInfo.url.slug || 'URL'}
+          onPeriodChange={handleUrlPeriodChange}
         />
       )}
     </ProtectedRoute>

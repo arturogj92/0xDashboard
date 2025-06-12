@@ -496,6 +496,37 @@
     "deleting": "Deleting...",
     "deleteDomain": "Delete Domain"
   },
+  "shortUrls": {
+    "createModal": {
+      "title": "Create short link",
+      "description": "Convert any long URL into a short and memorable link",
+      "originalUrlLabel": "Original URL",
+      "slugLabel": "Custom slug (optional)",
+      "originalUrlPlaceholder": "https://example.com/very-long-link...",
+      "slugPlaceholder": "my-custom-link",
+      "urlHelpText": "https://www. will be added automatically if you don't have them. Must include valid extension (.com, .es, .org, etc.)",
+      "slugHelpText": "Only lowercase letters, numbers and hyphens. Minimum 3 characters.",
+      "previewLabel": "Preview:",
+      "socialMediaInfo": "Perfect for social media",
+      "socialMediaDescription": "Short URLs are ideal for Instagram, TikTok and Twitter where long links are hard to remember and share.",
+      "createButton": "Create link",
+      "creating": "Creating...",
+      "validating": "Validating...",
+      "cancel": "Cancel",
+      "errors": {
+        "urlRequired": "Original URL is required",
+        "slugRequired": "You need to configure your user slug before creating short URLs",
+        "slugUnavailable": "The selected slug is not available",
+        "invalidTld": "URL must have a valid domain extension (.com, .es, .org, etc.)",
+        "invalidUrl": "Invalid URL: must include a domain with valid extension (.com, .es, .org, etc.)",
+        "generic": "Error creating short URL"
+      },
+      "slugStatus": {
+        "available": "✓ Slug available",
+        "unavailable": "✗ Slug not available"
+      }
+    }
+  },
   "urlCustomDomains": {
     "title": "Custom Domains for URLs",
     "description": "Connect your own domain (e.g., art0x.link) for your short URLs",
