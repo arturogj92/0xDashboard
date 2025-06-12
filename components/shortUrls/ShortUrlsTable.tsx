@@ -81,6 +81,7 @@ interface ShortUrlsTableProps {
   onStatsClick?: (url: ShortUrl) => void;
   copyMessage: string | null;
   isSearching?: boolean;
+  userCustomDomain?: string | null;
 }
 
 export function ShortUrlsTable({
@@ -95,7 +96,8 @@ export function ShortUrlsTable({
   onRefresh,
   onStatsClick,
   copyMessage,
-  isSearching = false
+  isSearching = false,
+  userCustomDomain
 }: ShortUrlsTableProps) {
   const [editingUrl, setEditingUrl] = useState<string | null>(null);
   const [editData, setEditData] = useState<{ originalUrl: string; slug: string }>({ originalUrl: '', slug: '' });
@@ -302,13 +304,13 @@ export function ShortUrlsTable({
                   >
                     <button 
                       className="text-sm font-medium text-white hover:text-indigo-300 transition-colors cursor-pointer text-left w-full truncate"
-                      onClick={() => handleCopyWithAnimation(getShortUrl(url))}
+                      onClick={() => handleCopyWithAnimation(getShortUrl(url, userCustomDomain || undefined))}
                     >
-                      {getShortUrl(url)}
+                      {getShortUrl(url, userCustomDomain || undefined)}
                     </button>
                   </motion.div>
                   <AnimatePresence>
-                    {copyMessage === getShortUrl(url) && (
+                    {copyMessage === getShortUrl(url, userCustomDomain || undefined) && (
                       <motion.div
                         initial={{ opacity: 0, y: 10, scale: 0.9 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -580,8 +582,19 @@ export function ShortUrlsTable({
     });
   };
 
-  const getShortUrl = (url: ShortUrl) => {
-    return url.shortUrl || `${userSlug || 'user'}.creator0x.com/${url.slug}`;
+  const getShortUrl = (url: ShortUrl, userCustomDomain?: string) => {
+    // If URL has a pre-generated short URL, use it
+    if (url.shortUrl) {
+      return url.shortUrl;
+    }
+    
+    // If user has an active custom domain, use it instead of subdomain
+    if (userCustomDomain) {
+      return `${userCustomDomain}/${url.slug}`;
+    }
+    
+    // Fallback to default subdomain format
+    return `${userSlug || 'user'}.creator0x.com/${url.slug}`;
   };
 
   const getClicksIcon = (clickCount: number) => {

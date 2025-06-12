@@ -51,6 +51,7 @@ export default function ShortUrlsPage() {
   const [urlStatsInfo, setUrlStatsInfo] = useState<
     { period: '28d'|'7d'|'yesterday'|'today'; url: ShortUrl } | null
   >(null);
+  const [userCustomDomain, setUserCustomDomain] = useState<string | null>(null);
   
   // Hook para estadísticas globales de URLs
   const { stats: globalUrlStats, loading: loadingGlobalStats, error: errorGlobalStats } = useShortUrlGlobalStats();
@@ -166,6 +167,12 @@ export default function ShortUrlsPage() {
       
       if (urlsResponse.success) {
         setAllUrls(urlsResponse.data.urls); // Store all loaded URLs
+        
+        // Extract user custom domain if available
+        if (urlsResponse.data.userCustomDomain) {
+          setUserCustomDomain(urlsResponse.data.userCustomDomain);
+        }
+        
         // Don't override pagination state for local pagination
         if (!isSearchContext) {
           setPagination(prev => ({
@@ -592,6 +599,7 @@ export default function ShortUrlsPage() {
               onStatsClick={handleUrlStatsClick}
               copyMessage={copyMessage}
               isSearching={isSearching}
+              userCustomDomain={userCustomDomain}
             />
           </div>
         </div>
