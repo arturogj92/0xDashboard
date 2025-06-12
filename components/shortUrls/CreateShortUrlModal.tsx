@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LinkIcon, GlobeAltIcon, CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { checkSlugAvailability, getUserSlug, type CreateShortUrlData } from '@/lib/api';
+import { checkSlugAvailability, getUserSlug, getUrlCustomDomains, type CreateShortUrlData } from '@/lib/api';
 import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 import { UserSlugConfiguration } from '@/components/auth/UserSlugConfiguration';
@@ -29,32 +29,48 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
   const [slugTouched, setSlugTouched] = useState(false);
   const [userUsername, setUserUsername] = useState<string | null>(null);
   const [loadingUsername, setLoadingUsername] = useState(true);
+  const [userCustomDomain, setUserCustomDomain] = useState<string | null>(null);
 
-  // Cargar el slug del usuario
+  // Cargar el slug del usuario y dominios personalizados
   useEffect(() => {
-    const loadUserSlug = async () => {
+    const loadUserData = async () => {
       if (!user?.id || !isOpen) return;
       
       try {
         setLoadingUsername(true);
-        const response = await getUserSlug();
         
-        if (response.success && response.data.slug) {
-          setUserUsername(response.data.slug);
+        // Cargar slug del usuario
+        const slugResponse = await getUserSlug();
+        if (slugResponse.success && slugResponse.data.slug) {
+          setUserUsername(slugResponse.data.slug);
         } else {
-          // Si no tiene slug configurado, dejar null para que el usuario lo configure
           setUserUsername(null);
         }
         
+        // Cargar dominios personalizados activos para URLs
+        try {
+          const domainsResponse = await getUrlCustomDomains();
+          if (domainsResponse.success && domainsResponse.data.length > 0) {
+            // Usar el primer dominio activo que soporte URLs
+            const activeDomain = domainsResponse.data.find(d => d.status === 'active');
+            if (activeDomain) {
+              setUserCustomDomain(activeDomain.domain);
+            }
+          }
+        } catch (domainError) {
+          console.error('Error loading custom domains:', domainError);
+          // No es crítico, continuar sin dominio personalizado
+        }
+        
       } catch (error) {
-        console.error('Error loading user slug:', error);
+        console.error('Error loading user data:', error);
         setUserUsername(null);
       } finally {
         setLoadingUsername(false);
       }
     };
 
-    loadUserSlug();
+    loadUserData();
   }, [user?.id, isOpen]);
 
   // Función para limpiar el slug (solo letras, números y guiones)
@@ -213,6 +229,14 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
   // Generar preview de la URL corta
   const getPreviewUrl = () => {
     if (loadingUsername) return 'Cargando...';
+    
+    // Priorizar dominio personalizado si está disponible
+    if (userCustomDomain) {
+      const urlSlug = slug || 'tu-enlace';
+      return `${userCustomDomain}/${urlSlug}`;
+    }
+    
+    // Fallback al subdominio si no hay dominio personalizado
     if (!userUsername) return 'No se pudo cargar el username';
     const baseUrl = `${userUsername}.creator0x.com`;
     const urlSlug = slug || 'tu-enlace';

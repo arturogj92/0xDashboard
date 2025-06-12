@@ -1025,6 +1025,7 @@ export const getShortUrls = async (filters: ShortUrlFilters = {}): Promise<ApiRe
     totalCount: number;
     limit: number;
   };
+  userCustomDomain?: string;
 }>> => {
   const params = new URLSearchParams();
   if (filters.page) params.append('page', filters.page.toString());
