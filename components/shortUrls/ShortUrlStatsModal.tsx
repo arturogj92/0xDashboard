@@ -191,7 +191,7 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="w-full h-full"
+              style={{ width: '100%', height: '100%' }}
             >
               <DialogHeader>
                 <motion.div
@@ -211,7 +211,7 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.4, delay: 0.2 }}
-                    className="flex gap-2 mt-4"
+                    style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}
                   >
                     <Button
                       size="sm"
@@ -251,7 +251,7 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.2 }}
-                      className="flex-1 flex items-center justify-center"
+                      style={{ flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     >
                       <Skeleton className="h-64 w-full rounded-md" />
                     </motion.div>
@@ -262,7 +262,7 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
                       transition={{ duration: 0.3 }}
-                      className="flex-1 flex items-center justify-center"
+                      style={{ flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     >
                       <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded">
                         Error al cargar estadísticas: {error}
@@ -275,7 +275,7 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -20 }}
                       transition={{ duration: 0.4, ease: "easeOut" }}
-                      className="w-full h-full flex flex-col"
+                      style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}
                     >
                       {/* Chart container con altura fija */}
                       <div className="flex-1 min-h-[300px]">
@@ -323,23 +323,21 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.3, delay: 0.2 }}
-                          className="mt-4 h-16 flex flex-col justify-center"
+                          style={{ marginTop: '1rem', height: '4rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
                         >
                           <p className="text-center text-xs text-gray-400">
                             Haz click en los días de la semana para filtrar
                           </p>
                           <div className="flex justify-center flex-wrap gap-4 mt-2">
                             {dayKeys.map((key, idx) => (
-                              <motion.div
+                              <div
                                 key={key}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
                                 onClick={() => handleLegendClick(idx)}
-                                className={`flex items-center gap-1 cursor-pointer transition-all duration-200 ${selectedDay !== null && selectedDay !== idx ? 'opacity-50' : 'opacity-100'} ${selectedDay === idx ? 'font-medium' : ''}`}
+                                className={`flex items-center gap-1 cursor-pointer transition-all duration-200 ${selectedDay !== null && selectedDay !== idx ? 'opacity-50' : 'opacity-100'} ${selectedDay === idx ? 'font-medium' : ''} hover:scale-105 active:scale-95`}
                               >
                                 <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: dayColors[idx] }} />
                                 <span className="text-xs">{`${getDayName(key)}: ${dayTotals[idx].toLocaleString()}`}</span>
-                              </motion.div>
+                              </div>
                             ))}
                           </div>
                         </motion.div>
