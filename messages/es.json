@@ -535,8 +535,26 @@
     "adding": "Agregando...",
     "domainPlaceholder": "ej: art0x.link",
     "configuredDomains": "Dominios configurados:",
-    "availableDomains": "Dominios disponibles:",
-    "availableDomainsDescription": "Dominios de tus landing pages que pueden activarse para URLs:",
+    "availableDomains": {
+      "title": "Dominios disponibles",
+      "description": "Ya tienes dominios configurados en tus landing pages que puedes usar inmediatamente para URLs cortas. ¡Sin configuración DNS adicional!",
+      "howItWorks": {
+        "title": "¿Cómo funciona esto?",
+        "step1": "Tienes dominios activos en landing pages",
+        "step2": "Los reutilizamos para URLs cortas", 
+        "step3": "No necesitas configurar DNS de nuevo",
+        "step4": "Activación instantánea con un click"
+      },
+      "benefits": {
+        "title": "Ventajas de usar dominios existentes",
+        "noDnsSetup": "Sin configuración DNS adicional",
+        "instantActivation": "Activación inmediata",
+        "dualPurpose": "Un dominio para landing + URLs cortas"
+      },
+      "listTitle": "Dominios listos para activar:",
+      "readyToUse": "Listo para usar",
+      "urlExample": "Tus URLs serán: {domain}/mi-enlace"
+    },
     "activateDomain": "Activar para URLs",
     "activating": "Activando...",
     "deactivateDomain": "Desactivar para URLs",
@@ -624,6 +642,26 @@
       "confirmButton": "Sí, eliminar de todas formas",
       "cancelButton": "Cancelar",
       "removing": "Eliminando..."
+    },
+    "addSection": {
+      "title": "Agregar dominio personalizado",
+      "subtitle": "Conecta tu propio dominio para URLs más profesionales",
+      "domainLabel": "Nombre del dominio",
+      "domainPlaceholder": "art0x.link",
+      "domainExamples": "Ejemplo: midominio.com, art0x.link, enlaces.com",
+      "addButton": "Agregar Dominio",
+      "adding": "Agregando...",
+      "previewLabel": "Vista previa de tus URLs:",
+      "requirements": {
+        "title": "Requisitos importantes",
+        "ownership": "Debes ser propietario del dominio",
+        "dnsAccess": "Necesitas acceso a la configuración DNS",
+        "timeRequired": "El proceso puede tardar hasta 48 horas"
+      },
+      "nextSteps": {
+        "title": "Próximos pasos",
+        "description": "Después de agregar tu dominio, te mostraremos los registros DNS que debes configurar en tu proveedor de dominios."
+      }
     }
   },
   "styleCustomization": {

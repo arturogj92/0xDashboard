@@ -534,8 +534,26 @@
     "adding": "Adding...",
     "domainPlaceholder": "e.g., art0x.link",
     "configuredDomains": "Configured domains:",
-    "availableDomains": "Available domains:",
-    "availableDomainsDescription": "Domains from your landing pages that can be activated for URLs:",
+    "availableDomains": {
+      "title": "Available domains",
+      "description": "You already have domains configured in your landing pages that you can use immediately for short URLs. No additional DNS configuration!",
+      "howItWorks": {
+        "title": "How does this work?",
+        "step1": "You have active domains in landing pages",
+        "step2": "We reuse them for short URLs", 
+        "step3": "No need to configure DNS again",
+        "step4": "Instant activation with one click"
+      },
+      "benefits": {
+        "title": "Benefits of using existing domains",
+        "noDnsSetup": "No additional DNS setup",
+        "instantActivation": "Instant activation",
+        "dualPurpose": "One domain for landing + short URLs"
+      },
+      "listTitle": "Domains ready to activate:",
+      "readyToUse": "Ready to use",
+      "urlExample": "Your URLs will be: {domain}/my-link"
+    },
     "activateDomain": "Activate for URLs",
     "activating": "Activating...",
     "deactivateDomain": "Deactivate for URLs",
@@ -623,6 +641,26 @@
       "confirmButton": "Yes, delete anyway",
       "cancelButton": "Cancel",
       "removing": "Removing..."
+    },
+    "addSection": {
+      "title": "Add custom domain",
+      "subtitle": "Connect your own domain for more professional URLs",
+      "domainLabel": "Domain name",
+      "domainPlaceholder": "art0x.link",
+      "domainExamples": "Example: mydomain.com, art0x.link, links.com",
+      "addButton": "Add Domain",
+      "adding": "Adding...",
+      "previewLabel": "Preview of your URLs:",
+      "requirements": {
+        "title": "Important requirements",
+        "ownership": "You must own the domain",
+        "dnsAccess": "You need access to DNS configuration",
+        "timeRequired": "The process can take up to 48 hours"
+      },
+      "nextSteps": {
+        "title": "Next steps",
+        "description": "After adding your domain, we'll show you the DNS records you need to configure with your domain provider."
+      }
     }
   },
   "styleCustomization": {

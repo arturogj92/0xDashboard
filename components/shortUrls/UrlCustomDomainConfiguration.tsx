@@ -395,47 +395,126 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
               >
-              <div className="bg-gradient-to-r from-green-900/20 to-blue-900/20 border border-green-600/30 rounded-lg p-4 mb-4">
-                <h4 className="text-white font-medium text-sm mb-2 flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-400" />
-                  {t('availableDomains')}
-                </h4>
-                <p className="text-sm text-gray-400 mb-3">{t('availableDomainsDescription')}</p>
+              <div className="bg-gradient-to-br from-green-900/20 via-emerald-900/15 to-blue-900/20 border border-green-500/30 rounded-xl p-6 mb-6">
+                {/* Header section */}
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="bg-green-500/20 p-3 rounded-lg flex-shrink-0">
+                    <CheckCircle className="w-6 h-6 text-green-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-white font-semibold text-lg mb-2">
+                      🎉 {t('availableDomains.title')}
+                    </h4>
+                    <p className="text-gray-300 text-sm leading-relaxed mb-3">
+                      {t('availableDomains.description')}
+                    </p>
+                  </div>
+                </div>
+
+                {/* How it works section */}
+                <div className="bg-blue-900/20 border border-blue-600/30 rounded-lg p-4 mb-4">
+                  <h5 className="text-blue-200 font-medium mb-2 flex items-center gap-2">
+                    <div className="w-5 h-5 bg-blue-500/20 rounded-full flex items-center justify-center">
+                      <span className="text-blue-400 text-xs font-bold">?</span>
+                    </div>
+                    {t('availableDomains.howItWorks.title')}
+                  </h5>
+                  <div className="grid sm:grid-cols-2 gap-3 text-sm text-blue-300/80">
+                    <div className="flex items-start gap-2">
+                      <span className="text-blue-400 mt-1">1.</span>
+                      <span>{t('availableDomains.howItWorks.step1')}</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-blue-400 mt-1">2.</span>
+                      <span>{t('availableDomains.howItWorks.step2')}</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-blue-400 mt-1">3.</span>
+                      <span>{t('availableDomains.howItWorks.step3')}</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-blue-400 mt-1">4.</span>
+                      <span>{t('availableDomains.howItWorks.step4')}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Benefits section */}
+                <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-4 mb-4">
+                  <h5 className="text-purple-200 font-medium mb-2 flex items-center gap-2">
+                    <span className="text-purple-400">✨</span>
+                    {t('availableDomains.benefits.title')}
+                  </h5>
+                  <ul className="text-sm text-purple-300/80 space-y-1">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                      <span>{t('availableDomains.benefits.noDnsSetup')}</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                      <span>{t('availableDomains.benefits.instantActivation')}</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                      <span>{t('availableDomains.benefits.dualPurpose')}</span>
+                    </li>
+                  </ul>
+                </div>
                 
+                {/* Available domains list */}
                 <div className="space-y-3">
+                  <h5 className="text-white font-medium text-sm mb-3">
+                    {t('availableDomains.listTitle')}
+                  </h5>
                   {availableDomains.map((domain) => (
-                    <div key={domain.id} className="flex items-center justify-between bg-[#1c1033]/50 border border-gray-600/50 rounded-lg p-3">
+                    <div key={domain.id} className="bg-[#1c1033]/80 border border-gray-600/50 rounded-lg p-4 hover:border-green-500/30 transition-all duration-200">
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                       >
-                        <div className="w-full flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Globe className="w-4 h-4 text-green-400" />
-                        <span className="text-white font-medium">{domain.domain}</span>
-                        <span className="text-xs text-gray-400 bg-gray-700/50 px-2 py-1 rounded">
-                          {t('sharedDomainInfo')}
-                        </span>
-                      </div>
-                      
-                      <Button
-                        size="sm"
-                        onClick={() => activateDomain(domain.id)}
-                        disabled={activatingDomains.has(domain.id)}
-                        className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-medium"
-                      >
-                        {activatingDomains.has(domain.id) ? (
-                          <>
-                            <RefreshCw className="w-3 h-3 animate-spin mr-1" />
-                            {t('activating')}
-                          </>
-                        ) : (
-                          <>
-                            {t('activateDomain')}
-                            <ArrowRight className="w-3 h-3 ml-1" />
-                          </>
-                        )}
-                      </Button>
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <div className="bg-green-500/20 p-2 rounded-lg">
+                                <Globe className="w-4 h-4 text-green-400" />
+                              </div>
+                              <div>
+                                <span className="text-white font-semibold text-lg">{domain.domain}</span>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <span className="text-xs text-green-400 bg-green-900/30 px-2 py-1 rounded-full border border-green-600/30">
+                                    ✓ {t('availableDomains.readyToUse')}
+                                  </span>
+                                  <span className="text-xs text-blue-400 bg-blue-900/30 px-2 py-1 rounded-full border border-blue-600/30">
+                                    🔗 {t('sharedDomainInfo')}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <p className="text-sm text-gray-400 ml-12">
+                              {t('availableDomains.urlExample', { domain: domain.domain })}
+                            </p>
+                          </div>
+                          
+                          <div className="flex-shrink-0">
+                            <Button
+                              size="sm"
+                              onClick={() => activateDomain(domain.id)}
+                              disabled={activatingDomains.has(domain.id)}
+                              className="h-10 px-6 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-semibold rounded-lg shadow-lg shadow-yellow-900/30 transition-all duration-200 disabled:opacity-50"
+                            >
+                              {activatingDomains.has(domain.id) ? (
+                                <div className="flex items-center gap-2">
+                                  <RefreshCw className="w-4 h-4 animate-spin" />
+                                  {t('activating')}
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-2">
+                                  <span>{t('activateDomain')}</span>
+                                  <ArrowRight className="w-4 h-4" />
+                                </div>
+                              )}
+                            </Button>
+                          </div>
                         </div>
                       </motion.div>
                     </div>
@@ -448,25 +527,128 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
         </AnimatePresence>
 
         {/* Add new domain */}
-        <div className="space-y-4">
-          <div className="flex gap-3">
-            <Input
-              value={newDomain}
-              onChange={(e) => setNewDomain(e.target.value)}
-              placeholder={t('domainPlaceholder')}
-              className="flex-1 bg-[#1c1033] border-gray-700 text-white focus:border-yellow-500"
-            />
-            <Button 
-              onClick={addDomain}
-              disabled={isLoading || !newDomain.trim()}
-              className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-medium"
-            >
-              {isLoading ? t('adding') : t('addDomain')}
-            </Button>
+        <div className="space-y-6">
+          {/* Header section */}
+          <div className="text-center">
+            <h4 className="text-lg font-semibold text-white mb-2">
+              {t('addSection.title')}
+            </h4>
+            <p className="text-sm text-gray-400">
+              {t('addSection.subtitle')}
+            </p>
           </div>
 
-          <div className="text-sm text-gray-500 bg-blue-900/20 border border-blue-600/30 rounded-lg p-3">
-            ⚠️ {t('dnsInstructions.domainOwnershipWarning')}
+          {/* Input section with improved design */}
+          <div className="bg-gradient-to-br from-[#1a0b2e] to-[#2c1b4d] rounded-xl p-6 border border-purple-500/20">
+            <div className="space-y-4">
+              <div className="flex flex-col lg:flex-row gap-4">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    {t('addSection.domainLabel')}
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Globe className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <Input
+                      value={newDomain}
+                      onChange={(e) => setNewDomain(e.target.value)}
+                      placeholder={t('addSection.domainPlaceholder')}
+                      className="pl-10 h-14 bg-[#120724] border-gray-600 text-white focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20 rounded-lg text-lg"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !isLoading && newDomain.trim()) {
+                          addDomain();
+                        }
+                      }}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-400 mt-2">
+                    {t('addSection.domainExamples')}
+                  </p>
+                </div>
+                
+                <div className="flex flex-col justify-center lg:min-w-[200px]">
+                  <Button 
+                    onClick={addDomain}
+                    disabled={isLoading || !newDomain.trim()}
+                    className="h-14 px-8 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-bold rounded-lg transition-all duration-200 shadow-lg shadow-yellow-900/30 disabled:opacity-50 disabled:cursor-not-allowed text-base"
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center gap-3">
+                        <RefreshCw className="h-5 w-5 animate-spin" />
+                        <span>{t('addSection.adding')}</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3">
+                        <ArrowRight className="h-5 w-5" />
+                        <span>{t('addSection.addButton')}</span>
+                      </div>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Preview section */}
+            {newDomain.trim() && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="mt-4 p-4 bg-[#120724]/50 rounded-lg border border-gray-700/50"
+              >
+                <p className="text-xs text-gray-400 mb-1">{t('addSection.previewLabel')}</p>
+                <p className="text-sm font-mono text-blue-300">
+                  {newDomain}/mi-enlace
+                </p>
+              </motion.div>
+            )}
+          </div>
+
+          {/* Requirements section */}
+          <div className="bg-amber-900/10 border border-amber-600/30 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <div className="bg-amber-500/20 p-2 rounded-lg flex-shrink-0">
+                <AlertCircle className="h-5 w-5 text-amber-400" />
+              </div>
+              <div>
+                <h5 className="text-amber-200 font-medium mb-2">
+                  📋 {t('addSection.requirements.title')}
+                </h5>
+                <ul className="text-sm text-amber-300/80 space-y-1">
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber-400 mt-0.5">•</span>
+                    <span>{t('addSection.requirements.ownership')}</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber-400 mt-0.5">•</span>
+                    <span>{t('addSection.requirements.dnsAccess')}</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-amber-400 mt-0.5">•</span>
+                    <span>{t('addSection.requirements.timeRequired')}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Steps preview */}
+          <div className="bg-blue-900/10 border border-blue-600/30 rounded-lg p-4">
+            <div className="flex items-start gap-3">
+              <div className="bg-blue-500/20 p-2 rounded-lg flex-shrink-0">
+                <div className="h-5 w-5 text-blue-400 font-bold text-sm flex items-center justify-center">
+                  1
+                </div>
+              </div>
+              <div>
+                <h5 className="text-blue-200 font-medium mb-2">
+                  🚀 {t('addSection.nextSteps.title')}
+                </h5>
+                <p className="text-sm text-blue-300/80">
+                  {t('addSection.nextSteps.description')}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
