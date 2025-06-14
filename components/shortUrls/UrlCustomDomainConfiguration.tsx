@@ -882,9 +882,9 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                           <span className="bg-blue-900/30 px-2 py-1 rounded text-blue-200 font-medium">A</span>
                           <span className="font-medium">@</span>
                           <div className="flex items-center justify-between bg-gray-800/50 px-2 py-1 rounded">
-                            <span>159.89.50.89</span>
+                            <span>142.93.40.80</span>
                             <button 
-                              onClick={() => copyToClipboard('159.89.50.89')}
+                              onClick={() => copyToClipboard('142.93.40.80')}
                               className="text-blue-400 hover:text-blue-300 p-1 hover:bg-blue-900/20 rounded transition-colors"
                               title={t('copiedToClipboard')}
                             >
@@ -910,9 +910,9 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                         <div className="grid grid-cols-3 gap-4 text-white items-center">
                           <span className="bg-yellow-900/30 px-2 py-1 rounded text-yellow-200 font-medium">TXT</span>
                           <div className="flex items-center justify-between bg-gray-800/50 px-2 py-1 rounded">
-                            <span className="font-medium">_creator0x-url-verify</span>
+                            <span className="font-medium">_creator0x-verify</span>
                             <button 
-                              onClick={() => copyToClipboard('_creator0x-url-verify')}
+                              onClick={() => copyToClipboard('_creator0x-verify')}
                               className="text-yellow-400 hover:text-yellow-300 p-1 hover:bg-yellow-900/20 rounded transition-colors flex-shrink-0"
                               title={t('copiedToClipboard')}
                             >
