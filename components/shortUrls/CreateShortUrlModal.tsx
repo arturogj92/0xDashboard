@@ -15,9 +15,10 @@ interface CreateShortUrlModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: CreateShortUrlData) => Promise<void>;
+  userCustomDomain?: string | null;
 }
 
-export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUrlModalProps) {
+export function CreateShortUrlModal({ isOpen, onClose, onSubmit, userCustomDomain: propUserCustomDomain }: CreateShortUrlModalProps) {
   const { user } = useAuth();
   const t = useTranslations('shortUrls.createModal');
   const [loading, setLoading] = useState(false);
@@ -30,6 +31,13 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
   const [userUsername, setUserUsername] = useState<string | null>(null);
   const [loadingUsername, setLoadingUsername] = useState(true);
   const [userCustomDomain, setUserCustomDomain] = useState<string | null>(null);
+
+  // Usar el dominio personalizado de la prop si está disponible
+  useEffect(() => {
+    if (propUserCustomDomain !== undefined) {
+      setUserCustomDomain(propUserCustomDomain);
+    }
+  }, [propUserCustomDomain]);
 
   // Cargar el slug del usuario y dominios personalizados
   useEffect(() => {
@@ -47,19 +55,22 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
           setUserUsername(null);
         }
         
-        // Cargar dominios personalizados activos para URLs
-        try {
-          const domainsResponse = await getUrlCustomDomains();
-          if (domainsResponse.success && domainsResponse.data.length > 0) {
-            // Usar el primer dominio activo que soporte URLs
+        // Solo cargar dominios si no se proporcionó via prop
+        if (propUserCustomDomain === undefined) {
+          // Cargar dominios personalizados activos para URLs
+          try {
+            const domainsResponse = await getUrlCustomDomains();
+            if (domainsResponse.success && domainsResponse.data.length > 0) {
+              // Usar el primer dominio activo que soporte URLs
             const activeDomain = domainsResponse.data.find(d => d.status === 'active');
             if (activeDomain) {
               setUserCustomDomain(activeDomain.domain);
             }
           }
-        } catch (domainError) {
-          console.error('Error loading custom domains:', domainError);
-          // No es crítico, continuar sin dominio personalizado
+          } catch (domainError) {
+            console.error('Error loading custom domains:', domainError);
+            // No es crítico, continuar sin dominio personalizado
+          }
         }
         
       } catch (error) {
@@ -71,7 +82,7 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit }: CreateShortUr
     };
 
     loadUserData();
-  }, [user?.id, isOpen]);
+  }, [user?.id, isOpen, propUserCustomDomain]);
 
   // Función para limpiar el slug (solo letras, números y guiones)
   const cleanSlug = (input: string) => {

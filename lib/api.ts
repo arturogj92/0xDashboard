@@ -1271,11 +1271,31 @@ export const checkUrlCustomDomainStatus = async (domainId: string): Promise<ApiR
   return response.json();
 };
 
+// Check impact of removing custom domain for URL shortener
+export const checkDomainImpact = async (domainId: string): Promise<ApiResponse<{
+  domain: any;
+  affectedUrlsCount: number;
+  affectedUrls: any[];
+  canDeactivateOnly: boolean;
+  wouldDeleteCompletely: boolean;
+}>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/custom-domains/${domainId}/impact`, {
+    headers: createAuthHeaders()
+  });
+  return response.json();
+};
+
 // Remove custom domain for URL shortener (deactivate or delete)
-export const removeUrlCustomDomain = async (domainId: string): Promise<ApiResponse<{ message: string }>> => {
+export const removeUrlCustomDomain = async (domainId: string, force: boolean = false): Promise<ApiResponse<{ 
+  message: string;
+  requiresConfirmation?: boolean;
+  affectedUrlsCount?: number;
+  affectedUrls?: any[];
+}>> => {
   const response = await fetch(`${API_URL}/api/short-urls/custom-domains/${domainId}`, {
     method: 'DELETE',
-    headers: createAuthHeaders()
+    headers: createAuthHeaders(),
+    body: JSON.stringify({ force })
   });
   return response.json();
 };
