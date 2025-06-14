@@ -8,7 +8,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const hostname = request.headers.get('host') || '';
+  // Get hostname, prefer X-Forwarded-Host for reverse proxy setups
+  const hostname = request.headers.get('x-forwarded-host') || request.headers.get('host') || '';
+  
+  // Debug logging for VPS
+  console.log(`[VPS Middleware] Headers - Host: ${request.headers.get('host')}, X-Forwarded-Host: ${request.headers.get('x-forwarded-host')}, Final hostname: ${hostname}`);
   
   // Extraer subdominio
   const subdomain = getSubdomain(hostname);
