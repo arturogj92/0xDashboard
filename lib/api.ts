@@ -1186,7 +1186,7 @@ export const updateUserSlug = async (slug: string): Promise<ApiResponse<{ slug: 
 export interface UrlCustomDomain {
   id: string;
   domain: string;
-  status: 'pending' | 'dns_configured' | 'ssl_issued' | 'active' | 'failed' | 'removed';
+  status: 'pending' | 'dns_configured' | 'ssl_issued' | 'ssl_pending' | 'active' | 'failed' | 'removed';
   supports_landing: boolean;
   supports_urls: boolean;
   resource_type: 'landing' | 'url_shortener' | 'shared';

@@ -327,7 +327,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
       const response = await verifyUrlDomainDNS(domainId);
       
       if (response.success) {
-        toast.success(response.message);
+        toast.success(response.message || 'DNS verified successfully');
         loadDomains();
       } else {
         toast.error(response.message || 'Error verifying DNS configuration');
@@ -351,7 +351,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
       const response = await retryUrlDomainSSL(domainId);
       
       if (response.success) {
-        toast.success(response.message);
+        toast.success(response.message || 'SSL configuration started');
         loadDomains();
       } else {
         toast.error(response.message || 'Error retrying SSL configuration');
@@ -542,7 +542,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                               </div>
                             </div>
                             <p className="text-sm text-gray-400 ml-12">
-                              {t('availableDomains.urlExample', { domain: domain.domain })}
+                              {`${domain.domain}/tu-enlace`}
                             </p>
                           </div>
                           
@@ -645,12 +645,13 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
-                className="mt-4 p-4 bg-[#120724]/50 rounded-lg border border-gray-700/50"
               >
-                <p className="text-xs text-gray-400 mb-1">{t('addSection.previewLabel')}</p>
-                <p className="text-sm font-mono text-blue-300">
-                  {newDomain}/mi-enlace
-                </p>
+                <div className="mt-4 p-4 bg-[#120724]/50 rounded-lg border border-gray-700/50">
+                  <p className="text-xs text-gray-400 mb-1">{t('addSection.previewLabel')}</p>
+                  <p className="text-sm font-mono text-blue-300">
+                    {newDomain}/mi-enlace
+                  </p>
+                </div>
               </motion.div>
             )}
           </div>
@@ -1095,10 +1096,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                       <AlertCircle className="h-4 w-4 text-orange-400 mt-0.5 flex-shrink-0" />
                       <div className="text-sm">
                         <p className="text-orange-200 font-medium mb-1">
-                          {t('impactModal.domainInUse', { 
-                            count: deleteImpact.affectedUrlsCount, 
-                            plural: deleteImpact.affectedUrlsCount !== 1 ? 's' : '' 
-                          })}
+                          {`Este dominio está siendo usado por ${deleteImpact.affectedUrlsCount} URL${deleteImpact.affectedUrlsCount !== 1 ? 's' : ''}`}
                         </p>
                         <p className="text-orange-300/80">
                           {t('impactModal.willStopWorking')}
@@ -1120,7 +1118,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                         ))}
                         {deleteImpact.affectedUrlsCount > 5 && (
                           <div className="text-xs text-gray-500 mt-2 border-t border-gray-700 pt-2">
-                            {t('impactModal.moreUrls', { count: deleteImpact.affectedUrlsCount - 5 })}
+                            {`y ${deleteImpact.affectedUrlsCount - 5} más...`}
                           </div>
                         )}
                       </div>
@@ -1135,7 +1133,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                           {t('impactModal.dontWorry')}
                         </p>
                         <p className="text-blue-300/80">
-                          {t('impactModal.willStillWork', { format: 'usuario.creator0x.com/slug' })}
+                          Las URLs seguirán funcionando en formato usuario.creator0x.com/slug
                         </p>
                       </div>
                     </div>
