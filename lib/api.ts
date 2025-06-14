@@ -1253,9 +1253,27 @@ export const verifyUrlCustomDomain = async (domainId: string): Promise<ApiRespon
   return response.json();
 };
 
+// Verify DNS configuration specifically (new endpoint)
+export const verifyUrlDomainDNS = async (domainId: string): Promise<ApiResponse<{ message: string; status: string }>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/custom-domains/${domainId}/verify-dns`, {
+    method: 'POST',
+    headers: createAuthHeaders()
+  });
+  return response.json();
+};
+
 // Retry SSL certificate generation for URL custom domain
 export const retryUrlCustomDomain = async (domainId: string): Promise<ApiResponse<{ message: string }>> => {
   const response = await fetch(`${API_URL}/api/short-urls/custom-domains/${domainId}/retry`, {
+    method: 'POST',
+    headers: createAuthHeaders()
+  });
+  return response.json();
+};
+
+// Retry SSL configuration specifically (new endpoint)
+export const retryUrlDomainSSL = async (domainId: string): Promise<ApiResponse<{ message: string; status: string }>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/custom-domains/${domainId}/retry-ssl`, {
     method: 'POST',
     headers: createAuthHeaders()
   });
@@ -1266,6 +1284,15 @@ export const retryUrlCustomDomain = async (domainId: string): Promise<ApiRespons
 export const checkUrlCustomDomainStatus = async (domainId: string): Promise<ApiResponse<{ status: string; message: string }>> => {
   const response = await fetch(`${API_URL}/api/short-urls/custom-domains/${domainId}/check-status`, {
     method: 'POST',
+    headers: createAuthHeaders()
+  });
+  return response.json();
+};
+
+// Get current status of URL custom domain (new endpoint)
+export const getUrlDomainStatus = async (domainId: string): Promise<ApiResponse<{ data: UrlCustomDomain; message: string }>> => {
+  const response = await fetch(`${API_URL}/api/short-urls/custom-domains/${domainId}/status`, {
+    method: 'GET',
     headers: createAuthHeaders()
   });
   return response.json();

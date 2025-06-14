@@ -13,6 +13,9 @@ import {
   checkUrlCustomDomainStatus, 
   removeUrlCustomDomain,
   checkDomainImpact,
+  verifyUrlDomainDNS,
+  retryUrlDomainSSL,
+  getUrlDomainStatus,
   type UrlCustomDomain,
   type AvailableDomain
 } from '@/lib/api';
@@ -80,7 +83,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
   // Auto-refresh para dominios en proceso
   useEffect(() => {
     const processingDomains = domains.filter(d => 
-      ['pending', 'dns_configured', 'ssl_issued'].includes(d.status) || 
+      ['pending', 'dns_configured', 'ssl_issued', 'ssl_pending'].includes(d.status) || 
       retryingDomains.has(d.id) ||
       checkingDomains.has(d.id)
     );
@@ -89,7 +92,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
 
     const interval = setInterval(async () => {
       for (const domain of processingDomains) {
-        if (domain.status === 'ssl_issued' && !checkingDomains.has(domain.id)) {
+        if ((domain.status === 'ssl_issued' || domain.status === 'ssl_pending') && !checkingDomains.has(domain.id)) {
           await checkDomainStatus(domain.id);
         }
       }
@@ -99,7 +102,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
       
       prevRetryingDomains.forEach(domainId => {
         const domain = domains.find(d => d.id === domainId);
-        if (domain && !['pending', 'dns_configured', 'ssl_issued'].includes(domain.status)) {
+        if (domain && !['pending', 'dns_configured', 'ssl_issued', 'ssl_pending'].includes(domain.status)) {
           setRetryingDomains(prev => {
             const newSet = new Set(prev);
             newSet.delete(domainId);
@@ -317,6 +320,50 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
     toast.success(t('copiedToClipboard'));
   };
 
+  const verifyDNS = async (domainId: string) => {
+    setCheckingDomains(prev => new Set(prev.add(domainId)));
+    
+    try {
+      const response = await verifyUrlDomainDNS(domainId);
+      
+      if (response.success) {
+        toast.success(response.message);
+        loadDomains();
+      } else {
+        toast.error(response.message || 'Error verifying DNS configuration');
+      }
+    } catch (error) {
+      console.error('Error verifying DNS:', error);
+      toast.error('Error verifying DNS configuration');
+    } finally {
+      setCheckingDomains(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(domainId);
+        return newSet;
+      });
+    }
+  };
+
+  const retrySSLConfiguration = async (domainId: string) => {
+    setRetryingDomains(prev => new Set(prev.add(domainId)));
+    
+    try {
+      const response = await retryUrlDomainSSL(domainId);
+      
+      if (response.success) {
+        toast.success(response.message);
+        loadDomains();
+      } else {
+        toast.error(response.message || 'Error retrying SSL configuration');
+      }
+    } catch (error) {
+      console.error('Error retrying SSL:', error);
+      toast.error('Error retrying SSL configuration');
+    } finally {
+      // Don't remove from retryingDomains here - let the interval handle it
+    }
+  };
+
   const getStatusIcon = (status: string, domainId: string) => {
     if (retryingDomains.has(domainId) || checkingDomains.has(domainId)) {
       return <RefreshCw className="w-5 h-5 text-blue-500 animate-spin" />;
@@ -330,10 +377,12 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
       case 'removed':
         return <AlertCircle className="w-5 h-5 text-orange-500" />;
       case 'ssl_issued':
+      case 'ssl_pending':
         return <RefreshCw className="w-5 h-5 text-blue-500 animate-spin" />;
       case 'pending':
-      case 'dns_configured':
         return <Clock className="w-5 h-5 text-yellow-500" />;
+      case 'dns_configured':
+        return <CheckCircle className="w-5 h-5 text-blue-500" />;
       default:
         return <AlertCircle className="w-5 h-5 text-gray-500" />;
     }
@@ -344,9 +393,11 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
       case 'pending':
         return 'Pendiente de configuración DNS';
       case 'dns_configured':
-        return 'DNS configurado, generando certificado SSL...';
+        return 'DNS configurado correctamente';
       case 'ssl_issued':
         return 'Certificado SSL emitido, activando...';
+      case 'ssl_pending':
+        return 'Configurando certificado SSL...';
       case 'active':
         return 'Dominio activo y funcionando';
       case 'failed':
@@ -688,14 +739,25 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                     {/* Acciones principales */}
                     <div className="flex gap-2">
                       {domain.status === 'pending' && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => verifyDomain(domain.id)}
-                          className="text-xs"
-                        >
-                          {t('verify')}
-                        </Button>
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => verifyDNS(domain.id)}
+                            disabled={checkingDomains.has(domain.id)}
+                            className="text-xs text-blue-400 hover:text-blue-300"
+                          >
+                            {checkingDomains.has(domain.id) ? 'Verificando DNS...' : 'Verificar DNS'}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => verifyDomain(domain.id)}
+                            className="text-xs"
+                          >
+                            {t('verify')}
+                          </Button>
+                        </>
                       )}
                       {domain.status === 'ssl_issued' && (
                         <Button
@@ -708,7 +770,17 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                           {checkingDomains.has(domain.id) ? t('checking') : t('checkStatus')}
                         </Button>
                       )}
-                      {(domain.status === 'failed' || domain.status === 'dns_configured' || domain.status === 'removed' || domain.error_message) && domain.status !== 'active' && domain.status !== 'pending' && !retryingDomains.has(domain.id) && (
+                      {domain.status === 'dns_configured' && !retryingDomains.has(domain.id) && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => retrySSLConfiguration(domain.id)}
+                          className="text-xs text-green-400 hover:text-green-300"
+                        >
+                          Configurar SSL
+                        </Button>
+                      )}
+                      {(domain.status === 'failed' || domain.status === 'removed' || domain.error_message) && domain.status !== 'active' && domain.status !== 'pending' && domain.status !== 'dns_configured' && !retryingDomains.has(domain.id) && (
                         <Button
                           size="sm"
                           variant="outline"
@@ -716,6 +788,17 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                           className="text-xs text-yellow-400 hover:text-yellow-300"
                         >
                           {t('retry')}
+                        </Button>
+                      )}
+                      {domain.status === 'ssl_pending' && !retryingDomains.has(domain.id) && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => checkDomainStatus(domain.id, true)}
+                          disabled={checkingDomains.has(domain.id)}
+                          className="text-xs text-blue-400 hover:text-blue-300"
+                        >
+                          {checkingDomains.has(domain.id) ? t('checking') : 'Verificar SSL'}
                         </Button>
                       )}
                       {retryingDomains.has(domain.id) && (
@@ -732,8 +815,9 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                     </div>
                     
                     {/* Separador visual */}
-                    {(domain.status === 'pending' || domain.status === 'ssl_issued' || 
-                      ((domain.status === 'failed' || domain.status === 'dns_configured' || domain.status === 'removed' || domain.error_message) && domain.status !== 'active' && domain.status !== 'pending' && !retryingDomains.has(domain.id)) ||
+                    {(domain.status === 'pending' || domain.status === 'ssl_issued' || domain.status === 'ssl_pending' || 
+                      domain.status === 'dns_configured' ||
+                      ((domain.status === 'failed' || domain.status === 'removed' || domain.error_message) && domain.status !== 'active' && !retryingDomains.has(domain.id)) ||
                       retryingDomains.has(domain.id)) && (
                       <div className="hidden sm:block w-px h-6 bg-gray-600"></div>
                     )}
