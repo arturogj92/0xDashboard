@@ -12,6 +12,7 @@ import {
   retryUrlCustomDomain, 
   checkUrlCustomDomainStatus, 
   removeUrlCustomDomain,
+  checkDomainImpact,
   type UrlCustomDomain,
   type AvailableDomain
 } from '@/lib/api';
@@ -48,6 +49,8 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
   const [domainToDelete, setDomainToDelete] = useState<UrlCustomDomain | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [deleteImpact, setDeleteImpact] = useState<any>(null);
+  const [showImpactDialog, setShowImpactDialog] = useState(false);
 
   const loadDomains = async () => {
     try {
@@ -161,21 +164,60 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
     }
   };
 
-  const confirmRemoveDomain = async () => {
+  const handleRemoveDomain = async (domain: UrlCustomDomain) => {
+    try {
+      // First check the impact
+      const impactResponse = await checkDomainImpact(domain.id);
+      
+      if (impactResponse.success) {
+        setDeleteImpact(impactResponse.data);
+        setDomainToDelete(domain);
+        
+        // If there are affected URLs, show the impact dialog
+        if (impactResponse.data.affectedUrlsCount > 0) {
+          setShowImpactDialog(true);
+        } else {
+          // No URLs affected, proceed with standard confirmation
+          setShowImpactDialog(false);
+        }
+      } else {
+        toast.error('Failed to assess domain impact');
+      }
+    } catch (error) {
+      console.error('Error checking domain impact:', error);
+      toast.error('Failed to assess domain impact');
+    }
+  };
+
+  const confirmRemoveDomain = async (force: boolean = false) => {
     if (!domainToDelete || isDeleting) return;
 
     setIsDeleting(true);
     
     try {
-      const response = await removeUrlCustomDomain(domainToDelete.id);
+      const response = await removeUrlCustomDomain(domainToDelete.id, force);
       
       if (response.success) {
-        toast.success(t('domainRemoved'));
+        toast.success(response.data?.message || t('domainRemoved'));
         setDomainToDelete(null);
-        loadDomains();
+        setDeleteImpact(null);
+        setShowImpactDialog(false);
+        
+        // Load domains first to update the state
+        await loadDomains();
+        
+        // Force reload to update userCustomDomain in parent
         onDomainUpdate?.();
       } else {
-        toast.error(response.message || t('errorDeletingDomain'));
+        if (response.message?.includes('requires confirmation') || (response as any).requiresConfirmation) {
+          // Show impact dialog if not already shown
+          if (!showImpactDialog) {
+            setDeleteImpact((response as any).data);
+            setShowImpactDialog(true);
+          }
+        } else {
+          toast.error(response.message || t('errorDeletingDomain'));
+        }
       }
     } catch (error) {
       console.error('Error removing URL custom domain:', error);
@@ -506,7 +548,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => setDomainToDelete(domain)}
+                      onClick={() => handleRemoveDomain(domain)}
                       className="text-xs text-red-400 hover:text-red-300"
                     >
                       {t('remove')}
@@ -667,9 +709,10 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
       </div>
 
       {/* Modal de confirmación para eliminar dominio */}
-      <AlertDialog open={!!domainToDelete} onOpenChange={(open) => {
+      <AlertDialog open={!!domainToDelete && !showImpactDialog} onOpenChange={(open) => {
         if (!open && !isDeleting) {
           setDomainToDelete(null);
+          setDeleteImpact(null);
         }
       }}>
         <AlertDialogContent>
@@ -690,7 +733,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isDeleting}>{t('cancel')}</AlertDialogCancel>
             <AlertDialogAction
-              onClick={confirmRemoveDomain}
+              onClick={() => confirmRemoveDomain()}
               disabled={isDeleting}
               className="bg-red-600 hover:bg-red-700 disabled:opacity-50"
             >
@@ -701,6 +744,79 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                 </div>
               ) : (
                 t('confirmRemove')
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Impact Warning Dialog */}
+      <AlertDialog open={showImpactDialog} onOpenChange={(open) => {
+        if (!open && !isDeleting) {
+          setShowImpactDialog(false);
+          setDomainToDelete(null);
+          setDeleteImpact(null);
+        }
+      }}>
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-orange-500" />
+              URLs Affected Warning
+            </AlertDialogTitle>
+            <AlertDialogDescription className="space-y-3">
+              {deleteImpact && (
+                <>
+                  <p>
+                    Removing domain <strong>{deleteImpact.domain?.domain}</strong> will affect{' '}
+                    <strong>{deleteImpact.affectedUrlsCount}</strong> short URL{deleteImpact.affectedUrlsCount !== 1 ? 's' : ''}.
+                  </p>
+                  
+                  {deleteImpact.affectedUrls?.length > 0 && (
+                    <div className="mt-3">
+                      <p className="text-sm font-medium mb-2">Affected URLs:</p>
+                      <div className="bg-gray-50 dark:bg-gray-800 rounded-md p-2 max-h-32 overflow-y-auto">
+                        {deleteImpact.affectedUrls.slice(0, 3).map((url: any, index: number) => (
+                          <div key={index} className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                            {deleteImpact.domain?.domain}/{url.slug}
+                          </div>
+                        ))}
+                        {deleteImpact.affectedUrlsCount > 3 && (
+                          <div className="text-xs text-gray-500 mt-1">
+                            ... and {deleteImpact.affectedUrlsCount - 3} more
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <p className="text-orange-600 dark:text-orange-400 text-sm">
+                    ⚠️ These URLs will become inaccessible via the custom domain. They will still work via the default subdomain format.
+                  </p>
+
+                  {deleteImpact.canDeactivateOnly && (
+                    <p className="text-blue-600 dark:text-blue-400 text-sm">
+                      💡 This domain is also used for landing pages, so it will only be deactivated for URL shortener use.
+                    </p>
+                  )}
+                </>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => confirmRemoveDomain(true)}
+              disabled={isDeleting}
+              className="bg-red-600 hover:bg-red-700 disabled:opacity-50"
+            >
+              {isDeleting ? (
+                <div className="flex items-center gap-2">
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  Removing...
+                </div>
+              ) : (
+                'Remove Anyway'
               )}
             </AlertDialogAction>
           </AlertDialogFooter>

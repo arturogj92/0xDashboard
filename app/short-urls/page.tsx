@@ -168,10 +168,8 @@ export default function ShortUrlsPage() {
       if (urlsResponse.success) {
         setAllUrls(urlsResponse.data.urls); // Store all loaded URLs
         
-        // Extract user custom domain if available
-        if (urlsResponse.data.userCustomDomain) {
-          setUserCustomDomain(urlsResponse.data.userCustomDomain);
-        }
+        // Update user custom domain based on backend response
+        setUserCustomDomain(urlsResponse.data.userCustomDomain || null);
         
         // Don't override pagination state for local pagination
         if (!isSearchContext) {
@@ -587,6 +585,7 @@ export default function ShortUrlsPage() {
           {/* URLs Table - Responsivo */}
           <div className="w-full max-w-5xl px-2 sm:px-0">
             <ShortUrlsTable
+              key={`urls-table-${userCustomDomain || 'default'}`}
               urls={shortUrls}
               pagination={pagination}
               filters={{ ...filters, search: localSearch }} // Use local search for immediate display
@@ -617,6 +616,7 @@ export default function ShortUrlsPage() {
           isOpen={showCreateModal}
           onClose={() => setShowCreateModal(false)}
           onSubmit={handleCreateUrl}
+          userCustomDomain={userCustomDomain}
         />
       )}
 
