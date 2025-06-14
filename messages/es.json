@@ -596,7 +596,35 @@
       "step4": "Tus URLs cortas funcionarán como: art0x.link/mi-enlace",
       "tip": "💡 Consejo: Una vez configurado, podrás seleccionar este dominio al crear nuevas URLs cortas"
     },
-    "sharedDomainInfo": "Este dominio también soporta landing pages"
+    "sharedDomainInfo": "Este dominio también soporta landing pages",
+    "deleteModal": {
+      "title": "¿Eliminar dominio?",
+      "subtitle": "Esta acción es permanente",
+      "description": "Se eliminará la configuración del dominio y ya no podrás usarlo para crear URLs cortas.",
+      "whatWillHappen": "Lo que pasará:",
+      "consequences": {
+        "domainWillStop": "El dominio dejará de funcionar para URLs cortas",
+        "urlsWillChange": "Las URLs existentes volverán al formato por defecto",
+        "reconfigureRequired": "Tendrás que reconfigurar el DNS si quieres volver a usarlo"
+      },
+      "confirmButton": "Sí, eliminar dominio",
+      "cancelButton": "Cancelar",
+      "deleting": "Eliminando..."
+    },
+    "impactModal": {
+      "title": "URLs en uso detectadas",
+      "domainInUse": "Este dominio está siendo usado por {count} URL{plural}",
+      "willStopWorking": "Al eliminarlo, estas URLs dejarán de funcionar con el dominio personalizado.",
+      "affectedUrls": "URLs afectadas:",
+      "moreUrls": "... y {count} más",
+      "dontWorry": "No te preocupes",
+      "willStillWork": "Las URLs seguirán funcionando con el formato por defecto: {format}",
+      "sharedDomain": "Dominio compartido",
+      "sharedDomainDescription": "Este dominio también se usa para landing pages, por lo que solo se desactivará para URLs cortas.",
+      "confirmButton": "Sí, eliminar de todas formas",
+      "cancelButton": "Cancelar",
+      "removing": "Eliminando..."
+    }
   },
   "styleCustomization": {
     "title": "Personaliza el Estilo",

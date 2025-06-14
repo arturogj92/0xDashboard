@@ -502,57 +502,73 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                     )}
                   </div>
                   
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    {domain.status === 'pending' && (
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    {/* Acciones principales */}
+                    <div className="flex gap-2">
+                      {domain.status === 'pending' && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => verifyDomain(domain.id)}
+                          className="text-xs"
+                        >
+                          {t('verify')}
+                        </Button>
+                      )}
+                      {domain.status === 'ssl_issued' && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => checkDomainStatus(domain.id, true)}
+                          disabled={checkingDomains.has(domain.id)}
+                          className="text-xs text-blue-400 hover:text-blue-300"
+                        >
+                          {checkingDomains.has(domain.id) ? t('checking') : t('checkStatus')}
+                        </Button>
+                      )}
+                      {(domain.status === 'failed' || domain.status === 'dns_configured' || domain.status === 'removed' || domain.error_message) && domain.status !== 'active' && domain.status !== 'pending' && !retryingDomains.has(domain.id) && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => retryDomain(domain.id)}
+                          className="text-xs text-yellow-400 hover:text-yellow-300"
+                        >
+                          {t('retry')}
+                        </Button>
+                      )}
+                      {retryingDomains.has(domain.id) && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={true}
+                          className="text-xs text-blue-400 opacity-50 cursor-not-allowed"
+                        >
+                          <RefreshCw className="w-3 h-3 animate-spin mr-1" />
+                          {t('retrying')}
+                        </Button>
+                      )}
+                    </div>
+                    
+                    {/* Separador visual */}
+                    {(domain.status === 'pending' || domain.status === 'ssl_issued' || 
+                      ((domain.status === 'failed' || domain.status === 'dns_configured' || domain.status === 'removed' || domain.error_message) && domain.status !== 'active' && domain.status !== 'pending' && !retryingDomains.has(domain.id)) ||
+                      retryingDomains.has(domain.id)) && (
+                      <div className="hidden sm:block w-px h-6 bg-gray-600"></div>
+                    )}
+                    
+                    {/* Acción de eliminar */}
+                    <div className="flex items-center gap-2">
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => verifyDomain(domain.id)}
-                        className="text-xs"
+                        onClick={() => handleRemoveDomain(domain)}
+                        className="text-xs text-red-400 hover:text-red-300 hover:bg-red-900/20 border-red-800/50 flex items-center gap-1.5"
+                        title={t('deleteModal.subtitle')}
                       >
-                        {t('verify')}
+                        <Trash2 className="w-3 h-3" />
+                        <span className="hidden sm:inline">{t('remove')}</span>
                       </Button>
-                    )}
-                    {domain.status === 'ssl_issued' && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => checkDomainStatus(domain.id, true)}
-                        disabled={checkingDomains.has(domain.id)}
-                        className="text-xs text-blue-400 hover:text-blue-300"
-                      >
-                        {checkingDomains.has(domain.id) ? t('checking') : t('checkStatus')}
-                      </Button>
-                    )}
-                    {(domain.status === 'failed' || domain.status === 'dns_configured' || domain.status === 'removed' || domain.error_message) && domain.status !== 'active' && domain.status !== 'pending' && !retryingDomains.has(domain.id) && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => retryDomain(domain.id)}
-                        className="text-xs text-yellow-400 hover:text-yellow-300"
-                      >
-                        {t('retry')}
-                      </Button>
-                    )}
-                    {retryingDomains.has(domain.id) && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        disabled={true}
-                        className="text-xs text-blue-400 opacity-50 cursor-not-allowed"
-                      >
-                        <RefreshCw className="w-3 h-3 animate-spin mr-1" />
-                        {t('retrying')}
-                      </Button>
-                    )}
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleRemoveDomain(domain)}
-                      className="text-xs text-red-400 hover:text-red-300"
-                    >
-                      {t('remove')}
-                    </Button>
+                    </div>
                   </div>
                 </div>
 
@@ -715,23 +731,52 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
           setDeleteImpact(null);
         }
       }}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
-              <Trash2 className="h-5 w-5 text-red-500" />
-              {t('confirmRemoveTitle')}
+            <AlertDialogTitle className="flex items-center gap-3">
+              <div className="bg-red-500/20 p-2 rounded-lg">
+                <Trash2 className="h-5 w-5 text-red-500" />
+              </div>
+              <div>
+                <div className="text-lg font-semibold text-white">
+                  {t('deleteModal.title')}
+                </div>
+                <div className="text-sm text-gray-400 font-normal">
+                  {domainToDelete?.domain}
+                </div>
+              </div>
             </AlertDialogTitle>
-            <AlertDialogDescription>
-              <div className="space-y-2">
-                <p>{t('confirmRemoveDescription')}</p>
-                <p className="text-yellow-600 font-semibold">
-                  {t('confirmRemoveWarning')}
+            <AlertDialogDescription className="space-y-3">
+              <div className="bg-yellow-900/20 border border-yellow-600/30 rounded-lg p-3">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="h-4 w-4 text-yellow-400 mt-0.5 flex-shrink-0" />
+                  <div className="text-sm">
+                    <p className="text-yellow-200 font-medium mb-1">
+                      ⚠️ {t('deleteModal.subtitle')}
+                    </p>
+                    <p className="text-yellow-300/80">
+                      {t('deleteModal.description')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="text-sm text-gray-300">
+                <p className="mb-2">
+                  <strong>{t('deleteModal.whatWillHappen')}</strong>
                 </p>
+                <ul className="list-disc list-inside space-y-1 text-gray-400 ml-2">
+                  <li>{t('deleteModal.consequences.domainWillStop')}</li>
+                  <li>{t('deleteModal.consequences.urlsWillChange')}</li>
+                  <li>{t('deleteModal.consequences.reconfigureRequired')}</li>
+                </ul>
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting} className="border-gray-600 text-gray-300 hover:bg-gray-700">
+              {t('deleteModal.cancelButton')}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => confirmRemoveDomain()}
               disabled={isDeleting}
@@ -740,10 +785,13 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
               {isDeleting ? (
                 <div className="flex items-center gap-2">
                   <RefreshCw className="h-4 w-4 animate-spin" />
-                  Eliminando...
+                  {t('deleteModal.deleting')}
                 </div>
               ) : (
-                t('confirmRemove')
+                <>
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  {t('deleteModal.confirmButton')}
+                </>
               )}
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -758,53 +806,98 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
           setDeleteImpact(null);
         }
       }}>
-        <AlertDialogContent className="max-w-md">
+        <AlertDialogContent className="max-w-lg">
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-orange-500" />
-              URLs Affected Warning
+            <AlertDialogTitle className="flex items-center gap-3">
+              <div className="bg-orange-500/20 p-2 rounded-lg">
+                <AlertCircle className="h-5 w-5 text-orange-500" />
+              </div>
+              <div>
+                <div className="text-lg font-semibold text-white">
+                  ⚠️ {t('impactModal.title')}
+                </div>
+                <div className="text-sm text-gray-400 font-normal">
+                  {deleteImpact?.domain?.domain}
+                </div>
+              </div>
             </AlertDialogTitle>
-            <AlertDialogDescription className="space-y-3">
+            <AlertDialogDescription className="space-y-4">
               {deleteImpact && (
                 <>
-                  <p>
-                    Removing domain <strong>{deleteImpact.domain?.domain}</strong> will affect{' '}
-                    <strong>{deleteImpact.affectedUrlsCount}</strong> short URL{deleteImpact.affectedUrlsCount !== 1 ? 's' : ''}.
-                  </p>
+                  <div className="bg-orange-900/20 border border-orange-600/30 rounded-lg p-3">
+                    <div className="flex items-start gap-2">
+                      <AlertCircle className="h-4 w-4 text-orange-400 mt-0.5 flex-shrink-0" />
+                      <div className="text-sm">
+                        <p className="text-orange-200 font-medium mb-1">
+                          {t('impactModal.domainInUse', { 
+                            count: deleteImpact.affectedUrlsCount, 
+                            plural: deleteImpact.affectedUrlsCount !== 1 ? 's' : '' 
+                          })}
+                        </p>
+                        <p className="text-orange-300/80">
+                          {t('impactModal.willStopWorking')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                   
                   {deleteImpact.affectedUrls?.length > 0 && (
-                    <div className="mt-3">
-                      <p className="text-sm font-medium mb-2">Affected URLs:</p>
-                      <div className="bg-gray-50 dark:bg-gray-800 rounded-md p-2 max-h-32 overflow-y-auto">
-                        {deleteImpact.affectedUrls.slice(0, 3).map((url: any, index: number) => (
-                          <div key={index} className="text-xs text-gray-600 dark:text-gray-400 mb-1">
-                            {deleteImpact.domain?.domain}/{url.slug}
+                    <div>
+                      <p className="text-sm font-medium text-gray-300 mb-2">{t('impactModal.affectedUrls')}</p>
+                      <div className="bg-gray-800/50 rounded-lg p-3 max-h-32 overflow-y-auto border border-gray-700/50">
+                        {deleteImpact.affectedUrls.slice(0, 5).map((url: any, index: number) => (
+                          <div key={index} className="text-xs text-gray-400 mb-1 font-mono">
+                            <span className="text-orange-300">{deleteImpact.domain?.domain}</span>
+                            <span className="text-gray-500">/</span>
+                            <span className="text-blue-300">{url.slug}</span>
                           </div>
                         ))}
-                        {deleteImpact.affectedUrlsCount > 3 && (
-                          <div className="text-xs text-gray-500 mt-1">
-                            ... and {deleteImpact.affectedUrlsCount - 3} more
+                        {deleteImpact.affectedUrlsCount > 5 && (
+                          <div className="text-xs text-gray-500 mt-2 border-t border-gray-700 pt-2">
+                            {t('impactModal.moreUrls', { count: deleteImpact.affectedUrlsCount - 5 })}
                           </div>
                         )}
                       </div>
                     </div>
                   )}
                   
-                  <p className="text-orange-600 dark:text-orange-400 text-sm">
-                    ⚠️ These URLs will become inaccessible via the custom domain. They will still work via the default subdomain format.
-                  </p>
+                  <div className="bg-blue-900/20 border border-blue-600/30 rounded-lg p-3">
+                    <div className="flex items-start gap-2">
+                      <div className="text-blue-400 mt-0.5">💡</div>
+                      <div className="text-sm">
+                        <p className="text-blue-200 font-medium mb-1">
+                          {t('impactModal.dontWorry')}
+                        </p>
+                        <p className="text-blue-300/80">
+                          {t('impactModal.willStillWork', { format: 'usuario.creator0x.com/slug' })}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
 
                   {deleteImpact.canDeactivateOnly && (
-                    <p className="text-blue-600 dark:text-blue-400 text-sm">
-                      💡 This domain is also used for landing pages, so it will only be deactivated for URL shortener use.
-                    </p>
+                    <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-3">
+                      <div className="flex items-start gap-2">
+                        <div className="text-purple-400 mt-0.5">ℹ️</div>
+                        <div className="text-sm">
+                          <p className="text-purple-200 font-medium mb-1">
+                            {t('impactModal.sharedDomain')}
+                          </p>
+                          <p className="text-purple-300/80">
+                            {t('impactModal.sharedDomainDescription')}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   )}
                 </>
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting} className="border-gray-600 text-gray-300 hover:bg-gray-700">
+              {t('impactModal.cancelButton')}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => confirmRemoveDomain(true)}
               disabled={isDeleting}
@@ -813,10 +906,13 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
               {isDeleting ? (
                 <div className="flex items-center gap-2">
                   <RefreshCw className="h-4 w-4 animate-spin" />
-                  Removing...
+                  {t('impactModal.removing')}
                 </div>
               ) : (
-                'Remove Anyway'
+                <>
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  {t('impactModal.confirmButton')}
+                </>
               )}
             </AlertDialogAction>
           </AlertDialogFooter>

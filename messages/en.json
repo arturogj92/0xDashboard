@@ -595,7 +595,35 @@
       "step4": "Your short URLs will work like: art0x.link/my-link",
       "tip": "💡 Tip: Once configured, you can select this domain when creating new short URLs"
     },
-    "sharedDomainInfo": "This domain also supports landing pages"
+    "sharedDomainInfo": "This domain also supports landing pages",
+    "deleteModal": {
+      "title": "Delete domain?",
+      "subtitle": "This action is permanent",
+      "description": "The domain configuration will be removed and you won't be able to use it for creating short URLs.",
+      "whatWillHappen": "What will happen:",
+      "consequences": {
+        "domainWillStop": "The domain will stop working for short URLs",
+        "urlsWillChange": "Existing URLs will revert to the default format",
+        "reconfigureRequired": "You'll need to reconfigure DNS if you want to use it again"
+      },
+      "confirmButton": "Yes, delete domain",
+      "cancelButton": "Cancel",
+      "deleting": "Deleting..."
+    },
+    "impactModal": {
+      "title": "URLs in use detected",
+      "domainInUse": "This domain is being used by {count} URL{plural}",
+      "willStopWorking": "By removing it, these URLs will stop working with the custom domain.",
+      "affectedUrls": "Affected URLs:",
+      "moreUrls": "... and {count} more",
+      "dontWorry": "Don't worry",
+      "willStillWork": "URLs will still work with the default format: {format}",
+      "sharedDomain": "Shared domain",
+      "sharedDomainDescription": "This domain is also used for landing pages, so it will only be deactivated for short URLs.",
+      "confirmButton": "Yes, delete anyway",
+      "cancelButton": "Cancel",
+      "removing": "Removing..."
+    }
   },
   "styleCustomization": {
     "title": "Customize Style",
