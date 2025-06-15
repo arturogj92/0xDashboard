@@ -577,8 +577,9 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
           )}
         </AnimatePresence>
 
-        {/* Add new domain */}
-        <div className="space-y-6">
+        {/* Add new domain - Only show if no active domain exists */}
+        {!domains.some(domain => domain.status === 'active') && (
+          <div className="space-y-6">
           {/* Header section */}
           <div className="text-center">
             <h4 className="text-lg font-semibold text-white mb-2">
@@ -703,6 +704,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
             </div>
           </div>
         </div>
+        )}
 
         {/* Existing domains */}
         {domains.length > 0 ? (
@@ -740,25 +742,15 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                     {/* Acciones principales */}
                     <div className="flex gap-2">
                       {domain.status === 'pending' && (
-                        <>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => verifyDNS(domain.id)}
-                            disabled={checkingDomains.has(domain.id)}
-                            className="text-xs text-blue-400 hover:text-blue-300"
-                          >
-                            {checkingDomains.has(domain.id) ? 'Verificando DNS...' : 'Verificar DNS'}
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => verifyDomain(domain.id)}
-                            className="text-xs"
-                          >
-                            {t('verify')}
-                          </Button>
-                        </>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => verifyDNS(domain.id)}
+                          disabled={checkingDomains.has(domain.id)}
+                          className="text-xs text-blue-400 hover:text-blue-300"
+                        >
+                          {checkingDomains.has(domain.id) ? 'Verificando DNS...' : 'Verificar DNS'}
+                        </Button>
                       )}
                       {domain.status === 'ssl_issued' && (
                         <Button
