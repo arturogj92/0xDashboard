@@ -880,27 +880,46 @@ export function ShortUrlsTable({
         <div className="text-center text-sm text-gray-400">
         <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent font-medium">
           {(() => {
-            const text = t('table.pagination.info');
-            console.log('Debug pagination text:', text);
-            
-            // Si la traducción falla, usar fallback
-            if (text === 'shortUrls.table.pagination.info') {
+            try {
+              const text = t('table.pagination.info');
+              console.log('Translation result:', text);
+              console.log('Is text a translation key?', text.includes('shortUrls.table.pagination.info'));
+              
+              // If text contains the key, return a fallback
+              if (text.includes('shortUrls.table.pagination.info')) {
+                const count = sortedUrls.length;
+                const total = pagination.totalCount || 0;
+                const plural = total !== 1 ? 's' : '';
+                return `✨ Showing ${count} of ${total} magical link${plural}`;
+              }
+              
+              return text
+                .replace('{count}', sortedUrls.length.toString())
+                .replace('{total}', (pagination.totalCount || 0).toString())
+                .replace('{plural}', (pagination.totalCount || 0) !== 1 ? 's' : '')
+                .replace('{pluralMagic}', (pagination.totalCount || 0) !== 1 ? 's' : '');
+            } catch (error) {
+              console.error('Translation error:', error);
               const count = sortedUrls.length;
               const total = pagination.totalCount || 0;
               const plural = total !== 1 ? 's' : '';
-              return `✨ Mostrando ${count} de ${total} enlace${plural} mágico${plural}`;
+              return `✨ Showing ${count} of ${total} magical link${plural}`;
             }
-            
-            return text
-              .replace('{count}', sortedUrls.length.toString())
-              .replace('{total}', (pagination.totalCount || 0).toString())
-              .replace('{plural}', (pagination.totalCount || 0) !== 1 ? 's' : '')
-              .replace('{pluralMagic}', (pagination.totalCount || 0) !== 1 ? 's' : '');
           })()}
         </span>
         {filters.search && (
           <span className="ml-2 text-yellow-400">
-            {t('table.pagination.searchInfo').replace('{search}', filters.search)}
+            {(() => {
+              const searchInfo = t('table.pagination.searchInfo');
+              console.log('Search info translation:', searchInfo);
+              
+              // Fallback if translation fails
+              if (searchInfo.includes('shortUrls.table.pagination.searchInfo')) {
+                return `for "${filters.search}" 🔍`;
+              }
+              
+              return searchInfo.replace('{search}', filters.search);
+            })()}
           </span>
         )}
         </div>

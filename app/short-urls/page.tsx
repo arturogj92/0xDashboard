@@ -379,22 +379,23 @@ export default function ShortUrlsPage() {
                 </h3>
                 <div className="mb-3 leading-relaxed">
                   {(() => {
-                    const description = t('infoSection.whyShortUrls.description');
-                    console.log('Debug description:', description);
-                    
-                    if (description === 'shortUrls.infoSection.whyShortUrls.description') {
-                      return (
-                        <span>
-                          En redes sociales es <strong>difícil hacer click en enlaces largos</strong>. Las URLs cortas y personalizadas como{' '}
-                          <span className="bg-indigo-900/40 px-2 py-1 rounded text-indigo-300 mx-1 font-mono">
-                            usuario.creator0x.com/ofertas
-                          </span>{' '}
-                          son <strong>fáciles de recordar</strong> y transmiten confianza.
-                        </span>
-                      );
+                    try {
+                      const description = t('infoSection.whyShortUrls.description');
+                      console.log('Description translation result:', description);
+                      console.log('Is description a translation key?', description.includes('shortUrls.infoSection.whyShortUrls.description'));
+                      
+                      // If description contains the key, return a fallback
+                      if (description.includes('shortUrls.infoSection.whyShortUrls.description')) {
+                        const fallbackText = 'On social media it\'s <strong>hard to click on long links</strong>. Short and personalized URLs like <span class="bg-indigo-900/40 px-2 py-1 rounded text-indigo-300 mx-1 font-mono">user.creator0x.com/offers</span> are <strong>easy to remember</strong> and convey trust.';
+                        return <span dangerouslySetInnerHTML={{ __html: fallbackText }} />;
+                      }
+                      
+                      return <span dangerouslySetInnerHTML={{ __html: description }} />;
+                    } catch (error) {
+                      console.error('Translation error for description:', error);
+                      const fallbackText = 'On social media it\'s <strong>hard to click on long links</strong>. Short and personalized URLs like <span class="bg-indigo-900/40 px-2 py-1 rounded text-indigo-300 mx-1 font-mono">user.creator0x.com/offers</span> are <strong>easy to remember</strong> and convey trust.';
+                      return <span dangerouslySetInnerHTML={{ __html: fallbackText }} />;
                     }
-                    
-                    return <span dangerouslySetInnerHTML={{ __html: description }} />;
                   })()}
                 </div>
                 <p className="text-gray-400 text-xs">
