@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { CreateShortUrlModal } from '@/components/shortUrls/CreateShortUrlModal';
@@ -35,6 +36,7 @@ import {
 } from '@/lib/api';
 
 export default function ShortUrlsPage() {
+  const t = useTranslations('shortUrls');
   const [isLoading, setIsLoading] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -347,7 +349,7 @@ export default function ShortUrlsPage() {
     return (
       <ProtectedRoute>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-pulse text-white">Cargando...</div>
+          <div className="animate-pulse text-white">{t('page.loading')}</div>
         </div>
       </ProtectedRoute>
     );
@@ -360,7 +362,7 @@ export default function ShortUrlsPage() {
           <LinkIcon className="w-14 h-14" style={{ color: '#d08216' }} />
         }
         title="URL Shortener"
-        description="Crea enlaces cortos memorables para tus redes sociales y rastrea su rendimiento"
+        description={t('page.description')}
       />
 
       <div className="mb-16 relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-hidden">
@@ -373,15 +375,30 @@ export default function ShortUrlsPage() {
               <div className="flex-1">
                 <h3 className="font-semibold text-white mb-2 flex items-center gap-2">
                   <ShareIcon className="h-5 w-5 text-blue-400" />
-                  ¿Por qué URLs cortas en redes sociales?
+                  {t('infoSection.whyShortUrls.title')}
                 </h3>
-                <p className="mb-3 leading-relaxed">
-                  En redes sociales es <strong>difícil hacer click en enlaces largos</strong>. Las URLs cortas y personalizadas como 
-                  <span className="bg-indigo-900/40 px-2 py-1 rounded text-indigo-300 mx-1 font-mono">usuario.creator0x.com/ofertas</span> 
-                  son <strong>fáciles de recordar</strong> y transmiten confianza.
-                </p>
+                <div className="mb-3 leading-relaxed">
+                  {(() => {
+                    const description = t('infoSection.whyShortUrls.description');
+                    console.log('Debug description:', description);
+                    
+                    if (description === 'shortUrls.infoSection.whyShortUrls.description') {
+                      return (
+                        <span>
+                          En redes sociales es <strong>difícil hacer click en enlaces largos</strong>. Las URLs cortas y personalizadas como{' '}
+                          <span className="bg-indigo-900/40 px-2 py-1 rounded text-indigo-300 mx-1 font-mono">
+                            usuario.creator0x.com/ofertas
+                          </span>{' '}
+                          son <strong>fáciles de recordar</strong> y transmiten confianza.
+                        </span>
+                      );
+                    }
+                    
+                    return <span dangerouslySetInnerHTML={{ __html: description }} />;
+                  })()}
+                </div>
                 <p className="text-gray-400 text-xs">
-                  💡 Tip: Usa slugs descriptivos como &quot;ofertas&quot;, &quot;curso-gratis&quot;, &quot;descuento&quot; para mayor memorabilidad
+                  {t('infoSection.whyShortUrls.tip')}
                 </p>
               </div>
             </div>
@@ -406,7 +423,7 @@ export default function ShortUrlsPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                   </svg>
                 </div>
-                <span className="mt-2 text-[10px] sm:text-xs text-gray-200 font-medium text-center leading-tight w-full">Crear Enlace</span>
+                <span className="mt-2 text-[10px] sm:text-xs text-gray-200 font-medium text-center leading-tight w-full">{t('workflow.step1')}</span>
               </div>
               <ArrowRightIcon className="self-center relative -mt-1 sm:-mt-2 md:-mt-4 h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 animate-pulse" style={{ color: '#d08216' }} />
               
@@ -417,7 +434,7 @@ export default function ShortUrlsPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
                   </svg>
                 </div>
-                <span className="mt-2 text-[10px] sm:text-xs text-gray-200 font-medium text-center leading-tight w-full">Compartir</span>
+                <span className="mt-2 text-[10px] sm:text-xs text-gray-200 font-medium text-center leading-tight w-full">{t('workflow.step2')}</span>
               </div>
               <ArrowRightIcon className="self-center relative -mt-1 sm:-mt-2 md:-mt-4 h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 animate-pulse" style={{ color: '#d08216' }} />
               
@@ -428,7 +445,7 @@ export default function ShortUrlsPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.042 21.672 13.684 16.6m0 0-2.51 2.225.569-9.47 5.227 7.917-3.286-.672ZM12 2.25V4.5m5.834.166-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243-1.59-1.59" />
                   </svg>
                 </div>
-                <span className="mt-2 text-[10px] sm:text-xs text-gray-200 font-medium text-center leading-tight w-full">Rastrear Clicks</span>
+                <span className="mt-2 text-[10px] sm:text-xs text-gray-200 font-medium text-center leading-tight w-full">{t('workflow.step3')}</span>
               </div>
               <ArrowRightIcon className="self-center relative -mt-1 sm:-mt-2 md:-mt-4 h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6 animate-pulse" style={{ color: '#d08216' }} />
               
@@ -440,7 +457,7 @@ export default function ShortUrlsPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
                   </svg>
                 </div>
-                <span className="mt-2 text-[10px] sm:text-xs text-gray-200 font-medium text-center leading-tight w-full">Ver Analytics</span>
+                <span className="mt-2 text-[10px] sm:text-xs text-gray-200 font-medium text-center leading-tight w-full">{t('workflow.step4')}</span>
               </div>
             </div>
           </div>
@@ -457,7 +474,7 @@ export default function ShortUrlsPage() {
                   <LinkIcon className="h-5 w-5 sm:h-6 sm:w-6 text-indigo-400" />
                 </div>
                 <div className="ml-2 sm:ml-3 min-w-0 text-center sm:text-left">
-                  <div className="text-xs font-medium text-gray-400 truncate">Total URLs</div>
+                  <div className="text-xs font-medium text-gray-400 truncate">{t('stats.totalUrls')}</div>
                   <div className="text-lg sm:text-xl font-bold text-white">{stats?.totalUrls || 0}</div>
                 </div>
               </div>
@@ -473,7 +490,7 @@ export default function ShortUrlsPage() {
                   <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-green-400" />
                 </div>
                 <div className="ml-2 sm:ml-3 min-w-0 text-center sm:text-left">
-                  <div className="text-xs font-medium text-gray-400 truncate">Total Clicks</div>
+                  <div className="text-xs font-medium text-gray-400 truncate">{t('stats.totalClicks')}</div>
                   <div className="text-lg sm:text-xl font-bold text-white">{globalUrlStats?.last_28_days_total || stats?.totalClicks || 0}</div>
                 </div>
               </div>
@@ -489,7 +506,7 @@ export default function ShortUrlsPage() {
                   <ClipboardDocumentIcon className="h-5 w-5 sm:h-6 sm:w-6 text-blue-400" />
                 </div>
                 <div className="ml-2 sm:ml-3 min-w-0 text-center sm:text-left">
-                  <div className="text-xs font-medium text-gray-400 truncate">Hoy</div>
+                  <div className="text-xs font-medium text-gray-400 truncate">{t('stats.today')}</div>
                   <div className="text-lg sm:text-xl font-bold text-white">{globalUrlStats?.today_total || stats?.todayClicks || 0}</div>
                 </div>
               </div>
@@ -505,7 +522,7 @@ export default function ShortUrlsPage() {
                   <ChartBarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-400" />
                 </div>
                 <div className="ml-2 sm:ml-3 min-w-0 text-center sm:text-left">
-                  <div className="text-xs font-medium text-gray-400 truncate">7 días</div>
+                  <div className="text-xs font-medium text-gray-400 truncate">{t('stats.sevenDays')}</div>
                   <div className="text-lg sm:text-xl font-bold text-white">{globalUrlStats?.last_7_days_total || stats?.last7DaysClicks || 0}</div>
                 </div>
               </div>
@@ -525,10 +542,10 @@ export default function ShortUrlsPage() {
                   </div>
                   <div className="text-left">
                     <h3 className="text-lg font-semibold text-white">
-                      Dominios Personalizados
+                      {t('customDomains.title')}
                     </h3>
                     <p className="text-sm text-gray-400">
-                      Configura dominios personalizados para tus enlaces cortos
+                      {t('customDomains.description')}
                     </p>
                   </div>
                 </div>

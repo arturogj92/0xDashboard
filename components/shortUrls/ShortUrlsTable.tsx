@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Pagination } from '@/components/ui/Pagination';
@@ -45,14 +46,14 @@ interface ColumnConfig {
   isActionColumn?: boolean;
 }
 
-// Default column order
+// Default column order - Note: labels will be translated in component
 const DEFAULT_COLUMNS: ColumnConfig[] = [
-  { id: 'url', label: '🔗 URL Corta', minWidth: 'min-w-[200px]' },
-  { id: 'destination', label: '🎯 Destino', minWidth: 'min-w-[180px]' },
-  { id: 'clicks', label: '📊 Clicks', minWidth: 'min-w-[120px]' },
-  { id: 'status', label: '⚡ Estado', minWidth: 'min-w-[100px]' },
-  { id: 'actions', label: '🛠️ Acciones', isActionColumn: true, minWidth: 'min-w-[120px]' },
-  { id: 'created', label: '📅 Creado', minWidth: 'min-w-[130px]' }
+  { id: 'url', label: 'shortUrl', minWidth: 'min-w-[200px]' },
+  { id: 'destination', label: 'destination', minWidth: 'min-w-[180px]' },
+  { id: 'clicks', label: 'clicks', minWidth: 'min-w-[120px]' },
+  { id: 'status', label: 'status', minWidth: 'min-w-[100px]' },
+  { id: 'actions', label: 'actions', isActionColumn: true, minWidth: 'min-w-[120px]' },
+  { id: 'created', label: 'created', minWidth: 'min-w-[130px]' }
 ];
 
 // localStorage key for column order
@@ -99,6 +100,7 @@ export function ShortUrlsTable({
   isSearching = false,
   userCustomDomain
 }: ShortUrlsTableProps) {
+  const t = useTranslations('shortUrls');
   const [editingUrl, setEditingUrl] = useState<string | null>(null);
   const [editData, setEditData] = useState<{ originalUrl: string; slug: string }>({ originalUrl: '', slug: '' });
   const [hoveredUrl, setHoveredUrl] = useState<string | null>(null);
@@ -292,7 +294,7 @@ export function ShortUrlsTable({
                     value={editData.slug}
                     onChange={(e) => setEditData({ ...editData, slug: e.target.value })}
                     className="w-full bg-[#1c1033] border border-indigo-500 rounded px-2 py-1 text-sm text-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/20"
-                    placeholder="🔗 Editar slug"
+                    placeholder={t('table.placeholders.editSlug')}
                     autoFocus
                   />
                 </motion.div>
@@ -339,7 +341,7 @@ export function ShortUrlsTable({
                         >
                           ✨
                         </motion.div>
-                        <span className="text-sm font-medium">¡Enlace copiado!</span>
+                        <span className="text-sm font-medium">{t('messages.linkCopied')}</span>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -362,7 +364,7 @@ export function ShortUrlsTable({
                   value={editData.originalUrl}
                   onChange={(e) => setEditData({ ...editData, originalUrl: e.target.value })}
                   className="w-full bg-[#1c1033] border border-indigo-500 rounded px-2 py-1 text-sm text-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/20"
-                  placeholder="🎯 Editar URL destino"
+                  placeholder={t('table.placeholders.editDestination')}
                 />
               </motion.div>
             ) : (
@@ -417,7 +419,7 @@ export function ShortUrlsTable({
                 <EyeSlashIcon className="h-3 w-3 mr-1" />
               )}
             </motion.div>
-            {url.isActive ? 'Activo' : 'Inactivo'}
+            {url.isActive ? t('table.status.active') : t('table.status.inactive')}
             </button>
           </motion.div>
         );
@@ -437,7 +439,7 @@ export function ShortUrlsTable({
                     size="sm"
                     className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg shadow-green-900/30"
                   >
-                    ✅ Guardar
+                    {t('table.buttons.save')}
                   </Button>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -447,7 +449,7 @@ export function ShortUrlsTable({
                     variant="outline"
                     className="border-gray-600 text-gray-300 hover:bg-gray-700"
                   >
-                    ❌ Cancelar
+                    {t('table.buttons.cancel')}
                   </Button>
                 </motion.div>
               </motion.div>
@@ -460,7 +462,7 @@ export function ShortUrlsTable({
                       onClick={() => onStatsClick(url)}
                       size="sm"
                       className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-900/30"
-                      title="Ver estadísticas"
+                      title={t('table.buttons.viewStats')}
                     >
                       <ChartPieIcon className="h-4 w-4" />
                     </Button>
@@ -639,7 +641,7 @@ export function ShortUrlsTable({
             )}
             <Input
               type="text"
-              placeholder="🔍 Buscar por slug, título o URL..."
+              placeholder={t('table.search.placeholder')}
               value={filters.search}
               onChange={(e) => handleSearchChange(e.target.value)}
               onKeyDown={handleSearchKeyDown}
@@ -666,7 +668,7 @@ export function ShortUrlsTable({
             size="sm"
             className="border-gray-600 text-gray-300 hover:bg-gray-700 text-xs"
           >
-            🔄 Reset columnas
+            {t('table.buttons.resetColumns')}
           </Button>
           </div>
         </motion.div>
@@ -748,7 +750,7 @@ export function ShortUrlsTable({
                         sortBy={localSortBy || undefined}
                         sortOrder={localSortOrder}
                       >
-                        {column.label}
+                        {t(`table.headers.${column.label}`)}
                       </SortableColumnHeader>
                     ))}
                   </tr>
@@ -812,13 +814,13 @@ export function ShortUrlsTable({
                         >
                           <div className="text-center">
                           <h3 className="text-lg font-bold text-white mb-2 bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">
-                            {filters.search ? '🔍 No encontramos nada' : '✨ Tu primer enlace te espera'}
+                            {filters.search ? t('table.emptyState.search.title') : t('table.emptyState.noLinks.title')}
                           </h3>
                           
                           <p className="text-gray-300 mb-4 text-sm">
                             {filters.search 
-                              ? 'Intenta con otras palabras clave o limpia la búsqueda' 
-                              : 'Crea enlaces cortos memorables y observa cómo crecen tus clicks 📈'
+                              ? t('table.emptyState.search.description') 
+                              : t('table.emptyState.noLinks.description')
                             }
                           </p>
                           
@@ -834,7 +836,7 @@ export function ShortUrlsTable({
                                 className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold shadow-lg shadow-purple-900/30 transform transition-all duration-200 hover:scale-105"
                               >
                                 <SparklesIcon className="h-4 w-4 mr-2" />
-                                Limpiar búsqueda
+                                {t('table.buttons.clearSearch')}
                               </Button>
                             </motion.div>
                           )}
@@ -877,11 +879,28 @@ export function ShortUrlsTable({
       >
         <div className="text-center text-sm text-gray-400">
         <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent font-medium">
-          ✨ Mostrando {sortedUrls.length} de {pagination.totalCount || 0} enlace{(pagination.totalCount || 0) !== 1 ? 's' : ''} mágico{(pagination.totalCount || 0) !== 1 ? 's' : ''}
+          {(() => {
+            const text = t('table.pagination.info');
+            console.log('Debug pagination text:', text);
+            
+            // Si la traducción falla, usar fallback
+            if (text === 'shortUrls.table.pagination.info') {
+              const count = sortedUrls.length;
+              const total = pagination.totalCount || 0;
+              const plural = total !== 1 ? 's' : '';
+              return `✨ Mostrando ${count} de ${total} enlace${plural} mágico${plural}`;
+            }
+            
+            return text
+              .replace('{count}', sortedUrls.length.toString())
+              .replace('{total}', (pagination.totalCount || 0).toString())
+              .replace('{plural}', (pagination.totalCount || 0) !== 1 ? 's' : '')
+              .replace('{pluralMagic}', (pagination.totalCount || 0) !== 1 ? 's' : '');
+          })()}
         </span>
         {filters.search && (
           <span className="ml-2 text-yellow-400">
-            para &quot;{filters.search}&quot; 🔍
+            {t('table.pagination.searchInfo').replace('{search}', filters.search)}
           </span>
         )}
         </div>
@@ -894,30 +913,50 @@ export function ShortUrlsTable({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            onTap={handleCancelDelete}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              backdropFilter: 'blur(4px)',
+              zIndex: 50,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '1rem'
+            }}
           >
-            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={handleCancelDelete}>
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
+              onTap={(e: any) => e.stopPropagation()}
+              style={{
+                backgroundColor: '#120724',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                borderRadius: '0.75rem',
+                padding: '1.5rem',
+                maxWidth: '28rem',
+                width: '100%',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+              }}
             >
-              <div className="bg-[#120724] border border-red-500/30 rounded-xl p-6 max-w-md w-full shadow-2xl fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center gap-3 mb-4">
                 <div className="bg-red-500/20 p-3 rounded-lg">
                   <TrashIcon className="h-6 w-6 text-red-400" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-white">
-                    ¿Eliminar enlace?
+                    {t('table.deleteModal.title')}
                   </h3>
                   <p className="text-sm text-gray-400">
-                    Esta acción no se puede deshacer
+                    {t('table.deleteModal.subtitle')}
                   </p>
                 </div>
               </div>
               
               <p className="text-gray-300 mb-6">
-                El enlace corto será eliminado permanentemente junto con todas sus estadísticas.
+                {t('table.deleteModal.description')}
               </p>
               
               <div className="flex gap-3 justify-end">
@@ -926,18 +965,16 @@ export function ShortUrlsTable({
                   variant="outline"
                   className="border-gray-600 text-gray-300 hover:bg-gray-700"
                 >
-                  Cancelar
+                  {t('table.deleteModal.cancel')}
                 </Button>
                 <Button
                   onClick={handleConfirmDelete}
                   className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white"
                 >
-                  Eliminar
+                  {t('table.deleteModal.confirm')}
                 </Button>
               </div>
-              </div>
             </motion.div>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>

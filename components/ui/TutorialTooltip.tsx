@@ -109,35 +109,26 @@ export function TutorialTooltip({
       {/* Tooltip animado */}
       <AnimatePresence>
         {showTooltip && (
-          <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.8 }}
-            animate={{ 
-              opacity: 1, 
-              y: 0, 
-              scale: 1,
-              rotate: [0, -2, 2, -1, 1, 0]
-            }}
-            exit={{ opacity: 0, y: -10, scale: 0.9 }}
-            transition={{ 
-              duration: 0.6,
-              ease: "easeOut",
-              rotate: { 
-                duration: 0.8, 
-                repeat: Infinity, 
-                repeatType: "loop",
-                ease: "easeInOut"
-              }
-            }}
-            style={{
-              position: 'absolute',
-              ...(position === 'top' && { top: '-64px', left: '50%', transform: 'translateX(-50%)' }),
-              ...(position === 'bottom' && { bottom: '-64px', left: '50%', transform: 'translateX(-50%)' }),
-              ...(position === 'left' && { left: '-256px', top: '50%', transform: 'translateY(-50%)' }),
-              ...(position === 'right' && { right: '-256px', top: '50%', transform: 'translateY(-50%)' }),
-              pointerEvents: 'none',
-              zIndex: 30,
-              width: 'fit-content'
-            }}
+          <div className={positionClasses[position]}>
+            <motion.div
+              initial={{ opacity: 0, y: -20, scale: 0.8 }}
+              animate={{ 
+                opacity: 1, 
+                y: 0, 
+                scale: 1,
+                rotate: [0, -2, 2, -1, 1, 0]
+              }}
+              exit={{ opacity: 0, y: -10, scale: 0.9 }}
+              transition={{ 
+                duration: 0.6,
+                ease: "easeOut",
+                rotate: { 
+                  duration: 0.8, 
+                  repeat: Infinity, 
+                  repeatType: "loop",
+                  ease: "easeInOut"
+                }
+              }}
           >
             <div className={`${gradientClasses[gradient]} text-black px-4 py-2 rounded-lg shadow-lg font-semibold text-sm whitespace-nowrap relative`}>
               <div className="flex items-center gap-2">
@@ -161,7 +152,8 @@ export function TutorialTooltip({
                 <div className={`w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent ${arrowClasses[gradient]}`}></div>
               </div>
             </div>
-          </motion.div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>

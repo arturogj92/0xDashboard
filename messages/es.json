@@ -498,6 +498,96 @@
     "deleteDomain": "Eliminar Dominio"
   },
   "shortUrls": {
+    "page": {
+      "title": "URL Shortener",
+      "description": "Crea enlaces cortos memorables para tus redes sociales y rastrea su rendimiento",
+      "loading": "Cargando..."
+    },
+    "general": {
+      "loading": "Cargando..."
+    },
+    "messages": {
+      "linkCopied": "¡Enlace copiado!"
+    },
+    "infoSection": {
+      "whyShortUrls": {
+        "title": "¿Por qué URLs cortas en redes sociales?",
+        "description": "En redes sociales es <strong>difícil hacer click en enlaces largos</strong>. Las URLs cortas y personalizadas como <span class='bg-indigo-900/40 px-2 py-1 rounded text-indigo-300 mx-1 font-mono'>usuario.creator0x.com/ofertas</span> son <strong>fáciles de recordar</strong> y transmiten confianza.",
+        "tip": "💡 Tip: Usa slugs descriptivos como \"ofertas\", \"curso-gratis\", \"descuento\" para mayor memorabilidad"
+      }
+    },
+    "workflow": {
+      "step1": "Crear Enlace",
+      "step2": "Compartir",
+      "step3": "Rastrear Clicks",
+      "step4": "Ver Analytics"
+    },
+    "stats": {
+      "totalUrls": "Total URLs",
+      "totalClicks": "Total Clicks",
+      "today": "Hoy",
+      "sevenDays": "7 días"
+    },
+    "customDomains": {
+      "title": "Dominios Personalizados",
+      "description": "Configura dominios personalizados para tus enlaces cortos"
+    },
+    "tutorial": {
+      "createFirstLink": "¡Crea tu primer enlace!"
+    },
+    "buttons": {
+      "createShortLink": "Crear enlace corto",
+      "newLink": "Nuevo enlace"
+    },
+    "table": {
+      "headers": {
+        "shortUrl": "🔗 URL Corta",
+        "destination": "🎯 Destino",
+        "clicks": "📊 Clicks",
+        "status": "⚡ Estado",
+        "actions": "🛠️ Acciones",
+        "created": "📅 Creado"
+      },
+      "placeholders": {
+        "editSlug": "🔗 Editar slug",
+        "editDestination": "🎯 Editar URL destino"
+      },
+      "status": {
+        "active": "Activo",
+        "inactive": "Inactivo"
+      },
+      "buttons": {
+        "save": "✅ Guardar",
+        "cancel": "❌ Cancelar",
+        "viewStats": "Ver estadísticas",
+        "resetColumns": "🔄 Reset columnas",
+        "clearSearch": "Limpiar búsqueda"
+      },
+      "search": {
+        "placeholder": "🔍 Buscar por slug, título o URL..."
+      },
+      "emptyState": {
+        "search": {
+          "title": "🔍 No encontramos nada",
+          "description": "Intenta con otras palabras clave o limpia la búsqueda"
+        },
+        "noLinks": {
+          "title": "✨ Tu primer enlace te espera",
+          "description": "Crea enlaces cortos memorables y observa cómo crecen tus clicks 📈"
+        }
+      },
+      "pagination": {
+        "info": "✨ Mostrando {count} de {total} enlace{plural} mágico{pluralMagic}",
+        "searchInfo": "para \"{search}\" 🔍"
+      },
+      "deleteModal": {
+        "title": "¿Eliminar enlace?",
+        "subtitle": "Esta acción no se puede deshacer",
+        "description": "El enlace corto será eliminado permanentemente junto con todas sus estadísticas.",
+        "cancel": "Cancelar",
+        "confirm": "Eliminar"
+      }
+    },
     "createModal": {
       "title": "Crear enlace corto",
       "description": "Convierte cualquier URL larga en un enlace corto y fácil de recordar",
@@ -514,17 +604,65 @@
       "creating": "Creando...",
       "validating": "Validando...",
       "cancel": "Cancelar",
+      "loading": "Cargando...",
+      "tips": {
+        "descriptiveSlugs": "💡 Tip: Usa slugs descriptivos como \"ofertas\", \"descuento\", \"curso-gratis\" para mayor memorabilidad"
+      },
+      "warnings": {
+        "configureUsername": "⚠️ Configura tu slug de usuario arriba o desde tu perfil para crear URLs cortas"
+      },
       "errors": {
         "urlRequired": "La URL original es requerida",
         "slugRequired": "Necesitas configurar tu slug de usuario antes de crear URLs cortas",
         "slugUnavailable": "El slug seleccionado no está disponible",
         "invalidTld": "La URL debe tener una extensión de dominio válida (.com, .es, .org, etc.)",
         "invalidUrl": "URL inválida: debe incluir un dominio con extensión válida (.com, .es, .org, etc.)",
-        "generic": "Error al crear la URL corta"
+        "generic": "Error al crear la URL corta",
+        "usernameLoadFailed": "No se pudo cargar el username"
       },
       "slugStatus": {
         "available": "✓ Slug disponible",
         "unavailable": "✗ Slug no disponible"
+      }
+    },
+    "statsModal": {
+      "title": "📊 Estadísticas de Clicks",
+      "globalTitle": "Global",
+      "urlTitle": "URL",
+      "periods": {
+        "28d": "Últimos 28 días",
+        "7d": "Últimos 7 días",
+        "yesterday": "Ayer",
+        "today": "Hoy"
+      },
+      "description": {
+        "day": "Distribución de clicks por día",
+        "hour": "Distribución de clicks por hora"
+      },
+      "buttons": {
+        "28days": "28 días",
+        "7days": "7 días",
+        "today": "Hoy",
+        "close": "Cerrar"
+      },
+      "legend": {
+        "clickToFilter": "Haz click en los días de la semana para filtrar"
+      },
+      "errors": {
+        "loadingError": "Error al cargar estadísticas",
+        "genericError": "Error genérico"
+      },
+      "tooltip": {
+        "clicks": "clicks"
+      },
+      "days": {
+        "Sunday": "Dom",
+        "Monday": "Lun",
+        "Tuesday": "Mar",
+        "Wednesday": "Mié",
+        "Thursday": "Jue",
+        "Friday": "Vie",
+        "Saturday": "Sáb"
       }
     }
   },
@@ -652,6 +790,13 @@
       "addButton": "Agregar Dominio",
       "adding": "Agregando...",
       "previewLabel": "Vista previa de tus URLs:",
+      "recommendations": {
+        "linkDomains": {
+          "title": "💡 Recomendación: Dominios .link",
+          "description": "Los dominios .link son económicos y fáciles de recordar. Ejemplo: tuempresa.link",
+          "availability": "Disponibles en: Namecheap, GoDaddy, Cloudflare, etc."
+        }
+      },
       "requirements": {
         "title": "Requisitos importantes",
         "ownership": "Debes ser propietario del dominio",
@@ -661,6 +806,27 @@
       "nextSteps": {
         "title": "Próximos pasos",
         "description": "Después de agregar tu dominio, te mostraremos los registros DNS que debes configurar en tu proveedor de dominios."
+      }
+    },
+    "domains": {
+      "status": {
+        "pending": "Pendiente de configuración DNS",
+        "dnsConfigured": "DNS configurado correctamente",
+        "sslIssued": "Certificado SSL emitido, activando...",
+        "sslPending": "Configurando certificado SSL...",
+        "active": "Dominio activo y funcionando",
+        "failed": "Error en la configuración",
+        "removed": "Dominio removido, se puede reintentar",
+        "error": "Error en la configuración"
+      },
+      "buttons": {
+        "verifyingDns": "Verificando DNS...",
+        "verifyDns": "Verificar DNS",
+        "configureSSL": "Configurar SSL",
+        "verifySSL": "Verificar SSL"
+      },
+      "dnsInstructions": {
+        "finalNote": "Una vez configurado, podrás usar URLs como: {domain}/mi-enlace"
       }
     }
   },

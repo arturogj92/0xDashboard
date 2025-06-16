@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
@@ -21,7 +22,6 @@ import {
 } from '@/lib/api';
 import { Globe, CheckCircle, XCircle, Clock, AlertCircle, Copy, ExternalLink, RefreshCw, Trash2, LinkIcon, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useTranslations } from 'next-intl';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -391,21 +391,21 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
   const getStatusText = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'Pendiente de configuración DNS';
+        return t('domains.status.pending');
       case 'dns_configured':
-        return 'DNS configurado correctamente';
+        return t('domains.status.dnsConfigured');
       case 'ssl_issued':
-        return 'Certificado SSL emitido, activando...';
+        return t('domains.status.sslIssued');
       case 'ssl_pending':
-        return 'Configurando certificado SSL...';
+        return t('domains.status.sslPending');
       case 'active':
-        return 'Dominio activo y funcionando';
+        return t('domains.status.active');
       case 'failed':
-        return 'Error en la configuración';
+        return t('domains.status.failed');
       case 'removed':
-        return 'Dominio removido, se puede reintentar';
+        return t('domains.status.removed');
       default:
-        return 'Error en la configuración';
+        return t('domains.status.error');
     }
   };
 
@@ -614,9 +614,33 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                       }}
                     />
                   </div>
-                  <p className="text-xs text-gray-400 mt-2">
-                    {t('addSection.domainExamples')}
-                  </p>
+                  <div className="mt-2 space-y-2">
+                    <p className="text-xs text-gray-400">
+                      {t('addSection.domainExamples')}
+                    </p>
+                    
+                    {/* Recomendación de dominios .link */}
+                    <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-3">
+                      <div className="flex items-start gap-2">
+                        <div className="bg-blue-500/20 p-1.5 rounded-md flex-shrink-0 mt-0.5">
+                          <svg className="h-3 w-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <div className="flex-1">
+                          <h5 className="text-blue-200 font-medium text-xs mb-1">
+                            {t('addSection.recommendations.linkDomains.title')}
+                          </h5>
+                          <p className="text-blue-300/80 text-xs leading-relaxed">
+                            {t('addSection.recommendations.linkDomains.description')}
+                          </p>
+                          <p className="text-blue-400/70 text-xs mt-1">
+                            {t('addSection.recommendations.linkDomains.availability')}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 
                 <div className="flex flex-col justify-center lg:min-w-[200px]">
@@ -749,7 +773,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                           disabled={checkingDomains.has(domain.id)}
                           className="text-xs text-blue-400 hover:text-blue-300"
                         >
-                          {checkingDomains.has(domain.id) ? 'Verificando DNS...' : 'Verificar DNS'}
+                          {checkingDomains.has(domain.id) ? t('domains.buttons.verifyingDns') : t('domains.buttons.verifyDns')}
                         </Button>
                       )}
                       {domain.status === 'ssl_issued' && (
@@ -770,7 +794,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                           onClick={() => retrySSLConfiguration(domain.id)}
                           className="text-xs text-green-400 hover:text-green-300"
                         >
-                          Configurar SSL
+                          {t('domains.buttons.configureSSL')}
                         </Button>
                       )}
                       {(domain.status === 'failed' || domain.status === 'removed' || domain.error_message) && domain.status !== 'active' && domain.status !== 'pending' && domain.status !== 'dns_configured' && !retryingDomains.has(domain.id) && (
@@ -791,7 +815,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                           disabled={checkingDomains.has(domain.id)}
                           className="text-xs text-blue-400 hover:text-blue-300"
                         >
-                          {checkingDomains.has(domain.id) ? t('checking') : 'Verificar SSL'}
+                          {checkingDomains.has(domain.id) ? t('checking') : t('domains.buttons.verifySSL')}
                         </Button>
                       )}
                       {retryingDomains.has(domain.id) && (
@@ -928,7 +952,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                     <div className="text-sm text-gray-500 bg-gray-900/40 p-3 rounded">
                       <p className="font-medium mb-2">⚠️ {t('dnsInstructions.note')}</p>
                       <p className="text-xs">
-                        Una vez configurado, podrás usar URLs como: <span className="text-yellow-300 font-mono">{domain.domain}/mi-enlace</span>
+                        {t('dnsInstructions.finalNote').replace('{domain}', domain.domain)}
                       </p>
                     </div>
                   </div>
