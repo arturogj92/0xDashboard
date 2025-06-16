@@ -791,7 +791,7 @@ export function ShortUrlsTable({
         )}
         {/* Gradiente de fade en el borde derecho */}
         <div className="absolute top-0 right-0 w-6 h-full bg-gradient-to-l from-[#120724] via-[#120724]/60 to-transparent pointer-events-none z-10"></div>
-        <div className="overflow-x-auto max-h-[600px] overflow-y-auto relative">
+        <div className="overflow-x-auto max-h-[600px] overflow-y-auto relative" style={{ minHeight: '500px' }}>
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
