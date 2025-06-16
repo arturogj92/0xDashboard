@@ -683,6 +683,70 @@ export function ShortUrlsTable({
         transition={{ delay: 0.3 }}
       >
         <div className="bg-gradient-to-br from-[#120724] to-[#1c1033] border border-indigo-900/30 rounded-xl shadow-2xl min-h-[600px] overflow-hidden relative" data-table-container>
+        
+        {/* Empty state overlay - positioned absolute to be always visible */}
+        {sortedUrls.length === 0 && (
+          <div className="absolute inset-0 flex items-center justify-center z-30 bg-gradient-to-br from-[#120724] to-[#1c1033]">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center px-4 max-w-sm mx-auto"
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ 
+                  type: "spring", 
+                  stiffness: 260, 
+                  damping: 20,
+                  delay: 0.2 
+                }}
+                className="mb-4"
+              >
+                {filters.search ? (
+                  <span className="text-3xl sm:text-4xl">🔍</span>
+                ) : (
+                  <LinkIcon className="h-10 w-10 sm:h-12 sm:w-12 text-indigo-400 mx-auto" />
+                )}
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <h3 className="text-base sm:text-lg font-bold text-white mb-2 bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">
+                  {filters.search ? t('table.emptyState.search.title') : t('table.emptyState.noLinks.title')}
+                </h3>
+                
+                <p className="text-gray-300 mb-4 text-xs sm:text-sm">
+                  {filters.search 
+                    ? t('table.emptyState.search.description') 
+                    : t('table.emptyState.noLinks.description')
+                  }
+                </p>
+                
+                {filters.search && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.6 }}
+                  >
+                    <Button 
+                      onClick={() => handleSearchChange('')}
+                      size="sm"
+                      className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold shadow-lg shadow-purple-900/30 transform transition-all duration-200 hover:scale-105"
+                    >
+                      <SparklesIcon className="h-4 w-4 mr-2" />
+                      {t('table.buttons.clearSearch')}
+                    </Button>
+                  </motion.div>
+                )}
+              </motion.div>
+            </motion.div>
+          </div>
+        )}
+        
         {/* Animación de flecha para indicar scroll horizontal (solo una vez, solo si hay URLs) */}
         {urls.length > 0 && (
           <motion.div 
@@ -758,94 +822,30 @@ export function ShortUrlsTable({
               </SortableContext>
             <tbody className="divide-y divide-indigo-900/30">
               <AnimatePresence>
-                {sortedUrls.length > 0 ? (
-                  sortedUrls.map((url, index) => (
-                    <motion.tr 
-                      key={url.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 20 }}
-                      transition={{ delay: index * 0.05 }}
-                    >
-                      {columns.map((column) => (
-                        <td 
-                          key={column.id}
-                          className={`px-6 py-4 whitespace-nowrap hover:bg-gradient-to-r hover:from-[#1c1033]/50 hover:to-[#2c1b4d]/50 transition-all duration-300 group ${
-                            column.isActionColumn ? 'text-right text-sm font-medium' : ''
-                          } ${
-                            column.minWidth || ''
-                          }`}
-                          onMouseEnter={() => setHoveredUrl(url.id)}
-                          onMouseLeave={() => setHoveredUrl(null)}
+                {sortedUrls.map((url, index) => (
+                  <motion.tr 
+                    key={url.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ delay: index * 0.05 }}
+                  >
+                    {columns.map((column) => (
+                      <td 
+                        key={column.id}
+                        className={`px-6 py-4 whitespace-nowrap hover:bg-gradient-to-r hover:from-[#1c1033]/50 hover:to-[#2c1b4d]/50 transition-all duration-300 group ${
+                          column.isActionColumn ? 'text-right text-sm font-medium' : ''
+                        } ${
+                          column.minWidth || ''
+                        }`}
+                        onMouseEnter={() => setHoveredUrl(url.id)}
+                        onMouseLeave={() => setHoveredUrl(null)}
                         >
                           {renderCellContent(column, url)}
                         </td>
                       ))}
                     </motion.tr>
-                  ))
-                ) : (
-                  <motion.tr
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                  >
-                    <td colSpan={columns.length} className="px-6 py-12 text-center bg-gradient-to-r from-[#120724] to-[#1c1033]">
-                      <div className="flex flex-col items-center justify-center space-y-4">
-                        <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ 
-                            type: "spring", 
-                            stiffness: 260, 
-                            damping: 20,
-                            delay: 0.2 
-                          }}
-                        >
-                          {filters.search ? (
-                            <span className="text-4xl">🔍</span>
-                          ) : (
-                            <LinkIcon className="h-12 w-12 text-indigo-400 mx-auto" />
-                          )}
-                        </motion.div>
-                        
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.4 }}
-                        >
-                          <div className="text-center">
-                          <h3 className="text-lg font-bold text-white mb-2 bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">
-                            {filters.search ? t('table.emptyState.search.title') : t('table.emptyState.noLinks.title')}
-                          </h3>
-                          
-                          <p className="text-gray-300 mb-4 text-sm">
-                            {filters.search 
-                              ? t('table.emptyState.search.description') 
-                              : t('table.emptyState.noLinks.description')
-                            }
-                          </p>
-                          
-                          {filters.search && (
-                            <motion.div
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{ delay: 0.6 }}
-                            >
-                              <Button 
-                                onClick={() => handleSearchChange('')}
-                                size="sm"
-                                className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold shadow-lg shadow-purple-900/30 transform transition-all duration-200 hover:scale-105"
-                              >
-                                <SparklesIcon className="h-4 w-4 mr-2" />
-                                {t('table.buttons.clearSearch')}
-                              </Button>
-                            </motion.div>
-                          )}
-                          </div>
-                        </motion.div>
-                      </div>
-                    </td>
-                  </motion.tr>
-                )}
+                  ))}
               </AnimatePresence>
             </tbody>
           </table>

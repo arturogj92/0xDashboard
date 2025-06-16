@@ -446,67 +446,67 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
               >
-              <div className="bg-gradient-to-br from-green-900/20 via-emerald-900/15 to-blue-900/20 border border-green-500/30 rounded-xl p-6 mb-6">
+              <div className="bg-gradient-to-br from-green-900/20 via-emerald-900/15 to-blue-900/20 border border-green-500/30 rounded-xl p-4 sm:p-6 mb-6">
                 {/* Header section */}
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="bg-green-500/20 p-3 rounded-lg flex-shrink-0">
-                    <CheckCircle className="w-6 h-6 text-green-400" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-white font-semibold text-lg mb-2">
+                <div className="mb-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="bg-green-500/20 p-2 rounded-lg flex-shrink-0">
+                      <CheckCircle className="w-5 h-5 text-green-400" />
+                    </div>
+                    <h4 className="text-white font-semibold text-base sm:text-lg">
                       🎉 {t('availableDomains.title')}
                     </h4>
-                    <p className="text-gray-300 text-sm leading-relaxed mb-3">
-                      {t('availableDomains.description')}
-                    </p>
                   </div>
+                  <p className="text-gray-300 text-sm leading-relaxed">
+                    {t('availableDomains.description')}
+                  </p>
                 </div>
 
                 {/* How it works section */}
-                <div className="bg-blue-900/20 border border-blue-600/30 rounded-lg p-4 mb-4">
-                  <h5 className="text-blue-200 font-medium mb-2 flex items-center gap-2">
-                    <div className="w-5 h-5 bg-blue-500/20 rounded-full flex items-center justify-center">
+                <div className="bg-blue-900/20 border border-blue-600/30 rounded-lg p-3 sm:p-4 mb-4">
+                  <h5 className="text-blue-200 font-medium mb-3 sm:mb-2 flex items-center gap-2 text-sm sm:text-base">
+                    <div className="w-4 h-4 sm:w-5 sm:h-5 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0">
                       <span className="text-blue-400 text-xs font-bold">?</span>
                     </div>
                     {t('availableDomains.howItWorks.title')}
                   </h5>
-                  <div className="grid sm:grid-cols-2 gap-3 text-sm text-blue-300/80">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm text-blue-300/80">
                     <div className="flex items-start gap-2">
-                      <span className="text-blue-400 mt-1">1.</span>
+                      <span className="text-blue-400 mt-1 font-bold">1.</span>
                       <span>{t('availableDomains.howItWorks.step1')}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="text-blue-400 mt-1">2.</span>
+                      <span className="text-blue-400 mt-1 font-bold">2.</span>
                       <span>{t('availableDomains.howItWorks.step2')}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="text-blue-400 mt-1">3.</span>
+                      <span className="text-blue-400 mt-1 font-bold">3.</span>
                       <span>{t('availableDomains.howItWorks.step3')}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="text-blue-400 mt-1">4.</span>
+                      <span className="text-blue-400 mt-1 font-bold">4.</span>
                       <span>{t('availableDomains.howItWorks.step4')}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Benefits section */}
-                <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-4 mb-4">
-                  <h5 className="text-purple-200 font-medium mb-2 flex items-center gap-2">
-                    <span className="text-purple-400">✨</span>
+                <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-3 sm:p-4 mb-4">
+                  <h5 className="text-purple-200 font-medium mb-3 sm:mb-2 flex items-center gap-2 text-sm sm:text-base">
+                    <span className="text-purple-400 text-sm sm:text-base">✨</span>
                     {t('availableDomains.benefits.title')}
                   </h5>
-                  <ul className="text-sm text-purple-300/80 space-y-1">
+                  <ul className="text-xs sm:text-sm text-purple-300/80 space-y-2 sm:space-y-1">
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                      <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-purple-400 flex-shrink-0" />
                       <span>{t('availableDomains.benefits.noDnsSetup')}</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                      <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-purple-400 flex-shrink-0" />
                       <span>{t('availableDomains.benefits.instantActivation')}</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                      <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-purple-400 flex-shrink-0" />
                       <span>{t('availableDomains.benefits.dualPurpose')}</span>
                     </li>
                   </ul>
@@ -518,50 +518,59 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                     {t('availableDomains.listTitle')}
                   </h5>
                   {availableDomains.map((domain) => (
-                    <div key={domain.id} className="bg-[#1c1033]/80 border border-gray-600/50 rounded-lg p-4 hover:border-green-500/30 transition-all duration-200">
+                    <div key={domain.id} className="bg-[#1c1033]/80 border border-gray-600/50 rounded-lg p-3 sm:p-4 hover:border-green-500/30 transition-all duration-200">
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                       >
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                          <div className="flex-1">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+                          <div className="flex-1 min-w-0">
+                            {/* Domain name and icon on same line */}
                             <div className="flex items-center gap-3 mb-2">
-                              <div className="bg-green-500/20 p-2 rounded-lg">
-                                <Globe className="w-4 h-4 text-green-400" />
+                              <div className="bg-green-500/20 p-1.5 sm:p-2 rounded-lg flex-shrink-0">
+                                <Globe className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" />
                               </div>
-                              <div>
-                                <span className="text-white font-semibold text-lg">{domain.domain}</span>
-                                <div className="flex items-center gap-2 mt-1">
-                                  <span className="text-xs text-green-400 bg-green-900/30 px-2 py-1 rounded-full border border-green-600/30">
-                                    ✓ {t('availableDomains.readyToUse')}
-                                  </span>
-                                  <span className="text-xs text-blue-400 bg-blue-900/30 px-2 py-1 rounded-full border border-blue-600/30">
-                                    🔗 {t('sharedDomainInfo')}
-                                  </span>
-                                </div>
+                              <div className="text-white font-semibold text-sm sm:text-base break-all">
+                                {domain.domain}
                               </div>
                             </div>
-                            <p className="text-sm text-gray-400 ml-12">
-                              {`${domain.domain}/tu-enlace`}
-                            </p>
+                            
+                            {/* Badges and example URL in compact layout */}
+                            <div className="flex flex-col gap-1">
+                              <div className="flex flex-wrap gap-1 sm:gap-2">
+                                <span className="text-xs text-green-400 bg-green-900/30 px-2 py-0.5 rounded-full border border-green-600/30 w-fit">
+                                  <span className="hidden sm:inline">✓ {t('availableDomains.readyToUse')}</span>
+                                  <span className="sm:hidden">✓ Listo</span>
+                                </span>
+                                <span className="text-xs text-blue-400 bg-blue-900/30 px-2 py-0.5 rounded-full border border-blue-600/30 w-fit">
+                                  <span className="hidden sm:inline">🔗 {t('sharedDomainInfo')}</span>
+                                  <span className="sm:hidden">🔗 Landing</span>
+                                </span>
+                              </div>
+                              <div className="text-xs text-gray-400 break-all">
+                                {`${domain.domain}/tu-enlace`}
+                              </div>
+                            </div>
                           </div>
                           
-                          <div className="flex-shrink-0">
+                          <div className="flex-shrink-0 sm:self-center">
                             <Button
                               size="sm"
                               onClick={() => activateDomain(domain.id)}
                               disabled={activatingDomains.has(domain.id)}
-                              className="h-10 px-6 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-semibold rounded-lg shadow-lg shadow-yellow-900/30 transition-all duration-200 disabled:opacity-50"
+                              className="w-full sm:w-auto h-8 sm:h-9 px-3 sm:px-4 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-semibold rounded-lg shadow-lg shadow-yellow-900/30 transition-all duration-200 disabled:opacity-50 text-xs sm:text-sm"
                             >
                               {activatingDomains.has(domain.id) ? (
-                                <div className="flex items-center gap-2">
-                                  <RefreshCw className="w-4 h-4 animate-spin" />
-                                  {t('activating')}
+                                <div className="flex items-center gap-1.5">
+                                  <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
+                                  <span className="hidden sm:inline">{t('activating')}</span>
+                                  <span className="sm:hidden">Activando...</span>
                                 </div>
                               ) : (
-                                <div className="flex items-center gap-2">
-                                  <span>{t('activateDomain')}</span>
-                                  <ArrowRight className="w-4 h-4" />
+                                <div className="flex items-center gap-1.5">
+                                  <span className="hidden sm:inline">{t('activateDomain')}</span>
+                                  <span className="sm:hidden">Activar</span>
+                                  <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                                 </div>
                               )}
                             </Button>
