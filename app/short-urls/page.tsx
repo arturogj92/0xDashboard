@@ -587,8 +587,8 @@ export default function ShortUrlsPage() {
                 className="flex items-center px-4 sm:px-6 py-2 sm:py-3 border border-transparent rounded-md text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-md shadow-indigo-900/30 hover:shadow-lg hover:shadow-indigo-900/40 transform hover:scale-[1.02]"
               >
                 <PlusIcon className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-                <span className="hidden sm:inline">Crear enlace corto</span>
-                <span className="sm:hidden">Nuevo enlace</span>
+                <span className="hidden sm:inline">{t('buttons.createShortLink')}</span>
+                <span className="sm:hidden">{t('buttons.newLink')}</span>
               </Button>
             </TutorialTooltip>
           </div>

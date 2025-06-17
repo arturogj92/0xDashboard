@@ -750,26 +750,39 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                 >
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="flex flex-col gap-3 mb-3">
+                  <div className="flex items-center gap-3 min-w-0">
                     {getStatusIcon(domain.status, domain.id)}
-                    <span className="text-white font-medium truncate">{domain.domain}</span>
-                    {domain.status === 'active' && (
-                      <a 
-                        href={`https://${domain.domain}`} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-blue-400 hover:text-blue-300"
+                    <span className="text-white font-medium truncate flex-1">{domain.domain}</span>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      {domain.status === 'active' && (
+                        <a 
+                          href={`https://${domain.domain}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-blue-400 hover:text-blue-300"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </a>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleRemoveDomain(domain)}
+                        className="text-xs text-red-400 hover:text-red-300 hover:bg-red-900/20 border-red-800/50 p-1.5"
+                        title={t('deleteModal.subtitle')}
                       >
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
-                    )}
-                    {domain.supports_landing && (
-                      <span className="text-xs text-green-400 bg-green-900/30 px-2 py-1 rounded">
+                        <Trash2 className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  </div>
+                  {domain.supports_landing && (
+                    <div className="flex">
+                      <span className="text-xs text-green-400 bg-green-900/30 px-2 py-1 rounded inline-block">
                         {t('sharedDomainInfo')}
                       </span>
-                    )}
-                  </div>
+                    </div>
+                  )}
                   
                   <div className="flex flex-col sm:flex-row gap-3">
                     {/* Acciones principales */}
@@ -840,27 +853,6 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                       )}
                     </div>
                     
-                    {/* Separador visual */}
-                    {(domain.status === 'pending' || domain.status === 'ssl_issued' || domain.status === 'ssl_pending' || 
-                      domain.status === 'dns_configured' ||
-                      ((domain.status === 'failed' || domain.status === 'removed' || domain.error_message) && domain.status !== 'active' && !retryingDomains.has(domain.id)) ||
-                      retryingDomains.has(domain.id)) && (
-                      <div className="hidden sm:block w-px h-6 bg-gray-600"></div>
-                    )}
-                    
-                    {/* Acción de eliminar */}
-                    <div className="flex items-center gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleRemoveDomain(domain)}
-                        className="text-xs text-red-400 hover:text-red-300 hover:bg-red-900/20 border-red-800/50 flex items-center gap-1.5"
-                        title={t('deleteModal.subtitle')}
-                      >
-                        <Trash2 className="w-3 h-3" />
-                        <span className="hidden sm:inline">{t('remove')}</span>
-                      </Button>
-                    </div>
                   </div>
                 </div>
 
@@ -1121,7 +1113,10 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                       <AlertCircle className="h-4 w-4 text-orange-400 mt-0.5 flex-shrink-0" />
                       <div className="text-sm">
                         <p className="text-orange-200 font-medium mb-1">
-                          {`Este dominio está siendo usado por ${deleteImpact.affectedUrlsCount} URL${deleteImpact.affectedUrlsCount !== 1 ? 's' : ''}`}
+                          {t('impactModal.domainInUse', { 
+                            count: deleteImpact.affectedUrlsCount,
+                            plural: deleteImpact.affectedUrlsCount !== 1 ? 's' : ''
+                          })}
                         </p>
                         <p className="text-orange-300/80">
                           {t('impactModal.willStopWorking')}
@@ -1158,7 +1153,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                           {t('impactModal.dontWorry')}
                         </p>
                         <p className="text-blue-300/80">
-                          Las URLs seguirán funcionando en formato usuario.creator0x.com/slug
+                          {t('impactModal.willStillWork', { format: 'usuario.creator0x.com/slug' })}
                         </p>
                       </div>
                     </div>
