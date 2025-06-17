@@ -540,11 +540,11 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                               <div className="flex flex-wrap gap-1 sm:gap-2">
                                 <span className="text-xs text-green-400 bg-green-900/30 px-2 py-0.5 rounded-full border border-green-600/30 w-fit">
                                   <span className="hidden sm:inline">✓ {t('availableDomains.readyToUse')}</span>
-                                  <span className="sm:hidden">✓ Listo</span>
+                                  <span className="sm:hidden">✓ {t('availableDomains.readyToUse')}</span>
                                 </span>
                                 <span className="text-xs text-blue-400 bg-blue-900/30 px-2 py-0.5 rounded-full border border-blue-600/30 w-fit">
                                   <span className="hidden sm:inline">🔗 {t('sharedDomainInfo')}</span>
-                                  <span className="sm:hidden">🔗 Landing</span>
+                                  <span className="sm:hidden">🔗 {t('sharedDomainInfo')}</span>
                                 </span>
                               </div>
                               <div className="text-xs text-gray-400 break-all">
@@ -564,12 +564,12 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                                 <div className="flex items-center gap-1.5">
                                   <RefreshCw className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
                                   <span className="hidden sm:inline">{t('activating')}</span>
-                                  <span className="sm:hidden">Activando...</span>
+                                  <span className="sm:hidden">{t('activating')}</span>
                                 </div>
                               ) : (
                                 <div className="flex items-center gap-1.5">
                                   <span className="hidden sm:inline">{t('activateDomain')}</span>
-                                  <span className="sm:hidden">Activar</span>
+                                  <span className="sm:hidden">{t('activateDomain')}</span>
                                   <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                                 </div>
                               )}
