@@ -363,6 +363,8 @@ export default function ShortUrlsPage() {
         }
         title="URL Shortener"
         description={t('page.description')}
+        imageSrc="/images/descriptions/url-shortener.png"
+        imageAlt="URL Shortener"
       />
 
       <div className="mb-16 relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-hidden">
