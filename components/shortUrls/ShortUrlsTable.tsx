@@ -687,11 +687,12 @@ export function ShortUrlsTable({
         {/* Empty state overlay - positioned absolute to be always visible */}
         {sortedUrls.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center z-30 bg-gradient-to-br from-[#120724] to-[#1c1033]">
+            <div className="text-center px-4 max-w-sm mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center px-4 max-w-sm mx-auto"
             >
+              <div className="mb-4">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -701,7 +702,6 @@ export function ShortUrlsTable({
                   damping: 20,
                   delay: 0.2 
                 }}
-                className="mb-4"
               >
                 {filters.search ? (
                   <span className="text-3xl sm:text-4xl">🔍</span>
@@ -709,6 +709,7 @@ export function ShortUrlsTable({
                   <LinkIcon className="h-10 w-10 sm:h-12 sm:w-12 text-indigo-400 mx-auto" />
                 )}
               </motion.div>
+              </div>
               
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -744,6 +745,7 @@ export function ShortUrlsTable({
                 )}
               </motion.div>
             </motion.div>
+            </div>
           </div>
         )}
         
