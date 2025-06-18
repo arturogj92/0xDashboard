@@ -37,7 +37,7 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
         {/* Desktop & Mobile Header */}
         <div className="flex items-center h-12 px-4 sm:px-6 lg:px-8">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0 flex items-center">
+          <Link href="/automations" className="flex-shrink-0 flex items-center">
             <Image 
               src="/images/logo.png" 
               alt={t('logoAlt')}
@@ -213,7 +213,7 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
               {isAuthenticated && (
                 <div>
                   <Link
-                    href="/"
+                    href="/automations"
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={`flex items-center px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all duration-200 transform ${
                       isMobileMenuOpen 
