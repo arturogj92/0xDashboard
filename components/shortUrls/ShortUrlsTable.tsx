@@ -959,7 +959,17 @@ export function ShortUrlsTable({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onTap={handleCancelDelete}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              backdropFilter: 'blur(4px)',
+              zIndex: 9999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '1rem'
+            }}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}

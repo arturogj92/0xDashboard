@@ -548,7 +548,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                                 </span>
                               </div>
                               <div className="text-xs text-gray-400 break-all">
-                                {t('availableDomains.urlExample', { domain: domain.domain })}
+                                {t('availableDomains.urlExample').replace('{domain}', domain.domain)}
                               </div>
                             </div>
                           </div>
@@ -1135,7 +1135,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                         ))}
                         {deleteImpact.affectedUrlsCount > 5 && (
                           <div className="text-xs text-gray-500 mt-2 border-t border-gray-700 pt-2">
-                            {t('impactModal.moreUrls', { count: deleteImpact.affectedUrlsCount - 5 })}
+                            {t('impactModal.moreUrls').replace('{count}', (deleteImpact.affectedUrlsCount - 5).toString())}
                           </div>
                         )}
                       </div>
