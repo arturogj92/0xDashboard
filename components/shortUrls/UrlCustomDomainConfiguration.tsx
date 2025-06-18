@@ -1113,10 +1113,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                       <AlertCircle className="h-4 w-4 text-orange-400 mt-0.5 flex-shrink-0" />
                       <div className="text-sm">
                         <p className="text-orange-200 font-medium mb-1">
-                          {t('impactModal.domainInUse', { 
-                            count: deleteImpact.affectedUrlsCount,
-                            plural: deleteImpact.affectedUrlsCount !== 1 ? 's' : ''
-                          })}
+                          {t('impactModal.domainInUse')}
                         </p>
                         <p className="text-orange-300/80">
                           {t('impactModal.willStopWorking')}
@@ -1153,7 +1150,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                           {t('impactModal.dontWorry')}
                         </p>
                         <p className="text-blue-300/80">
-                          {t('impactModal.willStillWork', { format: 'usuario.creator0x.com/slug' })}
+                          {t('impactModal.willStillWork')}
                         </p>
                       </div>
                     </div>
