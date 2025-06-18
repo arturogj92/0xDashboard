@@ -82,7 +82,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if (response.success) {
         setUser(response.data.user);
-        router.push('/automations');
+        router.push('/home');
         return { success: true };
       } else {
         setError(response.message || 'Error al iniciar sesión');
@@ -105,7 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const response = await registerUser(credentials);
       if (response.success) {
         setUser(response.data.user);
-        router.push('/automations');
+        router.push('/home');
         return { success: true };
       } else {
         setError(response.message || 'Error al registrar usuario');
@@ -130,7 +130,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const profileResponse = await getUserProfile();
       if (profileResponse.success && profileResponse.data) {
         setUser(profileResponse.data);
-        router.push('/automations'); // Redirigir al dashboard o página principal
+        router.push('/home'); // Redirigir al dashboard o página principal
       } else {
         // Si falla, hacer logout
         handleLogout();

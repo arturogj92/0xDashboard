@@ -67,6 +67,29 @@
     "automationInfoPermissions": "Conceder todos los permisos solicitados durante el proceso de conexión",
     "tokenExpiredWarning": "Si tu token está expirado o no tienes la cuenta correctamente vinculada, no podrás crear reels ni historias."
   },
+  "dashboard": {
+    "welcomeTitle": "¡Hola, {name}!",
+    "welcomeDescription": "Bienvenido a tu centro de control. Desde aquí puedes acceder a todas las herramientas que necesitas para hacer crecer tu presencia digital.",
+    "automations": {
+      "title": "Automatizaciones",
+      "description": "Configura respuestas automáticas inteligentes para tus reels e historias de Instagram. Convierte comentarios en conversaciones y genera leads mientras duermes."
+    },
+    "captionGenerator": {
+      "title": "Generador de Captions",
+      "description": "Sube un video y genera captions optimizados para Instagram, TikTok y YouTube usando IA avanzada. Incluye emojis, hashtags y llamadas a la acción."
+    },
+    "urlShortener": {
+      "title": "URLs Cortas",
+      "description": "Crea enlaces cortos personalizados con tu dominio. Rastrea clics, ubicaciones y dispositivos con análisis en tiempo real y reportes detallados."
+    },
+    "landing": {
+      "title": "Mi Landing",
+      "description": "Diseña tu página personal con enlaces a redes sociales, múltiples secciones personalizables y temas únicos. Ideal para influencers y creadores."
+    },
+    "footerTitle": "🚀 Todo en un solo lugar",
+    "footerDescription": "Gestiona tus automatizaciones, crea contenido, acorta enlaces y personaliza tu presencia online desde una plataforma integrada.",
+    "viewProfile": "Ver mi perfil"
+  },
   "login": {
     "title": "Bienvenido de nuevo",
     "subtitle": "Inicia sesión en tu cuenta",

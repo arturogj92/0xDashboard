@@ -264,7 +264,28 @@
       "active": "Active",
       "inactive": "Inactive"
     },
-    "understood": "Understood"
+    "understood": "Understood",
+    "welcomeTitle": "Hello, {name}!",
+    "welcomeDescription": "Welcome to your control center. From here you can access all the tools you need to grow your digital presence.",
+    "automations": {
+      "title": "Automations",
+      "description": "Set up intelligent automatic responses for your Instagram reels and stories. Turn comments into conversations and generate leads while you sleep."
+    },
+    "captionGenerator": {
+      "title": "Caption Generator",
+      "description": "Upload a video and generate optimized captions for Instagram, TikTok and YouTube using advanced AI. Includes emojis, hashtags and call-to-actions."
+    },
+    "urlShortener": {
+      "title": "Short URLs",
+      "description": "Create custom short links with your domain. Track clicks, locations and devices with real-time analytics and detailed reporting."
+    },
+    "landing": {
+      "title": "My Landing",
+      "description": "Design your personal page with social media links, multiple customizable sections and unique themes. Perfect for influencers and creators."
+    },
+    "footerTitle": "🚀 Everything in one place",
+    "footerDescription": "Manage your automations, create content, shorten links and customize your online presence from an integrated platform.",
+    "viewProfile": "View my profile"
   },
   "pricing": {
     "title": "Pricing",

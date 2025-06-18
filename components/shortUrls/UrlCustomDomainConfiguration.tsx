@@ -548,7 +548,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                                 </span>
                               </div>
                               <div className="text-xs text-gray-400 break-all">
-                                {`${domain.domain}/tu-enlace`}
+                                {t('availableDomains.urlExample', { domain: domain.domain })}
                               </div>
                             </div>
                           </div>
@@ -558,7 +558,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                               size="sm"
                               onClick={() => activateDomain(domain.id)}
                               disabled={activatingDomains.has(domain.id)}
-                              className="w-full sm:w-auto h-8 sm:h-9 px-3 sm:px-4 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-semibold rounded-lg shadow-lg shadow-yellow-900/30 transition-all duration-200 disabled:opacity-50 text-xs sm:text-sm"
+                              className="w-full sm:w-auto h-8 sm:h-9 px-3 sm:px-4 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-gray-900 font-bold rounded-lg shadow-lg shadow-yellow-900/30 transition-all duration-200 disabled:opacity-50 text-xs sm:text-sm"
                             >
                               {activatingDomains.has(domain.id) ? (
                                 <div className="flex items-center gap-1.5">
@@ -656,7 +656,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                   <Button 
                     onClick={addDomain}
                     disabled={isLoading || !newDomain.trim()}
-                    className="h-14 px-8 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-bold rounded-lg transition-all duration-200 shadow-lg shadow-yellow-900/30 disabled:opacity-50 disabled:cursor-not-allowed text-base"
+                    className="h-14 px-8 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-gray-900 font-bold rounded-lg transition-all duration-200 shadow-lg shadow-yellow-900/30 disabled:opacity-50 disabled:cursor-not-allowed text-base"
                   >
                     {isLoading ? (
                       <div className="flex items-center gap-3">
@@ -1135,7 +1135,7 @@ export default function UrlCustomDomainConfiguration({ onDomainUpdate, hideHeade
                         ))}
                         {deleteImpact.affectedUrlsCount > 5 && (
                           <div className="text-xs text-gray-500 mt-2 border-t border-gray-700 pt-2">
-                            {`y ${deleteImpact.affectedUrlsCount - 5} más...`}
+                            {t('impactModal.moreUrls', { count: deleteImpact.affectedUrlsCount - 5 })}
                           </div>
                         )}
                       </div>

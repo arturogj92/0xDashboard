@@ -37,7 +37,7 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
         {/* Desktop & Mobile Header */}
         <div className="flex items-center h-12 px-4 sm:px-6 lg:px-8">
           {/* Logo */}
-          <Link href="/automations" className="flex-shrink-0 flex items-center">
+          <Link href={isAuthenticated ? "/home" : "/"} className="flex-shrink-0 flex items-center">
             <Image 
               src="/images/logo.png" 
               alt={t('logoAlt')}
