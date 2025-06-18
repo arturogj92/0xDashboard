@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Cell } from 'recharts';
@@ -15,11 +16,11 @@ interface CustomTooltipProps {
   label?: string;
 }
 
-const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
+const CustomTooltip: React.FC<CustomTooltipProps & { t: any }> = ({ active, payload, label, t }) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-gray-900 text-white p-2 border border-gray-700 rounded shadow-lg">
-        <p className="text-sm">{`${label || ''}: ${payload[0].value} clicks`}</p>
+        <p className="text-sm">{`${label || ''}: ${payload[0].value} ${t('tooltip.clicks')}`}</p>
       </div>
     );
   }
@@ -39,6 +40,7 @@ interface Props {
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, urlTitle, onPeriodChange }: Props) {
+  const t = useTranslations('shortUrls.statsModal');
   // Ref para evitar llamadas duplicadas en desarrollo (StrictMode)
   const fetchedRef = useRef(false);
   const [loading, setLoading] = useState(false);
@@ -147,7 +149,7 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
         }
       } catch (err: any) {
         console.error(err);
-        setError(err.message || 'Error genérico');
+        setError(err.message || t('errors.genericError'));
       } finally {
         setLoading(false);
       }
@@ -156,13 +158,8 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
   }, [open, period, urlId]);
 
   const getTitle = () => {
-    const baseTitle = urlTitle ? `${urlTitle} - ` : (urlId ? 'URL - ' : 'Global - ');
-    switch (period) {
-      case '28d': return `${baseTitle}Últimos 28 días`;
-      case '7d': return `${baseTitle}Últimos 7 días`;
-      case 'yesterday': return `${baseTitle}Ayer`;
-      case 'today': return `${baseTitle}Hoy`;
-    }
+    const baseTitle = urlTitle ? `${urlTitle} - ` : (urlId ? `${t('urlTitle')} - ` : `${t('globalTitle')} - `);
+    return `${baseTitle}${t(`periods.${period}`)}`;
   };
 
   // Para 'today', mostrar hasta la hora actual
@@ -179,7 +176,7 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
     return hourlyData;
   })();
 
-  const interval = period === '28d' || period === '7d' ? 'día' : 'hora';
+  const interval = period === '28d' || period === '7d' ? t('description.day') : t('description.hour');
 
   return (
     <AnimatePresence>
@@ -199,9 +196,9 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.1 }}
                 >
-                  <DialogTitle className="text-xl text-gray-100">📊 Estadísticas de Clicks - {getTitle()}</DialogTitle>
+                  <DialogTitle className="text-xl text-gray-100">{t('title')} - {getTitle()}</DialogTitle>
                   <DialogDescription className="text-gray-400">
-                    Distribución de clicks por {interval}
+                    {interval}
                   </DialogDescription>
                 </motion.div>
                 
@@ -219,7 +216,7 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
                       onClick={() => onPeriodChange('28d')}
                       className={period === '28d' ? 'bg-indigo-600' : 'border-gray-600 text-gray-300 hover:bg-gray-700'}
                     >
-                      28 días
+                      {t('buttons.28days')}
                     </Button>
                     <Button
                       size="sm"
@@ -227,7 +224,7 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
                       onClick={() => onPeriodChange('7d')}
                       className={period === '7d' ? 'bg-indigo-600' : 'border-gray-600 text-gray-300 hover:bg-gray-700'}
                     >
-                      7 días
+                      {t('buttons.7days')}
                     </Button>
                     <Button
                       size="sm"
@@ -235,7 +232,7 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
                       onClick={() => onPeriodChange('today')}
                       className={period === 'today' ? 'bg-indigo-600' : 'border-gray-600 text-gray-300 hover:bg-gray-700'}
                     >
-                      Hoy
+                      {t('buttons.today')}
                     </Button>
                   </motion.div>
                 )}
@@ -265,7 +262,7 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
                       style={{ flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     >
                       <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded">
-                        Error al cargar estadísticas: {error}
+                        {t('errors.loadingError')}: {error}
                       </div>
                     </motion.div>
                   ) : (
@@ -309,7 +306,7 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
                               })}
                             </Bar>
                             <RechartsTooltip
-                              content={<CustomTooltip />}
+                              content={<CustomTooltip t={t} />}
                               cursor={{ fill: 'gray', fillOpacity: 0.5 }}
                               wrapperStyle={{ zIndex: 1000 }}
                             />
@@ -326,7 +323,7 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
                           style={{ marginTop: '1rem', height: '4rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
                         >
                           <p className="text-center text-xs text-gray-400">
-                            Haz click en los días de la semana para filtrar
+                            {t('legend.clickToFilter')}
                           </p>
                           <div className="flex justify-center flex-wrap gap-4 mt-2">
                             {dayKeys.map((key, idx) => (
@@ -336,7 +333,7 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
                                 className={`flex items-center gap-1 cursor-pointer transition-all duration-200 ${selectedDay !== null && selectedDay !== idx ? 'opacity-50' : 'opacity-100'} ${selectedDay === idx ? 'font-medium' : ''} hover:scale-105 active:scale-95`}
                               >
                                 <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: dayColors[idx] }} />
-                                <span className="text-xs">{`${getDayName(key)}: ${dayTotals[idx].toLocaleString()}`}</span>
+                                <span className="text-xs">{`${t(`days.${key}`)}: ${dayTotals[idx].toLocaleString()}`}</span>
                               </div>
                             ))}
                           </div>
@@ -358,7 +355,7 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
                     onClick={() => onOpenChange(false)}
                     className="border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white"
                   >
-                    Cerrar
+                    {t('buttons.close')}
                   </Button>
                 </motion.div>
               </DialogFooter>
@@ -370,16 +367,3 @@ export default function ShortUrlStatsModal({ open, onOpenChange, period, urlId, 
   );
 }
 
-// Helper para traducir nombres de días
-function getDayName(key: string): string {
-  const dayNames: Record<string, string> = {
-    'Sunday': 'Dom',
-    'Monday': 'Lun',
-    'Tuesday': 'Mar',
-    'Wednesday': 'Mié',
-    'Thursday': 'Jue',
-    'Friday': 'Vie',
-    'Saturday': 'Sáb'
-  };
-  return dayNames[key] || key;
-}

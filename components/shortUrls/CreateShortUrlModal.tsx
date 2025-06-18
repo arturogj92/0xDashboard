@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,7 +10,6 @@ import { checkSlugAvailability, getUserSlug, getUrlCustomDomains, type CreateSho
 import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 import { UserSlugConfiguration } from '@/components/auth/UserSlugConfiguration';
-import { useTranslations } from 'next-intl';
 
 interface CreateShortUrlModalProps {
   isOpen: boolean;
@@ -239,7 +239,7 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit, userCustomDomai
 
   // Generar preview de la URL corta
   const getPreviewUrl = () => {
-    if (loadingUsername) return 'Cargando...';
+    if (loadingUsername) return t('loading');
     
     // Priorizar dominio personalizado si está disponible
     if (userCustomDomain) {
@@ -248,7 +248,7 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit, userCustomDomai
     }
     
     // Fallback al subdominio si no hay dominio personalizado
-    if (!userUsername) return 'No se pudo cargar el username';
+    if (!userUsername) return t('errors.usernameLoadFailed');
     const baseUrl = `${userUsername}.creator0x.com`;
     const urlSlug = slug || 'tu-enlace';
     return `${baseUrl}/${urlSlug}`;
@@ -388,12 +388,12 @@ export function CreateShortUrlModal({ isOpen, onClose, onSubmit, userCustomDomai
               </p>
               {!loadingUsername && userUsername && (
                 <p className="text-xs text-gray-400 mt-2">
-                  💡 Tip: Usa slugs descriptivos como &quot;ofertas&quot;, &quot;descuento&quot;, &quot;curso-gratis&quot; para mayor memorabilidad
+                  {t('tips.descriptiveSlugs')}
                 </p>
               )}
               {!userUsername && !loadingUsername && (
                 <p className="text-xs text-gray-400 mt-2">
-                  ⚠️ Configura tu slug de usuario arriba o desde tu perfil para crear URLs cortas
+                  {t('warnings.configureUsername')}
                 </p>
               )}
             </div>
