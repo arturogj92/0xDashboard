@@ -60,7 +60,7 @@ export default function LoginPage() {
   // Redireccionar a home si el usuario ya está autenticado
   useEffect(() => {
     if (isAuthenticated && !authLoading) {
-      router.push('/');
+      router.push('/home');
     }
   }, [isAuthenticated, authLoading, router]);
 

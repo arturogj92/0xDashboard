@@ -83,7 +83,7 @@ function GoogleCallbackContent() {
         
         // Redirigir al home o dashboard después de un breve retraso para permitir que se guarde el token
         setTimeout(() => {
-          router.push('/');
+          router.push('/home');
         }, 500);
         
       } catch (err) {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -107,6 +108,29 @@ export function ShortUrlsTable({
   const [userSlug, setUserSlug] = useState<string | null>(null);
   const [clickedUrl, setClickedUrl] = useState<string | null>(null);
   const [deleteConfirmUrl, setDeleteConfirmUrl] = useState<string | null>(null);
+  
+  // Block scroll when modal is open
+  useEffect(() => {
+    if (deleteConfirmUrl) {
+      // Save current scroll position
+      const scrollY = window.scrollY;
+      
+      // Apply styles to prevent scrolling
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+      
+      return () => {
+        // Restore scroll position
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [deleteConfirmUrl]);
   
   // Local state for URLs to avoid reloads on status toggle
   const [localUrls, setLocalUrls] = useState<ShortUrl[]>(urls);
@@ -928,8 +952,8 @@ export function ShortUrlsTable({
       </motion.div>
 
       {/* Modal de confirmación de borrado */}
-      <AnimatePresence>
-        {deleteConfirmUrl && (
+      {deleteConfirmUrl && typeof window !== 'undefined' && createPortal(
+        <AnimatePresence>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -940,7 +964,7 @@ export function ShortUrlsTable({
               inset: 0,
               backgroundColor: 'rgba(0, 0, 0, 0.5)',
               backdropFilter: 'blur(4px)',
-              zIndex: 50,
+              zIndex: 9999,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -997,8 +1021,9 @@ export function ShortUrlsTable({
               </div>
             </motion.div>
           </motion.div>
-        )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 }
