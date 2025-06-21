@@ -293,7 +293,7 @@ export default function HomePage() {
   return (
     <ProtectedRoute>
       <motion.div 
-        className="min-h-screen py-8"
+        className="min-h-screen py-8 bg-gradient-to-br from-slate-950/50 via-slate-900/30 to-slate-950/50"
         variants={pageVariants}
         initial="hidden"
         animate="visible"
@@ -303,7 +303,7 @@ export default function HomePage() {
           variants={containerVariants}
         >
           <motion.div 
-            className="relative w-full max-w-6xl rounded-xl border border-white/10 bg-[#0e0b15]/70 backdrop-blur-xl shadow-2xl p-6 sm:p-8 lg:p-10 flex flex-col items-center"
+            className="relative w-full max-w-6xl rounded-2xl border border-white/20 bg-black/30 backdrop-blur-2xl shadow-[0_0_40px_rgba(139,92,246,0.25)] p-6 sm:p-8 lg:p-10 flex flex-col items-center before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-r before:from-purple-500/5 before:via-pink-500/5 before:to-blue-500/5"
             variants={containerVariants}
           >
             {/* Header */}
