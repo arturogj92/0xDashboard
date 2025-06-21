@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ChatBubbleLeftRightIcon,
   ArrowRightIcon
@@ -20,26 +21,70 @@ function FeatureCard({
   icon, 
   href, 
   gradient,
-  delay = 0
+  index = 0
 }: {
   title: string;
   description: string;
   icon: React.ReactNode;
   href: string;
   gradient: string;
-  delay?: number;
+  index?: number;
 }) {
   const [isHovered, setIsHovered] = useState(false);
 
+  // Variantes de animación para las cards
+  const cardVariants = {
+    hidden: {
+      opacity: 0,
+      x: index % 2 === 0 ? -100 : 100,
+      y: 50,
+      scale: 0.8,
+      rotate: index % 2 === 0 ? -10 : 10,
+      filter: "blur(10px)"
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      y: 0,
+      scale: 1,
+      rotate: 0,
+      filter: "blur(0px)",
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 20,
+        delay: index * 0.2,
+        duration: 0.8
+      }
+    },
+    hover: {
+      scale: 1.05,
+      y: -16,
+      rotate: 2,
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 25
+      }
+    }
+  };
+
   return (
     <Link href={href}>
-      <div 
-        className={`group relative h-48 rounded-2xl overflow-hidden cursor-pointer transform transition-all duration-700 ease-out hover:scale-[1.05] hover:-translate-y-4 hover:rotate-2 animate-slide-in-up shadow-lg hover:shadow-3xl`}
-        style={{ 
-          animationDelay: `${delay}ms`,
-          animationFillMode: 'both',
-          transformStyle: 'preserve-3d'
+      <motion.div 
+        style={{
+          position: 'relative',
+          height: '12rem',
+          borderRadius: '1rem',
+          overflow: 'hidden',
+          cursor: 'pointer',
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
         }}
+        className="group"
+        variants={cardVariants}
+        initial="hidden"
+        animate="visible"
+        whileHover="hover"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -117,7 +162,7 @@ function FeatureCard({
           isHovered ? 'scale-250 opacity-40 animate-spin-slow blur-sm' : 'scale-0 opacity-0'
         }`} />
         
-      </div>
+      </motion.div>
     </Link>
   );
 }
@@ -125,6 +170,82 @@ function FeatureCard({
 export default function HomePage() {
   const { user } = useAuth();
   const t = useTranslations('dashboard');
+
+  // Variantes de animación para la página
+  const pageVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const containerVariants = {
+    hidden: { 
+      opacity: 0,
+      y: 50,
+      scale: 0.95
+    },
+    visible: { 
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 20,
+        duration: 0.8
+      }
+    }
+  };
+
+  const textVariants = {
+    hidden: { 
+      opacity: 0,
+      y: 30,
+      scale: 0.9
+    },
+    visible: { 
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 120,
+        damping: 20
+      }
+    }
+  };
+
+  const lineVariants = {
+    hidden: { 
+      width: 0,
+      opacity: 0
+    },
+    visible: { 
+      width: "6rem",
+      opacity: 1,
+      transition: {
+        duration: 1,
+        ease: "easeOut",
+        delay: 0.5
+      }
+    }
+  };
+
+  const gridVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.3
+      }
+    }
+  };
   const features = [
     {
       title: t('automations.title') || 'Automatizaciones',
@@ -172,59 +293,67 @@ export default function HomePage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen py-8">
-        <div className="mb-16 relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-visible">
-          <div className="relative w-full max-w-6xl rounded-xl border border-white/10 bg-[#0e0b15]/70 backdrop-blur-xl shadow-2xl p-6 sm:p-8 lg:p-10 flex flex-col items-center">
+      <motion.div 
+        className="min-h-screen py-8"
+        variants={pageVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div 
+          className="mb-16 relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-visible"
+          variants={containerVariants}
+        >
+          <motion.div 
+            className="relative w-full max-w-6xl rounded-xl border border-white/10 bg-[#0e0b15]/70 backdrop-blur-xl shadow-2xl p-6 sm:p-8 lg:p-10 flex flex-col items-center"
+            variants={containerVariants}
+          >
             {/* Header */}
-            <div className="text-center mb-16 animate-fade-in w-full mt-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              {/* @ts-expect-error permitir interpolación de variables en traducción */}
-              {t('welcomeTitle', { name: user?.name || user?.username || 'Usuario' }) || `¡Hola, ${user?.name || user?.username || 'Usuario'}!`}
-            </h1>
-            
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-8">
-              {t('welcomeDescription') || 'Bienvenido a tu centro de control. Desde aquí puedes acceder a todas las herramientas que necesitas para hacer crecer tu presencia digital.'}
-            </p>
+            <motion.div 
+              className="text-center mb-16 w-full mt-8"
+              variants={textVariants}
+            >
+              <motion.h1 
+                className="text-3xl md:text-4xl font-bold text-white mb-4"
+                variants={textVariants}
+              >
+                {/* @ts-expect-error permitir interpolación de variables en traducción */}
+                {t('welcomeTitle', { name: user?.name || user?.username || 'Usuario' }) || `¡Hola, ${user?.name || user?.username || 'Usuario'}!`}
+              </motion.h1>
+              
+              <motion.p 
+                className="text-lg text-gray-300 max-w-2xl mx-auto mb-8"
+                variants={textVariants}
+              >
+                {t('welcomeDescription') || 'Bienvenido a tu centro de control. Desde aquí puedes acceder a todas las herramientas que necesitas para hacer crecer tu presencia digital.'}
+              </motion.p>
 
-            <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"></div>
-          </div>
+              <motion.div 
+                className="h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"
+                variants={lineVariants}
+              />
+            </motion.div>
 
             {/* Features Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 w-full">
-            {features.map((feature, index) => (
-              <FeatureCard
-                key={feature.title}
-                {...feature}
-                delay={index * 200}
-              />
-            ))}
-          </div>
+            <motion.div 
+              className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 w-full"
+              variants={gridVariants}
+            >
+              {features.map((feature, index) => (
+                <FeatureCard
+                  key={feature.title}
+                  {...feature}
+                  index={index}
+                />
+              ))}
+            </motion.div>
 
-          </div>
-        </div>
-      </div>
+          </motion.div>
+        </motion.div>
+      </motion.div>
 
       <style jsx>{`
-        @keyframes float-in {
-          0% {
-            opacity: 0;
-            transform: translateY(50px) scale(0.9);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
-
-        @keyframes slide-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        .animate-fade-in {
+          animation: fade-in 1s ease-out forwards;
         }
 
         @keyframes fade-in {
@@ -236,20 +365,6 @@ export default function HomePage() {
             opacity: 1;
             transform: translateY(0);
           }
-        }
-
-        .animate-slide-in-up {
-          animation: float-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-          opacity: 0;
-        }
-
-        .animate-fade-in {
-          animation: fade-in 1s ease-out forwards;
-        }
-
-        .animate-fade-in-delayed {
-          animation: fade-in 1s ease-out 0.8s forwards;
-          opacity: 0;
         }
 
         @keyframes move-circular {
