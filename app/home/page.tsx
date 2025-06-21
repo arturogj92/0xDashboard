@@ -140,24 +140,25 @@ export default function HomePage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-[#0a0118] via-[#1a0e35] to-[#2d1b69] py-8">
-        <div className="container mx-auto px-4">
-          {/* Header */}
-          <div className="text-center mb-16 animate-fade-in">
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
+      <div className="min-h-screen py-8">
+        <div className="mb-16 relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-visible">
+          <div className="relative w-full max-w-6xl rounded-xl border border-white/10 bg-[#0e0b15]/70 backdrop-blur-xl shadow-2xl p-6 sm:p-8 lg:p-10 flex flex-col items-center">
+            {/* Header */}
+            <div className="text-center mb-16 animate-fade-in w-full mt-8">
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
               {/* @ts-expect-error permitir interpolación de variables en traducción */}
               {t('welcomeTitle', { name: user?.name || user?.username || 'Usuario' }) || `¡Hola, ${user?.name || user?.username || 'Usuario'}!`}
             </h1>
             
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-8">
               {t('welcomeDescription') || 'Bienvenido a tu centro de control. Desde aquí puedes acceder a todas las herramientas que necesitas para hacer crecer tu presencia digital.'}
             </p>
 
             <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"></div>
           </div>
 
-          {/* Features Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {/* Features Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 w-full">
             {features.map((feature, index) => (
               <FeatureCard
                 key={feature.title}
@@ -167,26 +168,6 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* Quick Stats or Additional CTA */}
-          <div className="mt-20 text-center animate-fade-in-delayed">
-            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 max-w-2xl mx-auto border border-white/10">
-              <h3 className="text-2xl font-bold text-white mb-4">
-                {t('footerTitle') || '🚀 Todo en un solo lugar'}
-              </h3>
-              <p className="text-gray-300 mb-6">
-                {t('footerDescription') || 'Gestiona tus automatizaciones, crea contenido, acorta enlaces y personaliza tu presencia online desde una plataforma integrada.'}
-              </p>
-              <Button 
-                variant="outline" 
-                className="border-purple-500/50 text-purple-300 hover:bg-purple-500/20 transition-all duration-300"
-                asChild
-              >
-                <Link href="/profile">
-                  {t('viewProfile') || 'Ver mi perfil'}
-                  <ArrowRightIcon className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
           </div>
         </div>
       </div>
