@@ -34,19 +34,41 @@ function FeatureCard({
   return (
     <Link href={href}>
       <div 
-        className={`group relative h-48 rounded-2xl overflow-hidden cursor-pointer transform transition-all duration-700 ease-out hover:scale-105 hover:-translate-y-2 animate-slide-in-up`}
-        style={{ animationDelay: `${delay}ms` }}
+        className={`group relative h-48 rounded-2xl overflow-hidden cursor-pointer transform transition-all duration-700 ease-out hover:scale-[1.05] hover:-translate-y-4 hover:rotate-2 animate-slide-in-up shadow-lg hover:shadow-3xl`}
+        style={{ 
+          animationDelay: `${delay}ms`,
+          animationFillMode: 'both',
+          transformStyle: 'preserve-3d'
+        }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Background gradient */}
         <div className={`absolute inset-0 ${gradient}`} />
         
-        {/* Animated overlay */}
+        {/* Animated overlay with shimmer effect */}
         <div 
           className={`absolute inset-0 bg-black/30 transition-all duration-700 ease-out ${
-            isHovered ? 'bg-black/50' : 'bg-black/30'
+            isHovered ? 'bg-black/15 backdrop-blur-sm' : 'bg-black/30'
           }`} 
+        />
+        
+        {/* Enhanced glow effect on hover */}
+        <div 
+          className={`absolute inset-0 transition-all duration-700 ease-out ${
+            isHovered ? 'bg-gradient-to-br from-white/15 via-white/5 to-transparent opacity-100' : 'opacity-0'
+          }`} 
+        />
+        
+        {/* Shimmer sweep effect */}
+        <div 
+          className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transition-all duration-1000 ease-out ${
+            isHovered ? 'translate-x-full' : '-translate-x-full'
+          }`}
+          style={{
+            background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%)',
+            transform: isHovered ? 'translateX(100%)' : 'translateX(-100%)',
+          }}
         />
         
         {/* Content */}
@@ -55,7 +77,7 @@ function FeatureCard({
           <div className="flex items-start justify-between mb-4">
             <h3 className="text-xl font-bold text-white drop-shadow-lg flex-1">{title}</h3>
             <div className={`w-10 h-10 ml-4 transform transition-all duration-700 ease-out flex-shrink-0 ${
-              isHovered ? 'scale-110 rotate-12' : 'scale-100 rotate-0'
+              isHovered ? 'scale-150 rotate-12 drop-shadow-2xl' : 'scale-100 rotate-0'
             }`}>
               {icon}
             </div>
@@ -67,21 +89,32 @@ function FeatureCard({
           </div>
         </div>
         
-        {/* Burbujas decorativas visibles por detrás */}
+        {/* Enhanced floating particles */}
         <div className={`absolute top-6 right-20 w-16 h-16 rounded-full bg-white/20 animate-move-circular z-0 transition-all duration-700 ease-out ${
-          isHovered ? 'scale-150 opacity-35' : 'scale-100 opacity-25'
+          isHovered ? 'scale-200 opacity-40 blur-sm' : 'scale-100 opacity-25'
         }`} />
         <div className={`absolute bottom-8 left-6 w-12 h-12 rounded-full bg-white/18 animate-move-vertical z-0 transition-all duration-700 ease-out ${
-          isHovered ? 'scale-140 opacity-30' : 'scale-100 opacity-22'
+          isHovered ? 'scale-180 opacity-35 blur-sm' : 'scale-100 opacity-22'
         }`} />
         <div className={`absolute top-1/3 left-8 w-10 h-10 rounded-full bg-white/15 animate-move-horizontal z-0 transition-all duration-700 ease-out ${
-          isHovered ? 'scale-130 opacity-25' : 'scale-100 opacity-18'
+          isHovered ? 'scale-160 opacity-30 blur-sm' : 'scale-100 opacity-18'
         }`} />
         <div className={`absolute bottom-1/3 right-8 w-8 h-8 rounded-full bg-white/12 animate-move-diagonal z-0 transition-all duration-700 ease-out ${
-          isHovered ? 'scale-125 opacity-20' : 'scale-100 opacity-15'
+          isHovered ? 'scale-150 opacity-25 blur-sm' : 'scale-100 opacity-15'
         }`} />
         <div className={`absolute top-1/2 right-12 w-6 h-6 rounded-full bg-white/10 animate-pulse-slow z-0 transition-all duration-700 ease-out ${
-          isHovered ? 'scale-120 opacity-18' : 'scale-100 opacity-12'
+          isHovered ? 'scale-140 opacity-22 blur-sm' : 'scale-100 opacity-12'
+        }`} />
+        
+        {/* Additional magic particles on hover */}
+        <div className={`absolute top-4 left-4 w-4 h-4 rounded-full bg-gradient-to-r from-yellow-300 to-orange-300 z-0 transition-all duration-1000 ease-out ${
+          isHovered ? 'scale-300 opacity-60 animate-bounce-slow blur-sm' : 'scale-0 opacity-0'
+        }`} />
+        <div className={`absolute bottom-4 right-4 w-3 h-3 rounded-full bg-gradient-to-r from-pink-300 to-purple-300 z-0 transition-all duration-1200 ease-out ${
+          isHovered ? 'scale-400 opacity-50 animate-pulse-fast blur-sm' : 'scale-0 opacity-0'
+        }`} />
+        <div className={`absolute top-2/3 left-12 w-5 h-5 rounded-full bg-gradient-to-r from-blue-300 to-cyan-300 z-0 transition-all duration-800 ease-out ${
+          isHovered ? 'scale-250 opacity-40 animate-spin-slow blur-sm' : 'scale-0 opacity-0'
         }`} />
         
       </div>
@@ -92,7 +125,6 @@ function FeatureCard({
 export default function HomePage() {
   const { user } = useAuth();
   const t = useTranslations('dashboard');
-
   const features = [
     {
       title: t('automations.title') || 'Automatizaciones',
@@ -163,7 +195,7 @@ export default function HomePage() {
               <FeatureCard
                 key={feature.title}
                 {...feature}
-                delay={index * 150}
+                delay={index * 200}
               />
             ))}
           </div>
@@ -173,6 +205,17 @@ export default function HomePage() {
       </div>
 
       <style jsx>{`
+        @keyframes float-in {
+          0% {
+            opacity: 0;
+            transform: translateY(50px) scale(0.9);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
         @keyframes slide-in-up {
           from {
             opacity: 0;
@@ -196,7 +239,7 @@ export default function HomePage() {
         }
 
         .animate-slide-in-up {
-          animation: slide-in-up 0.8s ease-out forwards;
+          animation: float-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
           opacity: 0;
         }
 
@@ -268,6 +311,33 @@ export default function HomePage() {
 
         .animate-pulse-slow {
           animation: pulse-slow 2.5s ease-in-out infinite 1s;
+        }
+
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(0) scale(1); }
+          50% { transform: translateY(-20px) scale(1.2); }
+        }
+
+        @keyframes pulse-fast {
+          0%, 100% { opacity: 0.3; transform: scale(1); }
+          50% { opacity: 0.8; transform: scale(1.5); }
+        }
+
+        @keyframes spin-slow {
+          from { transform: rotate(0deg) scale(1); }
+          to { transform: rotate(360deg) scale(1.3); }
+        }
+
+        .animate-bounce-slow {
+          animation: bounce-slow 2s ease-in-out infinite;
+        }
+
+        .animate-pulse-fast {
+          animation: pulse-fast 1s ease-in-out infinite;
+        }
+
+        .animate-spin-slow {
+          animation: spin-slow 3s linear infinite;
         }
 
       `}</style>
