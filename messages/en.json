@@ -1,4 +1,35 @@
 {
+  "landingPage": {
+    "header": {
+      "login": "Log In",
+      "register": "Sign Up"
+    },
+    "hero": {
+      "title": "Automate your",
+      "subtitle": "Turn your Instagram reels and stories into lead generation machines. Automate responses and connect with your audience 24/7.",
+      "viewAutomations": "View Automations",
+      "startFree": "Start Free"
+    },
+    "features": {
+      "autoReplies": {
+        "title": "Automatic Replies",
+        "description": "Set up intelligent responses that are sent automatically when someone comments on your reels."
+      },
+      "leadGeneration": {
+        "title": "Lead Generation",
+        "description": "Convert comments into private conversations and qualified leads for your business."
+      },
+      "analytics": {
+        "title": "Advanced Analytics",
+        "description": "Analyze the performance of your automations with detailed metrics and reports."
+      }
+    },
+    "footer": {
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "login": "Log In"
+    }
+  },
   "app": {
     "name": "0xReplyer Dashboard",
     "hire": "Hire",

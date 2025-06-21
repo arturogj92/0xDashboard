@@ -1,4 +1,35 @@
 {
+  "landingPage": {
+    "header": {
+      "login": "Iniciar Sesión",
+      "register": "Registrarse"
+    },
+    "hero": {
+      "title": "Automatiza tu",
+      "subtitle": "Convierte tus reels e historias de Instagram en máquinas de generación de leads. Automatiza respuestas y conecta con tu audiencia 24/7.",
+      "viewAutomations": "Ver Automatizaciones",
+      "startFree": "Empezar Gratis"
+    },
+    "features": {
+      "autoReplies": {
+        "title": "Respuestas Automáticas",
+        "description": "Configura respuestas inteligentes que se envían automáticamente cuando alguien comenta en tus reels."
+      },
+      "leadGeneration": {
+        "title": "Generación de Leads",
+        "description": "Convierte comentarios en conversaciones privadas y leads calificados para tu negocio."
+      },
+      "analytics": {
+        "title": "Estadísticas Avanzadas",
+        "description": "Analiza el rendimiento de tus automatizaciones con métricas detalladas y reportes."
+      }
+    },
+    "footer": {
+      "privacy": "Privacidad",
+      "terms": "Términos",
+      "login": "Acceder"
+    }
+  },
   "app": {
     "name": "0xReplyer Dashboard",
     "hire": "Contratar",
@@ -240,60 +271,6 @@
       "buttonConnect": "Conecta tu cuenta de Instagram",
       "connectPrompt": "Es necesario conectar su cuenta de Instagram para crear automatizaciones."
     }
-  },
-  "dashboard": {
-    "welcome": "Bienvenido, {name}",
-    "manageDesc": "Gestiona tus reels y automatizaciones desde este panel",
-    "yourAutomationsTitle": "Automatizaciones",
-    "yourAutomationsDesc": "Gestiona tus respuestas automáticas para reels e historias",
-    "connectedText": "Conectado",
-    "error": "Error!",
-    "reels": {
-      "title": "Reels",
-      "description": "Lista de reels configurados para respuestas automáticas",
-      "addReel": "Añadir Reel",
-      "addFirstReel": "Añadir tu primer Reel",
-      "noReels": "No tienes reels configurados"
-    },
-    "stories": {
-      "title": "Historias",
-      "description": "Lista de historias configuradas para respuestas automáticas",
-      "addStory": "Añadir Historia",
-      "addFirstStory": "Añadir tu primera Historia",
-      "noStories": "No tienes historias configuradas"
-    },
-    "stats": {
-      "reelsGlobalTitle": "Estadísticas globales de tus Reels",
-      "reelsGlobalDesc": "Resumen de respuestas automáticas enviadas en todas las automatizaciones de Reels.",
-      "storiesGlobalTitle": "Estadísticas globales de tus Historias",
-      "storiesGlobalDesc": "Resumen de respuestas automáticas enviadas en todas las automatizaciones de Historias.",
-      "loading": "Cargando estadísticas...",
-      "errorReels": "Error al cargar estadísticas globales",
-      "errorStories": "Error al cargar estadísticas globales de Historias",
-      "last28Days": "Últimos 28 días",
-      "last7Days": "Últimos 7 días",
-      "yesterday": "Ayer",
-      "today": "Hoy",
-      "messages": "mensajes"
-    },
-    "sorting": {
-      "label": "Ordenar por",
-      "date": "Fecha",
-      "visits": "Visitas",
-      "dateDesc": "Fecha (nuevos primero)",
-      "dateAsc": "Fecha (antiguos primero)",
-      "visitsDesc": "Visitas (más primero)",
-      "visitsAsc": "Visitas (menos primero)",
-      "draftDesc": "Borradores (primero)",
-      "draftAsc": "Borradores (después)"
-    },
-    "hide": {
-      "label": "Ocultar",
-      "draft": "Borradores",
-      "active": "Activos",
-      "inactive": "Inactivos"
-    },
-    "understood": "Entendido"
   },
   "pricing": {
     "title": "Precios",

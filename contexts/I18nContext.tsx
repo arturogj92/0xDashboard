@@ -19,8 +19,8 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   
-  // Inicializamos con 'en' por defecto, luego localStorage, luego idioma del navegador, y finalmente preferencia del usuario
-  let initialLocale: SupportedLocale = 'en';
+  // Inicializamos con 'es' por defecto, luego localStorage, luego idioma del navegador, y finalmente preferencia del usuario
+  let initialLocale: SupportedLocale = 'es';
   if (typeof window !== 'undefined') {
     const stored = localStorage.getItem('locale') as SupportedLocale | null;
     if (stored === 'es' || stored === 'en') {
