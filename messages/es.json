@@ -99,8 +99,12 @@
     "tokenExpiredWarning": "Si tu token está expirado o no tienes la cuenta correctamente vinculada, no podrás crear reels ni historias."
   },
   "dashboard": {
+    "welcome": "¡Hola, {name}!",
     "welcomeTitle": "¡Hola, {name}!",
     "welcomeDescription": "Aquí tienes todas las herramientas imprescindibles para ser un creador de contenido de éxito y maximizar beneficios.",
+    "manageDesc": "Gestiona tus automatizaciones de Instagram con respuestas inteligentes",
+    "yourAutomationsTitle": "Tus Automatizaciones",
+    "yourAutomationsDesc": "Configura respuestas automáticas inteligentes para convertir comentarios en conversaciones privadas y generar leads mientras duermes.",
     "automations": {
       "title": "Automatizaciones",
       "description": "Configura respuestas automáticas inteligentes para tus reels e historias de Instagram. Convierte comentarios en conversaciones y genera leads mientras duermes."
@@ -116,6 +120,43 @@
     "landing": {
       "title": "Mi Landing",
       "description": "Diseña tu página personal con enlaces a redes sociales, múltiples secciones personalizables y temas únicos. Ideal para influencers y creadores."
+    },
+    "stats": {
+      "reelsGlobalTitle": "Estadísticas Globales de tus Reels",
+      "reelsGlobalDesc": "Resumen general de todos los mensajes recibidos en tus automatizaciones de reels",
+      "storiesGlobalTitle": "Estadísticas Globales de tus Stories",
+      "storiesGlobalDesc": "Resumen general de todos los mensajes recibidos en tus automatizaciones de stories",
+      "last28Days": "Últimos 28 días",
+      "last7Days": "Últimos 7 días", 
+      "yesterday": "Ayer",
+      "today": "Hoy",
+      "messages": "mensajes",
+      "loading": "Cargando estadísticas...",
+      "errorReels": "Error al cargar estadísticas de reels",
+      "errorStories": "Error al cargar estadísticas de stories"
+    },
+    "reels": {
+      "title": "Tus Reels",
+      "description": "Gestiona las respuestas automáticas de tus reels de Instagram. Configura mensajes personalizados que se envían cuando alguien comenta.",
+      "addReel": "Añadir Reel",
+      "noReels": "Aún no tienes reels con automatización configurada",
+      "addFirstReel": "Añadir tu primer reel"
+    },
+    "stories": {
+      "title": "Tus Stories",
+      "description": "Gestiona las respuestas automáticas de tus stories de Instagram. Configura mensajes personalizados que se envían cuando alguien responde.",
+      "addStory": "Añadir Story",
+      "noStories": "Aún no tienes stories con automatización configurada",
+      "addFirstStory": "Añadir tu primera story"
+    },
+    "error": "Error",
+    "hide": {
+      "label": "Ocultar"
+    },
+    "sorting": {
+      "visits": "Visitas",
+      "newest": "Más recientes",
+      "oldest": "Más antiguos"
     },
     "footerTitle": "🚀 Todo en un solo lugar",
     "footerDescription": "Gestiona tus automatizaciones, crea contenido, acorta enlaces y personaliza tu presencia online desde una plataforma integrada.",
