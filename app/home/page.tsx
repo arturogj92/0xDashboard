@@ -347,6 +347,12 @@ export default function HomePage() {
             </motion.div>
 
           </motion.div>
+
+          {/* Sombra radial principal más grande (oculta en móvil) */}
+          <div className="hidden sm:block absolute -inset-24 bg-[radial-gradient(circle,_rgba(88,28,135,0.45)_0%,_rgba(17,24,39,0)_80%)] blur-[250px] pointer-events-none"></div>
+
+          {/* Radiales hacia afuera (bordes, ocultos en móvil) */}
+          <div className="hidden sm:block absolute -inset-32 bg-[radial-gradient(circle,_rgba(17,24,39,0)_60%,_rgba(88,28,135,0.35)_100%)] blur-[300px] opacity-50 pointer-events-none"></div>
         </motion.div>
       </motion.div>
 
