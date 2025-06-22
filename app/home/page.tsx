@@ -73,7 +73,7 @@ function FeatureCard({
   return (
     <Link href={href}>
       <motion.div 
-        className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 backdrop-blur-sm shadow-[0_10px_25px_rgba(0,0,0,0.3)]"
+        className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 backdrop-blur-sm shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out"
         variants={cardVariants}
         initial="hidden"
         animate="visible"
@@ -268,11 +268,8 @@ export default function HomePage() {
                   variants={textVariants}
                 >
                   Todas tus herramientas{' '}
-                  <span className="relative">
-                    <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                      en un lugar
-                    </span>
-                    <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full opacity-60"></div>
+                  <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    en un único lugar
                   </span>
                 </motion.h2>
                 
