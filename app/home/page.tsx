@@ -338,36 +338,69 @@ export default function HomePage() {
             {/* Layout de 2 columnas */}
             <div className="grid lg:grid-cols-[1fr,auto] gap-8 lg:gap-12 items-center">
               
-              {/* Columna izquierda: Título y explicación */}
+              {/* Columna izquierda: Título y explicación con glow-up */}
               <motion.div 
-                className="text-center lg:text-left flex flex-col justify-center"
+                className="text-center lg:text-left flex flex-col justify-center relative lg:pl-10"
                 variants={textVariants}
               >
+                {/* Elementos decorativos de fondo */}
+                <div className="absolute -top-8 -left-8 w-32 h-32 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full blur-3xl"></div>
+                <div className="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-br from-blue-500/15 to-cyan-500/15 rounded-full blur-2xl"></div>
+                
+
                 <motion.h2 
-                  className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4"
+                  className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent mb-4 leading-tight"
                   variants={textVariants}
                 >
-                  Tu centro de control
+                  Todas tus herramientas{' '}
+                  <span className="relative">
+                    <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                      en un lugar
+                    </span>
+                    <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full opacity-60"></div>
+                  </span>
                 </motion.h2>
                 
                 <motion.p 
-                  className="text-base md:text-lg text-gray-400 leading-relaxed mb-6 max-w-md"
+                  className="text-base md:text-lg text-gray-300 leading-relaxed mb-8 max-w-md relative z-10"
                   variants={textVariants}
                 >
-                  Todas las herramientas que necesitas para hacer crecer tu presencia digital en un solo lugar.
+                  Potencia tu presencia digital con nuestra suite completa de herramientas diseñadas para{' '}
+                  <span className="text-purple-300 font-medium">creadores ambiciosos</span>.
                 </motion.p>
 
+                {/* Stats decorativos */}
                 <motion.div 
-                  className="h-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full lg:mx-0 mx-auto"
+                  className="flex gap-6 mb-6 lg:justify-start justify-center"
+                  variants={textVariants}
+                >
+                  <div className="text-center">
+                    <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">4+</div>
+                    <div className="text-xs text-gray-400">Herramientas</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">∞</div>
+                    <div className="text-xs text-gray-400">Posibilidades</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">24/7</div>
+                    <div className="text-xs text-gray-400">Disponible</div>
+                  </div>
+                </motion.div>
+
+                <motion.div 
+                  className="h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 rounded-full lg:mx-0 mx-auto relative overflow-hidden"
                   initial={{ width: 0, opacity: 0 }}
-                  animate={{ width: 96, opacity: 1 }}
+                  animate={{ width: 120, opacity: 1 }}
                   transition={{
                     duration: 1.5,
                     ease: [0.4, 0, 0.2, 1],
-                    delay: 0.5
+                    delay: 0.7
                   }}
                   style={{ willChange: 'width' }}
-                />
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent animate-pulse"></div>
+                </motion.div>
               </motion.div>
 
               {/* Columna derecha: Grid de funciones */}
