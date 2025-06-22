@@ -73,7 +73,7 @@ function FeatureCard({
   return (
     <Link href={href}>
       <motion.div 
-        className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 backdrop-blur-sm shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out"
+        className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out"
         variants={cardVariants}
         initial="hidden"
         animate="visible"
@@ -247,7 +247,7 @@ export default function HomePage() {
           variants={containerVariants}
         >
           <motion.div 
-            className="relative w-full max-w-5xl rounded-2xl border border-white/20 bg-black/30 backdrop-blur-2xl shadow-[0_0_40px_rgba(139,92,246,0.25)] p-6 sm:p-8 lg:p-10 before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-r before:from-purple-500/5 before:via-pink-500/5 before:to-blue-500/5"
+            className="relative w-full max-w-5xl rounded-2xl border border-white/20 bg-black/40 shadow-[0_0_40px_rgba(139,92,246,0.25)] p-6 sm:p-8 lg:p-10 before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-r before:from-purple-500/5 before:via-pink-500/5 before:to-blue-500/5"
             variants={containerVariants}
           >
             {/* Layout de 2 columnas */}
@@ -259,8 +259,8 @@ export default function HomePage() {
                 variants={textVariants}
               >
                 {/* Elementos decorativos de fondo */}
-                <div className="absolute -top-8 -left-8 w-32 h-32 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full blur-3xl"></div>
-                <div className="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-br from-blue-500/15 to-cyan-500/15 rounded-full blur-2xl"></div>
+                <div className="absolute -top-8 -left-8 w-32 h-32 bg-gradient-to-br from-purple-500/15 to-pink-500/15 rounded-full"></div>
+                <div className="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-full"></div>
                 
 
                 <motion.h2 
@@ -336,10 +336,10 @@ export default function HomePage() {
           </motion.div>
 
           {/* Sombra radial principal más grande (oculta en móvil) */}
-          <div className="hidden sm:block absolute -inset-24 bg-[radial-gradient(circle,_rgba(88,28,135,0.45)_0%,_rgba(17,24,39,0)_80%)] blur-[250px] pointer-events-none"></div>
+          <div className="hidden sm:block absolute -inset-24 bg-[radial-gradient(circle,_rgba(88,28,135,0.3)_0%,_rgba(17,24,39,0)_80%)] pointer-events-none"></div>
 
           {/* Radiales hacia afuera (bordes, ocultos en móvil) */}
-          <div className="hidden sm:block absolute -inset-32 bg-[radial-gradient(circle,_rgba(17,24,39,0)_60%,_rgba(88,28,135,0.35)_100%)] blur-[300px] opacity-50 pointer-events-none"></div>
+          <div className="hidden sm:block absolute -inset-32 bg-[radial-gradient(circle,_rgba(17,24,39,0)_60%,_rgba(88,28,135,0.25)_100%)] opacity-50 pointer-events-none"></div>
         </motion.div>
       </motion.div>
 
