@@ -90,26 +90,26 @@ function FeatureCard({
         
         {/* Animated overlay with shimmer effect */}
         <div 
-          className={`absolute inset-0 bg-black/30 transition-all duration-700 ease-out ${
-            isHovered ? 'bg-black/15 backdrop-blur-sm' : 'bg-black/30'
+          className={`absolute inset-0 bg-black/30 transition-all duration-400 ease-out ${
+            isHovered ? 'bg-black/15' : 'bg-black/30'
           }`} 
         />
         
         {/* Enhanced glow effect on hover */}
         <div 
-          className={`absolute inset-0 transition-all duration-700 ease-out ${
-            isHovered ? 'bg-gradient-to-br from-white/15 via-white/5 to-transparent opacity-100' : 'opacity-0'
+          className={`absolute inset-0 transition-opacity duration-400 ease-out ${
+            isHovered ? 'bg-gradient-to-br from-white/12 via-white/4 to-transparent opacity-100' : 'opacity-0'
           }`} 
         />
         
-        {/* Shimmer sweep effect */}
+        {/* Optimized shimmer sweep effect */}
         <div 
-          className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transition-all duration-1000 ease-out ${
-            isHovered ? 'translate-x-full' : '-translate-x-full'
+          className={`absolute inset-0 transition-all duration-500 ease-out ${
+            isHovered ? 'translate-x-full opacity-100' : '-translate-x-full opacity-0'
           }`}
           style={{
-            background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%)',
-            transform: isHovered ? 'translateX(100%)' : 'translateX(-100%)',
+            background: 'linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%)',
+            willChange: 'transform, opacity'
           }}
         />
         
@@ -153,72 +153,71 @@ function FeatureCard({
           </div>
         </div>
         
-        {/* Enhanced floating particles con mejor hover */}
+        {/* Optimized floating particles - no blur filters */}
         <motion.div 
           className="absolute top-6 right-20 w-16 h-16 rounded-full bg-white/20 animate-move-circular z-0"
           animate={{
-            scale: isHovered ? 2.2 : 1,
-            opacity: isHovered ? 0.45 : 0.25,
-            filter: isHovered ? "blur(4px)" : "blur(0px)"
+            scale: isHovered ? 1.8 : 1,
+            opacity: isHovered ? 0.4 : 0.25,
           }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          style={{ willChange: 'transform, opacity' }}
         />
         <motion.div 
           className="absolute bottom-8 left-6 w-12 h-12 rounded-full bg-white/18 animate-move-vertical z-0"
           animate={{
-            scale: isHovered ? 1.9 : 1,
-            opacity: isHovered ? 0.4 : 0.22,
-            filter: isHovered ? "blur(3px)" : "blur(0px)"
+            scale: isHovered ? 1.6 : 1,
+            opacity: isHovered ? 0.35 : 0.22,
           }}
-          transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+          transition={{ duration: 0.4, ease: "easeOut", delay: 0.05 }}
+          style={{ willChange: 'transform, opacity' }}
         />
         <motion.div 
           className="absolute top-1/3 left-8 w-10 h-10 rounded-full bg-white/15 animate-move-horizontal z-0"
           animate={{
-            scale: isHovered ? 1.7 : 1,
-            opacity: isHovered ? 0.35 : 0.18,
-            filter: isHovered ? "blur(2px)" : "blur(0px)"
+            scale: isHovered ? 1.5 : 1,
+            opacity: isHovered ? 0.3 : 0.18,
           }}
-          transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
+          transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
+          style={{ willChange: 'transform, opacity' }}
         />
         <motion.div 
           className="absolute bottom-1/3 right-8 w-8 h-8 rounded-full bg-white/12 animate-move-diagonal z-0"
           animate={{
-            scale: isHovered ? 1.6 : 1,
-            opacity: isHovered ? 0.3 : 0.15,
-            filter: isHovered ? "blur(2px)" : "blur(0px)"
+            scale: isHovered ? 1.4 : 1,
+            opacity: isHovered ? 0.25 : 0.15,
           }}
-          transition={{ duration: 0.7, ease: "easeOut", delay: 0.3 }}
+          transition={{ duration: 0.4, ease: "easeOut", delay: 0.15 }}
+          style={{ willChange: 'transform, opacity' }}
         />
         
-        {/* Additional magic particles con mejor animación */}
+        {/* Optimized magic particles - no blur filters */}
         <motion.div 
-          className="absolute top-4 left-4 w-4 h-4 rounded-full bg-gradient-to-r from-yellow-300/70 to-orange-300/70 z-0"
+          className="absolute top-4 left-4 w-4 h-4 rounded-full bg-yellow-300/50 z-0"
           animate={{
-            scale: isHovered ? 3.5 : 0,
-            opacity: isHovered ? 0.7 : 0,
-            filter: isHovered ? "blur(2px)" : "blur(0px)"
-          }}
-          transition={{ duration: 1, ease: "easeOut" }}
-        />
-        <motion.div 
-          className="absolute bottom-4 right-4 w-3 h-3 rounded-full bg-gradient-to-r from-pink-300/80 to-purple-300/80 z-0"
-          animate={{
-            scale: isHovered ? 4 : 0,
+            scale: isHovered ? 2.5 : 0,
             opacity: isHovered ? 0.6 : 0,
-            filter: isHovered ? "blur(2px)" : "blur(0px)"
           }}
-          transition={{ duration: 1.2, ease: "easeOut", delay: 0.1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          style={{ willChange: 'transform, opacity' }}
         />
         <motion.div 
-          className="absolute top-2/3 left-12 w-5 h-5 rounded-full bg-gradient-to-r from-blue-300/60 to-cyan-300/60 z-0"
+          className="absolute bottom-4 right-4 w-3 h-3 rounded-full bg-pink-300/50 z-0"
           animate={{
-            scale: isHovered ? 2.8 : 0,
+            scale: isHovered ? 3 : 0,
             opacity: isHovered ? 0.5 : 0,
-            rotate: isHovered ? 360 : 0,
-            filter: isHovered ? "blur(2px)" : "blur(0px)"
           }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+          transition={{ duration: 0.6, ease: "easeOut", delay: 0.05 }}
+          style={{ willChange: 'transform, opacity' }}
+        />
+        <motion.div 
+          className="absolute top-2/3 left-12 w-5 h-5 rounded-full bg-blue-300/40 z-0"
+          animate={{
+            scale: isHovered ? 2.2 : 0,
+            opacity: isHovered ? 0.4 : 0,
+          }}
+          transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
+          style={{ willChange: 'transform, opacity' }}
         />
         
       </motion.div>
