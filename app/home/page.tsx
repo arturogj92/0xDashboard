@@ -58,13 +58,14 @@ function FeatureCard({
       }
     },
     hover: {
-      scale: 1.05,
-      y: -16,
-      rotate: 2,
+      scale: 1.08,
+      y: -20,
+      rotate: 3,
       transition: {
         type: "spring",
-        stiffness: 400,
-        damping: 25
+        stiffness: 300,
+        damping: 20,
+        duration: 0.6
       }
     }
   };
@@ -72,14 +73,11 @@ function FeatureCard({
   return (
     <Link href={href}>
       <motion.div 
-        style={{
-          position: 'relative',
-          height: '12rem',
-          borderRadius: '1rem',
-          overflow: 'hidden',
-          cursor: 'pointer',
-          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-        }}
+        className={`relative h-48 rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 ${
+          isHovered 
+            ? 'shadow-[0_25px_50px_rgba(0,0,0,0.6),_0_0_30px_rgba(139,92,246,0.4)]' 
+            : 'shadow-[0_10px_25px_rgba(0,0,0,0.3)]'
+        }`}
         variants={cardVariants}
         initial="hidden"
         animate="visible"
@@ -120,11 +118,33 @@ function FeatureCard({
           {/* Header: título izquierda, ícono derecha */}
           <div className="flex items-start justify-between mb-4">
             <h3 className="text-xl font-bold text-white drop-shadow-lg flex-1">{title}</h3>
-            <div className={`w-10 h-10 ml-4 transform transition-all duration-700 ease-out flex-shrink-0 ${
-              isHovered ? 'scale-150 rotate-12 drop-shadow-2xl' : 'scale-100 rotate-0'
-            }`}>
-              {icon}
-            </div>
+            <motion.div 
+              className="w-10 h-10 ml-4 flex-shrink-0"
+              animate={{
+                scale: isHovered ? 1.5 : 1,
+                rotate: isHovered ? 12 : 0,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 20,
+                duration: 0.6
+              }}
+            >
+              <motion.div
+                animate={{
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="w-full h-full drop-shadow-lg"
+              >
+                {icon}
+              </motion.div>
+            </motion.div>
           </div>
           
           {/* Description - más espacio disponible */}
@@ -133,33 +153,73 @@ function FeatureCard({
           </div>
         </div>
         
-        {/* Enhanced floating particles */}
-        <div className={`absolute top-6 right-20 w-16 h-16 rounded-full bg-white/20 animate-move-circular z-0 transition-all duration-700 ease-out ${
-          isHovered ? 'scale-200 opacity-40 blur-sm' : 'scale-100 opacity-25'
-        }`} />
-        <div className={`absolute bottom-8 left-6 w-12 h-12 rounded-full bg-white/18 animate-move-vertical z-0 transition-all duration-700 ease-out ${
-          isHovered ? 'scale-180 opacity-35 blur-sm' : 'scale-100 opacity-22'
-        }`} />
-        <div className={`absolute top-1/3 left-8 w-10 h-10 rounded-full bg-white/15 animate-move-horizontal z-0 transition-all duration-700 ease-out ${
-          isHovered ? 'scale-160 opacity-30 blur-sm' : 'scale-100 opacity-18'
-        }`} />
-        <div className={`absolute bottom-1/3 right-8 w-8 h-8 rounded-full bg-white/12 animate-move-diagonal z-0 transition-all duration-700 ease-out ${
-          isHovered ? 'scale-150 opacity-25 blur-sm' : 'scale-100 opacity-15'
-        }`} />
-        <div className={`absolute top-1/2 right-12 w-6 h-6 rounded-full bg-white/10 animate-pulse-slow z-0 transition-all duration-700 ease-out ${
-          isHovered ? 'scale-140 opacity-22 blur-sm' : 'scale-100 opacity-12'
-        }`} />
+        {/* Enhanced floating particles con mejor hover */}
+        <motion.div 
+          className="absolute top-6 right-20 w-16 h-16 rounded-full bg-white/20 animate-move-circular z-0"
+          animate={{
+            scale: isHovered ? 2.2 : 1,
+            opacity: isHovered ? 0.45 : 0.25,
+            filter: isHovered ? "blur(4px)" : "blur(0px)"
+          }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+        />
+        <motion.div 
+          className="absolute bottom-8 left-6 w-12 h-12 rounded-full bg-white/18 animate-move-vertical z-0"
+          animate={{
+            scale: isHovered ? 1.9 : 1,
+            opacity: isHovered ? 0.4 : 0.22,
+            filter: isHovered ? "blur(3px)" : "blur(0px)"
+          }}
+          transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
+        />
+        <motion.div 
+          className="absolute top-1/3 left-8 w-10 h-10 rounded-full bg-white/15 animate-move-horizontal z-0"
+          animate={{
+            scale: isHovered ? 1.7 : 1,
+            opacity: isHovered ? 0.35 : 0.18,
+            filter: isHovered ? "blur(2px)" : "blur(0px)"
+          }}
+          transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
+        />
+        <motion.div 
+          className="absolute bottom-1/3 right-8 w-8 h-8 rounded-full bg-white/12 animate-move-diagonal z-0"
+          animate={{
+            scale: isHovered ? 1.6 : 1,
+            opacity: isHovered ? 0.3 : 0.15,
+            filter: isHovered ? "blur(2px)" : "blur(0px)"
+          }}
+          transition={{ duration: 0.7, ease: "easeOut", delay: 0.3 }}
+        />
         
-        {/* Additional magic particles on hover */}
-        <div className={`absolute top-4 left-4 w-4 h-4 rounded-full bg-gradient-to-r from-yellow-300 to-orange-300 z-0 transition-all duration-1000 ease-out ${
-          isHovered ? 'scale-300 opacity-60 animate-bounce-slow blur-sm' : 'scale-0 opacity-0'
-        }`} />
-        <div className={`absolute bottom-4 right-4 w-3 h-3 rounded-full bg-gradient-to-r from-pink-300 to-purple-300 z-0 transition-all duration-1200 ease-out ${
-          isHovered ? 'scale-400 opacity-50 animate-pulse-fast blur-sm' : 'scale-0 opacity-0'
-        }`} />
-        <div className={`absolute top-2/3 left-12 w-5 h-5 rounded-full bg-gradient-to-r from-blue-300 to-cyan-300 z-0 transition-all duration-800 ease-out ${
-          isHovered ? 'scale-250 opacity-40 animate-spin-slow blur-sm' : 'scale-0 opacity-0'
-        }`} />
+        {/* Additional magic particles con mejor animación */}
+        <motion.div 
+          className="absolute top-4 left-4 w-4 h-4 rounded-full bg-gradient-to-r from-yellow-300/70 to-orange-300/70 z-0"
+          animate={{
+            scale: isHovered ? 3.5 : 0,
+            opacity: isHovered ? 0.7 : 0,
+            filter: isHovered ? "blur(2px)" : "blur(0px)"
+          }}
+          transition={{ duration: 1, ease: "easeOut" }}
+        />
+        <motion.div 
+          className="absolute bottom-4 right-4 w-3 h-3 rounded-full bg-gradient-to-r from-pink-300/80 to-purple-300/80 z-0"
+          animate={{
+            scale: isHovered ? 4 : 0,
+            opacity: isHovered ? 0.6 : 0,
+            filter: isHovered ? "blur(2px)" : "blur(0px)"
+          }}
+          transition={{ duration: 1.2, ease: "easeOut", delay: 0.1 }}
+        />
+        <motion.div 
+          className="absolute top-2/3 left-12 w-5 h-5 rounded-full bg-gradient-to-r from-blue-300/60 to-cyan-300/60 z-0"
+          animate={{
+            scale: isHovered ? 2.8 : 0,
+            opacity: isHovered ? 0.5 : 0,
+            rotate: isHovered ? 360 : 0,
+            filter: isHovered ? "blur(2px)" : "blur(0px)"
+          }}
+          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+        />
         
       </motion.div>
     </Link>
