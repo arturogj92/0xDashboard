@@ -279,21 +279,6 @@ export default function HomePage() {
     }
   };
 
-  const lineVariants = {
-    hidden: { 
-      width: 0,
-      opacity: 0
-    },
-    visible: { 
-      width: "6rem",
-      opacity: 1,
-      transition: {
-        duration: 1,
-        ease: "easeOut",
-        delay: 0.5
-      }
-    }
-  };
 
   const gridVariants = {
     hidden: { opacity: 0 },
@@ -388,7 +373,14 @@ export default function HomePage() {
 
               <motion.div 
                 className="h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"
-                variants={lineVariants}
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 96, opacity: 1 }}
+                transition={{
+                  duration: 1.5,
+                  ease: [0.4, 0, 0.2, 1],
+                  delay: 0.7
+                }}
+                style={{ willChange: 'width' }}
               />
             </motion.div>
 
