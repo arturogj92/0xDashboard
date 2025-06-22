@@ -73,45 +73,19 @@ function FeatureCard({
   return (
     <Link href={href}>
       <motion.div 
-        className={`relative aspect-square rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 ${
-          isHovered 
-            ? 'shadow-[0_25px_50px_rgba(0,0,0,0.6),_0_0_30px_rgba(139,92,246,0.4)]' 
-            : 'shadow-[0_10px_25px_rgba(0,0,0,0.3)]'
-        }`}
+        className="relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 backdrop-blur-sm shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_35px_rgba(0,0,0,0.5)] transition-shadow duration-200"
         variants={cardVariants}
         initial="hidden"
         animate="visible"
-        whileHover="hover"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        style={{ willChange: 'box-shadow' }}
       >
         {/* Background gradient */}
         <div className={`absolute inset-0 ${gradient}`} />
         
-        {/* Animated overlay with shimmer effect */}
-        <div 
-          className={`absolute inset-0 bg-black/30 transition-all duration-400 ease-out ${
-            isHovered ? 'bg-black/15' : 'bg-black/30'
-          }`} 
-        />
-        
-        {/* Enhanced glow effect on hover */}
-        <div 
-          className={`absolute inset-0 transition-opacity duration-400 ease-out ${
-            isHovered ? 'bg-gradient-to-br from-white/12 via-white/4 to-transparent opacity-100' : 'opacity-0'
-          }`} 
-        />
-        
-        {/* Optimized shimmer sweep effect */}
-        <div 
-          className={`absolute inset-0 transition-all duration-500 ease-out ${
-            isHovered ? 'translate-x-full opacity-100' : '-translate-x-full opacity-0'
-          }`}
-          style={{
-            background: 'linear-gradient(90deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%)',
-            willChange: 'transform, opacity'
-          }}
-        />
+        {/* Simple overlay */}
+        <div className="absolute inset-0 bg-black/25" />
         
         {/* Content centrado para formato cuadrado */}
         <div className="relative h-full p-4 flex flex-col items-center justify-center text-white z-10 text-center">
@@ -138,72 +112,10 @@ function FeatureCard({
           <p className="text-xs text-white/80 drop-shadow-md leading-snug">{description}</p>
         </div>
         
-        {/* Optimized floating particles - no blur filters */}
-        <motion.div 
-          className="absolute top-6 right-20 w-16 h-16 rounded-full bg-white/20 animate-move-circular z-0"
-          animate={{
-            scale: isHovered ? 1.8 : 1,
-            opacity: isHovered ? 0.4 : 0.25,
-          }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-          style={{ willChange: 'transform, opacity' }}
-        />
-        <motion.div 
-          className="absolute bottom-8 left-6 w-12 h-12 rounded-full bg-white/18 animate-move-vertical z-0"
-          animate={{
-            scale: isHovered ? 1.6 : 1,
-            opacity: isHovered ? 0.35 : 0.22,
-          }}
-          transition={{ duration: 0.4, ease: "easeOut", delay: 0.05 }}
-          style={{ willChange: 'transform, opacity' }}
-        />
-        <motion.div 
-          className="absolute top-1/3 left-8 w-10 h-10 rounded-full bg-white/15 animate-move-horizontal z-0"
-          animate={{
-            scale: isHovered ? 1.5 : 1,
-            opacity: isHovered ? 0.3 : 0.18,
-          }}
-          transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
-          style={{ willChange: 'transform, opacity' }}
-        />
-        <motion.div 
-          className="absolute bottom-1/3 right-8 w-8 h-8 rounded-full bg-white/12 animate-move-diagonal z-0"
-          animate={{
-            scale: isHovered ? 1.4 : 1,
-            opacity: isHovered ? 0.25 : 0.15,
-          }}
-          transition={{ duration: 0.4, ease: "easeOut", delay: 0.15 }}
-          style={{ willChange: 'transform, opacity' }}
-        />
-        
-        {/* Optimized magic particles - no blur filters */}
-        <motion.div 
-          className="absolute top-4 left-4 w-4 h-4 rounded-full bg-yellow-300/50 z-0"
-          animate={{
-            scale: isHovered ? 2.5 : 0,
-            opacity: isHovered ? 0.6 : 0,
-          }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          style={{ willChange: 'transform, opacity' }}
-        />
-        <motion.div 
-          className="absolute bottom-4 right-4 w-3 h-3 rounded-full bg-pink-300/50 z-0"
-          animate={{
-            scale: isHovered ? 3 : 0,
-            opacity: isHovered ? 0.5 : 0,
-          }}
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.05 }}
-          style={{ willChange: 'transform, opacity' }}
-        />
-        <motion.div 
-          className="absolute top-2/3 left-12 w-5 h-5 rounded-full bg-blue-300/40 z-0"
-          animate={{
-            scale: isHovered ? 2.2 : 0,
-            opacity: isHovered ? 0.4 : 0,
-          }}
-          transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
-          style={{ willChange: 'transform, opacity' }}
-        />
+        {/* Static decorative elements - no animations */}
+        <div className="absolute top-6 right-6 w-6 h-6 rounded-full bg-white/10 z-0" />
+        <div className="absolute bottom-8 left-6 w-4 h-4 rounded-full bg-white/8 z-0" />
+        <div className="absolute top-1/3 left-4 w-2 h-2 rounded-full bg-purple-300/20 z-0" />
         
       </motion.div>
     </Link>
