@@ -117,7 +117,7 @@ function FeatureCard({
         <div className="relative h-full p-4 flex flex-col items-center justify-center text-white z-10 text-center">
           {/* Ícono centrado arriba */}
           <motion.div 
-            className="w-20 h-20 mb-4"
+            className="w-12 h-12 mb-2"
             animate={{
               scale: isHovered ? 1.1 : 1,
             }}
@@ -132,10 +132,10 @@ function FeatureCard({
           </motion.div>
           
           {/* Título centrado */}
-          <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-lg mb-4 leading-tight">{title}</h3>
+          <h3 className="text-base md:text-lg font-bold text-white drop-shadow-lg mb-2 leading-tight">{title}</h3>
           
           {/* Descripción más compacta */}
-          <p className="text-sm text-white/90 drop-shadow-md leading-relaxed max-w-xs">{description}</p>
+          <p className="text-xs text-white/80 drop-shadow-md leading-snug">{description}</p>
         </div>
         
         {/* Optimized floating particles - no blur filters */}
@@ -276,8 +276,8 @@ export default function HomePage() {
   };
   const features = [
     {
-      title: t('automations.title') || 'Automatizaciones',
-      description: t('automations.description') || 'Gestiona tus reels e historias de Instagram con respuestas automáticas inteligentes.',
+      title: 'Automatizaciones',
+      description: 'Respuestas automáticas inteligentes para Instagram',
       icon: (
         <Image 
           src="/images/icons/automation-icon.png"
@@ -290,8 +290,8 @@ export default function HomePage() {
       gradient: "bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800"
     },
     {
-      title: t('captionGenerator.title') || 'Generador de Captions',
-      description: t('captionGenerator.description') || 'Crea captions atractivos para tus publicaciones con IA avanzada.',
+      title: 'Captions',
+      description: 'Genera las descripciones de tus videos con IA',
       icon: (
         <Image 
           src="/images/icons/caption-generator-icon.png"
@@ -304,15 +304,15 @@ export default function HomePage() {
       gradient: "bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-700"
     },
     {
-      title: t('urlShortener.title') || 'URLs Cortas',
-      description: t('urlShortener.description') || 'Acorta enlaces y rastrea clics con análisis detallados en tiempo real.',
+      title: 'URLs Cortas',
+      description: 'Acorta enlaces y analiza clics en tiempo real',
       icon: <LinkIcon className="w-full h-full text-white" style={{ color: '#d08216' }} />,
       href: "/short-urls",
       gradient: "bg-gradient-to-br from-orange-500 via-red-500 to-pink-600"
     },
     {
-      title: t('landing.title') || 'Mi Landing',
-      description: t('landing.description') || 'Personaliza tu página de aterrizaje con enlaces sociales y diseño único.',
+      title: 'Mi Landing',
+      description: 'Crea tu página personal con diseño único',
       icon: <Settings className="w-full h-full text-white" style={{ color: '#d08216' }} />,
       href: "/landing",
       gradient: "bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-700"
@@ -332,23 +332,61 @@ export default function HomePage() {
           variants={containerVariants}
         >
           <motion.div 
-            className="relative w-full max-w-6xl rounded-2xl border border-white/20 bg-black/30 backdrop-blur-2xl shadow-[0_0_40px_rgba(139,92,246,0.25)] p-6 sm:p-8 lg:p-10 flex flex-col items-center before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-r before:from-purple-500/5 before:via-pink-500/5 before:to-blue-500/5"
+            className="relative w-full max-w-5xl rounded-2xl border border-white/20 bg-black/30 backdrop-blur-2xl shadow-[0_0_40px_rgba(139,92,246,0.25)] p-6 sm:p-8 lg:p-10 before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-r before:from-purple-500/5 before:via-pink-500/5 before:to-blue-500/5"
             variants={containerVariants}
           >
+            {/* Layout de 2 columnas */}
+            <div className="grid lg:grid-cols-[1fr,auto] gap-8 lg:gap-12 items-center">
+              
+              {/* Columna izquierda: Título y explicación */}
+              <motion.div 
+                className="text-center lg:text-left flex flex-col justify-center"
+                variants={textVariants}
+              >
+                <motion.h2 
+                  className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4"
+                  variants={textVariants}
+                >
+                  Tu centro de control
+                </motion.h2>
+                
+                <motion.p 
+                  className="text-base md:text-lg text-gray-400 leading-relaxed mb-6 max-w-md"
+                  variants={textVariants}
+                >
+                  Todas las herramientas que necesitas para hacer crecer tu presencia digital en un solo lugar.
+                </motion.p>
 
-            {/* Features Grid */}
-            <motion.div 
-              className="grid grid-cols-2 gap-2 md:gap-3 lg:gap-4 w-full max-w-xl"
-              variants={gridVariants}
-            >
-              {features.map((feature, index) => (
-                <FeatureCard
-                  key={feature.title}
-                  {...feature}
-                  index={index}
+                <motion.div 
+                  className="h-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full lg:mx-0 mx-auto"
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: 96, opacity: 1 }}
+                  transition={{
+                    duration: 1.5,
+                    ease: [0.4, 0, 0.2, 1],
+                    delay: 0.5
+                  }}
+                  style={{ willChange: 'width' }}
                 />
-              ))}
-            </motion.div>
+              </motion.div>
+
+              {/* Columna derecha: Grid de funciones */}
+              <motion.div 
+                className="flex justify-center lg:justify-end"
+                variants={gridVariants}
+              >
+                <div className="grid grid-cols-2 gap-3 md:gap-4 w-full max-w-sm lg:max-w-md">
+                  {features.map((feature, index) => (
+                    <FeatureCard
+                      key={feature.title}
+                      {...feature}
+                      index={index}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+
+            </div>
 
           </motion.div>
 
