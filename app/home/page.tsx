@@ -73,12 +73,13 @@ function FeatureCard({
   return (
     <Link href={href}>
       <motion.div 
-        className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out"
+        className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-lg hover:scale-105 transition-transform duration-200 ease-out"
         variants={cardVariants}
         initial="hidden"
         animate="visible"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        style={{ willChange: 'transform' }}
       >
         {/* Background gradient */}
         <div className={`absolute inset-0 ${gradient}`} />
@@ -103,16 +104,16 @@ function FeatureCard({
         <div className="relative h-full p-4 flex flex-col items-center justify-center text-white z-10 text-center">
           {/* Ícono centrado arriba */}
           <div className="w-12 h-12 mb-2">
-            <div className="w-full h-full drop-shadow-lg">
+            <div className="w-full h-full">
               {icon}
             </div>
           </div>
           
           {/* Título centrado */}
-          <h3 className="text-base md:text-lg font-bold text-white drop-shadow-lg mb-2 leading-tight">{title}</h3>
+          <h3 className="text-base md:text-lg font-bold text-white mb-2 leading-tight">{title}</h3>
           
           {/* Descripción más compacta */}
-          <p className="text-xs text-white/80 drop-shadow-md leading-snug">{description}</p>
+          <p className="text-xs text-white/80 leading-snug">{description}</p>
         </div>
         
         {/* Static decorative elements */}
@@ -247,7 +248,7 @@ export default function HomePage() {
           variants={containerVariants}
         >
           <motion.div 
-            className="relative w-full max-w-5xl rounded-2xl border border-white/20 bg-black/40 shadow-[0_0_40px_rgba(139,92,246,0.25)] p-6 sm:p-8 lg:p-10 before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-r before:from-purple-500/5 before:via-pink-500/5 before:to-blue-500/5"
+            className="relative w-full max-w-5xl rounded-2xl border border-white/20 bg-black/40 shadow-lg p-6 sm:p-8 lg:p-10"
             variants={containerVariants}
           >
             {/* Layout de 2 columnas */}
@@ -335,11 +336,6 @@ export default function HomePage() {
 
           </motion.div>
 
-          {/* Sombra radial principal más grande (oculta en móvil) */}
-          <div className="hidden sm:block absolute -inset-24 bg-[radial-gradient(circle,_rgba(88,28,135,0.3)_0%,_rgba(17,24,39,0)_80%)] pointer-events-none"></div>
-
-          {/* Radiales hacia afuera (bordes, ocultos en móvil) */}
-          <div className="hidden sm:block absolute -inset-32 bg-[radial-gradient(circle,_rgba(17,24,39,0)_60%,_rgba(88,28,135,0.25)_100%)] opacity-50 pointer-events-none"></div>
         </motion.div>
       </motion.div>
 
