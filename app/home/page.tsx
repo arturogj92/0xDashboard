@@ -73,13 +73,12 @@ function FeatureCard({
   return (
     <Link href={href}>
       <motion.div 
-        className="relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 backdrop-blur-sm shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_35px_rgba(0,0,0,0.5)] transition-shadow duration-200"
+        className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 backdrop-blur-sm shadow-[0_10px_25px_rgba(0,0,0,0.3)]"
         variants={cardVariants}
         initial="hidden"
         animate="visible"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        style={{ willChange: 'box-shadow' }}
       >
         {/* Background gradient */}
         <div className={`absolute inset-0 ${gradient}`} />
@@ -87,23 +86,27 @@ function FeatureCard({
         {/* Simple overlay */}
         <div className="absolute inset-0 bg-black/25" />
         
+        {/* Epic shine effect on hover */}
+        <div 
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none overflow-hidden"
+        >
+          <div
+            className={`w-full h-full ${isHovered ? 'animate-shine' : ''}`}
+            style={{
+              background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)',
+              transform: 'translateX(-100%)'
+            }}
+          />
+        </div>
+        
         {/* Content centrado para formato cuadrado */}
         <div className="relative h-full p-4 flex flex-col items-center justify-center text-white z-10 text-center">
           {/* Ícono centrado arriba */}
-          <motion.div 
-            className="w-12 h-12 mb-2"
-            animate={{
-              scale: isHovered ? 1.1 : 1,
-            }}
-            transition={{
-              duration: 0.3,
-              ease: "easeOut"
-            }}
-          >
+          <div className="w-12 h-12 mb-2">
             <div className="w-full h-full drop-shadow-lg">
               {icon}
             </div>
-          </motion.div>
+          </div>
           
           {/* Título centrado */}
           <h3 className="text-base md:text-lg font-bold text-white drop-shadow-lg mb-2 leading-tight">{title}</h3>
@@ -112,7 +115,7 @@ function FeatureCard({
           <p className="text-xs text-white/80 drop-shadow-md leading-snug">{description}</p>
         </div>
         
-        {/* Static decorative elements - no animations */}
+        {/* Static decorative elements */}
         <div className="absolute top-6 right-6 w-6 h-6 rounded-full bg-white/10 z-0" />
         <div className="absolute bottom-8 left-6 w-4 h-4 rounded-full bg-white/8 z-0" />
         <div className="absolute top-1/3 left-4 w-2 h-2 rounded-full bg-purple-300/20 z-0" />
