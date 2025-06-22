@@ -73,7 +73,7 @@ function FeatureCard({
   return (
     <Link href={href}>
       <motion.div 
-        className={`relative h-48 rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 ${
+        className={`relative aspect-square rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 ${
           isHovered 
             ? 'shadow-[0_25px_50px_rgba(0,0,0,0.6),_0_0_30px_rgba(139,92,246,0.4)]' 
             : 'shadow-[0_10px_25px_rgba(0,0,0,0.3)]'
@@ -113,44 +113,29 @@ function FeatureCard({
           }}
         />
         
-        {/* Content */}
-        <div className="relative h-full p-6 flex flex-col text-white z-10">
-          {/* Header: título izquierda, ícono derecha */}
-          <div className="flex items-start justify-between mb-4">
-            <h3 className="text-xl font-bold text-white drop-shadow-lg flex-1">{title}</h3>
-            <motion.div 
-              className="w-10 h-10 ml-4 flex-shrink-0"
-              animate={{
-                scale: isHovered ? 1.5 : 1,
-                rotate: isHovered ? 12 : 0,
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 20,
-                duration: 0.6
-              }}
-            >
-              <motion.div
-                animate={{
-                  scale: [1, 1.05, 1],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="w-full h-full drop-shadow-lg"
-              >
-                {icon}
-              </motion.div>
-            </motion.div>
-          </div>
+        {/* Content centrado para formato cuadrado */}
+        <div className="relative h-full p-4 flex flex-col items-center justify-center text-white z-10 text-center">
+          {/* Ícono centrado arriba */}
+          <motion.div 
+            className="w-20 h-20 mb-4"
+            animate={{
+              scale: isHovered ? 1.1 : 1,
+            }}
+            transition={{
+              duration: 0.3,
+              ease: "easeOut"
+            }}
+          >
+            <div className="w-full h-full drop-shadow-lg">
+              {icon}
+            </div>
+          </motion.div>
           
-          {/* Description - más espacio disponible */}
-          <div className="flex-1 flex items-center">
-            <p className="text-sm text-white/95 drop-shadow-md leading-relaxed">{description}</p>
-          </div>
+          {/* Título centrado */}
+          <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-lg mb-4 leading-tight">{title}</h3>
+          
+          {/* Descripción más compacta */}
+          <p className="text-sm text-white/90 drop-shadow-md leading-relaxed max-w-xs">{description}</p>
         </div>
         
         {/* Optimized floating particles - no blur filters */}
@@ -350,42 +335,10 @@ export default function HomePage() {
             className="relative w-full max-w-6xl rounded-2xl border border-white/20 bg-black/30 backdrop-blur-2xl shadow-[0_0_40px_rgba(139,92,246,0.25)] p-6 sm:p-8 lg:p-10 flex flex-col items-center before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-r before:from-purple-500/5 before:via-pink-500/5 before:to-blue-500/5"
             variants={containerVariants}
           >
-            {/* Header */}
-            <motion.div 
-              className="text-center mb-16 w-full mt-8"
-              variants={textVariants}
-            >
-              <motion.h1 
-                className="text-3xl md:text-4xl font-bold text-white mb-4"
-                variants={textVariants}
-              >
-                {/* @ts-expect-error permitir interpolación de variables en traducción */}
-                {t('welcomeTitle', { name: user?.name || user?.username || 'Usuario' }) || `¡Hola, ${user?.name || user?.username || 'Usuario'}!`}
-              </motion.h1>
-              
-              <motion.p 
-                className="text-lg text-gray-300 max-w-2xl mx-auto mb-8"
-                variants={textVariants}
-              >
-                {t('welcomeDescription') || 'Bienvenido a tu centro de control. Desde aquí puedes acceder a todas las herramientas que necesitas para hacer crecer tu presencia digital.'}
-              </motion.p>
-
-              <motion.div 
-                className="h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ width: 96, opacity: 1 }}
-                transition={{
-                  duration: 1.5,
-                  ease: [0.4, 0, 0.2, 1],
-                  delay: 0.7
-                }}
-                style={{ willChange: 'width' }}
-              />
-            </motion.div>
 
             {/* Features Grid */}
             <motion.div 
-              className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 w-full"
+              className="grid grid-cols-2 gap-2 md:gap-3 lg:gap-4 w-full max-w-xl"
               variants={gridVariants}
             >
               {features.map((feature, index) => (
