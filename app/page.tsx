@@ -341,14 +341,29 @@ export default function LandingPage() {
           </div>
 
           <div className="container mx-auto px-4 z-10">
-            <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
+            <div className="grid lg:grid-cols-2 gap-8 items-center max-w-6xl mx-auto">
               
               {/* Text Content - Izquierda */}
               <div className="text-center lg:text-left">
+                <motion.h1
+                  className="text-3xl md:text-4xl lg:text-5xl font-bold font-manrope mb-6 leading-tight"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                  Automatiza tu Instagram y otras RR.SS y 
+                  <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">convierte seguidores en clientes</span>
+                  <br />
+                  <span className="text-xl md:text-2xl lg:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400 mt-4 block animate-pulse">
+                    💤 mientras duermes
+                  </span>
+                </motion.h1>
+
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8 }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
                   className="inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-8"
                   style={{ borderColor: 'var(--border)' }}
                 >
@@ -356,21 +371,6 @@ export default function LandingPage() {
                        style={{ backgroundColor: 'var(--secondary)' }} />
                   <span className="text-sm">🔥 +1,200 creadores ya automatizando</span>
                 </motion.div>
-
-                <motion.h1
-                  className="text-4xl md:text-5xl lg:text-6xl font-bold font-manrope mb-6 leading-tight"
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                >
-                  Automatiza Instagram y 
-                  <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">convierte seguidores en clientes</span>
-                  <br />
-                  <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400 mt-4 block animate-pulse">
-                    💤 mientras duermes
-                  </span>
-                </motion.h1>
 
                 <motion.p
                   className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl lg:max-w-none"
