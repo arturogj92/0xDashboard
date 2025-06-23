@@ -21,6 +21,206 @@ import {
 } from '@heroicons/react/24/outline';
 import { useAuth } from '@/hooks/useAuth';
 
+// 3D iPhone Carousel Component
+function AppCarousel3D() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  
+  const images = [
+    {
+      src: '/images/landing/automations.png',
+      title: 'Automatizaciones',
+      description: 'Auto-DM instantáneo'
+    },
+    {
+      src: '/images/landing/landing-configurator.png',
+      title: 'Landing Builder',
+      description: 'Páginas personalizadas'
+    },
+    {
+      src: '/images/landing/url-shortener.png',
+      title: 'URL Shortener',
+      description: 'Enlaces inteligentes'
+    },
+    {
+      src: '/images/landing/caption-generator (2).png',
+      title: 'IA Captions',
+      description: 'Contenido viral'
+    }
+  ];
+
+  // Auto-rotate images
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [images.length]);
+
+  return (
+    <div 
+      className="relative"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        setMousePosition({ x, y });
+      }}
+      style={{ perspective: '2000px' }}
+    >
+      {/* iPhone Frame */}
+      <motion.div
+        className="relative"
+        style={{ 
+          width: '300px', 
+          height: '600px',
+          transformStyle: 'preserve-3d'
+        }}
+        animate={{
+          rotateY: isHovered ? (mousePosition?.x || 0) * 0.03 : 0,
+          rotateX: isHovered ? (mousePosition?.y || 0) * -0.03 : 0,
+          scale: isHovered ? 1.05 : 1,
+          z: isHovered ? 50 : 0,
+        }}
+        transition={{ 
+          duration: 0.4,
+          ease: "easeOut"
+        }}
+      >
+        {/* iPhone shadow - MUCHO MÁS INTENSO */}
+        <motion.div
+          className="absolute inset-0 bg-black/40 rounded-[3rem] blur-2xl"
+          style={{ 
+            transform: 'translateZ(-100px) translateY(30px)',
+            transformStyle: 'preserve-3d'
+          }}
+          animate={{
+            opacity: isHovered ? 0.6 : 0.3,
+            scale: isHovered ? 1.1 : 1,
+            rotateY: isHovered ? (mousePosition?.x || 0) * 0.02 : 0,
+            rotateX: isHovered ? (mousePosition?.y || 0) * -0.02 : 0,
+          }}
+          transition={{ duration: 0.4 }}
+        />
+        
+        {/* iPhone body */}
+        <div className="relative w-full h-full bg-black rounded-[3rem] shadow-2xl border-8 border-gray-800">
+          {/* Screen container with overflow hidden */}
+          <div className="absolute inset-4 rounded-[2rem] overflow-hidden bg-black">
+            {/* Current image */}
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+              className="relative w-full h-full"
+            >
+              <Image
+                src={images[currentIndex].src}
+                alt={images[currentIndex].title}
+                fill
+                className="object-cover"
+                priority
+              />
+              
+              {/* Overlay gradient for better text readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            </motion.div>
+          </div>
+          
+          {/* iPhone notch */}
+          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-20 h-6 bg-black rounded-full"></div>
+          
+          {/* Home indicator */}
+          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-white/30 rounded-full"></div>
+        </div>
+        
+        {/* App info floating card */}
+        <motion.div
+          className="absolute -right-16 top-1/2 transform -translate-y-1/2 bg-black/80 backdrop-blur-sm border border-white/20 rounded-xl p-4 min-w-48"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ 
+            opacity: isHovered ? 1 : 0,
+            x: isHovered ? 0 : -20,
+            scale: isHovered ? 1 : 0.9
+          }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          style={{
+            transformStyle: 'preserve-3d',
+            transform: 'translateZ(50px)'
+          }}
+        >
+          <h4 className="text-white font-semibold text-lg mb-1">
+            {images[currentIndex].title}
+          </h4>
+          <p className="text-gray-400 text-sm">
+            {images[currentIndex].description}
+          </p>
+          
+          {/* Progress indicators */}
+          <div className="flex gap-1 mt-3">
+            {images.map((_, index) => (
+              <div
+                key={index}
+                className={`h-1 rounded-full transition-all duration-300 ${
+                  index === currentIndex 
+                    ? 'bg-orange-400 w-6' 
+                    : 'bg-white/20 w-2'
+                }`}
+              />
+            ))}
+          </div>
+        </motion.div>
+      </motion.div>
+      
+      {/* Floating elements around the phone - Más elegantes */}
+      <motion.div
+        className="absolute -top-6 -left-6 w-12 h-12 bg-gradient-to-r from-orange-400 to-red-500 rounded-xl shadow-lg"
+        animate={{
+          y: isHovered ? -15 : 0,
+          x: isHovered ? -10 : 0,
+          rotate: isHovered ? 45 : 0,
+          scale: isHovered ? 1.2 : 1,
+        }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <div className="w-full h-full flex items-center justify-center text-white text-xl">
+          🚀
+        </div>
+      </motion.div>
+      
+      <motion.div
+        className="absolute -bottom-8 -right-8 w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl shadow-lg"
+        animate={{
+          y: isHovered ? 20 : 0,
+          x: isHovered ? 15 : 0,
+          rotate: isHovered ? -45 : 0,
+          scale: isHovered ? 1.3 : 1,
+        }}
+        transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+      >
+        <div className="w-full h-full flex items-center justify-center text-white text-2xl">
+          ✨
+        </div>
+      </motion.div>
+      
+      <motion.div
+        className="absolute top-1/4 -right-4 w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full shadow-md"
+        animate={{
+          x: isHovered ? 12 : 0,
+          y: isHovered ? -8 : 0,
+          scale: isHovered ? 1.4 : 1,
+          rotate: isHovered ? 90 : 0,
+        }}
+        transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+      />
+    </div>
+  );
+}
+
 // Register GSAP plugins
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -135,76 +335,152 @@ export default function LandingPage() {
         </div>
 
         {/* Hero Section */}
-        <section className="hero-section relative min-h-screen flex items-center justify-center">
+        <section className="hero-section relative min-h-screen flex items-center justify-center py-20">
           <div className="hero-bg absolute inset-0 z-0">
             {/* Background container - now empty but maintains structure */}
           </div>
 
-          <div className="container mx-auto px-4 z-10 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-8"
-              style={{ borderColor: 'var(--border)' }}
-            >
-              <div className="w-2 h-2 rounded-full animate-pulse" 
-                   style={{ backgroundColor: 'var(--secondary)' }} />
-              <span className="text-sm">🔥 +1,200 creadores ya automatizando</span>
-            </motion.div>
+          <div className="container mx-auto px-4 z-10">
+            <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
+              
+              {/* Text Content - Izquierda */}
+              <div className="text-center lg:text-left">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8 }}
+                  className="inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-8"
+                  style={{ borderColor: 'var(--border)' }}
+                >
+                  <div className="w-2 h-2 rounded-full animate-pulse" 
+                       style={{ backgroundColor: 'var(--secondary)' }} />
+                  <span className="text-sm">🔥 +1,200 creadores ya automatizando</span>
+                </motion.div>
 
-            <motion.h1
-              className="text-4xl md:text-6xl lg:text-7xl font-bold font-manrope mb-6 leading-tight"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              Automatiza Instagram y 
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">convierte seguidores en clientes</span>
-              <br />
-              <span className="text-2xl md:text-3xl lg:text-4xl font-normal text-gray-300 mt-4 block">
-                mientras duermes
-              </span>
-            </motion.h1>
+                <motion.h1
+                  className="text-4xl md:text-5xl lg:text-6xl font-bold font-manrope mb-6 leading-tight"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                  Automatiza Instagram y 
+                  <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">convierte seguidores en clientes</span>
+                  <br />
+                  <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400 mt-4 block animate-pulse">
+                    💤 mientras duermes
+                  </span>
+                </motion.h1>
 
-            <motion.p
-              className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              La única plataforma que automatiza DMs de Instagram, crea tu landing y link-in-bio totalmente personalizada, 
-              acorta URLs con analytics y genera captions perfectos con IA.
-            </motion.p>
+                <motion.p
+                  className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl lg:max-w-none"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  La única plataforma que automatiza DMs de Instagram, crea tu landing y link-in-bio totalmente personalizada, 
+                  acorta URLs con analytics y genera captions perfectos con IA.
+                </motion.p>
 
-            <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
-              <Link href="/register">
-                <Button size="lg" className="h-12 px-8 text-lg font-semibold group">
-                  Empieza GRATIS
-                  <ArrowRightIcon className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <Link href="/pricing">
-                <Button size="lg" variant="outline" className="h-12 px-8 text-lg">
-                  Ver precios
-                </Button>
-              </Link>
-            </motion.div>
+                <motion.div
+                  className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.6 }}
+                >
+                  <Link href="/register">
+                    <Button size="lg" className="h-12 px-8 text-lg font-semibold group">
+                      Empieza GRATIS
+                      <ArrowRightIcon className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
+                  <Link href="/pricing">
+                    <Button size="lg" variant="outline" className="h-12 px-8 text-lg">
+                      Ver precios
+                    </Button>
+                  </Link>
+                </motion.div>
+              </div>
 
-            <motion.div
-              className="mt-16"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-            >
-              <ChevronDownIcon className="h-8 w-8 mx-auto animate-bounce" />
-            </motion.div>
+              {/* 3D iPhone Carousel - Derecha */}
+              <div className="flex justify-center lg:justify-end">
+                <motion.div
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 1, delay: 0.8 }}
+                  className="relative"
+                  style={{ perspective: '1000px' }}
+                >
+                  <AppCarousel3D />
+                </motion.div>
+              </div>
+
+            </div>
+          </div>
+
+          <motion.div
+            className="mt-16"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 1.2 }}
+          >
+            <ChevronDownIcon className="h-8 w-8 mx-auto animate-bounce" />
+          </motion.div>
+        </section>
+
+        {/* Link in Bio Section */}
+        <section className="py-20 fade-in-section">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <motion.div 
+                className="grid lg:grid-cols-2 gap-12 items-center"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <div className="lg:order-2">
+                  <div className="inline-flex items-center gap-2 bg-green-500/10 text-green-400 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                    🔗 Link in Bio
+                  </div>
+                  <h3 className="text-3xl font-bold mb-4">La página que nunca dice "no disponible"</h3>
+                  <p className="text-gray-300 mb-6 text-lg">
+                    <strong>¿Cuántas ventas has perdido por enlaces rotos o biografías limitadas?</strong> 
+                    Tu link-in-bio inteligente se adapta automáticamente, prioriza tus ofertas actuales 
+                    y guía a cada visitante hacia la conversión. Como tener un vendedor 24/7.
+                  </p>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                      <span>🎨 +50 diseños que convierten (probados con A/B testing)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                      <span>🧠 IA optimiza orden de enlaces para más ventas</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                      <span>📈 Heat maps: ve exactamente dónde hacen clic</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="lg:order-1 relative">
+                  <div className="bg-gradient-to-br from-green-900/50 to-blue-900/50 rounded-2xl p-6 border border-green-500/20">
+                    <div className="space-y-3">
+                      <div className="text-center">
+                        <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-green-400 to-blue-400 mb-3"></div>
+                        <div className="font-semibold">@miusuario</div>
+                        <div className="text-sm text-gray-400">Creador de contenido ✨</div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="bg-white/10 rounded-lg p-3 text-center text-sm">🎬 Mis videos</div>
+                        <div className="bg-white/10 rounded-lg p-3 text-center text-sm">🛍️ Mi tienda</div>
+                        <div className="bg-white/10 rounded-lg p-3 text-center text-sm">📱 Instagram</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
           </div>
         </section>
 
@@ -326,7 +602,7 @@ export default function LandingPage() {
               transition={{ duration: 0.8 }}
             >
               <h2 className="text-4xl md:text-5xl font-bold mb-4 font-manrope">
-                4 herramientas que están revolucionando Instagram
+                3 herramientas que están revolucionando Instagram
               </h2>
               <p className="text-lg text-gray-300 max-w-2xl mx-auto">
                 Mientras otros creadores pierden horas respondiendo DMs, tú generas ingresos automáticamente
@@ -386,57 +662,7 @@ export default function LandingPage() {
                 </div>
               </motion.div>
 
-              {/* Feature 2: Link in Bio */}
-              <motion.div 
-                className="grid lg:grid-cols-2 gap-12 items-center"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-              >
-                <div className="lg:order-2">
-                  <div className="inline-flex items-center gap-2 bg-green-500/10 text-green-400 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                    🔗 Link in Bio
-                  </div>
-                  <h3 className="text-3xl font-bold mb-4">La página que nunca dice "no disponible"</h3>
-                  <p className="text-gray-300 mb-6 text-lg">
-                    <strong>¿Cuántas ventas has perdido por enlaces rotos o biografías limitadas?</strong> 
-                    Tu link-in-bio inteligente se adapta automáticamente, prioriza tus ofertas actuales 
-                    y guía a cada visitante hacia la conversión. Como tener un vendedor 24/7.
-                  </p>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                      <span>🎨 +50 diseños que convierten (probados con A/B testing)</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                      <span>🧠 IA optimiza orden de enlaces para más ventas</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                      <span>📈 Heat maps: ve exactamente dónde hacen clic</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="lg:order-1 relative">
-                  <div className="bg-gradient-to-br from-green-900/50 to-blue-900/50 rounded-2xl p-6 border border-green-500/20">
-                    <div className="space-y-3">
-                      <div className="text-center">
-                        <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-green-400 to-blue-400 mb-3"></div>
-                        <div className="font-semibold">@miusuario</div>
-                        <div className="text-sm text-gray-400">Creador de contenido ✨</div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="bg-white/10 rounded-lg p-3 text-center text-sm">🎬 Mis videos</div>
-                        <div className="bg-white/10 rounded-lg p-3 text-center text-sm">🛍️ Mi tienda</div>
-                        <div className="bg-white/10 rounded-lg p-3 text-center text-sm">📱 Instagram</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Feature 3: Short URLs */}
+              {/* Feature 2: Short URLs */}
               <motion.div 
                 className="grid lg:grid-cols-2 gap-12 items-center"
                 initial={{ opacity: 0, y: 50 }}
@@ -488,7 +714,7 @@ export default function LandingPage() {
                 </div>
               </motion.div>
 
-              {/* Feature 4: AI Captions */}
+              {/* Feature 3: AI Captions */}
               <motion.div 
                 className="grid lg:grid-cols-2 gap-12 items-center"
                 initial={{ opacity: 0, y: 50 }}
