@@ -90,7 +90,7 @@ function AppCarousel3D() {
           ease: "easeOut"
         }}
       >
-        {/* iPhone shadow - MUCHO MÁS INTENSO */}
+        {/* iPhone shadow - Fija, sin seguir el mouse */}
         <motion.div
           className="absolute inset-0 bg-black/40 rounded-[3rem] blur-2xl"
           style={{ 
@@ -100,8 +100,6 @@ function AppCarousel3D() {
           animate={{
             opacity: isHovered ? 0.6 : 0.3,
             scale: isHovered ? 1.1 : 1,
-            rotateY: isHovered ? (mousePosition?.x || 0) * 0.02 : 0,
-            rotateX: isHovered ? (mousePosition?.y || 0) * -0.02 : 0,
           }}
           transition={{ duration: 0.4 }}
         />
@@ -138,20 +136,16 @@ function AppCarousel3D() {
           <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-white/30 rounded-full"></div>
         </div>
         
-        {/* App info floating card */}
+        {/* App info floating card - Siempre visible */}
         <motion.div
           className="absolute -right-16 top-1/2 transform -translate-y-1/2 bg-black/80 backdrop-blur-sm border border-white/20 rounded-xl p-4 min-w-48"
           initial={{ opacity: 0, x: -20 }}
           animate={{ 
-            opacity: isHovered ? 1 : 0,
-            x: isHovered ? 0 : -20,
-            scale: isHovered ? 1 : 0.9
+            opacity: 1,
+            x: 0,
+            scale: 1
           }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-          style={{
-            transformStyle: 'preserve-3d',
-            transform: 'translateZ(50px)'
-          }}
+          transition={{ duration: 0.6, delay: 0.8 }}
         >
           <h4 className="text-white font-semibold text-lg mb-1">
             {images[currentIndex].title}
@@ -176,47 +170,106 @@ function AppCarousel3D() {
         </motion.div>
       </motion.div>
       
-      {/* Floating elements around the phone - Más elegantes */}
+      {/* Floating elements around the phone - GLOWUP VERSION */}
+      
+      {/* Rocket Badge - Más moderno */}
       <motion.div
-        className="absolute -top-6 -left-6 w-12 h-12 bg-gradient-to-r from-orange-400 to-red-500 rounded-xl shadow-lg"
+        className="absolute -top-8 -left-8 group cursor-pointer"
         animate={{
           y: isHovered ? -15 : 0,
           x: isHovered ? -10 : 0,
-          rotate: isHovered ? 45 : 0,
-          scale: isHovered ? 1.2 : 1,
+          rotate: isHovered ? 12 : 0,
+          scale: isHovered ? 1.1 : 1,
         }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
-        <div className="w-full h-full flex items-center justify-center text-white text-xl">
-          🚀
+        <div className="relative">
+          {/* Glow effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-red-500 rounded-full blur-md opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          
+          {/* Main badge - Redondito como el sparkle */}
+          <div className="relative w-12 h-12 bg-gradient-to-r from-orange-400 to-red-500 rounded-full p-0.5">
+            <div className="w-full h-full bg-black rounded-full flex items-center justify-center border border-white/10">
+              <div className="text-white text-lg">🚀</div>
+            </div>
+          </div>
         </div>
       </motion.div>
       
+      {/* Sparkle Orb - Más sofisticado */}
       <motion.div
-        className="absolute -bottom-8 -right-8 w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl shadow-lg"
+        className="absolute -bottom-8 -right-8 group cursor-pointer"
         animate={{
           y: isHovered ? 20 : 0,
           x: isHovered ? 15 : 0,
-          rotate: isHovered ? -45 : 0,
-          scale: isHovered ? 1.3 : 1,
+          rotate: isHovered ? -12 : 0,
+          scale: isHovered ? 1.2 : 1,
         }}
         transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
       >
-        <div className="w-full h-full flex items-center justify-center text-white text-2xl">
-          ✨
+        <div className="relative">
+          {/* Animated glow rings */}
+          <motion.div 
+            className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-lg opacity-40"
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          />
+          
+          {/* Inner sparkle container */}
+          <div className="relative w-16 h-16 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 rounded-full p-0.5">
+            <div className="w-full h-full bg-black rounded-full flex items-center justify-center border border-white/10">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                className="text-2xl"
+              >
+                ✨
+              </motion.div>
+            </div>
+          </div>
+          
+          {/* Mini floating sparks */}
+          <motion.div 
+            className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full"
+            animate={{ scale: [0, 1, 0], opacity: [0, 1, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
+          />
+          <motion.div 
+            className="absolute -bottom-1 -left-1 w-1.5 h-1.5 bg-pink-400 rounded-full"
+            animate={{ scale: [0, 1, 0], opacity: [0, 1, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, delay: 0.7 }}
+          />
         </div>
       </motion.div>
       
+      {/* Status Indicator Dot - Más tech */}
       <motion.div
-        className="absolute top-1/4 -right-4 w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full shadow-md"
+        className="absolute top-1/4 -right-4 group"
         animate={{
           x: isHovered ? 12 : 0,
           y: isHovered ? -8 : 0,
-          scale: isHovered ? 1.4 : 1,
-          rotate: isHovered ? 90 : 0,
+          scale: isHovered ? 1.3 : 1,
         }}
         transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-      />
+      >
+        <div className="relative">
+          {/* Pulsing ring */}
+          <motion.div 
+            className="absolute inset-0 w-8 h-8 border-2 border-green-400 rounded-full"
+            animate={{ scale: [1, 1.5], opacity: [0.8, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+          />
+          
+          {/* Core dot */}
+          <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center border-2 border-white/20 shadow-lg">
+            <motion.div 
+              className="w-2 h-2 bg-white rounded-full"
+              animate={{ scale: [1, 0.7, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 }
@@ -224,6 +277,94 @@ function AppCarousel3D() {
 // Register GSAP plugins
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
+}
+
+// Componente de orbes parallax
+function ParallaxOrbs() {
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Calcular opacidad basada en el scroll - desaparecen cuando se pasa el hero
+  const heroHeight = typeof window !== 'undefined' ? window.innerHeight : 1000;
+  const opacity = Math.max(0, 1 - (scrollY / heroHeight));
+
+  return (
+    <div 
+      className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden"
+      style={{ opacity }}
+    >
+      {/* Orbe 1 - Naranja-Púrpura - Velocidad lenta */}
+      <motion.div
+        className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-r from-orange-400/20 to-purple-500/20 rounded-full blur-xl"
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+        style={{
+          y: scrollY * 0.3,
+        }}
+      />
+      
+      {/* Orbe 2 - Verde-Azul - Velocidad media */}
+      <motion.div
+        className="absolute top-3/4 right-1/3 w-24 h-24 bg-gradient-to-r from-green-400/15 to-blue-500/15 rounded-full blur-xl"
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
+        style={{
+          y: scrollY * 0.5,
+        }}
+      />
+      
+      {/* Orbe 3 - Púrpura-Rosa - Velocidad rápida */}
+      <motion.div
+        className="absolute top-1/2 right-1/4 w-16 h-16 bg-gradient-to-r from-purple-400/25 to-pink-500/25 rounded-full blur-lg"
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
+        style={{
+          y: scrollY * 0.7,
+        }}
+      />
+      
+      {/* Orbe 4 - Azul-Cyan - Velocidad muy lenta */}
+      <motion.div
+        className="absolute top-1/3 left-1/6 w-20 h-20 bg-gradient-to-r from-blue-400/20 to-cyan-500/20 rounded-full blur-xl"
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.5, delay: 0.1, ease: "easeOut" }}
+        style={{
+          y: scrollY * 0.2,
+        }}
+      />
+      
+      {/* Orbe 5 - Amarillo-Naranja - Velocidad media-rápida */}
+      <motion.div
+        className="absolute bottom-1/4 left-1/3 w-28 h-28 bg-gradient-to-r from-yellow-400/15 to-orange-500/15 rounded-full blur-xl"
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.3, delay: 0.4, ease: "easeOut" }}
+        style={{
+          y: scrollY * 0.6,
+        }}
+      />
+      
+      {/* Orbe 6 - Rosa-Rojo - Velocidad máxima */}
+      <motion.div
+        className="absolute top-1/3 right-1/6 w-12 h-12 bg-gradient-to-r from-pink-400/30 to-red-500/30 rounded-full blur-lg"
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.9, delay: 0.7, ease: "easeOut" }}
+        style={{
+          y: scrollY * 0.8,
+        }}
+      />
+    </div>
+  );
 }
 
 export default function LandingPage() {
@@ -334,10 +475,12 @@ export default function LandingPage() {
                }} />
         </div>
 
+        {/* Orbes parallax de fondo - Pantalla completa */}
+        <ParallaxOrbs />
+        
         {/* Hero Section */}
         <section className="hero-section relative min-h-screen flex items-center justify-center py-20">
           <div className="hero-bg absolute inset-0 z-0">
-            {/* Background container - now empty but maintains structure */}
           </div>
 
           <div className="container mx-auto px-4 z-10">
@@ -418,14 +561,6 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <motion.div
-            className="mt-16"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
-          >
-            <ChevronDownIcon className="h-8 w-8 mx-auto animate-bounce" />
-          </motion.div>
         </section>
 
         {/* Link in Bio Section */}
