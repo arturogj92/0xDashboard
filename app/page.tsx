@@ -931,92 +931,387 @@ export default function LandingPage() {
               {/* Ticker de actividad en tiempo real */}
               <ActivityTicker />
               
-              {/* Logos de confianza */}
+              {/* Trust Indicators - GLOWUP ÉPICO */}
               <motion.div 
-                className="flex flex-wrap justify-center items-center gap-12 mt-10"
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
+                className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 max-w-4xl mx-auto"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
               >
-                <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-xl flex items-center justify-center">
-                    <CheckIcon className="h-6 w-6 text-green-400" />
+                {/* Instagram Compatible - EPIC CARD */}
+                <motion.div 
+                  className="relative group"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                >
+                  {/* Glow effect */}
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+                  
+                  <div className="relative bg-gradient-to-br from-green-900/50 to-emerald-900/50 backdrop-blur-xl rounded-2xl p-6 border border-green-500/20 group-hover:border-green-400/40 transition-all duration-300">
+                    {/* Floating icon */}
+                    <motion.div 
+                      className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-green-500/25"
+                      animate={{ 
+                        rotate: [0, 5, -5, 0],
+                        scale: [1, 1.05, 1]
+                      }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                    >
+                      <CheckIcon className="h-8 w-8 text-white" />
+                    </motion.div>
+                    
+                    <h4 className="text-lg font-bold text-white mb-1">100% Compatible</h4>
+                    <p className="text-sm text-gray-300">Instagram API oficial</p>
+                    
+                    {/* Spacer para mantener altura consistente */}
+                    <div className="h-7"></div>
                   </div>
-                  <div className="text-sm font-medium text-white">100% compatible</div>
-                  <div className="text-xs text-gray-400">con Instagram</div>
-                </div>
-                <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-yellow-500/20 to-orange-600/20 rounded-xl flex items-center justify-center">
-                    <StarIcon className="h-6 w-6 text-yellow-400" />
+                </motion.div>
+
+                {/* Reviews - EPIC CARD */}
+                <motion.div 
+                  className="relative group"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                >
+                  {/* Glow effect */}
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+                  
+                  <div className="relative bg-gradient-to-br from-yellow-900/50 to-orange-900/50 backdrop-blur-xl rounded-2xl p-6 border border-yellow-500/20 group-hover:border-yellow-400/40 transition-all duration-300">
+                    {/* Floating icon */}
+                    <motion.div 
+                      className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-yellow-500/25"
+                      animate={{ 
+                        rotate: [0, -5, 5, 0],
+                        scale: [1, 1.05, 1]
+                      }}
+                      transition={{ duration: 3, repeat: Infinity, delay: 0.3 }}
+                    >
+                      <StarIcon className="h-8 w-8 text-white" />
+                    </motion.div>
+                    
+                    <h4 className="text-lg font-bold text-white mb-1">4.9/5 Estrellas</h4>
+                    <p className="text-sm text-gray-300">+1,200 creadores felices</p>
+                    
+                    {/* Stars animation */}
+                    <div className="flex justify-center gap-1 mt-2">
+                      {[...Array(5)].map((_, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, scale: 0 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.5 + i * 0.1 }}
+                        >
+                          <StarIcon className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
-                  <div className="text-sm font-medium text-white">4.9/5 estrellas</div>
-                  <div className="text-xs text-gray-400">+1,200 reviews</div>
-                </div>
-                <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-blue-500/20 to-cyan-600/20 rounded-xl flex items-center justify-center">
-                    <BoltIcon className="h-6 w-6 text-blue-400" />
+                </motion.div>
+
+                {/* Uptime - EPIC CARD */}
+                <motion.div 
+                  className="relative group"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                >
+                  {/* Glow effect */}
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+                  
+                  <div className="relative bg-gradient-to-br from-blue-900/50 to-cyan-900/50 backdrop-blur-xl rounded-2xl p-6 border border-blue-500/20 group-hover:border-blue-400/40 transition-all duration-300">
+                    {/* Floating icon */}
+                    <motion.div 
+                      className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/25"
+                      animate={{ 
+                        rotate: [0, 5, -5, 0],
+                        scale: [1, 1.05, 1]
+                      }}
+                      transition={{ duration: 3, repeat: Infinity, delay: 0.6 }}
+                    >
+                      <BoltIcon className="h-8 w-8 text-white" />
+                    </motion.div>
+                    
+                    <h4 className="text-lg font-bold text-white mb-1">99.9% Uptime</h4>
+                    <p className="text-sm text-gray-300">Siempre funcionando</p>
+                    
+                    {/* Live indicator */}
+                    <div className="flex items-center justify-center gap-2 mt-3">
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                      <span className="text-xs text-green-400 font-medium">LIVE NOW</span>
+                    </div>
                   </div>
-                  <div className="text-sm font-medium text-white">99.9% uptime</div>
-                  <div className="text-xs text-gray-400">garantizado</div>
-                </div>
+                </motion.div>
               </motion.div>
             </motion.div>
           </div>
         </section>
 
-        {/* Link in Bio Section */}
-        <section className="py-20 fade-in-section">
-          <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto">
+
+        {/* Problem/Solution Section - EPIC DESIGN */}
+        <section className="relative py-32 overflow-hidden">
+          {/* Fondo épico con gradientes y efectos */}
+          <div className="absolute inset-0 pointer-events-none">
+            {/* Gradient mesh background */}
+            <div className="absolute inset-0 opacity-30">
+              <div className="absolute top-0 left-1/4 w-96 h-96 bg-red-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+              <div className="absolute top-0 right-1/4 w-96 h-96 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }}></div>
+              <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '4s' }}></div>
+            </div>
+            
+            {/* Grid pattern overlay */}
+            <div className="absolute inset-0 opacity-10"
+                 style={{
+                   backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 1px)`,
+                   backgroundSize: '50px 50px'
+                 }}
+            />
+          </div>
+
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.div 
+              className="max-w-6xl mx-auto"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 1 }}
+            >
+              {/* Título épico con animación */}
               <motion.div 
-                className="grid lg:grid-cols-2 gap-12 items-center"
-                initial={{ opacity: 0, y: 50 }}
+                className="text-center mb-20"
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
               >
-                <div className="lg:order-2">
-                  <div className="inline-flex items-center gap-2 bg-green-500/10 text-green-400 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                    🔗 Link in Bio
-                  </div>
-                  <h3 className="text-3xl font-bold mb-4">La página que nunca dice "no disponible"</h3>
-                  <p className="text-gray-300 mb-6 text-lg">
-                    <strong>¿Cuántas ventas has perdido por enlaces rotos o biografías limitadas?</strong> 
-                    Tu link-in-bio inteligente se adapta automáticamente, prioriza tus ofertas actuales 
-                    y guía a cada visitante hacia la conversión. Como tener un vendedor 24/7.
-                  </p>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                      <span>🎨 +50 diseños que convierten (probados con A/B testing)</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                      <span>🧠 IA optimiza orden de enlaces para más ventas</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                      <span>📈 Heat maps: ve exactamente dónde hacen clic</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="lg:order-1 relative">
-                  <div className="bg-gradient-to-br from-green-900/50 to-blue-900/50 rounded-2xl p-6 border border-green-500/20">
-                    <div className="space-y-3">
-                      <div className="text-center">
-                        <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-green-400 to-blue-400 mb-3"></div>
-                        <div className="font-semibold">@miusuario</div>
-                        <div className="text-sm text-gray-400">Creador de contenido ✨</div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="bg-white/10 rounded-lg p-3 text-center text-sm">🎬 Mis videos</div>
-                        <div className="bg-white/10 rounded-lg p-3 text-center text-sm">🛍️ Mi tienda</div>
-                        <div className="bg-white/10 rounded-lg p-3 text-center text-sm">📱 Instagram</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <motion.h2 
+                  className="text-5xl md:text-7xl font-black mb-6 leading-tight"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                  El 93% de creadores <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">fracasa</span>
+                  <br />
+                  <span className="text-3xl md:text-5xl text-gray-400">por hacer TODO manual</span>
+                </motion.h2>
+                
+                <motion.p 
+                  className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  Mientras respondes DMs, tu competencia cierra 5 ventas automáticas
+                </motion.p>
               </motion.div>
-            </div>
+
+              {/* Split screen comparison - BRUTAL */}
+              <div className="grid lg:grid-cols-2 gap-8 relative">
+                {/* Línea divisoria animada */}
+                <div className="absolute left-1/2 top-0 bottom-0 w-px hidden lg:block">
+                  <motion.div 
+                    className="h-full bg-gradient-to-b from-transparent via-red-500 to-transparent"
+                    initial={{ scaleY: 0 }}
+                    whileInView={{ scaleY: 1 }}
+                    transition={{ duration: 1.5 }}
+                  />
+                </div>
+
+                {/* Lado izquierdo - El problema (Oscuro) */}
+                <motion.div 
+                  className="relative"
+                  initial={{ opacity: 0, x: -50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8 }}
+                >
+                  <div className="absolute -inset-4 bg-gradient-to-r from-red-600/20 to-orange-600/20 rounded-3xl blur-2xl"></div>
+                  <div className="relative bg-black/60 backdrop-blur-xl rounded-3xl p-8 border border-red-500/20">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center">
+                        <XMarkIcon className="h-6 w-6 text-red-500" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-red-400">Sin Creator0x</h3>
+                    </div>
+
+                    {/* Pain points con animaciones */}
+                    <div className="space-y-6">
+                      <motion.div 
+                        className="flex items-start gap-4"
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2 animate-pulse"></div>
+                        <div>
+                          <p className="text-white font-semibold">4-6 horas diarias respondiendo DMs</p>
+                          <p className="text-gray-400 text-sm">= €3,000/mes en tiempo perdido</p>
+                        </div>
+                      </motion.div>
+
+                      <motion.div 
+                        className="flex items-start gap-4"
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3 }}
+                      >
+                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2 animate-pulse"></div>
+                        <div>
+                          <p className="text-white font-semibold">67% de ventas perdidas</p>
+                          <p className="text-gray-400 text-sm">Por no responder en menos de 30 segundos</p>
+                        </div>
+                      </motion.div>
+
+                      <motion.div 
+                        className="flex items-start gap-4"
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.4 }}
+                      >
+                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2 animate-pulse"></div>
+                        <div>
+                          <p className="text-white font-semibold">Enlaces rotos cada semana</p>
+                          <p className="text-gray-400 text-sm">"Link in bio no funciona" x100</p>
+                        </div>
+                      </motion.div>
+
+                      <motion.div 
+                        className="flex items-start gap-4"
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.5 }}
+                      >
+                        <div className="w-2 h-2 bg-red-500 rounded-full mt-2 animate-pulse"></div>
+                        <div>
+                          <p className="text-white font-semibold">2h creando 1 caption</p>
+                          <p className="text-gray-400 text-sm">Que ni siquiera viraliza</p>
+                        </div>
+                      </motion.div>
+                    </div>
+
+                    {/* Resultado final */}
+                    <motion.div 
+                      className="mt-8 p-4 bg-red-500/10 rounded-2xl border border-red-500/30"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.6 }}
+                    >
+                      <p className="text-center text-red-400 font-bold">
+                        Resultado: Burnout + €0 en el banco
+                      </p>
+                    </motion.div>
+                  </div>
+                </motion.div>
+
+                {/* Lado derecho - La solución (Brillante) */}
+                <motion.div 
+                  className="relative"
+                  initial={{ opacity: 0, x: 50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8 }}
+                >
+                  <div className="absolute -inset-4 bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-3xl blur-2xl"></div>
+                  <div className="relative bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl rounded-3xl p-8 border border-green-500/30">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                        <CheckIcon className="h-6 w-6 text-green-500" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-green-400">Con Creator0x</h3>
+                    </div>
+
+                    {/* Benefits con animaciones */}
+                    <div className="space-y-6">
+                      <motion.div 
+                        className="flex items-start gap-4"
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 animate-pulse"></div>
+                        <div>
+                          <p className="text-white font-semibold">DMs 100% automáticos</p>
+                          <p className="text-gray-300 text-sm">Vendes mientras duermes 💤</p>
+                        </div>
+                      </motion.div>
+
+                      <motion.div 
+                        className="flex items-start gap-4"
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3 }}
+                      >
+                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 animate-pulse"></div>
+                        <div>
+                          <p className="text-white font-semibold">+427% más conversiones</p>
+                          <p className="text-gray-300 text-sm">Respuesta en menos de 3 segundos</p>
+                        </div>
+                      </motion.div>
+
+                      <motion.div 
+                        className="flex items-start gap-4"
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.4 }}
+                      >
+                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 animate-pulse"></div>
+                        <div>
+                          <p className="text-white font-semibold">Links que nunca fallan</p>
+                          <p className="text-gray-300 text-sm">Con tu propio dominio pro</p>
+                        </div>
+                      </motion.div>
+
+                      <motion.div 
+                        className="flex items-start gap-4"
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.5 }}
+                      >
+                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 animate-pulse"></div>
+                        <div>
+                          <p className="text-white font-semibold">Captions virales en 10s</p>
+                          <p className="text-gray-300 text-sm">IA entrenada con +10M posts</p>
+                        </div>
+                      </motion.div>
+                    </div>
+
+                    {/* Resultado final */}
+                    <motion.div 
+                      className="mt-8 p-4 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-2xl border border-green-500/40"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.6 }}
+                    >
+                      <p className="text-center text-green-400 font-bold">
+                        Resultado: 6 cifras + Vida libre 🚀
+                      </p>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* CTA con urgencia */}
+              <motion.div 
+                className="text-center mt-16"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                <p className="text-2xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-pink-400">
+                  ¿Qué prefieres? ¿Seguir perdiendo o empezar a ganar?
+                </p>
+                <Link href="/register">
+                  <Button size="lg" className="h-14 px-10 text-xl font-bold group">
+                    Automatiza AHORA (gratis)
+                    <ArrowRightIcon className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+                <p className="text-sm text-gray-400 mt-4">
+                  ⚡ 1,247 creadores empezaron esta semana
+                </p>
+              </motion.div>
+            </motion.div>
           </div>
         </section>
 
