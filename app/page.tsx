@@ -242,9 +242,9 @@ function AppCarousel3D() {
               animate={{ x: -currentIndex * 100 + '%' }}
               transition={{ 
                 type: "spring",
-                stiffness: 300,
-                damping: 30,
-                duration: 0.6
+                stiffness: 200,
+                damping: 35,
+                duration: 0.9
               }}
             >
               <div className="absolute inset-0 flex">
