@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -153,7 +153,7 @@ function ActivityTicker() {
 function AppCarousel3D() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const containerRef = useRef(null);
   
   const images = [
     {
@@ -182,54 +182,50 @@ function AppCarousel3D() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 3500);
+    }, 4500);
     return () => clearInterval(interval);
   }, [images.length]);
 
+  // Handle hover
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleMouseEnter = () => setIsHovered(true);
+    const handleMouseLeave = () => setIsHovered(false);
+
+    container.addEventListener('mouseenter', handleMouseEnter);
+    container.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      container.removeEventListener('mouseenter', handleMouseEnter);
+      container.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, []);
+
   return (
-    <div 
-      className="relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onMouseMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        setMousePosition({ x, y });
-      }}
-      style={{ perspective: '2000px' }}
-    >
-      {/* iPhone Frame */}
+    <div ref={containerRef} className="relative">
+      {/* iPhone Frame - Simplified 3D */}
       <motion.div
         className="relative"
         style={{ 
           width: '300px', 
           height: '600px',
-          transformStyle: 'preserve-3d'
         }}
         animate={{
-          rotateY: isHovered ? (mousePosition?.x || 0) * 0.03 : 0,
-          rotateX: isHovered ? (mousePosition?.y || 0) * -0.03 : 0,
-          scale: isHovered ? 1.05 : 1,
-          z: isHovered ? 50 : 0,
+          scale: isHovered ? 1.02 : 1,
         }}
         transition={{ 
-          duration: 0.4,
+          duration: 0.2,
           ease: "easeOut"
         }}
       >
-        {/* iPhone shadow - Fija, sin seguir el mouse */}
-        <motion.div
-          className="absolute inset-0 bg-black/40 rounded-[3rem] blur-2xl"
+        {/* iPhone shadow - Static and simple */}
+        <div
+          className="absolute inset-0 bg-black/30 rounded-[3rem] blur-2xl"
           style={{ 
-            transform: 'translateZ(-100px) translateY(30px)',
-            transformStyle: 'preserve-3d'
+            transform: 'translateY(20px)',
           }}
-          animate={{
-            opacity: isHovered ? 0.6 : 0.3,
-            scale: isHovered ? 1.1 : 1,
-          }}
-          transition={{ duration: 0.4 }}
         />
         
         {/* iPhone body */}
@@ -241,10 +237,9 @@ function AppCarousel3D() {
               className="relative w-full h-full"
               animate={{ x: -currentIndex * 100 + '%' }}
               transition={{ 
-                type: "spring",
-                stiffness: 200,
-                damping: 35,
-                duration: 0.9
+                type: "tween",
+                duration: 0.6,
+                ease: "easeInOut"
               }}
             >
               <div className="absolute inset-0 flex">
@@ -300,7 +295,7 @@ function AppCarousel3D() {
             {images.map((_, index) => (
               <div
                 key={index}
-                className={`h-1 rounded-full transition-all duration-300 ${
+                className={`h-1 rounded-full ${
                   index === currentIndex 
                     ? 'bg-orange-400 w-6' 
                     : 'bg-white/20 w-2'
@@ -383,34 +378,6 @@ function AppCarousel3D() {
         </div>
       </motion.div>
       
-      {/* Status Indicator Dot - Más tech */}
-      <motion.div
-        className="absolute top-1/4 -right-4 group"
-        animate={{
-          x: isHovered ? 12 : 0,
-          y: isHovered ? -8 : 0,
-          scale: isHovered ? 1.3 : 1,
-        }}
-        transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-      >
-        <div className="relative">
-          {/* Pulsing ring */}
-          <motion.div 
-            className="absolute inset-0 w-8 h-8 border-2 border-green-400 rounded-full"
-            animate={{ scale: [1, 1.5], opacity: [0.8, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
-          />
-          
-          {/* Core dot */}
-          <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center border-2 border-white/20 shadow-lg">
-            <motion.div 
-              className="w-2 h-2 bg-white rounded-full"
-              animate={{ scale: [1, 0.7, 1] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </div>
-        </div>
-      </motion.div>
     </div>
   );
 }
@@ -511,7 +478,6 @@ function ParallaxOrbs() {
 export default function LandingPage() {
   const { user } = useAuth();
   const [activeFAQ, setActiveFAQ] = useState<number | null>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     // GSAP animations on scroll
@@ -556,14 +522,6 @@ export default function LandingPage() {
     return () => ctx.revert();
   }, []);
 
-  // Mouse move handler for gradient effect
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
 
   return (
     <>
@@ -594,13 +552,6 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Dynamic gradient background matching app colors */}
-        <div 
-          className="fixed inset-0 opacity-20 pointer-events-none z-0"
-          style={{
-            background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, var(--primary), transparent 50%)`
-          }}
-        />
 
         {/* Global color gradients - extends across entire page */}
         <div className="fixed inset-0 pointer-events-none z-0">
@@ -615,6 +566,22 @@ export default function LandingPage() {
                    rgba(127, 90, 240, 0.08) 100%)`
                }} />
         </div>
+        
+        {/* Custom CSS for gradient animation */}
+        <style jsx global>{`
+          @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+          .animate-gradient {
+            background-size: 200% 200%;
+            animation: gradient-shift 3s ease infinite;
+          }
+          .perspective-1000 {
+            perspective: 1000px;
+          }
+        `}</style>
 
         {/* Orbes parallax de fondo - Pantalla completa */}
         <ParallaxOrbs />
@@ -671,7 +638,7 @@ export default function LandingPage() {
                   <Link href="/register">
                     <Button size="lg" className="h-12 px-8 text-lg font-semibold group">
                       Empieza GRATIS
-                      <ArrowRightIcon className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRightIcon className="ml-2 h-5 w-5" />
                     </Button>
                   </Link>
                   <Link href="/pricing">
@@ -700,30 +667,44 @@ export default function LandingPage() {
 
         </section>
 
-        {/* Social Proof Bar - Section 2 */}
-        <section className="relative py-16 overflow-hidden">
-          {/* Background gradient effect */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent pointer-events-none" />
+        {/* Social Proof Bar - Section 2 - GLOW UP VERSION */}
+        <section className="relative py-20">
+          {/* Epic background effects - Ultra smooth transition */}
+          <div className="absolute -top-64 -bottom-96 left-0 right-0 pointer-events-none">
+            {/* Animated gradient orbs - Even larger and more diffused */}
+            <div className="absolute top-1/2 left-1/4 w-[800px] h-[800px] bg-gradient-to-br from-orange-500/10 to-transparent rounded-full blur-[150px] animate-pulse" />
+            <div className="absolute top-1/2 right-1/4 w-[800px] h-[800px] bg-gradient-to-bl from-purple-500/10 to-transparent rounded-full blur-[150px] animate-pulse" style={{ animationDelay: '1s' }} />
+            
+            {/* Multiple gradient layers for ultra smooth fade */}
+            <div className="absolute -bottom-32 left-0 right-0 h-96 bg-gradient-to-t from-transparent via-transparent to-orange-500/5 blur-[100px]" />
+            <div className="absolute -bottom-48 left-0 right-0 h-[500px] bg-gradient-to-t from-transparent to-purple-500/5 blur-[120px]" />
+          </div>
           
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-4 relative z-10">
             <motion.div 
-              className="max-w-6xl mx-auto"
+              className="max-w-7xl mx-auto"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              {/* Hook emotivo */}
-              <div className="text-center mb-12">
-                <motion.h3 
-                  className="text-2xl md:text-3xl font-bold mb-4"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
+              {/* Epic title with glow */}
+              <div className="text-center mb-16">
+                <motion.div
+                  className="inline-block relative"
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  whileInView={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
                 >
-                  Mientras tú duermes, <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">ellos venden</span>
-                </motion.h3>
+                  {/* Glow effect behind title */}
+                  <div className="absolute inset-0 blur-3xl bg-gradient-to-r from-orange-400/40 to-purple-400/40 -z-10" />
+                  
+                  <h3 className="text-3xl md:text-5xl font-black mb-6 tracking-tight">
+                    Mientras tú duermes, <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 animate-gradient">ellos venden</span>
+                  </h3>
+                </motion.div>
+                
                 <motion.p 
-                  className="text-gray-300 text-lg"
+                  className="text-gray-200 text-xl max-w-3xl mx-auto"
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.3 }}
@@ -732,81 +713,217 @@ export default function LandingPage() {
                 </motion.p>
               </div>
               
-              {/* Metrics Cards con más diseño */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-                {/* DMs Automatizados */}
+              {/* Metrics Cards - ULTRA GLOW UP VERSION */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                {/* DMs Automatizados - ULTRA */}
                 <motion.div
                   className="relative group"
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1.2, delay: 0.2 }}
-                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-orange-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
-                  <div className="relative bg-black/40 backdrop-blur-sm border border-orange-500/20 rounded-2xl p-6 text-center hover:border-orange-400/40 transition-all">
-                    <div className="text-3xl md:text-4xl font-bold text-orange-400 mb-2">2.1M+</div>
-                    <div className="text-sm text-gray-300 mb-3">DMs enviados</div>
-                    <div className="text-xs text-gray-500">sin spam ni baneos</div>
-                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center text-xs">
+                  {/* Reduced glow */}
+                  {/* Simple static glow */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-orange-600/20 to-pink-600/20 rounded-3xl blur-xl" />
+                  
+                  <div className="relative h-full rounded-3xl border border-white/10 overflow-hidden">
+                    {/* Background layer */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 backdrop-blur-xl rounded-3xl"></div>
+                    
+                    {/* Blobs layer - on top of background */}
+                    <div className="absolute inset-0 z-10">
+                      <div className="absolute top-4 right-4 w-40 h-40 bg-gradient-to-br from-orange-400 to-pink-500 rounded-full blur-3xl opacity-30"></div>
+                      <div className="absolute bottom-4 left-4 w-32 h-32 bg-gradient-to-br from-red-400 to-orange-500 rounded-full blur-2xl opacity-25"></div>
+                    </div>
+                    
+                    {/* Content layer - on top of everything */}
+                    <div className="relative z-20 p-8">
+                      {/* Blobs DENTRO del contenido */}
+                      <div className="absolute -top-4 -right-4 w-24 h-24 bg-orange-400/20 rounded-full blur-2xl"></div>
+                      <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-pink-400/20 rounded-full blur-xl"></div>
+                      
+                      <motion.div 
+                        className="text-5xl md:text-6xl font-black mb-3 relative z-10"
+                        style={{
+                          background: "linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ea580c 100%)",
+                          WebkitBackgroundClip: "text",
+                          WebkitTextFillColor: "transparent",
+                          filter: "drop-shadow(0 0 20px rgba(251, 146, 60, 0.5))"
+                        }}
+                      >
+                        2.1M+
+                      </motion.div>
+                      <div className="text-lg font-semibold text-white mb-2 relative z-10">DMs enviados</div>
+                      <div className="text-sm text-orange-300/80 relative z-10">sin spam ni baneos</div>
+                    </div>
+                    
+                    {/* Floating badge */}
+                    <motion.div 
+                      className="absolute -top-3 -right-3 w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center text-xl shadow-2xl shadow-orange-500/50"
+                      animate={{ 
+                        rotate: [0, 10, -10, 0],
+                        scale: [1, 1.1, 1]
+                      }}
+                      transition={{ duration: 4, repeat: Infinity }}
+                    >
                       🔥
-                    </div>
+                    </motion.div>
                   </div>
                 </motion.div>
                 
-                {/* Link Clicks */}
+                {/* Link Clicks - ULTRA */}
                 <motion.div
                   className="relative group"
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1.2, delay: 0.5 }}
-                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-purple-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
-                  <div className="relative bg-black/40 backdrop-blur-sm border border-purple-500/20 rounded-2xl p-6 text-center hover:border-purple-400/40 transition-all">
-                    <div className="text-3xl md:text-4xl font-bold text-purple-400 mb-2">847K+</div>
-                    <div className="text-sm text-gray-300 mb-3">Clicks en bio</div>
-                    <div className="text-xs text-gray-500">32% conversión</div>
-                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center text-xs">
+                  {/* Simple static glow */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-3xl blur-xl" />
+                  
+                  <div className="relative h-full bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 border border-white/10 overflow-hidden">
+                    {/* Animated background pattern with blobs */}
+                    <div className="absolute inset-0 opacity-10">
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-400/20 to-transparent animate-gradient" />
+                    </div>
+                    
+                    {/* Background blobs */}
+                    <div className="absolute -top-6 -left-8 w-44 h-44 bg-purple-500/30 rounded-full blur-3xl" />
+                    <div className="absolute bottom-4 right-4 w-36 h-36 bg-blue-500/25 rounded-full blur-2xl" />
+                    <div className="absolute top-1/3 right-1/2 w-24 h-24 bg-purple-400/20 rounded-full blur-xl" />
+                    
+                    {/* Content */}
+                    <div className="relative z-10">
+                      <motion.div 
+                        className="text-5xl md:text-6xl font-black mb-3"
+                        style={{
+                          background: "linear-gradient(135deg, #c084fc 0%, #a855f7 50%, #9333ea 100%)",
+                          WebkitBackgroundClip: "text",
+                          WebkitTextFillColor: "transparent",
+                          filter: "drop-shadow(0 0 20px rgba(168, 85, 247, 0.5))"
+                        }}
+                      >
+                        847K+
+                      </motion.div>
+                      <div className="text-lg font-semibold text-white mb-2">Clicks en bio</div>
+                      <div className="text-sm text-purple-300/80">32% conversión</div>
+                    </div>
+                    
+                    {/* Floating badge */}
+                    <motion.div 
+                      className="absolute -top-3 -right-3 w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center text-xl shadow-2xl shadow-purple-500/50"
+                      animate={{ 
+                        rotate: [0, -10, 10, 0],
+                        scale: [1, 1.1, 1]
+                      }}
+                      transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
+                    >
                       💎
-                    </div>
+                    </motion.div>
                   </div>
                 </motion.div>
                 
-                {/* Tiempo Ahorrado */}
+                {/* Tiempo Ahorrado - ULTRA */}
                 <motion.div
                   className="relative group"
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1.2, delay: 0.8 }}
-                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.8, delay: 0.6 }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-green-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
-                  <div className="relative bg-black/40 backdrop-blur-sm border border-green-500/20 rounded-2xl p-6 text-center hover:border-green-400/40 transition-all">
-                    <div className="text-3xl md:text-4xl font-bold text-green-400 mb-2">18K+</div>
-                    <div className="text-sm text-gray-300 mb-3">Horas ahorradas</div>
-                    <div className="text-xs text-gray-500">= 2 años de trabajo</div>
-                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center text-xs">
+                  {/* Reduced glow */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-3xl blur-xl" />
+                  
+                  <div className="relative h-full bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 border border-white/10 overflow-hidden">
+                    {/* Animated background pattern with blobs */}
+                    <div className="absolute inset-0 opacity-10">
+                      <div className="absolute inset-0 bg-gradient-to-br from-green-400/20 to-transparent animate-gradient" />
+                    </div>
+                    
+                    {/* Background blobs */}
+                    <div className="absolute -top-4 right-2 w-36 h-36 bg-green-500/30 rounded-full blur-3xl" />
+                    <div className="absolute bottom-2 -left-4 w-40 h-40 bg-emerald-500/25 rounded-full blur-2xl" />
+                    <div className="absolute top-1/2 left-1/2 w-28 h-28 bg-green-400/20 rounded-full blur-xl" />
+                    
+                    {/* Content */}
+                    <div className="relative z-10">
+                      <motion.div 
+                        className="text-5xl md:text-6xl font-black mb-3"
+                        style={{
+                          background: "linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #16a34a 100%)",
+                          WebkitBackgroundClip: "text",
+                          WebkitTextFillColor: "transparent",
+                          filter: "drop-shadow(0 0 20px rgba(34, 197, 94, 0.5))"
+                        }}
+                      >
+                        18K+
+                      </motion.div>
+                      <div className="text-lg font-semibold text-white mb-2">Horas ahorradas</div>
+                      <div className="text-sm text-green-300/80">= 2 años de trabajo</div>
+                    </div>
+                    
+                    {/* Floating badge */}
+                    <motion.div 
+                      className="absolute -top-3 -right-3 w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center text-xl shadow-2xl shadow-green-500/50"
+                      animate={{ 
+                        rotate: [0, 10, -10, 0],
+                        scale: [1, 1.1, 1]
+                      }}
+                      transition={{ duration: 4, repeat: Infinity, delay: 1 }}
+                    >
                       ⏰
-                    </div>
+                    </motion.div>
                   </div>
                 </motion.div>
                 
-                {/* ROI Promedio */}
+                {/* ROI Promedio - ULTRA */}
                 <motion.div
                   className="relative group"
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1.2, delay: 1.1 }}
-                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.8, delay: 0.8 }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-blue-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
-                  <div className="relative bg-black/40 backdrop-blur-sm border border-blue-500/20 rounded-2xl p-6 text-center hover:border-blue-400/40 transition-all">
-                    <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-2">427%</div>
-                    <div className="text-sm text-gray-300 mb-3">ROI promedio</div>
-                    <div className="text-xs text-gray-500">en 90 días</div>
-                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center text-xs">
-                      📈
+                  {/* Reduced glow */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-3xl blur-xl" />
+                  
+                  <div className="relative h-full bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 border border-white/10 overflow-hidden">
+                    {/* Animated background pattern with blobs */}
+                    <div className="absolute inset-0 opacity-10">
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-transparent animate-gradient" />
                     </div>
+                    
+                    {/* Background blobs */}
+                    <div className="absolute top-2 -right-6 w-38 h-38 bg-blue-500/30 rounded-full blur-3xl" />
+                    <div className="absolute -bottom-4 left-4 w-34 h-34 bg-cyan-500/25 rounded-full blur-2xl" />
+                    <div className="absolute top-1/2 left-1/4 w-22 h-22 bg-blue-400/20 rounded-full blur-xl" />
+                    
+                    {/* Content */}
+                    <div className="relative z-10">
+                      <motion.div 
+                        className="text-5xl md:text-6xl font-black mb-3"
+                        style={{
+                          background: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%)",
+                          WebkitBackgroundClip: "text",
+                          WebkitTextFillColor: "transparent",
+                          filter: "drop-shadow(0 0 20px rgba(59, 130, 246, 0.5))"
+                        }}
+                      >
+                        427%
+                      </motion.div>
+                      <div className="text-lg font-semibold text-white mb-2">ROI promedio</div>
+                      <div className="text-sm text-blue-300/80">en 90 días</div>
+                    </div>
+                    
+                    {/* Floating badge */}
+                    <motion.div 
+                      className="absolute -top-3 -right-3 w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center text-xl shadow-2xl shadow-blue-500/50"
+                      animate={{ 
+                        rotate: [0, -10, 10, 0],
+                        scale: [1, 1.1, 1]
+                      }}
+                      transition={{ duration: 4, repeat: Infinity, delay: 1.5 }}
+                    >
+                      📈
+                    </motion.div>
                   </div>
                 </motion.div>
               </div>
