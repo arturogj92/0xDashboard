@@ -749,15 +749,19 @@ export default function LandingPage() {
                       <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-pink-400/20 rounded-full blur-xl"></div>
                       
                       <motion.div 
-                        className="text-5xl md:text-6xl font-black mb-3 relative z-10"
-                        style={{
-                          background: "linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ea580c 100%)",
-                          WebkitBackgroundClip: "text",
-                          WebkitTextFillColor: "transparent",
-                          filter: "drop-shadow(0 0 20px rgba(251, 146, 60, 0.5))"
-                        }}
+                        className="text-5xl md:text-6xl font-black mb-3 relative z-10 flex items-baseline"
                       >
-                        2.1M+
+                        <span
+                          style={{
+                            background: "linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ea580c 100%)",
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            filter: "drop-shadow(0 0 20px rgba(251, 146, 60, 0.5))"
+                          }}
+                        >
+                          2.1M
+                        </span>
+                        <span className="text-orange-400 font-black ml-1" style={{ filter: "drop-shadow(0 0 10px rgba(251, 146, 60, 0.8))" }}>+</span>
                       </motion.div>
                       <div className="text-lg font-semibold text-white mb-2 relative z-10">DMs enviados</div>
                       <div className="text-sm text-orange-300/80 relative z-10">sin spam ni baneos</div>
@@ -801,15 +805,19 @@ export default function LandingPage() {
                     {/* Content */}
                     <div className="relative z-10">
                       <motion.div 
-                        className="text-5xl md:text-6xl font-black mb-3"
-                        style={{
-                          background: "linear-gradient(135deg, #c084fc 0%, #a855f7 50%, #9333ea 100%)",
-                          WebkitBackgroundClip: "text",
-                          WebkitTextFillColor: "transparent",
-                          filter: "drop-shadow(0 0 20px rgba(168, 85, 247, 0.5))"
-                        }}
+                        className="text-5xl md:text-6xl font-black mb-3 flex items-baseline"
                       >
-                        847K+
+                        <span
+                          style={{
+                            background: "linear-gradient(135deg, #c084fc 0%, #a855f7 50%, #9333ea 100%)",
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            filter: "drop-shadow(0 0 20px rgba(168, 85, 247, 0.5))"
+                          }}
+                        >
+                          847K
+                        </span>
+                        <span className="text-purple-400 font-black ml-1" style={{ filter: "drop-shadow(0 0 10px rgba(168, 85, 247, 0.8))" }}>+</span>
                       </motion.div>
                       <div className="text-lg font-semibold text-white mb-2">Clicks en bio</div>
                       <div className="text-sm text-purple-300/80">32% conversión</div>
@@ -853,15 +861,19 @@ export default function LandingPage() {
                     {/* Content */}
                     <div className="relative z-10">
                       <motion.div 
-                        className="text-5xl md:text-6xl font-black mb-3"
-                        style={{
-                          background: "linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #16a34a 100%)",
-                          WebkitBackgroundClip: "text",
-                          WebkitTextFillColor: "transparent",
-                          filter: "drop-shadow(0 0 20px rgba(34, 197, 94, 0.5))"
-                        }}
+                        className="text-5xl md:text-6xl font-black mb-3 flex items-baseline"
                       >
-                        18K+
+                        <span
+                          style={{
+                            background: "linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #16a34a 100%)",
+                            WebkitBackgroundClip: "text",
+                            WebkitTextFillColor: "transparent",
+                            filter: "drop-shadow(0 0 20px rgba(34, 197, 94, 0.5))"
+                          }}
+                        >
+                          18K
+                        </span>
+                        <span className="text-green-400 font-black ml-1" style={{ filter: "drop-shadow(0 0 10px rgba(34, 197, 94, 0.8))" }}>+</span>
                       </motion.div>
                       <div className="text-lg font-semibold text-white mb-2">Horas ahorradas</div>
                       <div className="text-sm text-green-300/80">= 2 años de trabajo</div>
@@ -957,9 +969,9 @@ export default function LandingPage() {
                   }}
                 >
                   {/* Multi-layer glow effect */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-green-600 to-emerald-600 rounded-3xl blur-md opacity-40 group-hover:opacity-60 transition duration-500"></div>
-                  <div className="absolute -inset-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition duration-700"></div>
-                  <div className="absolute -inset-3 bg-gradient-to-r from-green-400 to-emerald-400 rounded-3xl blur-3xl opacity-10 group-hover:opacity-20 transition duration-900"></div>
+                  <div className="absolute -inset-1 bg-gradient-to-r from-green-600 to-emerald-600 rounded-3xl blur-md opacity-30 group-hover:opacity-50 transition duration-500"></div>
+                  <div className="absolute -inset-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-3xl blur-2xl opacity-15 group-hover:opacity-30 transition duration-700"></div>
+                  <div className="absolute -inset-3 bg-gradient-to-r from-green-400 to-emerald-400 rounded-3xl blur-3xl opacity-5 group-hover:opacity-15 transition duration-900"></div>
                   
                   <div className="relative bg-gradient-to-br from-green-950/80 via-emerald-900/80 to-green-950/80 backdrop-blur-2xl rounded-3xl p-8 border border-green-400/20 group-hover:border-green-300/40 transition-all duration-500 overflow-hidden">
                     {/* Animated background pattern */}
@@ -1020,9 +1032,9 @@ export default function LandingPage() {
                   }}
                 >
                   {/* Multi-layer glow effect */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-3xl blur-md opacity-40 group-hover:opacity-60 transition duration-500"></div>
-                  <div className="absolute -inset-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition duration-700"></div>
-                  <div className="absolute -inset-3 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-3xl blur-3xl opacity-10 group-hover:opacity-20 transition duration-900"></div>
+                  <div className="absolute -inset-1 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-3xl blur-md opacity-30 group-hover:opacity-50 transition duration-500"></div>
+                  <div className="absolute -inset-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-3xl blur-2xl opacity-15 group-hover:opacity-30 transition duration-700"></div>
+                  <div className="absolute -inset-3 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-3xl blur-3xl opacity-5 group-hover:opacity-15 transition duration-900"></div>
                   
                   <div className="relative bg-gradient-to-br from-orange-950/80 via-yellow-900/80 to-orange-950/80 backdrop-blur-2xl rounded-3xl p-8 border border-yellow-400/20 group-hover:border-yellow-300/40 transition-all duration-500 overflow-hidden">
                     {/* Animated background pattern */}
@@ -1096,9 +1108,9 @@ export default function LandingPage() {
                   }}
                 >
                   {/* Multi-layer glow effect */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-3xl blur-md opacity-40 group-hover:opacity-60 transition duration-500"></div>
-                  <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition duration-700"></div>
-                  <div className="absolute -inset-3 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-3xl blur-3xl opacity-10 group-hover:opacity-20 transition duration-900"></div>
+                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-3xl blur-md opacity-30 group-hover:opacity-50 transition duration-500"></div>
+                  <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-3xl blur-2xl opacity-15 group-hover:opacity-30 transition duration-700"></div>
+                  <div className="absolute -inset-3 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-3xl blur-3xl opacity-5 group-hover:opacity-15 transition duration-900"></div>
                   
                   <div className="relative bg-gradient-to-br from-blue-950/80 via-cyan-900/80 to-blue-950/80 backdrop-blur-2xl rounded-3xl p-8 border border-blue-400/20 group-hover:border-blue-300/40 transition-all duration-500 overflow-hidden">
                     {/* Animated background pattern */}
