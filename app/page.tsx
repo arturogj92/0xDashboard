@@ -236,24 +236,37 @@ function AppCarousel3D() {
         <div className="relative w-full h-full bg-black rounded-[3rem] shadow-2xl border-8 border-gray-800">
           {/* Screen container with overflow hidden */}
           <div className="absolute inset-4 rounded-[2rem] overflow-hidden bg-black">
-            {/* Current image */}
+            {/* All images preloaded and positioned */}
             <motion.div
-              key={currentIndex}
-              initial={{ opacity: 0, scale: 1.1 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
               className="relative w-full h-full"
+              animate={{ x: -currentIndex * 100 + '%' }}
+              transition={{ 
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+                duration: 0.6
+              }}
             >
-              <Image
-                src={images[currentIndex].src}
-                alt={images[currentIndex].title}
-                fill
-                className="object-cover"
-                priority
-              />
-              
-              {/* Overlay gradient for better text readability */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute inset-0 flex">
+                {images.map((image, index) => (
+                  <div
+                    key={index}
+                    className="relative w-full h-full flex-shrink-0"
+                  >
+                    <Image
+                      src={image.src}
+                      alt={image.title}
+                      fill
+                      className="object-cover"
+                      priority={index === 0}
+                      loading={index === 0 ? "eager" : "lazy"}
+                    />
+                    
+                    {/* Overlay gradient for better text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  </div>
+                ))}
+              </div>
             </motion.div>
           </div>
           
