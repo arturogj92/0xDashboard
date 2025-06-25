@@ -21,6 +21,134 @@ import {
 } from '@heroicons/react/24/outline';
 import { useAuth } from '@/hooks/useAuth';
 
+// Activity Ticker Component with multiple notifications
+function ActivityTicker() {
+  const activities = [
+    { id: 1, user: '@art0xdev', action: 'creó una automatización para historias', time: 12 },
+    { id: 2, user: '@nutrifit.coach', action: 'activó auto-DM para comentarios', time: 89 },
+    { id: 3, user: '@thefoodlab.es', action: 'personalizó su landing page', time: 156 },
+    { id: 4, user: '@mindful.maria', action: 'activó respuestas automáticas', time: 234 },
+    { id: 5, user: '@studio.creative', action: 'añadió 5 shortlinks nuevos', time: 342 },
+    { id: 6, user: '@wellness.journey', action: 'generó su primer caption con IA', time: 478 },
+    { id: 7, user: '@digital.nomad.bcn', action: 'creó 3 automatizaciones nuevas', time: 623 },
+    { id: 8, user: '@eco.lifestyle', action: 'creó su link-in-bio personalizado', time: 812 },
+    { id: 9, user: '@photo.stories', action: 'configuró DMs para nuevos seguidores', time: 1045 },
+    { id: 10, user: '@coach.emprendedor', action: 'creó flujo de bienvenida', time: 1234 }
+  ];
+  
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [visibleActivities, setVisibleActivities] = useState([]);
+  
+  // Inicializar con la primera actividad después de un pequeño delay
+  useEffect(() => {
+    const initTimeout = setTimeout(() => {
+      setVisibleActivities([activities[0]]);
+    }, 500);
+    
+    return () => clearTimeout(initTimeout);
+  }, []);
+  
+  useEffect(() => {
+    // Solo empezar a rotar después de que haya al menos una actividad visible
+    if (visibleActivities.length === 0) return;
+    
+    // Rotar entre actividades cada 5 segundos
+    const rotateInterval = setInterval(() => {
+      const nextIndex = (currentIndex + 1) % activities.length;
+      setCurrentIndex(nextIndex);
+      
+      // Añadir nueva actividad y mantener máximo 2 visibles
+      setVisibleActivities(prev => {
+        const newActivities = [...prev, activities[nextIndex]];
+        return newActivities.slice(-2); // Mantener solo las últimas 2
+      });
+    }, 5000);
+    
+    return () => clearInterval(rotateInterval);
+  }, [currentIndex, visibleActivities.length]);
+  
+  // Incrementar tiempo de todas las actividades
+  useEffect(() => {
+    const timeInterval = setInterval(() => {
+      setVisibleActivities(prev => 
+        prev.map(activity => ({
+          ...activity,
+          time: activity.time + 1
+        }))
+      );
+    }, 1000);
+    
+    return () => clearInterval(timeInterval);
+  }, []);
+  
+  const formatTime = (secs: number) => {
+    if (secs < 60) return `hace ${secs} segundos`;
+    const mins = Math.floor(secs / 60);
+    if (mins < 60) return `hace ${mins} minuto${mins > 1 ? 's' : ''}`;
+    const hours = Math.floor(mins / 60);
+    return `hace ${hours} hora${hours > 1 ? 's' : ''}`;
+  };
+  
+  return (
+    <div className="relative h-[88px] max-w-3xl mx-auto overflow-hidden">
+      <AnimatePresence initial={false} mode="popLayout">
+        {visibleActivities.map((activity, i) => {
+          const index = i;
+          const isNewest = i === visibleActivities.length - 1;
+          
+          return (
+            <motion.div
+              key={activity.id}
+              className="absolute w-full bg-black/30 backdrop-blur-sm border border-white/10 rounded-full py-3 px-6"
+              initial={isNewest ? { 
+                opacity: 0, 
+                y: 88,
+                scale: 0.95
+              } : false}
+              animate={{ 
+                opacity: index === visibleActivities.length - 1 ? 1 : 0.7,
+                y: index * 44,
+                scale: 1
+              }}
+              exit={{ 
+                opacity: 0,
+                y: -44,
+                scale: 0.95
+              }}
+              transition={{ 
+                duration: 0.6,
+                ease: "easeOut"
+              }}
+            >
+              <div className="flex items-center justify-center gap-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <motion.div 
+                    className={`w-2 h-2 rounded-full ${
+                      index === visibleActivities.length - 1 
+                        ? 'bg-green-400' 
+                        : 'bg-gray-500'
+                    }`}
+                    animate={index === visibleActivities.length - 1 ? {
+                      scale: [1, 1.2, 1],
+                      opacity: [1, 0.6, 1]
+                    } : {}}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                  <span className="text-gray-300">
+                    <span className="font-semibold text-white">{activity.user}</span> {activity.action}
+                  </span>
+                </div>
+                <span className="text-gray-500">•</span>
+                <span className="text-xs text-gray-400">{formatTime(activity.time)}</span>
+              </div>
+            </motion.div>
+          );
+        })}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 // 3D iPhone Carousel Component
 function AppCarousel3D() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -497,10 +625,6 @@ export default function LandingPage() {
                   Automatiza tu Instagram y otras RR.SS y 
                   <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">convierte seguidores en clientes</span>
-                  <br />
-                  <span className="text-xl md:text-2xl lg:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400 mt-4 block animate-pulse">
-                    💤 mientras duermes
-                  </span>
                 </motion.h1>
 
                 <motion.div
@@ -561,6 +685,153 @@ export default function LandingPage() {
             </div>
           </div>
 
+        </section>
+
+        {/* Social Proof Bar - Section 2 */}
+        <section className="relative py-16 overflow-hidden">
+          {/* Background gradient effect */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent pointer-events-none" />
+          
+          <div className="container mx-auto px-4">
+            <motion.div 
+              className="max-w-6xl mx-auto"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              {/* Hook emotivo */}
+              <div className="text-center mb-12">
+                <motion.h3 
+                  className="text-2xl md:text-3xl font-bold mb-4"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                  Mientras tú duermes, <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">ellos venden</span>
+                </motion.h3>
+                <motion.p 
+                  className="text-gray-300 text-lg"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                >
+                  Números reales de creadores que tomaron acción (y ahora viven de Instagram)
+                </motion.p>
+              </div>
+              
+              {/* Metrics Cards con más diseño */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+                {/* DMs Automatizados */}
+                <motion.div
+                  className="relative group"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1.2, delay: 0.2 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-orange-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
+                  <div className="relative bg-black/40 backdrop-blur-sm border border-orange-500/20 rounded-2xl p-6 text-center hover:border-orange-400/40 transition-all">
+                    <div className="text-3xl md:text-4xl font-bold text-orange-400 mb-2">2.1M+</div>
+                    <div className="text-sm text-gray-300 mb-3">DMs enviados</div>
+                    <div className="text-xs text-gray-500">sin spam ni baneos</div>
+                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center text-xs">
+                      🔥
+                    </div>
+                  </div>
+                </motion.div>
+                
+                {/* Link Clicks */}
+                <motion.div
+                  className="relative group"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1.2, delay: 0.5 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-purple-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
+                  <div className="relative bg-black/40 backdrop-blur-sm border border-purple-500/20 rounded-2xl p-6 text-center hover:border-purple-400/40 transition-all">
+                    <div className="text-3xl md:text-4xl font-bold text-purple-400 mb-2">847K+</div>
+                    <div className="text-sm text-gray-300 mb-3">Clicks en bio</div>
+                    <div className="text-xs text-gray-500">32% conversión</div>
+                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center text-xs">
+                      💎
+                    </div>
+                  </div>
+                </motion.div>
+                
+                {/* Tiempo Ahorrado */}
+                <motion.div
+                  className="relative group"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1.2, delay: 0.8 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-green-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
+                  <div className="relative bg-black/40 backdrop-blur-sm border border-green-500/20 rounded-2xl p-6 text-center hover:border-green-400/40 transition-all">
+                    <div className="text-3xl md:text-4xl font-bold text-green-400 mb-2">18K+</div>
+                    <div className="text-sm text-gray-300 mb-3">Horas ahorradas</div>
+                    <div className="text-xs text-gray-500">= 2 años de trabajo</div>
+                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center text-xs">
+                      ⏰
+                    </div>
+                  </div>
+                </motion.div>
+                
+                {/* ROI Promedio */}
+                <motion.div
+                  className="relative group"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1.2, delay: 1.1 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-blue-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
+                  <div className="relative bg-black/40 backdrop-blur-sm border border-blue-500/20 rounded-2xl p-6 text-center hover:border-blue-400/40 transition-all">
+                    <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-2">427%</div>
+                    <div className="text-sm text-gray-300 mb-3">ROI promedio</div>
+                    <div className="text-xs text-gray-500">en 90 días</div>
+                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center text-xs">
+                      📈
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+              
+              {/* Ticker de actividad en tiempo real */}
+              <ActivityTicker />
+              
+              {/* Logos de confianza */}
+              <motion.div 
+                className="flex flex-wrap justify-center items-center gap-12 mt-10"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+              >
+                <div className="text-center">
+                  <div className="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-xl flex items-center justify-center">
+                    <CheckIcon className="h-6 w-6 text-green-400" />
+                  </div>
+                  <div className="text-sm font-medium text-white">100% compatible</div>
+                  <div className="text-xs text-gray-400">con Instagram</div>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-yellow-500/20 to-orange-600/20 rounded-xl flex items-center justify-center">
+                    <StarIcon className="h-6 w-6 text-yellow-400" />
+                  </div>
+                  <div className="text-sm font-medium text-white">4.9/5 estrellas</div>
+                  <div className="text-xs text-gray-400">+1,200 reviews</div>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 mx-auto mb-2 bg-gradient-to-br from-blue-500/20 to-cyan-600/20 rounded-xl flex items-center justify-center">
+                    <BoltIcon className="h-6 w-6 text-blue-400" />
+                  </div>
+                  <div className="text-sm font-medium text-white">99.9% uptime</div>
+                  <div className="text-xs text-gray-400">garantizado</div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </div>
         </section>
 
         {/* Link in Bio Section */}
