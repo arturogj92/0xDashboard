@@ -72,14 +72,17 @@ function FeatureCard({
 
   return (
     <Link href={href}>
-      <motion.div 
+      <div 
         className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out"
-        variants={cardVariants}
-        initial="hidden"
-        animate="visible"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
+        <motion.div 
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          style={{ width: '100%', height: '100%' }}
+        >
         {/* Background gradient */}
         <div className={`absolute inset-0 ${gradient}`} />
         
@@ -120,7 +123,8 @@ function FeatureCard({
         <div className="absolute bottom-8 left-6 w-4 h-4 rounded-full bg-white/8 z-0" />
         <div className="absolute top-1/3 left-4 w-2 h-2 rounded-full bg-purple-300/20 z-0" />
         
-      </motion.div>
+        </motion.div>
+      </div>
     </Link>
   );
 }
@@ -236,26 +240,26 @@ export default function HomePage() {
 
   return (
     <ProtectedRoute>
-      <motion.div 
-        className="min-h-screen py-8 bg-gradient-to-br from-slate-950/50 via-slate-900/30 to-slate-950/50"
-        variants={pageVariants}
-        initial="hidden"
-        animate="visible"
-      >
+      <div className="min-h-screen py-8 bg-gradient-to-br from-slate-950/50 via-slate-900/30 to-slate-950/50">
         <motion.div 
-          className="mb-16 relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-visible"
+          variants={pageVariants}
+          initial="hidden"
+          animate="visible"
+        >
+        <div className="mb-16 relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-visible">
+        <motion.div 
           variants={containerVariants}
         >
+          <div className="relative w-full max-w-5xl rounded-2xl border border-white/20 bg-black/40 shadow-[0_0_40px_rgba(139,92,246,0.25)] p-6 sm:p-8 lg:p-10 before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-r before:from-purple-500/5 before:via-pink-500/5 before:to-blue-500/5">
           <motion.div 
-            className="relative w-full max-w-5xl rounded-2xl border border-white/20 bg-black/40 shadow-[0_0_40px_rgba(139,92,246,0.25)] p-6 sm:p-8 lg:p-10 before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-r before:from-purple-500/5 before:via-pink-500/5 before:to-blue-500/5"
             variants={containerVariants}
           >
             {/* Layout de 2 columnas */}
             <div className="grid lg:grid-cols-[1fr,auto] gap-8 lg:gap-12 items-center">
               
               {/* Columna izquierda: Título y explicación con glow-up */}
+              <div className="text-center lg:text-left flex flex-col justify-center relative lg:pl-10">
               <motion.div 
-                className="text-center lg:text-left flex flex-col justify-center relative lg:pl-10"
                 variants={textVariants}
               >
                 {/* Elementos decorativos de fondo */}
@@ -263,27 +267,31 @@ export default function HomePage() {
                 <div className="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-full"></div>
                 
 
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent mb-4 leading-tight">
                 <motion.h2 
-                  className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent mb-4 leading-tight"
                   variants={textVariants}
+                  style={{ display: 'inline' }}
                 >
                   Todas tus herramientas{' '}
                   <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                     en un único lugar
                   </span>
                 </motion.h2>
+                </h2>
                 
+                <p className="text-base md:text-lg text-gray-300 leading-relaxed mb-8 max-w-md relative z-10">
                 <motion.p 
-                  className="text-base md:text-lg text-gray-300 leading-relaxed mb-8 max-w-md relative z-10"
                   variants={textVariants}
+                  style={{ display: 'inline' }}
                 >
                   Potencia tu presencia digital con nuestra suite completa de herramientas diseñadas para{' '}
                   <span className="text-purple-300 font-medium">creadores ambiciosos</span>.
                 </motion.p>
+                </p>
 
                 {/* Stats decorativos */}
+                <div className="flex gap-6 mb-6 lg:justify-start justify-center">
                 <motion.div 
-                  className="flex gap-6 mb-6 lg:justify-start justify-center"
                   variants={textVariants}
                 >
                   <div className="text-center">
@@ -299,9 +307,10 @@ export default function HomePage() {
                     <div className="text-xs text-gray-400">Disponible</div>
                   </div>
                 </motion.div>
+                </div>
 
+                <div className="h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 rounded-full lg:mx-0 mx-auto relative overflow-hidden">
                 <motion.div 
-                  className="h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 rounded-full lg:mx-0 mx-auto relative overflow-hidden"
                   initial={{ width: 0, opacity: 0 }}
                   animate={{ width: 120, opacity: 1 }}
                   transition={{
@@ -309,15 +318,17 @@ export default function HomePage() {
                     ease: [0.4, 0, 0.2, 1],
                     delay: 0.7
                   }}
-                  style={{ willChange: 'width' }}
+                  style={{ willChange: 'width', height: '100%' }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent animate-pulse"></div>
                 </motion.div>
+                </div>
               </motion.div>
+              </div>
 
               {/* Columna derecha: Grid de funciones */}
+              <div className="flex justify-center lg:justify-end">
               <motion.div 
-                className="flex justify-center lg:justify-end"
                 variants={gridVariants}
               >
                 <div className="grid grid-cols-2 gap-3 md:gap-4 w-full max-w-sm lg:max-w-md">
@@ -330,10 +341,12 @@ export default function HomePage() {
                   ))}
                 </div>
               </motion.div>
+              </div>
 
             </div>
 
           </motion.div>
+          </div>
 
           {/* Sombra radial principal más grande (oculta en móvil) */}
           <div className="hidden sm:block absolute -inset-24 bg-[radial-gradient(circle,_rgba(88,28,135,0.3)_0%,_rgba(17,24,39,0)_80%)] pointer-events-none"></div>
@@ -341,7 +354,9 @@ export default function HomePage() {
           {/* Radiales hacia afuera (bordes, ocultos en móvil) */}
           <div className="hidden sm:block absolute -inset-32 bg-[radial-gradient(circle,_rgba(17,24,39,0)_60%,_rgba(88,28,135,0.25)_100%)] opacity-50 pointer-events-none"></div>
         </motion.div>
+        </div>
       </motion.div>
+      </div>
 
       <style jsx>{`
         .animate-fade-in {
