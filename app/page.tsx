@@ -39,7 +39,7 @@ function ActivityTicker() {
   ];
   
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [visibleActivities, setVisibleActivities] = useState([]);
+  const [visibleActivities, setVisibleActivities] = useState<typeof activities>([]);
   
   // Inicializar con la primera actividad después de un pequeño delay
   useEffect(() => {
@@ -101,7 +101,15 @@ function ActivityTicker() {
           return (
             <motion.div
               key={activity.id}
-              className="absolute w-full bg-black/30 backdrop-blur-sm border border-white/10 rounded-full py-3 px-6"
+              style={{
+                position: 'absolute',
+                width: '100%',
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                backdropFilter: 'blur(4px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '9999px',
+                padding: '12px 24px'
+              } as React.CSSProperties}
               initial={isNewest ? { 
                 opacity: 0, 
                 y: 88,
@@ -125,11 +133,14 @@ function ActivityTicker() {
               <div className="flex items-center justify-center gap-4 text-sm">
                 <div className="flex items-center gap-2">
                   <motion.div 
-                    className={`w-2 h-2 rounded-full ${
-                      index === visibleActivities.length - 1 
-                        ? 'bg-green-400' 
-                        : 'bg-gray-500'
-                    }`}
+                    style={{
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      backgroundColor: index === visibleActivities.length - 1 
+                        ? '#4ade80' 
+                        : '#6b7280'
+                    }}
                     animate={index === visibleActivities.length - 1 ? {
                       scale: [1, 1.2, 1],
                       opacity: [1, 0.6, 1]
@@ -155,7 +166,7 @@ function ActivityTicker() {
 function AppCarousel3D() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   
   const images = [
     {
