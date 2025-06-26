@@ -220,7 +220,7 @@ function AppCarousel3D() {
     <div ref={containerRef} className="relative">
       {/* iPhone Frame - Simplified 3D */}
       <motion.div
-        className="relative"
+        {...{ className: "relative" } as any}
         style={{ 
           width: '300px', 
           height: '600px',
@@ -247,7 +247,7 @@ function AppCarousel3D() {
           <div className="absolute inset-4 rounded-[2rem] overflow-hidden bg-black">
             {/* All images preloaded and positioned */}
             <motion.div
-              className="relative w-full h-full"
+              {...{ className: "relative w-full h-full" } as any}
               animate={{ x: -currentIndex * 100 + '%' }}
               transition={{ 
                 type: "tween",
