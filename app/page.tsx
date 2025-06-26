@@ -287,7 +287,7 @@ function AppCarousel3D() {
         
         {/* App info floating card - Siempre visible */}
         <motion.div
-          className="absolute -right-16 top-1/2 transform -translate-y-1/2 bg-black/80 backdrop-blur-sm border border-white/20 rounded-xl p-4 min-w-48"
+          {...{ className: "absolute -right-16 top-1/2 transform -translate-y-1/2 bg-black/80 backdrop-blur-sm border border-white/20 rounded-xl p-4 min-w-48" } as any}
           initial={{ opacity: 0, x: -20 }}
           animate={{ 
             opacity: 1,
