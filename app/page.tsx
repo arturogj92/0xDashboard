@@ -323,7 +323,7 @@ function AppCarousel3D() {
       
       {/* Rocket Badge - Más moderno */}
       <motion.div
-        className="absolute -top-8 -left-8 group cursor-pointer"
+        {...{ className: "absolute -top-8 -left-8 group cursor-pointer" } as any}
         animate={{
           y: isHovered ? -15 : 0,
           x: isHovered ? -10 : 0,
@@ -347,7 +347,7 @@ function AppCarousel3D() {
       
       {/* Sparkle Orb - Más sofisticado */}
       <motion.div
-        className="absolute -bottom-8 -right-8 group cursor-pointer"
+        {...{ className: "absolute -bottom-8 -right-8 group cursor-pointer" } as any}
         animate={{
           y: isHovered ? 20 : 0,
           x: isHovered ? 15 : 0,
@@ -359,7 +359,7 @@ function AppCarousel3D() {
         <div className="relative">
           {/* Animated glow rings */}
           <motion.div 
-            className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-lg opacity-40"
+            {...{ className: "absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-lg opacity-40" } as any}
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           />
@@ -370,7 +370,7 @@ function AppCarousel3D() {
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                className="text-2xl"
+                {...{ className: "text-2xl" } as any}
               >
                 ✨
               </motion.div>
@@ -379,12 +379,12 @@ function AppCarousel3D() {
           
           {/* Mini floating sparks */}
           <motion.div 
-            className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full"
+            {...{ className: "absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full" } as any}
             animate={{ scale: [0, 1, 0], opacity: [0, 1, 0] }}
             transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
           />
           <motion.div 
-            className="absolute -bottom-1 -left-1 w-1.5 h-1.5 bg-pink-400 rounded-full"
+            {...{ className: "absolute -bottom-1 -left-1 w-1.5 h-1.5 bg-pink-400 rounded-full" } as any}
             animate={{ scale: [0, 1, 0], opacity: [0, 1, 0] }}
             transition={{ duration: 1.8, repeat: Infinity, delay: 0.7 }}
           />
@@ -421,7 +421,7 @@ function ParallaxOrbs() {
     >
       {/* Orbe 1 - Naranja-Púrpura - Velocidad lenta */}
       <motion.div
-        className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-r from-orange-400/20 to-purple-500/20 rounded-full blur-xl"
+        {...{ className: "absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-r from-orange-400/20 to-purple-500/20 rounded-full blur-xl" } as any}
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
@@ -432,7 +432,7 @@ function ParallaxOrbs() {
       
       {/* Orbe 2 - Verde-Azul - Velocidad media */}
       <motion.div
-        className="absolute top-3/4 right-1/3 w-24 h-24 bg-gradient-to-r from-green-400/15 to-blue-500/15 rounded-full blur-xl"
+        {...{ className: "absolute top-3/4 right-1/3 w-24 h-24 bg-gradient-to-r from-green-400/15 to-blue-500/15 rounded-full blur-xl" } as any}
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
@@ -443,7 +443,7 @@ function ParallaxOrbs() {
       
       {/* Orbe 3 - Púrpura-Rosa - Velocidad rápida */}
       <motion.div
-        className="absolute top-1/2 right-1/4 w-16 h-16 bg-gradient-to-r from-purple-400/25 to-pink-500/25 rounded-full blur-lg"
+        {...{ className: "absolute top-1/2 right-1/4 w-16 h-16 bg-gradient-to-r from-purple-400/25 to-pink-500/25 rounded-full blur-lg" } as any}
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
@@ -454,7 +454,7 @@ function ParallaxOrbs() {
       
       {/* Orbe 4 - Azul-Cyan - Velocidad muy lenta */}
       <motion.div
-        className="absolute top-1/3 left-1/6 w-20 h-20 bg-gradient-to-r from-blue-400/20 to-cyan-500/20 rounded-full blur-xl"
+        {...{ className: "absolute top-1/3 left-1/6 w-20 h-20 bg-gradient-to-r from-blue-400/20 to-cyan-500/20 rounded-full blur-xl" } as any}
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.5, delay: 0.1, ease: "easeOut" }}
@@ -465,7 +465,7 @@ function ParallaxOrbs() {
       
       {/* Orbe 5 - Amarillo-Naranja - Velocidad media-rápida */}
       <motion.div
-        className="absolute bottom-1/4 left-1/3 w-28 h-28 bg-gradient-to-r from-yellow-400/15 to-orange-500/15 rounded-full blur-xl"
+        {...{ className: "absolute bottom-1/4 left-1/3 w-28 h-28 bg-gradient-to-r from-yellow-400/15 to-orange-500/15 rounded-full blur-xl" } as any}
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.3, delay: 0.4, ease: "easeOut" }}
@@ -476,7 +476,7 @@ function ParallaxOrbs() {
       
       {/* Orbe 6 - Rosa-Rojo - Velocidad máxima */}
       <motion.div
-        className="absolute top-1/3 right-1/6 w-12 h-12 bg-gradient-to-r from-pink-400/30 to-red-500/30 rounded-full blur-lg"
+        {...{ className: "absolute top-1/3 right-1/6 w-12 h-12 bg-gradient-to-r from-pink-400/30 to-red-500/30 rounded-full blur-lg" } as any}
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.9, delay: 0.7, ease: "easeOut" }}
@@ -616,7 +616,7 @@ export default function LandingPage() {
               {/* Text Content - Izquierda */}
               <div className="text-center lg:text-left">
                 <motion.h1
-                  className="text-3xl md:text-4xl lg:text-5xl font-bold font-manrope mb-6 leading-tight"
+                  {...{ className: "text-3xl md:text-4xl lg:text-5xl font-bold font-manrope mb-6 leading-tight" } as any}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
@@ -630,7 +630,7 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.3 }}
-                  className="inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-8"
+                  {...{ className: "inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-8" } as any}
                   style={{ borderColor: 'var(--border)' }}
                 >
                   <div className="w-2 h-2 rounded-full animate-pulse" 
@@ -639,7 +639,7 @@ export default function LandingPage() {
                 </motion.div>
 
                 <motion.p
-                  className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl lg:max-w-none"
+                  {...{ className: "text-lg md:text-xl text-gray-300 mb-10 max-w-2xl lg:max-w-none" } as any}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
@@ -649,7 +649,7 @@ export default function LandingPage() {
                 </motion.p>
 
                 <motion.div
-                  className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+                  {...{ className: "flex flex-col sm:flex-row gap-4 justify-center lg:justify-start" } as any}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.6 }}
@@ -658,7 +658,7 @@ export default function LandingPage() {
                     <motion.div
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="inline-block relative group"
+                      {...{ className: "inline-block relative group" } as any}
                     >
                       {/* Glow effect máximo */}
                       <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-full blur-md opacity-70 group-hover:opacity-100 transition duration-300 animate-pulse"></div>
@@ -684,7 +684,7 @@ export default function LandingPage() {
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 1, delay: 0.8 }}
-                  className="relative"
+                  {...{ className: "relative" } as any}
                   style={{ perspective: '1000px' }}
                 >
                   <AppCarousel3D />
@@ -711,7 +711,7 @@ export default function LandingPage() {
           
           <div className="container mx-auto px-4 relative z-10">
             <motion.div 
-              className="max-w-7xl mx-auto"
+              {...{ className: "max-w-7xl mx-auto" } as any}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
@@ -719,7 +719,7 @@ export default function LandingPage() {
               {/* Epic title with glow */}
               <div className="text-center mb-16">
                 <motion.div
-                  className="inline-block relative"
+                  {...{ className: "inline-block relative" } as any}
                   initial={{ scale: 0.9, opacity: 0 }}
                   whileInView={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
@@ -733,7 +733,7 @@ export default function LandingPage() {
                 </motion.div>
                 
                 <motion.p 
-                  className="text-gray-200 text-xl max-w-3xl mx-auto"
+                  {...{ className: "text-gray-200 text-xl max-w-3xl mx-auto" } as any}
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.3 }}
@@ -746,7 +746,7 @@ export default function LandingPage() {
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                 {/* DMs Automatizados - ULTRA */}
                 <motion.div
-                  className="relative group"
+                  {...{ className: "relative group" } as any}
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
@@ -772,7 +772,7 @@ export default function LandingPage() {
                       <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-pink-400/20 rounded-full blur-xl"></div>
                       
                       <motion.div 
-                        className="text-5xl md:text-6xl font-black mb-3 relative z-10 flex items-baseline"
+                        {...{ className: "text-5xl md:text-6xl font-black mb-3 relative z-10 flex items-baseline" } as any}
                       >
                         <span
                           style={{
@@ -786,13 +786,13 @@ export default function LandingPage() {
                         </span>
                         <span className="text-orange-400 font-black ml-1" style={{ filter: "drop-shadow(0 0 10px rgba(251, 146, 60, 0.8))" }}>+</span>
                       </motion.div>
-                      <div className="text-lg font-semibold text-white mb-2 relative z-10">DMs enviados</div>
+                      <div {...{ className: "text-lg font-semibold text-white mb-2 relative z-10" } as any}>DMs enviados</div>
                       <div className="text-sm text-orange-300/80 relative z-10">sin spam ni baneos</div>
                     </div>
                     
                     {/* Floating badge */}
                     <motion.div 
-                      className="absolute -top-3 -right-3 w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center text-xl shadow-2xl shadow-orange-500/50"
+                      {...{ className: "absolute -top-3 -right-3 w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center text-xl shadow-2xl shadow-orange-500/50" } as any}
                       animate={{ 
                         rotate: [0, 10, -10, 0],
                         scale: [1, 1.1, 1]
@@ -806,7 +806,7 @@ export default function LandingPage() {
                 
                 {/* Link Clicks - ULTRA */}
                 <motion.div
-                  className="relative group"
+                  {...{ className: "relative group" } as any}
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
@@ -828,7 +828,7 @@ export default function LandingPage() {
                     {/* Content */}
                     <div className="relative z-10">
                       <motion.div 
-                        className="text-5xl md:text-6xl font-black mb-3 flex items-baseline"
+                        {...{ className: "text-5xl md:text-6xl font-black mb-3 flex items-baseline" } as any}
                       >
                         <span
                           style={{
@@ -842,13 +842,13 @@ export default function LandingPage() {
                         </span>
                         <span className="text-purple-400 font-black ml-1" style={{ filter: "drop-shadow(0 0 10px rgba(168, 85, 247, 0.8))" }}>+</span>
                       </motion.div>
-                      <div className="text-lg font-semibold text-white mb-2">Clicks en bio</div>
+                      <div {...{ className: "text-lg font-semibold text-white mb-2" } as any}>Clicks en bio</div>
                       <div className="text-sm text-purple-300/80">32% conversión</div>
                     </div>
                     
                     {/* Floating badge */}
                     <motion.div 
-                      className="absolute -top-3 -right-3 w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center text-xl shadow-2xl shadow-purple-500/50"
+                      {...{ className: "absolute -top-3 -right-3 w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center text-xl shadow-2xl shadow-purple-500/50" } as any}
                       animate={{ 
                         rotate: [0, -10, 10, 0],
                         scale: [1, 1.1, 1]
@@ -862,7 +862,7 @@ export default function LandingPage() {
                 
                 {/* Tiempo Ahorrado - ULTRA */}
                 <motion.div
-                  className="relative group"
+                  {...{ className: "relative group" } as any}
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.6 }}
@@ -884,7 +884,7 @@ export default function LandingPage() {
                     {/* Content */}
                     <div className="relative z-10">
                       <motion.div 
-                        className="text-5xl md:text-6xl font-black mb-3 flex items-baseline"
+                        {...{ className: "text-5xl md:text-6xl font-black mb-3 flex items-baseline" } as any}
                       >
                         <span
                           style={{
@@ -898,13 +898,13 @@ export default function LandingPage() {
                         </span>
                         <span className="text-green-400 font-black ml-1" style={{ filter: "drop-shadow(0 0 10px rgba(34, 197, 94, 0.8))" }}>+</span>
                       </motion.div>
-                      <div className="text-lg font-semibold text-white mb-2">Horas ahorradas</div>
+                      <div {...{ className: "text-lg font-semibold text-white mb-2" } as any}>Horas ahorradas</div>
                       <div className="text-sm text-green-300/80">= 2 años de trabajo</div>
                     </div>
                     
                     {/* Floating badge */}
                     <motion.div 
-                      className="absolute -top-3 -right-3 w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center text-xl shadow-2xl shadow-green-500/50"
+                      {...{ className: "absolute -top-3 -right-3 w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center text-xl shadow-2xl shadow-green-500/50" } as any}
                       animate={{ 
                         rotate: [0, 10, -10, 0],
                         scale: [1, 1.1, 1]
@@ -918,7 +918,7 @@ export default function LandingPage() {
                 
                 {/* ROI Promedio - ULTRA */}
                 <motion.div
-                  className="relative group"
+                  {...{ className: "relative group" } as any}
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.8 }}
@@ -940,7 +940,7 @@ export default function LandingPage() {
                     {/* Content */}
                     <div className="relative z-10">
                       <motion.div 
-                        className="text-5xl md:text-6xl font-black mb-3"
+                        {...{ className: "text-5xl md:text-6xl font-black mb-3" } as any}
                         style={{
                           background: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%)",
                           WebkitBackgroundClip: "text",
@@ -950,13 +950,13 @@ export default function LandingPage() {
                       >
                         427%
                       </motion.div>
-                      <div className="text-lg font-semibold text-white mb-2">ROI promedio</div>
+                      <div {...{ className: "text-lg font-semibold text-white mb-2" } as any}>ROI promedio</div>
                       <div className="text-sm text-blue-300/80">en 90 días</div>
                     </div>
                     
                     {/* Floating badge */}
                     <motion.div 
-                      className="absolute -top-3 -right-3 w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center text-xl shadow-2xl shadow-blue-500/50"
+                      {...{ className: "absolute -top-3 -right-3 w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center text-xl shadow-2xl shadow-blue-500/50" } as any}
                       animate={{ 
                         rotate: [0, -10, 10, 0],
                         scale: [1, 1.1, 1]
@@ -974,14 +974,14 @@ export default function LandingPage() {
               
               {/* Trust Indicators - MEGA GLOWUP EXTREMO */}
               <motion.div 
-                className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 max-w-5xl mx-auto"
+                {...{ className: "grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 max-w-5xl mx-auto" } as any}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
                 {/* Instagram Compatible - MEGA EPIC CARD */}
                 <motion.div 
-                  className="relative group"
+                  {...{ className: "relative group" } as any}
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
@@ -1012,7 +1012,7 @@ export default function LandingPage() {
                     
                     {/* 3D Floating icon */}
                     <motion.div 
-                      className="relative w-20 h-20 mx-auto mb-6"
+                      {...{ className: "relative w-20 h-20 mx-auto mb-6" } as any}
                       animate={{ 
                         rotateZ: [0, 5, -5, 0]
                       }}
@@ -1027,13 +1027,13 @@ export default function LandingPage() {
                       <div className="absolute inset-0 bg-gradient-to-br from-green-600 to-emerald-700 rounded-2xl" style={{ transform: "translateZ(-10px) translateY(4px)", opacity: 0.4 }}></div>
                     </motion.div>
                     
-                    <h4 className="text-xl font-black text-white mb-2 tracking-tight">100% Compatible</h4>
+                    <h4 {...{ className: "text-xl font-black text-white mb-2 tracking-tight" } as any}>100% Compatible</h4>
                     <p className="text-sm text-green-200/80 font-medium">Instagram API oficial</p>
                     
                     {/* Animated bar */}
                     <div className="mt-4 h-1 bg-green-900/50 rounded-full overflow-hidden">
                       <motion.div 
-                        className="h-full bg-gradient-to-r from-green-400 to-emerald-400"
+                        {...{ className: "h-full bg-gradient-to-r from-green-400 to-emerald-400" } as any}
                         initial={{ width: "0%" }}
                         whileInView={{ width: "100%" }}
                         transition={{ duration: 1.5, delay: 0.5 }}
@@ -1044,7 +1044,7 @@ export default function LandingPage() {
 
                 {/* Reviews - MEGA EPIC CARD */}
                 <motion.div 
-                  className="relative group"
+                  {...{ className: "relative group" } as any}
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.3, type: "spring" }}
@@ -1075,7 +1075,7 @@ export default function LandingPage() {
                     
                     {/* 3D Floating icon */}
                     <motion.div 
-                      className="relative w-20 h-20 mx-auto mb-6"
+                      {...{ className: "relative w-20 h-20 mx-auto mb-6" } as any}
                       animate={{ 
                         rotateZ: [0, -5, 5, 0]
                       }}
@@ -1090,7 +1090,7 @@ export default function LandingPage() {
                       <div className="absolute inset-0 bg-gradient-to-br from-orange-600 to-yellow-700 rounded-2xl" style={{ transform: "translateZ(-10px) translateY(4px)", opacity: 0.4 }}></div>
                     </motion.div>
                     
-                    <h4 className="text-xl font-black text-white mb-2 tracking-tight">4.9/5 Estrellas</h4>
+                    <h4 {...{ className: "text-xl font-black text-white mb-2 tracking-tight" } as any}>4.9/5 Estrellas</h4>
                     <p className="text-sm text-yellow-200/80 font-medium">+1,200 creadores felices</p>
                     
                     {/* 3D Stars animation */}
@@ -1120,7 +1120,7 @@ export default function LandingPage() {
 
                 {/* Uptime - MEGA EPIC CARD */}
                 <motion.div 
-                  className="relative group"
+                  {...{ className: "relative group" } as any}
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.4, type: "spring" }}
@@ -1145,7 +1145,7 @@ export default function LandingPage() {
                     {/* Electric particles */}
                     <div className="absolute inset-0 overflow-hidden">
                       <motion.div 
-                        className="absolute top-1/4 left-1/3 w-16 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent opacity-60"
+                        {...{ className: "absolute top-1/4 left-1/3 w-16 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent opacity-60" } as any}
                         animate={{ 
                           x: [-50, 200],
                           y: [0, 50, 0]
@@ -1153,7 +1153,7 @@ export default function LandingPage() {
                         transition={{ duration: 3, repeat: Infinity }}
                       />
                       <motion.div 
-                        className="absolute bottom-1/3 right-1/4 w-20 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-60"
+                        {...{ className: "absolute bottom-1/3 right-1/4 w-20 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-60" } as any}
                         animate={{ 
                           x: [50, -200],
                           y: [0, -30, 0]
@@ -1164,7 +1164,7 @@ export default function LandingPage() {
                     
                     {/* 3D Floating icon with electricity */}
                     <motion.div 
-                      className="relative w-20 h-20 mx-auto mb-6"
+                      {...{ className: "relative w-20 h-20 mx-auto mb-6" } as any}
                       animate={{ 
                         rotateZ: [0, 5, -5, 0]
                       }}
@@ -1180,7 +1180,7 @@ export default function LandingPage() {
                       
                       {/* Electric effect */}
                       <motion.div
-                        className="absolute -inset-2"
+                        {...{ className: "absolute -inset-2" } as any}
                         animate={{ opacity: [0, 1, 0] }}
                         transition={{ duration: 2, repeat: Infinity }}
                       >
@@ -1242,20 +1242,20 @@ export default function LandingPage() {
 
           <div className="container mx-auto px-4 relative z-10">
             <motion.div 
-              className="max-w-6xl mx-auto"
+              {...{ className: "max-w-6xl mx-auto" } as any}
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 1 }}
             >
               {/* Título épico con animación */}
               <motion.div 
-                className="text-center mb-20"
+                {...{ className: "text-center mb-20" } as any}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
               >
                 <motion.h2 
-                  className="text-5xl md:text-7xl font-black mb-6 leading-tight"
+                  {...{ className: "text-5xl md:text-7xl font-black mb-6 leading-tight" } as any}
                   initial={{ opacity: 0, scale: 0.9 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
@@ -1266,7 +1266,7 @@ export default function LandingPage() {
                 </motion.h2>
                 
                 <motion.p 
-                  className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto"
+                  {...{ className: "text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto" } as any}
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
@@ -1280,14 +1280,14 @@ export default function LandingPage() {
                 {/* Línea divisoria ELÉCTRICA animada */}
                 <div className="absolute left-1/2 top-0 bottom-0 w-[2px] hidden lg:block">
                   <motion.div 
-                    className="h-full bg-gradient-to-b from-transparent via-white/60 to-transparent"
+                    {...{ className: "h-full bg-gradient-to-b from-transparent via-white/60 to-transparent" } as any}
                     initial={{ scaleY: 0 }}
                     whileInView={{ scaleY: 1 }}
                     transition={{ duration: 1.5 }}
                   />
                   {/* Partículas eléctricas */}
                   <motion.div
-                    className="absolute top-1/4 left-0 w-8 h-8 -ml-4"
+                    {...{ className: "absolute top-1/4 left-0 w-8 h-8 -ml-4" } as any}
                     animate={{ 
                       y: ["0%", "300%", "0%"],
                       opacity: [0, 1, 0]
@@ -1300,7 +1300,7 @@ export default function LandingPage() {
 
                 {/* Lado izquierdo - El problema */}
                 <motion.div 
-                  className="relative group flex flex-col"
+                  {...{ className: "relative group flex flex-col" } as any}
                   initial={{ opacity: 0, x: -50 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8 }}
@@ -1313,7 +1313,7 @@ export default function LandingPage() {
                   {/* Efecto de fuego animado */}
                   <div className="absolute inset-0 overflow-hidden rounded-3xl">
                     <motion.div
-                      className="absolute -bottom-10 left-0 right-0 h-40 bg-gradient-to-t from-red-600/20 via-orange-500/10 to-transparent"
+                      {...{ className: "absolute -bottom-10 left-0 right-0 h-40 bg-gradient-to-t from-red-600/20 via-orange-500/10 to-transparent" } as any}
                       animate={{ 
                         y: [0, -10, 0],
                         opacity: [0.5, 0.8, 0.5]
@@ -1326,7 +1326,7 @@ export default function LandingPage() {
                     {/* Header con efecto de llamas */}
                     <div className="flex items-center gap-3 mb-8">
                       <motion.div 
-                        className="relative w-14 h-14"
+                        {...{ className: "relative w-14 h-14" } as any}
                         animate={{ 
                           rotate: [0, 5, -5, 0]
                         }}
@@ -1349,7 +1349,7 @@ export default function LandingPage() {
                     {/* Pain points con animaciones BRUTALES */}
                     <div className="space-y-5">
                       <motion.div 
-                        className="flex items-start gap-4"
+                        {...{ className: "flex items-start gap-4" } as any}
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.2 }}
@@ -1364,7 +1364,7 @@ export default function LandingPage() {
                       </motion.div>
 
                       <motion.div 
-                        className="flex items-start gap-4"
+                        {...{ className: "flex items-start gap-4" } as any}
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.3 }}
@@ -1379,7 +1379,7 @@ export default function LandingPage() {
                       </motion.div>
 
                       <motion.div 
-                        className="flex items-start gap-4"
+                        {...{ className: "flex items-start gap-4" } as any}
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.4 }}
@@ -1394,7 +1394,7 @@ export default function LandingPage() {
                       </motion.div>
 
                       <motion.div 
-                        className="flex items-start gap-4"
+                        {...{ className: "flex items-start gap-4" } as any}
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.5 }}
@@ -1418,14 +1418,14 @@ export default function LandingPage() {
                     
                     {/* Resultado final */}
                     <motion.div 
-                      className="text-center"
+                      {...{ className: "text-center" } as any}
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6 }}
                     >
                       <div className="flex justify-center mb-4">
                         <motion.div 
-                          className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center"
+                          {...{ className: "w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center" } as any}
                           animate={{ rotate: [0, -5, 5, 0] }}
                           transition={{ duration: 4, repeat: Infinity }}
                         >
@@ -1445,7 +1445,7 @@ export default function LandingPage() {
 
                 {/* Lado derecho - La solución */}
                 <motion.div 
-                  className="relative group flex flex-col"
+                  {...{ className: "relative group flex flex-col" } as any}
                   initial={{ opacity: 0, x: 50 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8 }}
@@ -1458,7 +1458,7 @@ export default function LandingPage() {
                   {/* Efecto de aurora boreal */}
                   <div className="absolute inset-0 overflow-hidden rounded-3xl">
                     <motion.div
-                      className="absolute -top-10 left-0 right-0 h-40 bg-gradient-to-b from-green-400/20 via-emerald-300/10 to-transparent"
+                      {...{ className: "absolute -top-10 left-0 right-0 h-40 bg-gradient-to-b from-green-400/20 via-emerald-300/10 to-transparent" } as any}
                       animate={{ 
                         y: [0, 10, 0],
                         opacity: [0.3, 0.6, 0.3]
@@ -1467,14 +1467,14 @@ export default function LandingPage() {
                     />
                     {/* Partículas de éxito */}
                     <motion.div
-                      className="absolute inset-0"
+                      {...{ className: "absolute inset-0" } as any}
                       initial={{ opacity: 0 }}
                       whileInView={{ opacity: 1 }}
                     >
                       {[...Array(5)].map((_, i) => (
                         <motion.div
                           key={i}
-                          className="absolute w-1 h-1 bg-green-400 rounded-full"
+                          {...{ className: "absolute w-1 h-1 bg-green-400 rounded-full" } as any}
                           style={{ 
                             left: `${20 + i * 15}%`,
                             top: `${10 + i * 10}%`
@@ -1498,7 +1498,7 @@ export default function LandingPage() {
                     {/* Header con efecto celestial */}
                     <div className="flex items-center gap-3 mb-8">
                       <motion.div 
-                        className="relative w-14 h-14"
+                        {...{ className: "relative w-14 h-14" } as any}
                         animate={{ 
                           rotate: [0, -5, 5, 0],
                           scale: [1, 1.1, 1]
@@ -1511,7 +1511,7 @@ export default function LandingPage() {
                         </div>
                         {/* Sparkle effect */}
                         <motion.div
-                          className="absolute -top-1 -right-1 w-3 h-3"
+                          {...{ className: "absolute -top-1 -right-1 w-3 h-3" } as any}
                           animate={{ 
                             scale: [0, 1, 0],
                             opacity: [0, 1, 0]
@@ -1533,7 +1533,7 @@ export default function LandingPage() {
                     {/* Benefits con animaciones */}
                     <div className="space-y-6">
                       <motion.div 
-                        className="flex items-start gap-4"
+                        {...{ className: "flex items-start gap-4" } as any}
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.2 }}
@@ -1546,7 +1546,7 @@ export default function LandingPage() {
                       </motion.div>
 
                       <motion.div 
-                        className="flex items-start gap-4"
+                        {...{ className: "flex items-start gap-4" } as any}
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.3 }}
@@ -1559,7 +1559,7 @@ export default function LandingPage() {
                       </motion.div>
 
                       <motion.div 
-                        className="flex items-start gap-4"
+                        {...{ className: "flex items-start gap-4" } as any}
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.4 }}
@@ -1572,7 +1572,7 @@ export default function LandingPage() {
                       </motion.div>
 
                       <motion.div 
-                        className="flex items-start gap-4"
+                        {...{ className: "flex items-start gap-4" } as any}
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.5 }}
@@ -1594,14 +1594,14 @@ export default function LandingPage() {
                     
                     {/* Resultado final */}
                     <motion.div 
-                      className="text-center"
+                      {...{ className: "text-center" } as any}
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6 }}
                     >
                       <div className="flex justify-center mb-4">
                         <motion.div 
-                          className="w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center"
+                          {...{ className: "w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center" } as any}
                           animate={{ 
                             rotate: [0, 5, -5, 0],
                             scale: [1, 1.1, 1]
@@ -1625,13 +1625,13 @@ export default function LandingPage() {
 
               {/* CTA ÉPICO con urgencia máxima */}
               <motion.div 
-                className="text-center mt-20"
+                {...{ className: "text-center mt-20" } as any}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
               >
                 <motion.p 
-                  className="text-3xl md:text-4xl font-black mb-8"
+                  {...{ className: "text-3xl md:text-4xl font-black mb-8" } as any}
                   animate={{ scale: [1, 1.02, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
@@ -1644,7 +1644,7 @@ export default function LandingPage() {
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="inline-block relative group"
+                    {...{ className: "inline-block relative group" } as any}
                   >
                     {/* Glow effect máximo */}
                     <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-full blur-md opacity-70 group-hover:opacity-100 transition duration-300 animate-pulse"></div>
@@ -1657,7 +1657,7 @@ export default function LandingPage() {
                   </motion.div>
                 </Link>
                 <motion.p 
-                  className="text-sm font-medium mt-6 flex items-center justify-center gap-2"
+                  {...{ className: "text-sm font-medium mt-6 flex items-center justify-center gap-2" } as any}
                   animate={{ opacity: [0.7, 1, 0.7] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
@@ -1679,7 +1679,7 @@ export default function LandingPage() {
                 
                 {/* Left side - Mock phone showing Creator0x in action */}
                 <motion.div 
-                  className="flex justify-center lg:justify-start"
+                  {...{ className: "flex justify-center lg:justify-start" } as any}
                   initial={{ opacity: 0, x: -50 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8 }}
@@ -1783,7 +1783,7 @@ export default function LandingPage() {
         <section className="py-20 fade-in-section">
           <div className="container mx-auto px-4">
             <motion.div 
-              className="text-center mb-16"
+              {...{ className: "text-center mb-16" } as any}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
@@ -1796,11 +1796,11 @@ export default function LandingPage() {
               </p>
             </motion.div>
 
-            <div className="max-w-6xl mx-auto space-y-20">
+            <div {...{ className: "max-w-6xl mx-auto space-y-20" } as any}>
               
               {/* Feature 1: Auto-DM */}
               <motion.div 
-                className="grid lg:grid-cols-2 gap-12 items-center"
+                {...{ className: "grid lg:grid-cols-2 gap-12 items-center" } as any}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
@@ -1851,7 +1851,7 @@ export default function LandingPage() {
 
               {/* Feature 2: Short URLs */}
               <motion.div 
-                className="grid lg:grid-cols-2 gap-12 items-center"
+                {...{ className: "grid lg:grid-cols-2 gap-12 items-center" } as any}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
@@ -1903,7 +1903,7 @@ export default function LandingPage() {
 
               {/* Feature 3: AI Captions */}
               <motion.div 
-                className="grid lg:grid-cols-2 gap-12 items-center"
+                {...{ className: "grid lg:grid-cols-2 gap-12 items-center" } as any}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
@@ -1977,7 +1977,7 @@ export default function LandingPage() {
               ].map((problem, index) => (
                 <motion.div
                   key={index}
-                  className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-3xl p-6 text-center hover:border-purple-400/50 transition-all duration-300"
+                  {...{ className: "bg-black/20 backdrop-blur-sm border border-white/10 rounded-3xl p-6 text-center hover:border-purple-400/50 transition-all duration-300" } as any}
                   style={{ 
                     backgroundColor: 'var(--card)',
                     borderColor: 'var(--border)'
@@ -2033,7 +2033,7 @@ export default function LandingPage() {
               ].map((feature, index) => (
                 <motion.div
                   key={index}
-                  className="feature-card group relative backdrop-blur-sm border rounded-3xl p-8 hover:border-white/20 transition-all duration-300"
+                  {...{ className: "feature-card group relative backdrop-blur-sm border rounded-3xl p-8 hover:border-white/20 transition-all duration-300" } as any}
                   style={{ 
                     backgroundColor: 'var(--card)',
                     borderColor: 'var(--border)'
@@ -2143,7 +2143,7 @@ export default function LandingPage() {
             <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
               {/* Free Plan */}
               <motion.div
-                className="backdrop-blur-sm border rounded-3xl p-8 hover:border-white/20 transition-all duration-300"
+                {...{ className: "backdrop-blur-sm border rounded-3xl p-8 hover:border-white/20 transition-all duration-300" } as any}
                 style={{ 
                   backgroundColor: 'var(--card)',
                   borderColor: 'var(--border)'
@@ -2179,7 +2179,7 @@ export default function LandingPage() {
 
               {/* Starter Plan */}
               <motion.div
-                className="relative bg-gradient-to-b from-purple-500/10 to-transparent backdrop-blur-sm border-2 rounded-3xl p-8"
+                {...{ className: "relative bg-gradient-to-b from-purple-500/10 to-transparent backdrop-blur-sm border-2 rounded-3xl p-8" } as any}
                 style={{ 
                   borderColor: 'var(--primary)',
                   backgroundColor: 'var(--card)'
@@ -2223,7 +2223,7 @@ export default function LandingPage() {
 
               {/* Growth Plan */}
               <motion.div
-                className="backdrop-blur-sm border rounded-3xl p-8 hover:border-white/20 transition-all duration-300"
+                {...{ className: "backdrop-blur-sm border rounded-3xl p-8 hover:border-white/20 transition-all duration-300" } as any}
                 style={{ 
                   backgroundColor: 'var(--card)',
                   borderColor: 'var(--border)'
@@ -2268,7 +2268,7 @@ export default function LandingPage() {
         <section className="py-20 fade-in-section">
           <div className="container mx-auto px-4">
             <motion.div 
-              className="text-center mb-16"
+              {...{ className: "text-center mb-16" } as any}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
@@ -2282,9 +2282,9 @@ export default function LandingPage() {
             </motion.div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto mb-16">
+            <div {...{ className: "grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto mb-16" } as any}>
               <motion.div 
-                className="text-center"
+                {...{ className: "text-center" } as any}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
@@ -2294,7 +2294,7 @@ export default function LandingPage() {
               </motion.div>
               
               <motion.div 
-                className="text-center"
+                {...{ className: "text-center" } as any}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -2304,7 +2304,7 @@ export default function LandingPage() {
               </motion.div>
               
               <motion.div 
-                className="text-center"
+                {...{ className: "text-center" } as any}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
@@ -2314,7 +2314,7 @@ export default function LandingPage() {
               </motion.div>
               
               <motion.div 
-                className="text-center"
+                {...{ className: "text-center" } as any}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -2327,7 +2327,7 @@ export default function LandingPage() {
             {/* Testimonials Cards */}
             <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
               <motion.div
-                className="backdrop-blur-sm border rounded-2xl p-6 text-center"
+                {...{ className: "backdrop-blur-sm border rounded-2xl p-6 text-center" } as any}
                 style={{ 
                   backgroundColor: 'var(--card)',
                   borderColor: 'var(--border)'
@@ -2348,7 +2348,7 @@ export default function LandingPage() {
               </motion.div>
 
               <motion.div
-                className="backdrop-blur-sm border rounded-2xl p-6 text-center"
+                {...{ className: "backdrop-blur-sm border rounded-2xl p-6 text-center" } as any}
                 style={{ 
                   backgroundColor: 'var(--card)',
                   borderColor: 'var(--border)'
@@ -2369,7 +2369,7 @@ export default function LandingPage() {
               </motion.div>
 
               <motion.div
-                className="backdrop-blur-sm border rounded-2xl p-6 text-center"
+                {...{ className: "backdrop-blur-sm border rounded-2xl p-6 text-center" } as any}
                 style={{ 
                   backgroundColor: 'var(--card)',
                   borderColor: 'var(--border)'
@@ -2416,7 +2416,7 @@ export default function LandingPage() {
               ].map((faq, index) => (
                 <motion.div
                   key={index}
-                  className="backdrop-blur-sm border rounded-2xl overflow-hidden"
+                  {...{ className: "backdrop-blur-sm border rounded-2xl overflow-hidden" } as any}
                   style={{ 
                     backgroundColor: 'var(--card)',
                     borderColor: 'var(--border)'
@@ -2441,7 +2441,7 @@ export default function LandingPage() {
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="px-6 pb-4"
+                        {...{ className: "px-6 pb-4" } as any}
                       >
                         <p className="text-gray-400">{faq.a}</p>
                       </motion.div>
@@ -2457,7 +2457,7 @@ export default function LandingPage() {
         <section className="py-20 fade-in-section">
           <div className="container mx-auto px-4 text-center">
             <motion.div
-              className="max-w-3xl mx-auto"
+              {...{ className: "max-w-3xl mx-auto" } as any}
               whileInView={{ scale: [0.95, 1] }}
               transition={{ duration: 0.5 }}
             >
