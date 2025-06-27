@@ -397,13 +397,9 @@ function AppCarousel3D() {
           {/* Inner sparkle container */}
           <div className="relative w-16 h-16 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 rounded-full p-0.5">
             <div className="w-full h-full bg-black rounded-full flex items-center justify-center border border-white/10">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                {...{ className: "text-2xl" } as any}
-              >
+              <div className="text-2xl">
                 ✨
-              </motion.div>
+              </div>
             </div>
           </div>
           
@@ -790,10 +786,10 @@ export default function LandingPage() {
                   transition={{ duration: 0.8, delay: 0.2 }}
                 >
                   {/* Glow effect behind title */}
-                  <div className="absolute inset-0 blur-3xl bg-gradient-to-r from-orange-400/40 to-purple-400/40 -z-10" />
+                  <div className="absolute inset-0 blur-2xl md:blur-3xl bg-gradient-to-r from-orange-400/20 to-purple-400/20 md:from-orange-400/40 md:to-purple-400/40 -z-10" />
                   
                   <h3 className="text-3xl md:text-5xl font-black mb-6 tracking-tight">
-                    Mientras tú duermes, <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 animate-gradient">ellos venden</span>
+                    Mientras tú duermes, <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400">ellos venden</span>
                   </h3>
                 </motion.div>
                 
@@ -1079,7 +1075,7 @@ export default function LandingPage() {
               
               {/* Trust Indicators - MEGA GLOWUP EXTREMO */}
               <motion.div 
-                {...{ className: "grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 max-w-5xl mx-auto" } as any}
+                {...{ className: "grid grid-cols-3 gap-4 md:gap-8 mt-20 max-w-5xl mx-auto" } as any}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
@@ -1110,7 +1106,7 @@ export default function LandingPage() {
                     </>
                   )}
                   
-                  <div className={`relative ${isMobile ? 'bg-gradient-to-br from-green-950/95 via-emerald-900/95 to-green-950/95' : 'bg-gradient-to-br from-green-950/80 via-emerald-900/80 to-green-950/80 backdrop-blur-2xl'} rounded-3xl p-8 border border-green-400/20 group-hover:border-green-300/40 transition-colors duration-500 overflow-hidden min-h-[280px] flex flex-col`} style={{ willChange: 'auto' }}>
+                  <div className={`relative ${isMobile ? 'bg-gradient-to-br from-green-950/95 via-emerald-900/95 to-green-950/95' : 'bg-gradient-to-br from-green-950/80 via-emerald-900/80 to-green-950/80 backdrop-blur-2xl'} rounded-3xl p-4 md:p-8 border border-green-400/20 group-hover:border-green-300/40 transition-colors duration-500 overflow-hidden min-h-[280px] flex flex-col`} style={{ willChange: 'auto' }}>
                     {/* Animated background pattern - disabled on mobile */}
                     {!isMobile && (
                       <div className="absolute inset-0 opacity-30">
@@ -1139,15 +1135,15 @@ export default function LandingPage() {
                       }}
                     >
                       <div className="absolute inset-0 bg-gradient-to-br from-green-400 via-emerald-500 to-green-600 rounded-2xl shadow-2xl shadow-green-500/50 flex items-center justify-center">
-                        <CheckIcon className={`h-10 w-10 text-white ${isMobile ? '' : 'drop-shadow-lg'}`} />
+                        <CheckIcon className={`${isMobile ? 'h-8 w-8' : 'h-10 w-10'} text-white ${isMobile ? '' : 'drop-shadow-lg'}`} />
                       </div>
                       {/* 3D shadow */}
                       <div className="absolute inset-0 bg-gradient-to-br from-green-600 to-emerald-700 rounded-2xl" style={{ transform: "translateY(4px)", opacity: 0.4 }}></div>
                     </motion.div>
                     
                     <div className="text-center flex-grow flex flex-col justify-center">
-                      <h4 {...{ className: "text-xl font-black text-white mb-2 tracking-tight" } as any}>100% Compatible</h4>
-                      <p className="text-sm text-green-200/80 font-medium mb-4">Instagram API oficial</p>
+                      <h4 {...{ className: `${isMobile ? 'text-lg' : 'text-xl'} font-black text-white mb-2 tracking-tight` } as any}>100% Compatible</h4>
+                      <p className={`${isMobile ? 'text-xs' : 'text-sm'} text-green-200/80 font-medium mb-4`}>Instagram API oficial</p>
                     </div>
                     
                     {/* Animated bar */}
@@ -1188,7 +1184,7 @@ export default function LandingPage() {
                     </>
                   )}
                   
-                  <div className={`relative ${isMobile ? 'bg-gradient-to-br from-orange-950/95 via-yellow-900/95 to-orange-950/95' : 'bg-gradient-to-br from-orange-950/80 via-yellow-900/80 to-orange-950/80 backdrop-blur-2xl'} rounded-3xl p-8 border border-yellow-400/20 group-hover:border-yellow-300/40 transition-colors duration-500 overflow-hidden min-h-[280px] flex flex-col`} style={{ willChange: 'auto' }}>
+                  <div className={`relative ${isMobile ? 'bg-gradient-to-br from-orange-950/95 via-yellow-900/95 to-orange-950/95' : 'bg-gradient-to-br from-orange-950/80 via-yellow-900/80 to-orange-950/80 backdrop-blur-2xl'} rounded-3xl p-4 md:p-8 border border-yellow-400/20 group-hover:border-yellow-300/40 transition-colors duration-500 overflow-hidden min-h-[280px] flex flex-col`} style={{ willChange: 'auto' }}>
                     {/* Animated background pattern - disabled on mobile */}
                     {!isMobile && (
                       <div className="absolute inset-0 opacity-30">
@@ -1217,15 +1213,15 @@ export default function LandingPage() {
                       }}
                     >
                       <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 via-orange-500 to-yellow-600 rounded-2xl shadow-2xl shadow-yellow-500/50 flex items-center justify-center">
-                        <StarIcon className={`h-10 w-10 text-white ${isMobile ? '' : 'drop-shadow-lg'}`} />
+                        <StarIcon className={`${isMobile ? 'h-8 w-8' : 'h-10 w-10'} text-white ${isMobile ? '' : 'drop-shadow-lg'}`} />
                       </div>
                       {/* 3D shadow */}
                       <div className="absolute inset-0 bg-gradient-to-br from-orange-600 to-yellow-700 rounded-2xl" style={{ transform: "translateY(4px)", opacity: 0.4 }}></div>
                     </motion.div>
                     
                     <div className="text-center flex-grow flex flex-col justify-center">
-                      <h4 {...{ className: "text-xl font-black text-white mb-2 tracking-tight" } as any}>4.9/5 Estrellas</h4>
-                      <p className="text-sm text-yellow-200/80 font-medium">+1,200 creadores felices</p>
+                      <h4 {...{ className: `${isMobile ? 'text-lg' : 'text-xl'} font-black text-white mb-2 tracking-tight` } as any}>4.9/5 Estrellas</h4>
+                      <p className={`${isMobile ? 'text-xs' : 'text-sm'} text-yellow-200/80 font-medium`}>+1,200 creadores felices</p>
                       
                       {/* 3D Stars animation */}
                       <div className="flex justify-center gap-1 mt-3">
@@ -1278,7 +1274,7 @@ export default function LandingPage() {
                     </>
                   )}
                   
-                  <div className={`relative ${isMobile ? 'bg-gradient-to-br from-blue-950/95 via-cyan-900/95 to-blue-950/95' : 'bg-gradient-to-br from-blue-950/80 via-cyan-900/80 to-blue-950/80 backdrop-blur-2xl'} rounded-3xl p-8 border border-blue-400/20 group-hover:border-blue-300/40 transition-colors duration-500 overflow-hidden min-h-[280px] flex flex-col`} style={{ willChange: 'auto' }}>
+                  <div className={`relative ${isMobile ? 'bg-gradient-to-br from-blue-950/95 via-cyan-900/95 to-blue-950/95' : 'bg-gradient-to-br from-blue-950/80 via-cyan-900/80 to-blue-950/80 backdrop-blur-2xl'} rounded-3xl p-4 md:p-8 border border-blue-400/20 group-hover:border-blue-300/40 transition-colors duration-500 overflow-hidden min-h-[280px] flex flex-col`} style={{ willChange: 'auto' }}>
                     {/* Animated background pattern - disabled on mobile */}
                     {!isMobile && (
                       <div className="absolute inset-0 opacity-30">
@@ -1320,7 +1316,7 @@ export default function LandingPage() {
                       }}
                     >
                       <div className="absolute inset-0 bg-gradient-to-br from-blue-400 via-cyan-500 to-blue-600 rounded-2xl shadow-2xl shadow-blue-500/50 flex items-center justify-center">
-                        <BoltIcon className={`h-10 w-10 text-white ${isMobile ? '' : 'drop-shadow-lg'}`} />
+                        <BoltIcon className={`${isMobile ? 'h-8 w-8' : 'h-10 w-10'} text-white ${isMobile ? '' : 'drop-shadow-lg'}`} />
                       </div>
                       {/* 3D shadow */}
                       <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-cyan-700 rounded-2xl" style={{ transform: "translateY(4px)", opacity: 0.4 }}></div>
@@ -1338,22 +1334,22 @@ export default function LandingPage() {
                     </motion.div>
                     
                     <div className="text-center flex-grow flex flex-col justify-center">
-                      <h4 className="text-xl font-black text-white mb-2 tracking-tight">99.9% Uptime</h4>
-                      <p className="text-sm text-blue-200/80 font-medium">Siempre funcionando</p>
-                    </div>
-                    
-                    {/* Live indicator with pulse rings - simpler on mobile */}
-                    <div className="flex items-center justify-center gap-2 mt-4">
-                      <div className="relative">
-                        {!isMobile && (
-                          <>
-                            <div className="absolute inset-0 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                            <div className="absolute inset-0 w-3 h-3 bg-green-400 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-                          </>
-                        )}
-                        <div className={`relative w-3 h-3 bg-green-400 rounded-full ${isMobile ? '' : 'shadow-glow-green'}`}></div>
+                      <h4 className={`${isMobile ? 'text-lg' : 'text-xl'} font-black text-white mb-2 tracking-tight`}>99.9% Uptime</h4>
+                      <p className={`${isMobile ? 'text-xs' : 'text-sm'} text-blue-200/80 font-medium`}>Siempre funcionando</p>
+                      
+                      {/* Live indicator with pulse rings - simpler on mobile */}
+                      <div className="flex items-center justify-center gap-2 mt-4">
+                        <div className="relative">
+                          {!isMobile && (
+                            <>
+                              <div className="absolute inset-0 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                              <div className="absolute inset-0 w-3 h-3 bg-green-400 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                            </>
+                          )}
+                          <div className={`relative w-3 h-3 bg-green-400 rounded-full ${isMobile ? '' : 'shadow-glow-green'}`}></div>
+                        </div>
+                        <span className={`${isMobile ? 'text-xs' : 'text-sm'} text-green-400 font-bold uppercase tracking-wide whitespace-nowrap`}>LIVE NOW</span>
                       </div>
-                      <span className="text-sm text-green-400 font-bold uppercase tracking-wide">LIVE NOW</span>
                     </div>
                   </div>
                 </motion.div>
