@@ -199,21 +199,28 @@ function AppCarousel3D() {
     return () => clearInterval(interval);
   }, [images.length]);
 
-  // Handle hover
+  // Handle hover - disabled on mobile devices
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const handleMouseEnter = () => setIsHovered(true);
-    const handleMouseLeave = () => setIsHovered(false);
+    // Check if device is mobile
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                     window.matchMedia('(max-width: 768px)').matches;
 
-    container.addEventListener('mouseenter', handleMouseEnter);
-    container.addEventListener('mouseleave', handleMouseLeave);
+    // Only add hover effects on non-mobile devices
+    if (!isMobile) {
+      const handleMouseEnter = () => setIsHovered(true);
+      const handleMouseLeave = () => setIsHovered(false);
 
-    return () => {
-      container.removeEventListener('mouseenter', handleMouseEnter);
-      container.removeEventListener('mouseleave', handleMouseLeave);
-    };
+      container.addEventListener('mouseenter', handleMouseEnter);
+      container.addEventListener('mouseleave', handleMouseLeave);
+
+      return () => {
+        container.removeEventListener('mouseenter', handleMouseEnter);
+        container.removeEventListener('mouseleave', handleMouseLeave);
+      };
+    }
   }, []);
 
   return (
