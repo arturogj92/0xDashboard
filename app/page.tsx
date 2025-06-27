@@ -804,7 +804,7 @@ export default function LandingPage() {
               </div>
               
               {/* Metrics Cards - ULTRA GLOW UP VERSION */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16 stats-grid">
                 {/* DMs Automatizados - ULTRA */}
                 <motion.div
                   {...{ className: "relative group" } as any}
@@ -836,7 +836,7 @@ export default function LandingPage() {
                     )}
                     
                     {/* Content layer - on top of everything */}
-                    <div className="relative z-20 p-8">
+                    <div className="relative z-20 p-8 stats-card-content">
                       {/* Content blobs - removed on mobile */}
                       {!isMobile && (
                         <>
@@ -846,9 +846,10 @@ export default function LandingPage() {
                       )}
                       
                       <motion.div 
-                        {...{ className: "text-5xl md:text-6xl font-black mb-3 relative z-10 flex items-baseline" } as any}
+                        {...{ className: "text-5xl md:text-6xl font-black mb-3 relative z-10 flex items-baseline stats-number-wrapper" } as any}
                       >
                         <span
+                          className="stats-number"
                           style={{
                             background: "linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ea580c 100%)",
                             WebkitBackgroundClip: "text",
@@ -858,23 +859,18 @@ export default function LandingPage() {
                         >
                           2.1M
                         </span>
-                        <span className="text-orange-400 font-black ml-1" style={{ filter: isMobile ? "drop-shadow(0 0 5px rgba(251, 146, 60, 0.5))" : "drop-shadow(0 0 10px rgba(251, 146, 60, 0.8))" }}>+</span>
+                        <span className="text-orange-400 font-black ml-1 stats-number" style={{ filter: isMobile ? "drop-shadow(0 0 5px rgba(251, 146, 60, 0.5))" : "drop-shadow(0 0 10px rgba(251, 146, 60, 0.8))" }}>+</span>
                       </motion.div>
-                      <div {...{ className: "text-lg font-semibold text-white mb-2 relative z-10" } as any}>DMs enviados</div>
-                      <div className="text-sm text-orange-300/80 relative z-10">sin spam ni baneos</div>
+                      <div {...{ className: "text-lg font-semibold text-white mb-2 relative z-10 stats-title" } as any}>DMs enviados</div>
+                      <div className="text-sm text-orange-300/80 relative z-10 stats-description">sin spam ni baneos</div>
                     </div>
                     
-                    {/* Floating badge - simpler animation on mobile */}
-                    <motion.div 
-                      {...{ className: "absolute -top-3 -right-3 w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center text-xl shadow-2xl shadow-orange-500/50" } as any}
-                      animate={isMobile ? {} : { 
-                        rotate: [0, 10, -10, 0],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{ duration: 4, repeat: Infinity }}
-                    >
-                      🔥
-                    </motion.div>
+                    {/* Background Icon */}
+                    <div className="absolute bottom-4 right-4 opacity-5">
+                      <svg className="stats-icon" width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 8L10.89 13.26C11.2187 13.4793 11.6049 13.5963 12 13.5963C12.3951 13.5963 12.7813 13.4793 13.11 13.26L21 8M5 19H19C19.5304 19 20.0391 18.7893 20.4142 18.4142C20.7893 18.0391 21 17.5304 21 17V7C21 6.46957 20.7893 5.96086 20.4142 5.58579C20.0391 5.21071 19.5304 5 19 5H5C4.46957 5 3.96086 5.21071 3.58579 5.58579C3.21071 5.96086 3 6.46957 3 7V17C3 17.5304 3.21071 18.0391 3.58579 18.4142C3.96086 18.7893 4.46957 19 5 19Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
                   </div>
                 </motion.div>
                 
@@ -886,34 +882,42 @@ export default function LandingPage() {
                   transition={{ duration: 0.8, delay: 0.4 }}
                   style={isMobile ? { transform: 'translateZ(0)', willChange: 'transform, opacity' } : {}}
                 >
-                  {/* Simple static glow - reduced on mobile */}
-                  <div className={`absolute -inset-1 bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-3xl ${isMobile ? 'blur-md' : 'blur-xl'}`} />
+                  {/* Epic multi-layer glow effect - purple theme */}
+                  <div className={`absolute -inset-1 bg-gradient-to-r from-purple-600/20 to-violet-600/20 rounded-3xl ${isMobile ? 'blur-md' : 'blur-xl'}`} />
                   
-                  <div className={`relative h-full bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 ${isMobile ? '' : 'backdrop-blur-xl'} rounded-3xl p-8 border border-white/10 overflow-hidden`}>
-                    {/* Animated background pattern - disabled on mobile */}
+                  <div className="relative h-full rounded-3xl border border-white/10 overflow-hidden">
+                    {/* Background layer */}
+                    <div className={`absolute inset-0 bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 ${isMobile ? '' : 'backdrop-blur-xl'} rounded-3xl`}></div>
+                    {/* Blobs layer - enhanced for purple theme */}
                     {!isMobile && (
-                      <div className="absolute inset-0 opacity-10">
-                        <div className="absolute inset-0 bg-gradient-to-br from-purple-400/20 to-transparent animate-gradient" />
+                      <div className="absolute inset-0 z-10">
+                        <div className="absolute top-4 right-4 w-40 h-40 bg-gradient-to-br from-purple-400 to-violet-500 rounded-full blur-3xl opacity-30"></div>
+                        <div className="absolute bottom-4 left-4 w-32 h-32 bg-gradient-to-br from-violet-400 to-purple-500 rounded-full blur-2xl opacity-25"></div>
                       </div>
                     )}
                     
-                    {/* Background blobs - reduced on mobile */}
-                    {!isMobile ? (
-                      <>
-                        <div className="absolute -top-6 -left-8 w-44 h-44 bg-purple-500/30 rounded-full blur-3xl" />
-                        <div className="absolute bottom-4 right-4 w-36 h-36 bg-blue-500/25 rounded-full blur-2xl" />
-                        <div className="absolute top-1/3 right-1/2 w-24 h-24 bg-purple-400/20 rounded-full blur-xl" />
-                      </>
-                    ) : (
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full blur-2xl opacity-20" />
+                    {/* Single blob for mobile */}
+                    {isMobile && (
+                      <div className="absolute inset-0 z-10">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-to-br from-purple-400 to-violet-500 rounded-full blur-2xl opacity-20"></div>
+                      </div>
                     )}
                     
-                    {/* Content */}
-                    <div className="relative z-10">
+                    {/* Content layer - on top of everything */}
+                    <div className="relative z-20 p-8 stats-card-content">
+                      {/* Content blobs - removed on mobile */}
+                      {!isMobile && (
+                        <>
+                          <div className="absolute -top-4 -right-4 w-24 h-24 bg-purple-400/20 rounded-full blur-2xl"></div>
+                          <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-violet-400/20 rounded-full blur-xl"></div>
+                        </>
+                      )}
+                      
                       <motion.div 
-                        {...{ className: "text-5xl md:text-6xl font-black mb-3 flex items-baseline" } as any}
+                        {...{ className: "text-5xl md:text-6xl font-black mb-3 relative z-10 flex items-baseline stats-number-wrapper" } as any}
                       >
                         <span
+                          className="stats-number"
                           style={{
                             background: "linear-gradient(135deg, #c084fc 0%, #a855f7 50%, #9333ea 100%)",
                             WebkitBackgroundClip: "text",
@@ -923,23 +927,18 @@ export default function LandingPage() {
                         >
                           847K
                         </span>
-                        <span className="text-purple-400 font-black ml-1" style={{ filter: isMobile ? "drop-shadow(0 0 5px rgba(168, 85, 247, 0.5))" : "drop-shadow(0 0 10px rgba(168, 85, 247, 0.8))" }}>+</span>
+                        <span className="text-purple-400 font-black ml-1 stats-number" style={{ filter: isMobile ? "drop-shadow(0 0 5px rgba(168, 85, 247, 0.5))" : "drop-shadow(0 0 10px rgba(168, 85, 247, 0.8))" }}>+</span>
                       </motion.div>
-                      <div {...{ className: "text-lg font-semibold text-white mb-2" } as any}>Clicks en bio</div>
-                      <div className="text-sm text-purple-300/80">32% conversión</div>
+                      <div {...{ className: "text-lg font-semibold text-white mb-2 relative z-10 stats-title" } as any}>Clicks en bio</div>
+                      <div className="text-sm text-purple-300/80 relative z-10 stats-description">32% conversión</div>
                     </div>
                     
-                    {/* Floating badge - simpler animation on mobile */}
-                    <motion.div 
-                      {...{ className: "absolute -top-3 -right-3 w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center text-xl shadow-2xl shadow-purple-500/50" } as any}
-                      animate={isMobile ? {} : { 
-                        rotate: [0, -10, 10, 0],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
-                    >
-                      💎
-                    </motion.div>
+                    {/* Background Icon */}
+                    <div className="absolute bottom-4 right-4 opacity-5">
+                      <svg className="stats-icon" width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
                   </div>
                 </motion.div>
                 
@@ -951,34 +950,42 @@ export default function LandingPage() {
                   transition={{ duration: 0.8, delay: 0.6 }}
                   style={isMobile ? { transform: 'translateZ(0)', willChange: 'transform, opacity' } : {}}
                 >
-                  {/* Reduced glow - simpler on mobile */}
+                  {/* Epic multi-layer glow effect - green theme */}
                   <div className={`absolute -inset-1 bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-3xl ${isMobile ? 'blur-md' : 'blur-xl'}`} />
                   
-                  <div className={`relative h-full bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 ${isMobile ? '' : 'backdrop-blur-xl'} rounded-3xl p-8 border border-white/10 overflow-hidden`}>
-                    {/* Animated background pattern - disabled on mobile */}
+                  <div className="relative h-full rounded-3xl border border-white/10 overflow-hidden">
+                    {/* Background layer */}
+                    <div className={`absolute inset-0 bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 ${isMobile ? '' : 'backdrop-blur-xl'} rounded-3xl`}></div>
+                    {/* Blobs layer - enhanced for green theme */}
                     {!isMobile && (
-                      <div className="absolute inset-0 opacity-10">
-                        <div className="absolute inset-0 bg-gradient-to-br from-green-400/20 to-transparent animate-gradient" />
+                      <div className="absolute inset-0 z-10">
+                        <div className="absolute top-4 right-4 w-40 h-40 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full blur-3xl opacity-30"></div>
+                        <div className="absolute bottom-4 left-4 w-32 h-32 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full blur-2xl opacity-25"></div>
                       </div>
                     )}
                     
-                    {/* Background blobs - reduced on mobile */}
-                    {!isMobile ? (
-                      <>
-                        <div className="absolute -top-4 right-2 w-36 h-36 bg-green-500/30 rounded-full blur-3xl" />
-                        <div className="absolute bottom-2 -left-4 w-40 h-40 bg-emerald-500/25 rounded-full blur-2xl" />
-                        <div className="absolute top-1/2 left-1/2 w-28 h-28 bg-green-400/20 rounded-full blur-xl" />
-                      </>
-                    ) : (
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full blur-2xl opacity-20" />
+                    {/* Single blob for mobile */}
+                    {isMobile && (
+                      <div className="absolute inset-0 z-10">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full blur-2xl opacity-20"></div>
+                      </div>
                     )}
                     
-                    {/* Content */}
-                    <div className="relative z-10">
+                    {/* Content layer - on top of everything */}
+                    <div className="relative z-20 p-8 stats-card-content">
+                      {/* Content blobs - removed on mobile */}
+                      {!isMobile && (
+                        <>
+                          <div className="absolute -top-4 -right-4 w-24 h-24 bg-green-400/20 rounded-full blur-2xl"></div>
+                          <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-emerald-400/20 rounded-full blur-xl"></div>
+                        </>
+                      )}
+                      
                       <motion.div 
-                        {...{ className: "text-5xl md:text-6xl font-black mb-3 flex items-baseline" } as any}
+                        {...{ className: "text-5xl md:text-6xl font-black mb-3 relative z-10 flex items-baseline stats-number-wrapper" } as any}
                       >
                         <span
+                          className="stats-number"
                           style={{
                             background: "linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #16a34a 100%)",
                             WebkitBackgroundClip: "text",
@@ -988,23 +995,18 @@ export default function LandingPage() {
                         >
                           18K
                         </span>
-                        <span className="text-green-400 font-black ml-1" style={{ filter: isMobile ? "drop-shadow(0 0 5px rgba(34, 197, 94, 0.5))" : "drop-shadow(0 0 10px rgba(34, 197, 94, 0.8))" }}>+</span>
+                        <span className="text-green-400 font-black ml-1 stats-number" style={{ filter: isMobile ? "drop-shadow(0 0 5px rgba(34, 197, 94, 0.5))" : "drop-shadow(0 0 10px rgba(34, 197, 94, 0.8))" }}>+</span>
                       </motion.div>
-                      <div {...{ className: "text-lg font-semibold text-white mb-2" } as any}>Horas ahorradas</div>
-                      <div className="text-sm text-green-300/80">= 2 años de trabajo</div>
+                      <div {...{ className: "text-lg font-semibold text-white mb-2 relative z-10 stats-title" } as any}>Horas ahorradas</div>
+                      <div className="text-sm text-green-300/80 relative z-10 stats-description">= 2 años de trabajo</div>
                     </div>
                     
-                    {/* Floating badge - simpler animation on mobile */}
-                    <motion.div 
-                      {...{ className: "absolute -top-3 -right-3 w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center text-xl shadow-2xl shadow-green-500/50" } as any}
-                      animate={isMobile ? {} : { 
-                        rotate: [0, 10, -10, 0],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{ duration: 4, repeat: Infinity, delay: 1 }}
-                    >
-                      ⏰
-                    </motion.div>
+                    {/* Background Icon */}
+                    <div className="absolute bottom-4 right-4 opacity-5">
+                      <svg className="stats-icon" width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 8V12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
                   </div>
                 </motion.div>
                 
@@ -1016,32 +1018,39 @@ export default function LandingPage() {
                   transition={{ duration: 0.8, delay: 0.8 }}
                   style={isMobile ? { transform: 'translateZ(0)', willChange: 'transform, opacity' } : {}}
                 >
-                  {/* Reduced glow - simpler on mobile */}
+                  {/* Epic multi-layer glow effect - blue theme */}
                   <div className={`absolute -inset-1 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-3xl ${isMobile ? 'blur-md' : 'blur-xl'}`} />
                   
-                  <div className={`relative h-full bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 ${isMobile ? '' : 'backdrop-blur-xl'} rounded-3xl p-8 border border-white/10 overflow-hidden`}>
-                    {/* Animated background pattern - disabled on mobile */}
+                  <div className="relative h-full rounded-3xl border border-white/10 overflow-hidden">
+                    {/* Background layer */}
+                    <div className={`absolute inset-0 bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 ${isMobile ? '' : 'backdrop-blur-xl'} rounded-3xl`}></div>
+                    {/* Blobs layer - enhanced for blue theme */}
                     {!isMobile && (
-                      <div className="absolute inset-0 opacity-10">
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-transparent animate-gradient" />
+                      <div className="absolute inset-0 z-10">
+                        <div className="absolute top-4 right-4 w-40 h-40 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full blur-3xl opacity-30"></div>
+                        <div className="absolute bottom-4 left-4 w-32 h-32 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full blur-2xl opacity-25"></div>
                       </div>
                     )}
                     
-                    {/* Background blobs - reduced on mobile */}
-                    {!isMobile ? (
-                      <>
-                        <div className="absolute top-2 -right-6 w-38 h-38 bg-blue-500/30 rounded-full blur-3xl" />
-                        <div className="absolute -bottom-4 left-4 w-34 h-34 bg-cyan-500/25 rounded-full blur-2xl" />
-                        <div className="absolute top-1/2 left-1/4 w-22 h-22 bg-blue-400/20 rounded-full blur-xl" />
-                      </>
-                    ) : (
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full blur-2xl opacity-20" />
+                    {/* Single blob for mobile */}
+                    {isMobile && (
+                      <div className="absolute inset-0 z-10">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full blur-2xl opacity-20"></div>
+                      </div>
                     )}
                     
-                    {/* Content */}
-                    <div className="relative z-10">
+                    {/* Content layer - on top of everything */}
+                    <div className="relative z-20 p-8 stats-card-content">
+                      {/* Content blobs - removed on mobile */}
+                      {!isMobile && (
+                        <>
+                          <div className="absolute -top-4 -right-4 w-24 h-24 bg-blue-400/20 rounded-full blur-2xl"></div>
+                          <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-cyan-400/20 rounded-full blur-xl"></div>
+                        </>
+                      )}
+                      
                       <motion.div 
-                        {...{ className: "text-5xl md:text-6xl font-black mb-3" } as any}
+                        {...{ className: "text-5xl md:text-6xl font-black mb-3 relative z-10 stats-number-wrapper stats-number" } as any}
                         style={{
                           background: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%)",
                           WebkitBackgroundClip: "text",
@@ -1051,21 +1060,16 @@ export default function LandingPage() {
                       >
                         427%
                       </motion.div>
-                      <div {...{ className: "text-lg font-semibold text-white mb-2" } as any}>ROI promedio</div>
-                      <div className="text-sm text-blue-300/80">en 90 días</div>
+                      <div {...{ className: "text-lg font-semibold text-white mb-2 relative z-10 stats-title" } as any}>ROI promedio</div>
+                      <div className="text-sm text-blue-300/80 relative z-10 stats-description">en 90 días</div>
                     </div>
                     
-                    {/* Floating badge - simpler animation on mobile */}
-                    <motion.div 
-                      {...{ className: "absolute -top-3 -right-3 w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center text-xl shadow-2xl shadow-blue-500/50" } as any}
-                      animate={isMobile ? {} : { 
-                        rotate: [0, -10, 10, 0],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{ duration: 4, repeat: Infinity, delay: 1.5 }}
-                    >
-                      📈
-                    </motion.div>
+                    {/* Background Icon */}
+                    <div className="absolute bottom-4 right-4 opacity-5">
+                      <svg className="stats-icon" width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 3V21H21M7 14L11 10L15 14L20 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
                   </div>
                 </motion.div>
               </div>

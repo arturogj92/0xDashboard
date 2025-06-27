@@ -269,3 +269,110 @@ html {
     0%, 100% { opacity: 0.1; }
   }
 }
+
+/* Stats Cards Responsive Styles */
+@layer components {
+  /* Mobile optimizations for stats cards */
+  @media (max-width: 640px) {
+    /* Reduce padding on mobile */
+    .stats-card-content {
+      padding: 1rem !important;
+    }
+    
+    /* Smaller font sizes for mobile */
+    .stats-number {
+      font-size: 1.875rem !important; /* 30px */
+      line-height: 2.25rem !important;
+    }
+    
+    .stats-title {
+      font-size: 1rem !important; /* 16px */
+      line-height: 1.5rem !important;
+    }
+    
+    .stats-description {
+      font-size: 0.75rem !important; /* 12px */
+      line-height: 1rem !important;
+    }
+    
+    /* Adjust icon size on mobile */
+    .stats-icon {
+      width: 80px !important;
+      height: 80px !important;
+    }
+    
+    /* Reduce gap between elements */
+    .stats-number-wrapper {
+      margin-bottom: 0.5rem !important;
+    }
+  }
+  
+  /* Small mobile screens (< 375px) */
+  @media (max-width: 375px) {
+    .stats-card-content {
+      padding: 0.75rem !important;
+    }
+    
+    .stats-number {
+      font-size: 1.5rem !important; /* 24px */
+      line-height: 2rem !important;
+    }
+    
+    .stats-title {
+      font-size: 0.875rem !important; /* 14px */
+      line-height: 1.25rem !important;
+    }
+    
+    .stats-description {
+      font-size: 0.75rem !important; /* 12px */
+      line-height: 1rem !important;
+    }
+    
+    .stats-icon {
+      width: 60px !important;
+      height: 60px !important;
+      opacity: 0.03 !important;
+    }
+  }
+  
+  /* Tablet adjustments */
+  @media (min-width: 641px) and (max-width: 768px) {
+    .stats-card-content {
+      padding: 1.5rem !important;
+    }
+    
+    .stats-number {
+      font-size: 2.25rem !important; /* 36px */
+    }
+  }
+  
+  /* Multi-line text handling */
+  .stats-title, .stats-description {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+}
+
+/* Ensure grid gap is smaller on mobile */
+@media (max-width: 640px) {
+  .stats-grid {
+    gap: 0.75rem !important;
+  }
+}
+
+/* Override for very small screens */
+@media (max-width: 320px) {
+  .stats-grid {
+    gap: 0.5rem !important;
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  }
+  
+  .stats-card-content {
+    padding: 0.5rem !important;
+  }
+  
+  .stats-number {
+    font-size: 1.25rem !important; /* 20px */
+  }
+}
