@@ -206,3 +206,66 @@ html {
 .animate-shine {
   animation: shine 0.6s ease-out;
 }
+
+/* Mobile Performance Optimizations */
+@media (max-width: 768px) {
+  /* Disable heavy blur effects */
+  .blur-3xl { filter: blur(24px) !important; }
+  .blur-2xl { filter: blur(16px) !important; }
+  .blur-xl { filter: blur(8px) !important; }
+  .blur-lg { filter: blur(4px) !important; }
+  
+  /* Disable backdrop filters on mobile */
+  .backdrop-blur-3xl,
+  .backdrop-blur-2xl,
+  .backdrop-blur-xl,
+  .backdrop-blur-lg,
+  .backdrop-blur-md,
+  .backdrop-blur-sm,
+  .backdrop-blur {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  /* Disable mix blend modes */
+  .mix-blend-screen,
+  .mix-blend-overlay,
+  .mix-blend-multiply {
+    mix-blend-mode: normal !important;
+  }
+  
+  /* Simplify animations */
+  .animate-pulse {
+    animation: none !important;
+  }
+  
+  .animate-ping {
+    animation: none !important;
+  }
+  
+  /* Force hardware acceleration on transformed elements */
+  .transform {
+    transform: translateZ(0);
+    will-change: auto;
+  }
+  
+  /* Force GPU acceleration for motion elements */
+  [data-framer-motion] {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    perspective: 1000px;
+    -webkit-perspective: 1000px;
+  }
+  
+  /* Reduce shadow complexity */
+  .shadow-2xl {
+    box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1) !important;
+  }
+  
+  /* Disable gradient animations */
+  @keyframes gradient {
+    0%, 100% { opacity: 0.1; }
+  }
+}
