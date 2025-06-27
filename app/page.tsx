@@ -1110,7 +1110,7 @@ export default function LandingPage() {
                     </>
                   )}
                   
-                  <div className={`relative ${isMobile ? 'bg-gradient-to-br from-green-950/95 via-emerald-900/95 to-green-950/95' : 'bg-gradient-to-br from-green-950/80 via-emerald-900/80 to-green-950/80 backdrop-blur-2xl'} rounded-3xl p-8 border border-green-400/20 group-hover:border-green-300/40 transition-colors duration-500 overflow-hidden`} style={{ willChange: 'auto' }}>
+                  <div className={`relative ${isMobile ? 'bg-gradient-to-br from-green-950/95 via-emerald-900/95 to-green-950/95' : 'bg-gradient-to-br from-green-950/80 via-emerald-900/80 to-green-950/80 backdrop-blur-2xl'} rounded-3xl p-8 border border-green-400/20 group-hover:border-green-300/40 transition-colors duration-500 overflow-hidden min-h-[280px] flex flex-col`} style={{ willChange: 'auto' }}>
                     {/* Animated background pattern - disabled on mobile */}
                     {!isMobile && (
                       <div className="absolute inset-0 opacity-30">
@@ -1145,8 +1145,10 @@ export default function LandingPage() {
                       <div className="absolute inset-0 bg-gradient-to-br from-green-600 to-emerald-700 rounded-2xl" style={{ transform: "translateY(4px)", opacity: 0.4 }}></div>
                     </motion.div>
                     
-                    <h4 {...{ className: "text-xl font-black text-white mb-2 tracking-tight" } as any}>100% Compatible</h4>
-                    <p className="text-sm text-green-200/80 font-medium">Instagram API oficial</p>
+                    <div className="text-center flex-grow flex flex-col justify-center">
+                      <h4 {...{ className: "text-xl font-black text-white mb-2 tracking-tight" } as any}>100% Compatible</h4>
+                      <p className="text-sm text-green-200/80 font-medium mb-4">Instagram API oficial</p>
+                    </div>
                     
                     {/* Animated bar */}
                     <div className="mt-4 h-1 bg-green-900/50 rounded-full overflow-hidden">
@@ -1186,7 +1188,7 @@ export default function LandingPage() {
                     </>
                   )}
                   
-                  <div className={`relative ${isMobile ? 'bg-gradient-to-br from-orange-950/95 via-yellow-900/95 to-orange-950/95' : 'bg-gradient-to-br from-orange-950/80 via-yellow-900/80 to-orange-950/80 backdrop-blur-2xl'} rounded-3xl p-8 border border-yellow-400/20 group-hover:border-yellow-300/40 transition-colors duration-500 overflow-hidden`} style={{ willChange: 'auto' }}>
+                  <div className={`relative ${isMobile ? 'bg-gradient-to-br from-orange-950/95 via-yellow-900/95 to-orange-950/95' : 'bg-gradient-to-br from-orange-950/80 via-yellow-900/80 to-orange-950/80 backdrop-blur-2xl'} rounded-3xl p-8 border border-yellow-400/20 group-hover:border-yellow-300/40 transition-colors duration-500 overflow-hidden min-h-[280px] flex flex-col`} style={{ willChange: 'auto' }}>
                     {/* Animated background pattern - disabled on mobile */}
                     {!isMobile && (
                       <div className="absolute inset-0 opacity-30">
@@ -1221,11 +1223,12 @@ export default function LandingPage() {
                       <div className="absolute inset-0 bg-gradient-to-br from-orange-600 to-yellow-700 rounded-2xl" style={{ transform: "translateY(4px)", opacity: 0.4 }}></div>
                     </motion.div>
                     
-                    <h4 {...{ className: "text-xl font-black text-white mb-2 tracking-tight" } as any}>4.9/5 Estrellas</h4>
-                    <p className="text-sm text-yellow-200/80 font-medium">+1,200 creadores felices</p>
-                    
-                    {/* 3D Stars animation */}
-                    <div className="flex justify-center gap-1 mt-3">
+                    <div className="text-center flex-grow flex flex-col justify-center">
+                      <h4 {...{ className: "text-xl font-black text-white mb-2 tracking-tight" } as any}>4.9/5 Estrellas</h4>
+                      <p className="text-sm text-yellow-200/80 font-medium">+1,200 creadores felices</p>
+                      
+                      {/* 3D Stars animation */}
+                      <div className="flex justify-center gap-1 mt-3">
                       {[...Array(5)].map((_, i) => (
                         <motion.div
                           key={i}
@@ -1245,6 +1248,7 @@ export default function LandingPage() {
                           <StarIcon className={`h-5 w-5 text-yellow-400 fill-yellow-400 ${isMobile ? '' : 'drop-shadow-glow'}`} />
                         </motion.div>
                       ))}
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -1274,7 +1278,7 @@ export default function LandingPage() {
                     </>
                   )}
                   
-                  <div className={`relative ${isMobile ? 'bg-gradient-to-br from-blue-950/95 via-cyan-900/95 to-blue-950/95' : 'bg-gradient-to-br from-blue-950/80 via-cyan-900/80 to-blue-950/80 backdrop-blur-2xl'} rounded-3xl p-8 border border-blue-400/20 group-hover:border-blue-300/40 transition-colors duration-500 overflow-hidden`} style={{ willChange: 'auto' }}>
+                  <div className={`relative ${isMobile ? 'bg-gradient-to-br from-blue-950/95 via-cyan-900/95 to-blue-950/95' : 'bg-gradient-to-br from-blue-950/80 via-cyan-900/80 to-blue-950/80 backdrop-blur-2xl'} rounded-3xl p-8 border border-blue-400/20 group-hover:border-blue-300/40 transition-colors duration-500 overflow-hidden min-h-[280px] flex flex-col`} style={{ willChange: 'auto' }}>
                     {/* Animated background pattern - disabled on mobile */}
                     {!isMobile && (
                       <div className="absolute inset-0 opacity-30">
@@ -1333,8 +1337,10 @@ export default function LandingPage() {
                       )}
                     </motion.div>
                     
-                    <h4 className="text-xl font-black text-white mb-2 tracking-tight">99.9% Uptime</h4>
-                    <p className="text-sm text-blue-200/80 font-medium">Siempre funcionando</p>
+                    <div className="text-center flex-grow flex flex-col justify-center">
+                      <h4 className="text-xl font-black text-white mb-2 tracking-tight">99.9% Uptime</h4>
+                      <p className="text-sm text-blue-200/80 font-medium">Siempre funcionando</p>
+                    </div>
                     
                     {/* Live indicator with pulse rings - simpler on mobile */}
                     <div className="flex items-center justify-center gap-2 mt-4">
