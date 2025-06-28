@@ -188,8 +188,6 @@ function ActivityTicker() {
 // 3D iPhone Carousel Component
 function AppCarousel3D() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
   
   const images = [
     {
@@ -222,45 +220,15 @@ function AppCarousel3D() {
     return () => clearInterval(interval);
   }, [images.length]);
 
-  // Handle hover - disabled on mobile devices
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    // Check if device is mobile
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-                     window.matchMedia('(max-width: 768px)').matches;
-
-    // Only add hover effects on non-mobile devices
-    if (!isMobile) {
-      const handleMouseEnter = () => setIsHovered(true);
-      const handleMouseLeave = () => setIsHovered(false);
-
-      container.addEventListener('mouseenter', handleMouseEnter);
-      container.addEventListener('mouseleave', handleMouseLeave);
-
-      return () => {
-        container.removeEventListener('mouseenter', handleMouseEnter);
-        container.removeEventListener('mouseleave', handleMouseLeave);
-      };
-    }
-  }, []);
 
   return (
-    <div ref={containerRef} className="relative">
+    <div className="relative">
       {/* iPhone Frame - Simplified 3D */}
       <motion.div
         {...{ className: "relative" } as any}
         style={{ 
           width: '300px', 
           height: '600px',
-        }}
-        animate={{
-          scale: isHovered ? 1.02 : 1,
-        }}
-        transition={{ 
-          duration: 0.2,
-          ease: "easeOut"
         }}
       >
         {/* iPhone shadow - Static and simple */}
@@ -353,18 +321,11 @@ function AppCarousel3D() {
       
       {/* Rocket Badge - Más moderno */}
       <motion.div
-        {...{ className: "absolute -top-8 -left-8 group cursor-pointer" } as any}
-        animate={{
-          y: isHovered ? -15 : 0,
-          x: isHovered ? -10 : 0,
-          rotate: isHovered ? 12 : 0,
-          scale: isHovered ? 1.1 : 1,
-        }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        {...{ className: "absolute -top-8 -left-8" } as any}
       >
         <div className="relative">
           {/* Glow effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-red-500 rounded-full blur-md opacity-60 group-hover:opacity-80 transition-opacity"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-red-500 rounded-full blur-md opacity-60"></div>
           
           {/* Main badge - Redondito como el sparkle */}
           <div className="relative w-12 h-12 bg-gradient-to-r from-orange-400 to-red-500 rounded-full p-0.5">
@@ -377,14 +338,7 @@ function AppCarousel3D() {
       
       {/* Sparkle Orb - Más sofisticado */}
       <motion.div
-        {...{ className: "absolute -bottom-8 -right-8 group cursor-pointer" } as any}
-        animate={{
-          y: isHovered ? 20 : 0,
-          x: isHovered ? 15 : 0,
-          rotate: isHovered ? -12 : 0,
-          scale: isHovered ? 1.2 : 1,
-        }}
-        transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+        {...{ className: "absolute -bottom-8 -right-8" } as any}
       >
         <div className="relative">
           {/* Animated glow rings */}
@@ -519,6 +473,29 @@ export default function LandingPage() {
   const [activeFAQ, setActiveFAQ] = useState<number | null>(null);
   const isMobile = useIsMobile();
 
+  // Optimización para el carousel durante el scroll
+  useEffect(() => {
+    if (!isMobile) { // Solo en desktop
+      let scrollTimeout: NodeJS.Timeout;
+      
+      const handleScroll = () => {
+        document.body.classList.add('is-scrolling');
+        
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          document.body.classList.remove('is-scrolling');
+        }, 150);
+      };
+      
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+        clearTimeout(scrollTimeout);
+      };
+    }
+  }, [isMobile]);
+
   useEffect(() => {
     // GSAP animations on scroll
     const ctx = gsap.context(() => {
@@ -626,6 +603,21 @@ export default function LandingPage() {
           }
           .perspective-1000 {
             perspective: 1000px;
+          }
+          
+          /* Carousel scroll optimization */
+          .carousel-container {
+            will-change: auto;
+          }
+          
+          body.is-scrolling .carousel-container {
+            pointer-events: none !important;
+          }
+          
+          body.is-scrolling .carousel-container * {
+            pointer-events: none !important;
+            transition: none !important;
+            animation-play-state: paused !important;
           }
           
           /* Mobile Performance Optimizations */
@@ -738,7 +730,7 @@ export default function LandingPage() {
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 1, delay: 0.8 }}
-                  {...{ className: "relative" } as any}
+                  {...{ className: "relative carousel-container" } as any}
                   style={{ perspective: '1000px' }}
                 >
                   <AppCarousel3D />
