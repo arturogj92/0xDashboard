@@ -2077,6 +2077,358 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* Features Section - Las 4 herramientas principales */}
+        <section className="relative py-32 overflow-hidden">
+          {/* Fondo con gradient mesh sutil */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-br from-purple-500/5 to-transparent rounded-full blur-[200px]"></div>
+            <div className="absolute bottom-0 right-1/4 w-[800px] h-[800px] bg-gradient-to-br from-orange-500/5 to-transparent rounded-full blur-[200px]"></div>
+          </div>
+
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1 }}
+              className="max-w-7xl mx-auto"
+            >
+              {/* Header de la sección */}
+              <motion.div 
+                className="text-center mb-20"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+              >
+                <h2 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
+                  4 herramientas que <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400">multiplican tus ventas</span>
+                </h2>
+                <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto">
+                  Todo integrado, todo automático, todo en una plataforma
+                </p>
+              </motion.div>
+
+              {/* Grid de features 2x2 */}
+              <div className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto features-grid">
+                
+                {/* Feature 1: DM Automation */}
+                <motion.div
+                  className="relative group"
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.1 }}
+                  whileHover={isMobile ? {} : { scale: 1.02 }}
+                >
+                  {/* Glow effect */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-orange-600/20 to-red-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-40 transition duration-500"></div>
+                  
+                  <div className="relative h-full bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 lg:p-10 border border-white/10 group-hover:border-orange-500/30 transition-all duration-500 overflow-hidden">
+                    {/* Background decoration */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-orange-500/10 to-transparent rounded-full blur-3xl"></div>
+                    
+                    {/* Icon */}
+                    <motion.div 
+                      className="relative w-20 h-20 mb-6"
+                      animate={isMobile ? {} : { 
+                        scale: [1, 1.05, 1]
+                      }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl shadow-2xl shadow-orange-500/30"></div>
+                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-600/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                        <ChatBubbleLeftRightIcon className="h-10 w-10 text-white" />
+                      </div>
+                    </motion.div>
+
+                    {/* Content */}
+                    <h3 className="text-2xl lg:text-3xl font-black mb-4 text-white">
+                      Responde DMs en 3 segundos
+                    </h3>
+                    <p className="text-gray-300 mb-6 text-lg">
+                      Detecta palabras clave en comentarios de tus Reels y Stories. Envía DMs personalizados con botones de compra. Vende mientras duermes.
+                    </p>
+
+                    {/* Feature list */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-orange-400 flex-shrink-0" />
+                        <span className="text-gray-200">Hasta 5 palabras clave por contenido</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-orange-400 flex-shrink-0" />
+                        <span className="text-gray-200">Mensajes con IA personalizada</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-orange-400 flex-shrink-0" />
+                        <span className="text-gray-200">Botones con enlaces directos</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-orange-400 flex-shrink-0" />
+                        <span className="text-gray-200">Analytics en tiempo real</span>
+                      </div>
+                    </div>
+
+                    {/* Badge */}
+                    <div className="absolute top-8 right-8">
+                      <motion.div
+                        className="bg-gradient-to-r from-orange-500/20 to-red-500/20 backdrop-blur-sm border border-orange-500/30 rounded-full px-4 py-2"
+                        animate={{ scale: [1, 1.05, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      >
+                        <span className="text-orange-300 text-sm font-bold">2.1M DMs enviados</span>
+                      </motion.div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Feature 2: Landing Personalizada */}
+                <motion.div
+                  className="relative group"
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                  whileHover={isMobile ? {} : { scale: 1.02 }}
+                >
+                  {/* Glow effect */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-40 transition duration-500"></div>
+                  
+                  <div className="relative h-full bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 lg:p-10 border border-white/10 group-hover:border-purple-500/30 transition-all duration-500 overflow-hidden">
+                    {/* Background decoration */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-500/10 to-transparent rounded-full blur-3xl"></div>
+                    
+                    {/* Icon */}
+                    <motion.div 
+                      className="relative w-20 h-20 mb-6"
+                      animate={isMobile ? {} : { 
+                        scale: [1, 1.05, 1]
+                      }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl shadow-2xl shadow-purple-500/30"></div>
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-600/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                        <CursorArrowRaysIcon className="h-10 w-10 text-white" />
+                      </div>
+                    </motion.div>
+
+                    {/* Content */}
+                    <h3 className="text-2xl lg:text-3xl font-black mb-4 text-white">
+                      Tu link-in-bio que vende
+                    </h3>
+                    <p className="text-gray-300 mb-6 text-lg">
+                      Crea tu tienda en 5 minutos. Múltiples temas profesionales. Tu dominio personal. Convierte 3x más que Linktree.
+                    </p>
+
+                    {/* Feature list */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-purple-400 flex-shrink-0" />
+                        <span className="text-gray-200">Wizard paso a paso</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-purple-400 flex-shrink-0" />
+                        <span className="text-gray-200">Dominio tuusuario.creator0x.com</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-purple-400 flex-shrink-0" />
+                        <span className="text-gray-200">Enlaces ilimitados</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-purple-400 flex-shrink-0" />
+                        <span className="text-gray-200">Temas personalizables</span>
+                      </div>
+                    </div>
+
+                    {/* Badge */}
+                    <div className="absolute top-8 right-8">
+                      <motion.div
+                        className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm border border-purple-500/30 rounded-full px-4 py-2"
+                        animate={{ scale: [1, 1.05, 1] }}
+                        transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                      >
+                        <span className="text-purple-300 text-sm font-bold">3x más conversiones</span>
+                      </motion.div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Feature 3: URL Shortener */}
+                <motion.div
+                  className="relative group"
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                  whileHover={isMobile ? {} : { scale: 1.02 }}
+                >
+                  {/* Glow effect */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-40 transition duration-500"></div>
+                  
+                  <div className="relative h-full bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 lg:p-10 border border-white/10 group-hover:border-green-500/30 transition-all duration-500 overflow-hidden">
+                    {/* Background decoration */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-green-500/10 to-transparent rounded-full blur-3xl"></div>
+                    
+                    {/* Icon */}
+                    <motion.div 
+                      className="relative w-20 h-20 mb-6"
+                      animate={isMobile ? {} : { 
+                        scale: [1, 1.1, 1]
+                      }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-2xl shadow-green-500/30"></div>
+                      <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 to-emerald-600/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                        <LinkIcon className="h-10 w-10 text-white" />
+                      </div>
+                    </motion.div>
+
+                    {/* Content */}
+                    <h3 className="text-2xl lg:text-3xl font-black mb-4 text-white">
+                      Links cortos que convierten
+                    </h3>
+                    <p className="text-gray-300 mb-6 text-lg">
+                      Acorta URLs con tu marca. Analytics detallados de cada clic. Sabe qué funciona y duplica resultados.
+                    </p>
+
+                    {/* Feature list */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-green-400 flex-shrink-0" />
+                        <span className="text-gray-200">Dominio personalizado</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-green-400 flex-shrink-0" />
+                        <span className="text-gray-200">Estadísticas en tiempo real</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-green-400 flex-shrink-0" />
+                        <span className="text-gray-200">Gestión centralizada</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-green-400 flex-shrink-0" />
+                        <span className="text-gray-200">Sin límites de enlaces</span>
+                      </div>
+                    </div>
+
+                    {/* Badge */}
+                    <div className="absolute top-8 right-8">
+                      <motion.div
+                        className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-sm border border-green-500/30 rounded-full px-4 py-2"
+                        animate={{ scale: [1, 1.05, 1] }}
+                        transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                      >
+                        <span className="text-green-300 text-sm font-bold">99.9% uptime</span>
+                      </motion.div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Feature 4: Caption Generator */}
+                <motion.div
+                  className="relative group"
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  whileHover={isMobile ? {} : { scale: 1.02 }}
+                >
+                  {/* Glow effect */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-40 transition duration-500"></div>
+                  
+                  <div className="relative h-full bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 lg:p-10 border border-white/10 group-hover:border-blue-500/30 transition-all duration-500 overflow-hidden">
+                    {/* Background decoration */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-500/10 to-transparent rounded-full blur-3xl"></div>
+                    
+                    {/* Icon */}
+                    <motion.div 
+                      className="relative w-20 h-20 mb-6"
+                      animate={isMobile ? {} : { 
+                        scale: [1, 1.05, 1]
+                      }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl shadow-2xl shadow-blue-500/30"></div>
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-600/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                        <SparklesIcon className="h-10 w-10 text-white" />
+                      </div>
+                    </motion.div>
+
+                    {/* Content */}
+                    <h3 className="text-2xl lg:text-3xl font-black mb-4 text-white">
+                      Captions virales en segundos
+                    </h3>
+                    <p className="text-gray-300 mb-6 text-lg">
+                      Sube tu video, la IA lo transcribe y genera captions perfectos para Instagram, TikTok, YouTube y Twitter. Con emojis y hashtags optimizados.
+                    </p>
+
+                    {/* Feature list */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-blue-400 flex-shrink-0" />
+                        <span className="text-gray-200">Transcripción automática</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-blue-400 flex-shrink-0" />
+                        <span className="text-gray-200">Optimizado para cada red</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-blue-400 flex-shrink-0" />
+                        <span className="text-gray-200">Emojis y hashtags virales</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <CheckIcon className="h-5 w-5 text-blue-400 flex-shrink-0" />
+                        <span className="text-gray-200">Historial de captions</span>
+                      </div>
+                    </div>
+
+                    {/* Badge */}
+                    <div className="absolute top-8 right-8">
+                      <motion.div
+                        className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 backdrop-blur-sm border border-blue-500/30 rounded-full px-4 py-2"
+                        animate={{ scale: [1, 1.05, 1] }}
+                        transition={{ duration: 2, repeat: Infinity, delay: 1.5 }}
+                      >
+                        <span className="text-blue-300 text-sm font-bold">GPT-4 powered</span>
+                      </motion.div>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* CTA al final de features */}
+              <motion.div 
+                className="text-center mt-20"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.6 }}
+              >
+                <Link href="/register">
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="inline-block relative group"
+                  >
+                    {/* Glow effect */}
+                    <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-full blur-md opacity-70 group-hover:opacity-100 transition duration-300 animate-pulse"></div>
+                    <div className="absolute -inset-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full blur-xl opacity-40 group-hover:opacity-60 transition duration-500"></div>
+                    
+                    <Button size="lg" className="relative h-16 px-12 text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 transition-all duration-300 shadow-2xl">
+                      Activa todas las herramientas GRATIS
+                      <ArrowRightIcon className="ml-3 h-6 w-6 group-hover:translate-x-2 transition-transform" />
+                    </Button>
+                  </motion.div>
+                </Link>
+                <p className="text-sm text-gray-400 mt-4">
+                  Sin tarjeta de crédito • Cancela cuando quieras
+                </p>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+
         <footer className="border-t border-white/10 py-12">
         
         </footer>
