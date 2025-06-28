@@ -187,7 +187,11 @@ function ActivityTicker() {
 
 // 3D iPhone Carousel Component
 function AppCarousel3D() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(4); // Start at the middle set (images.length)
+  const [isPaused, setIsPaused] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isJumping, setIsJumping] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   
   const images = [
     {
@@ -212,13 +216,78 @@ function AppCarousel3D() {
     }
   ];
 
+  // Create extended array with duplicates for smooth infinite scroll
+  const extendedImages = [...images, ...images, ...images]; // Triple the images
+  const centerOffset = images.length; // Start in the middle set
+  
+  // Navigation functions
+  const goToNext = () => {
+    setCurrentIndex((prev) => {
+      const next = prev + 1;
+      // If we're at the end of the extended array, schedule a jump to the middle
+      if (next >= extendedImages.length - images.length) {
+        setTimeout(() => {
+          setIsJumping(true);
+          setCurrentIndex(centerOffset + (next % images.length));
+          requestAnimationFrame(() => {
+            setIsJumping(false);
+          });
+        }, 300);
+      }
+      return next;
+    });
+    setIsPaused(true);
+  };
+
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => {
+      const next = prev - 1;
+      // If we're at the beginning, schedule a jump to the middle
+      if (next < images.length) {
+        setTimeout(() => {
+          setIsJumping(true);
+          setCurrentIndex(centerOffset + images.length + next);
+          requestAnimationFrame(() => {
+            setIsJumping(false);
+          });
+        }, 300);
+      }
+      return next;
+    });
+    setIsPaused(true);
+  };
+
+  const goToSlide = (index: number) => {
+    // Always go to the middle set
+    setCurrentIndex(centerOffset + index);
+    setIsPaused(true);
+  };
+
   // Auto-rotate images
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 4500);
-    return () => clearInterval(interval);
-  }, [images.length]);
+    if (!isPaused && !isDragging) {
+      intervalRef.current = setInterval(() => {
+        goToNext(); // Use the same function as the arrows
+      }, 4500);
+    }
+    
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isPaused, isDragging]);
+
+  // Resume auto-rotation after user interaction
+  useEffect(() => {
+    if (isPaused && !isDragging) {
+      const timeout = setTimeout(() => {
+        setIsPaused(false);
+      }, 8000); // Resume after 8 seconds of no interaction
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [isPaused, isDragging, currentIndex]);
 
 
   return (
@@ -242,38 +311,94 @@ function AppCarousel3D() {
         {/* iPhone body */}
         <div className="relative w-full h-full bg-black rounded-[3rem] shadow-2xl border-8 border-gray-800">
           {/* Screen container with overflow hidden */}
-          <div className="absolute inset-4 rounded-[2rem] overflow-hidden bg-black">
-            {/* All images preloaded and positioned */}
+          <div className="absolute inset-4 rounded-[2rem] overflow-hidden bg-black group" style={{ touchAction: 'pan-y pinch-zoom' }}>
+            {/* Images container */}
             <motion.div
-              {...{ className: "relative w-full h-full" } as any}
-              animate={{ x: -currentIndex * 100 + '%' }}
-              transition={{ 
-                type: "tween",
-                duration: 0.6,
-                ease: "easeInOut"
+              className="flex h-full cursor-grab active:cursor-grabbing select-none"
+              animate={{ 
+                x: `${-currentIndex * 100}%`
+              }}
+              transition={isDragging || isJumping ? { duration: 0 } : { 
+                type: "spring",
+                stiffness: 300,
+                damping: 30
+              }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.2}
+              dragMomentum={false}
+              onDragStart={() => {
+                setIsDragging(true);
+                setIsPaused(true);
+              }}
+              onDragEnd={(e, { offset, velocity }) => {
+                setIsDragging(false);
+                
+                const threshold = 60; // Pixels
+                
+                if (offset.x > threshold || velocity.x > 200) {
+                  goToPrevious();
+                } else if (offset.x < -threshold || velocity.x < -200) {
+                  goToNext();
+                }
               }}
             >
-              <div className="absolute inset-0 flex">
-                {images.map((image, index) => (
-                  <div
-                    key={index}
-                    className="relative w-full h-full flex-shrink-0"
-                  >
-                    <Image
-                      src={image.src}
-                      alt={image.title}
-                      fill
-                      className="object-cover"
-                      priority={index === 0}
-                      loading={index === 0 ? "eager" : "lazy"}
-                    />
-                    
-                    {/* Overlay gradient for better text readability */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  </div>
-                ))}
-              </div>
+              {/* All images */}
+              {extendedImages.map((image, index) => (
+                <div
+                  key={index}
+                  className="relative w-full h-full flex-shrink-0"
+                >
+                  <Image
+                    src={image.src}
+                    alt={image.title}
+                    fill
+                    className="object-cover pointer-events-none"
+                    priority={index === centerOffset}
+                    loading={index === centerOffset ? "eager" : "lazy"}
+                    draggable={false}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                </div>
+              ))}
             </motion.div>
+            
+            {/* Navigation arrows - visible on hover */}
+            <button
+              onClick={goToPrevious}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+              aria-label="Previous image"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
+            <button
+              onClick={goToNext}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+              aria-label="Next image"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+            
+            {/* Dots indicator inside the screen */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+              {images.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index)}
+                  className={`rounded-full transition-all ${
+                    index === (currentIndex % images.length) 
+                      ? 'bg-white w-8 h-2' 
+                      : 'bg-white/40 w-2 h-2 hover:bg-white/60'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
           
           {/* iPhone notch */}
@@ -295,21 +420,22 @@ function AppCarousel3D() {
           transition={{ duration: 0.6, delay: 0.8 }}
         >
           <h4 className="text-white font-semibold text-lg mb-1">
-            {images[currentIndex].title}
+            {images[currentIndex % images.length].title}
           </h4>
           <p className="text-gray-400 text-sm">
-            {images[currentIndex].description}
+            {images[currentIndex % images.length].description}
           </p>
           
-          {/* Progress indicators */}
+          {/* Progress indicators - Clickable */}
           <div className="flex gap-1 mt-3">
             {images.map((_, index) => (
-              <div
+              <button
                 key={index}
-                className={`h-1 rounded-full ${
-                  index === currentIndex 
+                onClick={() => goToSlide(index)}
+                className={`h-1 rounded-full transition-all ${
+                  index === (currentIndex % images.length) 
                     ? 'bg-orange-400 w-6' 
-                    : 'bg-white/20 w-2'
+                    : 'bg-white/20 w-2 hover:bg-white/40'
                 }`}
               />
             ))}
