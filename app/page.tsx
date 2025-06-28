@@ -1378,10 +1378,9 @@ export default function LandingPage() {
               <div className="absolute -top-[400px] left-0 right-0 h-[600px] bg-gradient-to-b from-transparent via-transparent to-black/[0.01]"></div>
             </div>
             
-            {/* Blobs adicionales más sutiles */}
+            {/* Blob adicional centrado - optimizado para rendimiento */}
             <div className="absolute inset-0">
-              <div className={`absolute bottom-0 left-1/3 w-[600px] h-[600px] bg-pink-500 rounded-full ${isMobile ? 'blur-xl opacity-5' : 'blur-[180px] opacity-5 animate-pulse'}`} style={{ animationDelay: '4s', willChange: 'auto' }}></div>
-              <div className={`absolute top-1/2 right-0 w-[500px] h-[500px] bg-red-400 rounded-full ${isMobile ? 'blur-xl opacity-4' : 'blur-[160px] opacity-4 animate-pulse'}`} style={{ animationDelay: '2s', willChange: 'auto' }}></div>
+              <div className={`absolute bottom-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-pink-500 rounded-full ${isMobile ? 'blur-xl opacity-3' : 'blur-[120px] opacity-4'}`} style={{ willChange: isMobile ? 'auto' : 'opacity' }}></div>
             </div>
             
             {/* Grid pattern overlay con fade muy suave */}
