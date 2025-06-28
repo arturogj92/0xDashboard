@@ -21,6 +21,7 @@ import {
   CursorArrowRaysIcon,
   DocumentTextIcon
 } from '@heroicons/react/24/outline';
+import { Settings } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 // Custom hook to detect mobile devices
@@ -1742,6 +1743,379 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* Features Section - Las 4 herramientas principales */}
+        <section className="relative py-32 overflow-hidden">
+          {/* Fondo con gradient mesh sutil */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-br from-purple-500/5 to-transparent rounded-full blur-[200px]"></div>
+            <div className="absolute bottom-0 right-1/4 w-[800px] h-[800px] bg-gradient-to-br from-orange-500/5 to-transparent rounded-full blur-[200px]"></div>
+            
+            {/* Orbes flotantes para la sección Features */}
+            <motion.div
+              {...{ className: "absolute top-20 left-[10%] w-32 h-32 bg-gradient-to-r from-purple-400/20 to-pink-500/20 rounded-full blur-xl" } as any}
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 2.0, delay: 0.5, ease: "easeOut" }}
+            />
+            
+            <motion.div
+              {...{ className: "absolute top-40 right-[15%] w-24 h-24 bg-gradient-to-r from-orange-400/15 to-red-500/15 rounded-full blur-xl" } as any}
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 2.2, delay: 0.7, ease: "easeOut" }}
+            />
+            
+            <motion.div
+              {...{ className: "absolute bottom-32 left-[25%] w-36 h-36 bg-gradient-to-r from-green-400/15 to-emerald-500/15 rounded-full blur-xl" } as any}
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 2.4, delay: 0.9, ease: "easeOut" }}
+            />
+            
+            <motion.div
+              {...{ className: "absolute bottom-20 right-[30%] w-28 h-28 bg-gradient-to-r from-blue-400/20 to-cyan-500/20 rounded-full blur-xl" } as any}
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 2.1, delay: 1.1, ease: "easeOut" }}
+            />
+            
+            <motion.div
+              {...{ className: "absolute top-[50%] left-[50%] w-20 h-20 bg-gradient-to-r from-yellow-400/20 to-amber-500/20 rounded-full blur-lg" } as any}
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.8, delay: 1.3, ease: "easeOut" }}
+            />
+          </div>
+
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.div 
+              {...{ className: "max-w-7xl mx-auto" } as any}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1 }}
+            >
+              {/* Header de la sección */}
+              <motion.div 
+                {...{ className: "text-center mb-20" } as any}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+              >
+                <h2 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
+                  4 herramientas que <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400">multiplican tus ventas</span>
+                </h2>
+                <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto">
+                  Todo integrado, todo automático, todo en una plataforma
+                </p>
+              </motion.div>
+
+              {/* Grid de features 2x2 */}
+              <div className="grid grid-cols-2 gap-4 md:gap-6 max-w-3xl mx-auto features-grid">
+                
+                {/* Feature 1: DM Automation */}
+                <motion.div
+                  {...{ className: "relative group feature-card" } as any}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.1 }}
+                >
+                  <div className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out">
+                    {/* Background gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800" />
+                    
+                    {/* Simple overlay */}
+                    <div className="absolute inset-0 bg-black/25" />
+                    
+                    {/* Epic shine effect on hover */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none overflow-hidden">
+                      <div
+                        className="w-full h-full animate-shine"
+                        style={{
+                          background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)',
+                          transform: 'translateX(-100%)'
+                        }}
+                      />
+                    </div>
+                    
+                    {/* Content centrado para formato cuadrado */}
+                    <div className="relative h-full p-4 md:p-6 flex flex-col items-center justify-center text-white z-10 text-center">
+                      {/* Ícono centrado arriba */}
+                      <div className="w-12 h-12 md:w-16 md:h-16 mb-4">
+                        <div className="w-full h-full drop-shadow-lg relative">
+                          <Image 
+                            src="/images/icons/automation-icon.png"
+                            alt="Automation Icon"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Título centrado */}
+                      <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-lg mb-2 leading-tight">Automatizaciones</h3>
+                      
+                      {/* Descripción más compacta */}
+                      <p className="text-base md:text-lg text-white/80 drop-shadow-md leading-snug mb-3">IA que maximiza tus ventas en Instagram</p>
+                      
+                      {/* Features con checks */}
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 justify-center">
+                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
+                          <span className="text-white/80 text-sm md:text-base">5 palabras clave por post</span>
+                        </div>
+                        <div className="flex items-center gap-2 justify-center">
+                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
+                          <span className="text-white/80 text-sm md:text-base">Respuestas con IA</span>
+                        </div>
+                        <div className="flex items-center gap-2 justify-center">
+                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
+                          <span className="text-white/80 text-sm md:text-base">Botones con enlaces</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Static decorative elements */}
+                    <div className="absolute top-6 right-6 w-6 h-6 rounded-full bg-white/10 z-0" />
+                    <div className="absolute bottom-8 left-6 w-4 h-4 rounded-full bg-white/8 z-0" />
+                    <div className="absolute top-1/3 left-4 w-2 h-2 rounded-full bg-purple-300/20 z-0" />
+                  </div>
+                </motion.div>
+
+                {/* Feature 2: Landing Personalizada */}
+                <motion.div
+                  {...{ className: "relative group feature-card" } as any}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                  <div className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out">
+                    {/* Background gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-700" />
+                    
+                    {/* Simple overlay */}
+                    <div className="absolute inset-0 bg-black/25" />
+                    
+                    {/* Epic shine effect on hover */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none overflow-hidden">
+                      <div
+                        className="w-full h-full animate-shine"
+                        style={{
+                          background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)',
+                          transform: 'translateX(-100%)'
+                        }}
+                      />
+                    </div>
+                    
+                    {/* Content centrado para formato cuadrado */}
+                    <div className="relative h-full p-4 md:p-6 flex flex-col items-center justify-center text-white z-10 text-center">
+                      {/* Ícono centrado arriba */}
+                      <div className="w-12 h-12 md:w-16 md:h-16 mb-4">
+                        <div className="w-full h-full drop-shadow-lg">
+                          <Settings className="w-full h-full text-white" style={{ color: '#d08216' }} />
+                        </div>
+                      </div>
+                      
+                      {/* Título centrado */}
+                      <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-lg mb-2 leading-tight">Mi Landing</h3>
+                      
+                      {/* Descripción más compacta */}
+                      <p className="text-base md:text-lg text-white/80 drop-shadow-md leading-snug mb-3">Tu link-in-bio super customizable</p>
+                      
+                      {/* Features con checks */}
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 justify-center">
+                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
+                          <span className="text-white/80 text-sm md:text-base">Editor visual drag & drop</span>
+                        </div>
+                        <div className="flex items-center gap-2 justify-center">
+                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
+                          <span className="text-white/80 text-sm md:text-base">Analytics integrados</span>
+                        </div>
+                        <div className="flex items-center gap-2 justify-center">
+                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
+                          <span className="text-white/80 text-sm md:text-base">Tu propio dominio</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Static decorative elements */}
+                    <div className="absolute top-6 right-6 w-6 h-6 rounded-full bg-white/10 z-0" />
+                    <div className="absolute bottom-8 left-6 w-4 h-4 rounded-full bg-white/8 z-0" />
+                    <div className="absolute top-1/3 left-4 w-2 h-2 rounded-full bg-blue-300/20 z-0" />
+                  </div>
+                </motion.div>
+
+                {/* Feature 3: URL Shortener */}
+                <motion.div
+                  {...{ className: "relative group feature-card" } as any}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                >
+                  <div className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out">
+                    {/* Background gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-orange-500 via-red-500 to-pink-600" />
+                    
+                    {/* Simple overlay */}
+                    <div className="absolute inset-0 bg-black/25" />
+                    
+                    {/* Epic shine effect on hover */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none overflow-hidden">
+                      <div
+                        className="w-full h-full animate-shine"
+                        style={{
+                          background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)',
+                          transform: 'translateX(-100%)'
+                        }}
+                      />
+                    </div>
+                    
+                    {/* Content centrado para formato cuadrado */}
+                    <div className="relative h-full p-4 md:p-6 flex flex-col items-center justify-center text-white z-10 text-center">
+                      {/* Ícono centrado arriba */}
+                      <div className="w-12 h-12 md:w-16 md:h-16 mb-4">
+                        <div className="w-full h-full drop-shadow-lg">
+                          <LinkIcon className="w-full h-full text-white" style={{ color: '#d08216' }} />
+                        </div>
+                      </div>
+                      
+                      {/* Título centrado */}
+                      <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-lg mb-2 leading-tight">URLs Cortas</h3>
+                      
+                      {/* Descripción más compacta */}
+                      <p className="text-base md:text-lg text-white/80 drop-shadow-md leading-snug mb-3">Facilita que tus seguidores entren a tus enlaces</p>
+                      
+                      {/* Features con checks */}
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 justify-center">
+                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
+                          <span className="text-white/80 text-sm md:text-base">Tu propio dominio</span>
+                        </div>
+                        <div className="flex items-center gap-2 justify-center">
+                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
+                          <span className="text-white/80 text-sm md:text-base">Analytics en tiempo real</span>
+                        </div>
+                        <div className="flex items-center gap-2 justify-center">
+                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
+                          <span className="text-white/80 text-sm md:text-base">QR codes automáticos</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Static decorative elements */}
+                    <div className="absolute top-6 right-6 w-6 h-6 rounded-full bg-white/10 z-0" />
+                    <div className="absolute bottom-8 left-6 w-4 h-4 rounded-full bg-white/8 z-0" />
+                    <div className="absolute top-1/3 left-4 w-2 h-2 rounded-full bg-orange-300/20 z-0" />
+                  </div>
+                </motion.div>
+
+                {/* Feature 4: Caption Generator */}
+                <motion.div
+                  {...{ className: "relative group feature-card" } as any}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  <div className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out">
+                    {/* Background gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-700" />
+                    
+                    {/* Simple overlay */}
+                    <div className="absolute inset-0 bg-black/25" />
+                    
+                    {/* Epic shine effect on hover */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none overflow-hidden">
+                      <div
+                        className="w-full h-full animate-shine"
+                        style={{
+                          background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)',
+                          transform: 'translateX(-100%)'
+                        }}
+                      />
+                    </div>
+                    
+                    {/* Content centrado para formato cuadrado */}
+                    <div className="relative h-full p-4 md:p-6 flex flex-col items-center justify-center text-white z-10 text-center">
+                      {/* Ícono centrado arriba */}
+                      <div className="w-12 h-12 md:w-16 md:h-16 mb-4">
+                        <div className="w-full h-full drop-shadow-lg relative">
+                          <Image 
+                            src="/images/icons/caption-generator-icon.png"
+                            alt="Caption Generator Icon"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Título centrado */}
+                      <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-lg mb-2 leading-tight">AI Captions</h3>
+                      
+                      {/* Descripción más compacta */}
+                      <p className="text-base md:text-lg text-white/80 drop-shadow-md leading-snug mb-3">Genera las descripciones de tus videos con IA</p>
+                      
+                      {/* Features con checks */}
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 justify-center">
+                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
+                          <span className="text-white/80 text-sm md:text-base">Seleccionador de tamaño</span>
+                        </div>
+                        <div className="flex items-center gap-2 justify-center">
+                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
+                          <span className="text-white/80 text-sm md:text-base">Analiza tu contenido</span>
+                        </div>
+                        <div className="flex items-center gap-2 justify-center">
+                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
+                          <span className="text-white/80 text-sm md:text-base">Genera a tu estilo</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Static decorative elements */}
+                    <div className="absolute top-6 right-6 w-6 h-6 rounded-full bg-white/10 z-0" />
+                    <div className="absolute bottom-8 left-6 w-4 h-4 rounded-full bg-white/8 z-0" />
+                    <div className="absolute top-1/3 left-4 w-2 h-2 rounded-full bg-teal-300/20 z-0" />
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* CTA al final de features */}
+              <motion.div 
+                {...{ className: "text-center mt-20" } as any}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.6 }}
+              >
+                <Link href="/register">
+                  <motion.div
+                    {...{ className: "inline-block relative group" } as any}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {/* Glow effect */}
+                    <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-full blur-md opacity-70 group-hover:opacity-100 transition duration-300 animate-pulse"></div>
+                    <div className="absolute -inset-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full blur-xl opacity-40 group-hover:opacity-60 transition duration-500"></div>
+                    
+                    <Button size="lg" className="relative h-16 px-12 text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 transition-all duration-300 shadow-2xl">
+                      Activa todas las herramientas GRATIS
+                      <ArrowRightIcon className="ml-3 h-6 w-6 group-hover:translate-x-2 transition-transform" />
+                    </Button>
+                  </motion.div>
+                </Link>
+                <p className="text-sm text-gray-400 mt-4">
+                  Sin tarjeta de crédito • Cancela cuando quieras
+                </p>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
 
         {/* Problem/Solution Section - EPIC DESIGN */}
         <section className="relative py-32 overflow-hidden">
@@ -2209,393 +2583,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Features Section - Las 4 herramientas principales */}
-        <section className="relative py-32 overflow-hidden">
-          {/* Fondo con gradient mesh sutil */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-br from-purple-500/5 to-transparent rounded-full blur-[200px]"></div>
-            <div className="absolute bottom-0 right-1/4 w-[800px] h-[800px] bg-gradient-to-br from-orange-500/5 to-transparent rounded-full blur-[200px]"></div>
-            
-            {/* Orbes flotantes para la sección Features */}
-            <motion.div
-              className="absolute top-20 left-[10%] w-32 h-32 bg-gradient-to-r from-purple-400/20 to-pink-500/20 rounded-full blur-xl"
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 2.0, delay: 0.5, ease: "easeOut" }}
-            />
-            
-            <motion.div
-              className="absolute top-40 right-[15%] w-24 h-24 bg-gradient-to-r from-orange-400/15 to-red-500/15 rounded-full blur-xl"
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 2.2, delay: 0.7, ease: "easeOut" }}
-            />
-            
-            <motion.div
-              className="absolute bottom-32 left-[25%] w-36 h-36 bg-gradient-to-r from-green-400/15 to-emerald-500/15 rounded-full blur-xl"
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 2.4, delay: 0.9, ease: "easeOut" }}
-            />
-            
-            <motion.div
-              className="absolute bottom-20 right-[30%] w-28 h-28 bg-gradient-to-r from-blue-400/20 to-cyan-500/20 rounded-full blur-xl"
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 2.1, delay: 1.1, ease: "easeOut" }}
-            />
-            
-            <motion.div
-              className="absolute top-[50%] left-[50%] w-20 h-20 bg-gradient-to-r from-yellow-400/20 to-amber-500/20 rounded-full blur-lg"
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.8, delay: 1.3, ease: "easeOut" }}
-            />
-          </div>
-
-          <div className="container mx-auto px-4 relative z-10">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1 }}
-              className="max-w-7xl mx-auto"
-            >
-              {/* Header de la sección */}
-              <motion.div 
-                className="text-center mb-20"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-              >
-                <h2 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
-                  4 herramientas que <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400">multiplican tus ventas</span>
-                </h2>
-                <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto">
-                  Todo integrado, todo automático, todo en una plataforma
-                </p>
-              </motion.div>
-
-              {/* Grid de features 2x2 */}
-              <div className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto features-grid">
-                
-                {/* Feature 1: DM Automation */}
-                <motion.div
-                  className="relative group"
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.1 }}
-                  whileHover={isMobile ? {} : { scale: 1.02 }}
-                >
-                  {/* Glow effect */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-orange-600/20 to-red-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-40 transition duration-500"></div>
-                  
-                  <div className="relative h-full bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 lg:p-10 border border-white/10 group-hover:border-orange-500/30 transition-all duration-500 overflow-hidden">
-                    {/* Background decoration */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-orange-500/10 to-transparent rounded-full blur-3xl"></div>
-                    
-                    {/* Icon */}
-                    <motion.div 
-                      className="relative w-20 h-20 mb-6"
-                      animate={isMobile ? {} : { 
-                        scale: [1, 1.05, 1]
-                      }}
-                      transition={{ duration: 3, repeat: Infinity }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl shadow-2xl shadow-orange-500/30"></div>
-                      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-red-600/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                        <ChatBubbleLeftRightIcon className="h-10 w-10 text-white" />
-                      </div>
-                    </motion.div>
-
-                    {/* Content */}
-                    <h3 className="text-2xl lg:text-3xl font-black mb-4 text-white">
-                      Responde DMs en 3 segundos
-                    </h3>
-                    <p className="text-gray-300 mb-6 text-lg">
-                      Detecta palabras clave en comentarios de tus Reels y Stories. Envía DMs personalizados con botones de compra. Vende mientras duermes.
-                    </p>
-
-                    {/* Feature list */}
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3">
-                        <CheckIcon className="h-5 w-5 text-orange-400 flex-shrink-0" />
-                        <span className="text-gray-200">Hasta 5 palabras clave por contenido</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <CheckIcon className="h-5 w-5 text-orange-400 flex-shrink-0" />
-                        <span className="text-gray-200">Mensajes con IA personalizada</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <CheckIcon className="h-5 w-5 text-orange-400 flex-shrink-0" />
-                        <span className="text-gray-200">Botones con enlaces directos</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <CheckIcon className="h-5 w-5 text-orange-400 flex-shrink-0" />
-                        <span className="text-gray-200">Analytics en tiempo real</span>
-                      </div>
-                    </div>
-
-                    {/* Badge */}
-                    <div className="absolute top-8 right-8">
-                      <motion.div
-                        className="bg-gradient-to-r from-orange-500/20 to-red-500/20 backdrop-blur-sm border border-orange-500/30 rounded-full px-4 py-2"
-                        animate={{ scale: [1, 1.05, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      >
-                        <span className="text-orange-300 text-sm font-bold">2.1M DMs enviados</span>
-                      </motion.div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Feature 2: Landing Personalizada */}
-                <motion.div
-                  className="relative group"
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                  whileHover={isMobile ? {} : { scale: 1.02 }}
-                >
-                  {/* Glow effect */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-40 transition duration-500"></div>
-                  
-                  <div className="relative h-full bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 lg:p-10 border border-white/10 group-hover:border-purple-500/30 transition-all duration-500 overflow-hidden">
-                    {/* Background decoration */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-500/10 to-transparent rounded-full blur-3xl"></div>
-                    
-                    {/* Icon */}
-                    <motion.div 
-                      className="relative w-20 h-20 mb-6"
-                      animate={isMobile ? {} : { 
-                        scale: [1, 1.05, 1]
-                      }}
-                      transition={{ duration: 3, repeat: Infinity }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl shadow-2xl shadow-purple-500/30"></div>
-                      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-600/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                        <CursorArrowRaysIcon className="h-10 w-10 text-white" />
-                      </div>
-                    </motion.div>
-
-                    {/* Content */}
-                    <h3 className="text-2xl lg:text-3xl font-black mb-4 text-white">
-                      Tu link-in-bio que vende
-                    </h3>
-                    <p className="text-gray-300 mb-6 text-lg">
-                      Crea tu tienda en 5 minutos. Múltiples temas profesionales. Tu dominio personal. Convierte 3x más que Linktree.
-                    </p>
-
-                    {/* Feature list */}
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3">
-                        <CheckIcon className="h-5 w-5 text-purple-400 flex-shrink-0" />
-                        <span className="text-gray-200">Wizard paso a paso</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <CheckIcon className="h-5 w-5 text-purple-400 flex-shrink-0" />
-                        <span className="text-gray-200">Dominio tuusuario.creator0x.com</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <CheckIcon className="h-5 w-5 text-purple-400 flex-shrink-0" />
-                        <span className="text-gray-200">Enlaces ilimitados</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <CheckIcon className="h-5 w-5 text-purple-400 flex-shrink-0" />
-                        <span className="text-gray-200">Temas personalizables</span>
-                      </div>
-                    </div>
-
-                    {/* Badge */}
-                    <div className="absolute top-8 right-8">
-                      <motion.div
-                        className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm border border-purple-500/30 rounded-full px-4 py-2"
-                        animate={{ scale: [1, 1.05, 1] }}
-                        transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                      >
-                        <span className="text-purple-300 text-sm font-bold">3x más conversiones</span>
-                      </motion.div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Feature 3: URL Shortener */}
-                <motion.div
-                  className="relative group"
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.3 }}
-                  whileHover={isMobile ? {} : { scale: 1.02 }}
-                >
-                  {/* Glow effect */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-40 transition duration-500"></div>
-                  
-                  <div className="relative h-full bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 lg:p-10 border border-white/10 group-hover:border-green-500/30 transition-all duration-500 overflow-hidden">
-                    {/* Background decoration */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-green-500/10 to-transparent rounded-full blur-3xl"></div>
-                    
-                    {/* Icon */}
-                    <motion.div 
-                      className="relative w-20 h-20 mb-6"
-                      animate={isMobile ? {} : { 
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{ duration: 3, repeat: Infinity }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-2xl shadow-green-500/30"></div>
-                      <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 to-emerald-600/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                        <LinkIcon className="h-10 w-10 text-white" />
-                      </div>
-                    </motion.div>
-
-                    {/* Content */}
-                    <h3 className="text-2xl lg:text-3xl font-black mb-4 text-white">
-                      Links cortos que convierten
-                    </h3>
-                    <p className="text-gray-300 mb-6 text-lg">
-                      Acorta URLs con tu marca. Analytics detallados de cada clic. Sabe qué funciona y duplica resultados.
-                    </p>
-
-                    {/* Feature list */}
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3">
-                        <CheckIcon className="h-5 w-5 text-green-400 flex-shrink-0" />
-                        <span className="text-gray-200">Dominio personalizado</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <CheckIcon className="h-5 w-5 text-green-400 flex-shrink-0" />
-                        <span className="text-gray-200">Estadísticas en tiempo real</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <CheckIcon className="h-5 w-5 text-green-400 flex-shrink-0" />
-                        <span className="text-gray-200">Gestión centralizada</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <CheckIcon className="h-5 w-5 text-green-400 flex-shrink-0" />
-                        <span className="text-gray-200">Sin límites de enlaces</span>
-                      </div>
-                    </div>
-
-                    {/* Badge */}
-                    <div className="absolute top-8 right-8">
-                      <motion.div
-                        className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-sm border border-green-500/30 rounded-full px-4 py-2"
-                        animate={{ scale: [1, 1.05, 1] }}
-                        transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-                      >
-                        <span className="text-green-300 text-sm font-bold">99.9% uptime</span>
-                      </motion.div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Feature 4: Caption Generator */}
-                <motion.div
-                  className="relative group"
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
-                  whileHover={isMobile ? {} : { scale: 1.02 }}
-                >
-                  {/* Glow effect */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-40 transition duration-500"></div>
-                  
-                  <div className="relative h-full bg-gradient-to-br from-gray-900/90 via-black/90 to-gray-900/90 backdrop-blur-xl rounded-3xl p-8 lg:p-10 border border-white/10 group-hover:border-blue-500/30 transition-all duration-500 overflow-hidden">
-                    {/* Background decoration */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-500/10 to-transparent rounded-full blur-3xl"></div>
-                    
-                    {/* Icon */}
-                    <motion.div 
-                      className="relative w-20 h-20 mb-6"
-                      animate={isMobile ? {} : { 
-                        scale: [1, 1.05, 1]
-                      }}
-                      transition={{ duration: 3, repeat: Infinity }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl shadow-2xl shadow-blue-500/30"></div>
-                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-600/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                        <SparklesIcon className="h-10 w-10 text-white" />
-                      </div>
-                    </motion.div>
-
-                    {/* Content */}
-                    <h3 className="text-2xl lg:text-3xl font-black mb-4 text-white">
-                      Captions virales en segundos
-                    </h3>
-                    <p className="text-gray-300 mb-6 text-lg">
-                      Sube tu video, la IA lo transcribe y genera captions perfectos para Instagram, TikTok, YouTube y Twitter. Con emojis y hashtags optimizados.
-                    </p>
-
-                    {/* Feature list */}
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3">
-                        <CheckIcon className="h-5 w-5 text-blue-400 flex-shrink-0" />
-                        <span className="text-gray-200">Transcripción automática</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <CheckIcon className="h-5 w-5 text-blue-400 flex-shrink-0" />
-                        <span className="text-gray-200">Optimizado para cada red</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <CheckIcon className="h-5 w-5 text-blue-400 flex-shrink-0" />
-                        <span className="text-gray-200">Emojis y hashtags virales</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <CheckIcon className="h-5 w-5 text-blue-400 flex-shrink-0" />
-                        <span className="text-gray-200">Historial de captions</span>
-                      </div>
-                    </div>
-
-                    {/* Badge */}
-                    <div className="absolute top-8 right-8">
-                      <motion.div
-                        className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 backdrop-blur-sm border border-blue-500/30 rounded-full px-4 py-2"
-                        animate={{ scale: [1, 1.05, 1] }}
-                        transition={{ duration: 2, repeat: Infinity, delay: 1.5 }}
-                      >
-                        <span className="text-blue-300 text-sm font-bold">GPT-4 powered</span>
-                      </motion.div>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-
-              {/* CTA al final de features */}
-              <motion.div 
-                className="text-center mt-20"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.6 }}
-              >
-                <Link href="/register">
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="inline-block relative group"
-                  >
-                    {/* Glow effect */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-full blur-md opacity-70 group-hover:opacity-100 transition duration-300 animate-pulse"></div>
-                    <div className="absolute -inset-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full blur-xl opacity-40 group-hover:opacity-60 transition duration-500"></div>
-                    
-                    <Button size="lg" className="relative h-16 px-12 text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 transition-all duration-300 shadow-2xl">
-                      Activa todas las herramientas GRATIS
-                      <ArrowRightIcon className="ml-3 h-6 w-6 group-hover:translate-x-2 transition-transform" />
-                    </Button>
-                  </motion.div>
-                </Link>
-                <p className="text-sm text-gray-400 mt-4">
-                  Sin tarjeta de crédito • Cancela cuando quieras
-                </p>
-              </motion.div>
-            </motion.div>
-          </div>
-        </section>
 
         <footer className="border-t border-white/10 py-12">
         
