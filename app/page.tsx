@@ -1435,7 +1435,7 @@ export default function LandingPage() {
               </motion.div>
 
               {/* Split screen comparison - PROFESIONAL Y ÉPICO */}
-              <div className="grid lg:grid-cols-2 gap-8 relative items-stretch">
+              <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 relative items-stretch max-w-5xl mx-auto">
                 {/* Línea divisoria ELÉCTRICA animada */}
                 <div className="absolute left-1/2 top-0 bottom-0 w-[2px] hidden lg:block">
                   <motion.div 
@@ -1481,9 +1481,9 @@ export default function LandingPage() {
                     />
                   </div>
                   
-                  <div className="relative bg-gradient-to-br from-gray-950 via-red-950/90 to-gray-950 backdrop-blur-xl rounded-3xl p-8 border border-red-500/40 overflow-hidden h-full">
+                  <div className="relative bg-gradient-to-br from-gray-950 via-red-950/90 to-gray-950 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-red-500/40 overflow-hidden h-full flex flex-col justify-center">
                     {/* Header con efecto de llamas */}
-                    <div className="flex items-center gap-3 mb-8">
+                    <div className="flex items-center justify-center gap-4 mb-6">
                       <motion.div 
                         {...{ className: "relative w-14 h-14" } as any}
                         animate={{ 
@@ -1496,8 +1496,8 @@ export default function LandingPage() {
                           <XMarkIcon className={`h-7 w-7 text-white ${isMobile ? '' : 'drop-shadow-[0_0_8px_rgba(239,68,68,0.8)]'}`} />
                         </div>
                       </motion.div>
-                      <div>
-                        <div className="flex items-center gap-2">
+                      <div className="text-left">
+                        <div className="flex items-center gap-2 mb-1">
                           <h3 className={`text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400 ${isMobile ? '' : 'drop-shadow-[0_0_20px_rgba(239,68,68,0.5)]'}`}>Sin</h3>
                           <Image src="/images/logo.png" alt="Creator0x" width={140} height={40} className="h-8 w-auto" />
                         </div>
@@ -1506,9 +1506,9 @@ export default function LandingPage() {
                     </div>
 
                     {/* Pain points con animaciones BRUTALES */}
-                    <div className="space-y-5">
+                    <div className="space-y-4">
                       <motion.div 
-                        {...{ className: "flex items-start gap-4" } as any}
+                        {...{ className: "flex items-center justify-center gap-4" } as any}
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.2 }}
@@ -1516,14 +1516,14 @@ export default function LandingPage() {
                         <div className="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
                           <ChatBubbleLeftRightIcon className="h-5 w-5 text-red-400" />
                         </div>
-                        <div>
-                          <p className="text-white font-bold text-lg">Respondes 200 veces</p>
-                          <p className="text-red-300/70 text-sm font-medium">la misma pregunta</p>
+                        <div className="text-center">
+                          <p className="text-white font-bold text-base md:text-lg">Respondes 200 veces</p>
+                          <p className="text-red-300/70 text-xs md:text-sm font-medium">la misma pregunta</p>
                         </div>
                       </motion.div>
 
                       <motion.div 
-                        {...{ className: "flex items-start gap-4" } as any}
+                        {...{ className: "flex items-center justify-center gap-4" } as any}
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.3 }}
@@ -1531,14 +1531,14 @@ export default function LandingPage() {
                         <div className="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
                           <CursorArrowRaysIcon className="h-5 w-5 text-red-400" />
                         </div>
-                        <div>
-                          <p className="text-white font-bold text-lg">El link genérico</p>
-                          <p className="text-red-300/70 text-sm font-medium">de tu bio roba tráfico</p>
+                        <div className="text-center">
+                          <p className="text-white font-bold text-base md:text-lg">El link genérico</p>
+                          <p className="text-red-300/70 text-xs md:text-sm font-medium">de tu bio roba tráfico</p>
                         </div>
                       </motion.div>
 
                       <motion.div 
-                        {...{ className: "flex items-start gap-4" } as any}
+                        {...{ className: "flex items-center justify-center gap-4" } as any}
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.4 }}
@@ -1546,14 +1546,14 @@ export default function LandingPage() {
                         <div className="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
                           <LinkIcon className="h-5 w-5 text-red-400" />
                         </div>
-                        <div>
-                          <p className="text-white font-bold text-lg">Enlaces interminables</p>
-                          <p className="text-red-300/70 text-sm font-medium">que parecen phishing</p>
+                        <div className="text-center">
+                          <p className="text-white font-bold text-base md:text-lg">Enlaces interminables</p>
+                          <p className="text-red-300/70 text-xs md:text-sm font-medium">que parecen phishing</p>
                         </div>
                       </motion.div>
 
                       <motion.div 
-                        {...{ className: "flex items-start gap-4" } as any}
+                        {...{ className: "flex items-center justify-center gap-4" } as any}
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.5 }}
@@ -1561,15 +1561,15 @@ export default function LandingPage() {
                         <div className="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
                           <DocumentTextIcon className="h-5 w-5 text-red-400" />
                         </div>
-                        <div>
-                          <p className="text-white font-bold text-lg">Horas buscando</p>
-                          <p className="text-red-300/70 text-sm font-medium">el caption perfecto</p>
+                        <div className="text-center">
+                          <p className="text-white font-bold text-base md:text-lg">Horas buscando</p>
+                          <p className="text-red-300/70 text-xs md:text-sm font-medium">el caption perfecto</p>
                         </div>
                       </motion.div>
                     </div>
 
                     {/* Separador visual */}
-                    <div className="my-8 relative">
+                    <div className="my-6 relative">
                       <div className="absolute inset-0 flex items-center">
                         <div className="w-full border-t border-red-500/20"></div>
                       </div>
@@ -1582,22 +1582,22 @@ export default function LandingPage() {
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6 }}
                     >
-                      <div className="flex justify-center mb-4">
+                      <div className="flex justify-center mb-3">
                         <motion.div 
-                          {...{ className: "w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center" } as any}
+                          {...{ className: "w-14 h-14 bg-red-500/10 rounded-2xl flex items-center justify-center" } as any}
                           animate={{ rotate: [0, -5, 5, 0] }}
                           transition={{ duration: 4, repeat: Infinity }}
                         >
-                          <svg className="w-8 h-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="w-7 h-7 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
                           </svg>
                         </motion.div>
                       </div>
                       <p className="text-sm text-red-400/60 font-medium uppercase tracking-wider mb-2">El resultado</p>
-                      <p className="text-2xl font-black text-white">
+                      <p className="text-xl md:text-2xl font-black text-white">
                         Trabajas más, ganas menos
                       </p>
-                      <p className="text-sm text-red-300/50 mt-2">Y tu competencia te supera cada día</p>
+                      <p className="text-xs md:text-sm text-red-300/50 mt-2">Y tu competencia te supera cada día</p>
                     </motion.div>
                   </div>
                 </motion.div>
@@ -1653,9 +1653,9 @@ export default function LandingPage() {
                     </motion.div>
                   </div>
                   
-                  <div className="relative bg-gradient-to-br from-gray-950 via-green-950/90 to-gray-950 backdrop-blur-xl rounded-3xl p-8 border border-green-500/40 overflow-hidden h-full">
+                  <div className="relative bg-gradient-to-br from-gray-950 via-green-950/90 to-gray-950 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-green-500/40 overflow-hidden h-full flex flex-col justify-center">
                     {/* Header con efecto celestial */}
-                    <div className="flex items-center gap-3 mb-8">
+                    <div className="flex items-center justify-center gap-4 mb-6">
                       <motion.div 
                         {...{ className: "relative w-14 h-14" } as any}
                         animate={{ 
@@ -1680,8 +1680,8 @@ export default function LandingPage() {
                           <SparklesIcon className="w-3 h-3 text-yellow-400" />
                         </motion.div>
                       </motion.div>
-                      <div>
-                        <div className="flex items-center gap-2">
+                      <div className="text-left">
+                        <div className="flex items-center gap-2 mb-1">
                           <h3 className={`text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400 ${isMobile ? '' : 'drop-shadow-[0_0_20px_rgba(34,197,94,0.5)]'}`}>Con</h3>
                           <Image src="/images/logo.png" alt="Creator0x" width={140} height={40} className="h-8 w-auto" />
                         </div>
@@ -1690,62 +1690,70 @@ export default function LandingPage() {
                     </div>
 
                     {/* Benefits con animaciones */}
-                    <div className="space-y-6">
+                    <div className="space-y-5">
                       <motion.div 
-                        {...{ className: "flex items-start gap-4" } as any}
+                        {...{ className: "flex items-center justify-center gap-4" } as any}
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.2 }}
                       >
-                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 animate-pulse"></div>
-                        <div>
-                          <p className="text-white font-bold text-lg">DMs 100% automáticos</p>
-                          <p className="text-green-300/70 text-sm font-medium">Vendes mientras duermes</p>
+                        <div className="w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <ChatBubbleLeftRightIcon className="h-5 w-5 text-green-400" />
+                        </div>
+                        <div className="text-center">
+                          <p className="text-white font-bold text-base md:text-lg">DMs 100% automáticos</p>
+                          <p className="text-green-300/70 text-xs md:text-sm font-medium">Vendes mientras duermes</p>
                         </div>
                       </motion.div>
 
                       <motion.div 
-                        {...{ className: "flex items-start gap-4" } as any}
+                        {...{ className: "flex items-center justify-center gap-4" } as any}
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.3 }}
                       >
-                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 animate-pulse"></div>
-                        <div>
-                          <p className="text-white font-bold text-lg">+427% más conversiones</p>
-                          <p className="text-green-300/70 text-sm font-medium">Respuesta en &lt;3 segundos</p>
+                        <div className="w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <SparklesIcon className="h-5 w-5 text-green-400" />
+                        </div>
+                        <div className="text-center">
+                          <p className="text-white font-bold text-base md:text-lg">+427% más conversiones</p>
+                          <p className="text-green-300/70 text-xs md:text-sm font-medium">Respuesta en &lt;3 segundos</p>
                         </div>
                       </motion.div>
 
                       <motion.div 
-                        {...{ className: "flex items-start gap-4" } as any}
+                        {...{ className: "flex items-center justify-center gap-4" } as any}
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.4 }}
                       >
-                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 animate-pulse"></div>
-                        <div>
-                          <p className="text-white font-bold text-lg">Links que nunca fallan</p>
-                          <p className="text-green-300/70 text-sm font-medium">Con tu propio dominio pro</p>
+                        <div className="w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <LinkIcon className="h-5 w-5 text-green-400" />
+                        </div>
+                        <div className="text-center">
+                          <p className="text-white font-bold text-base md:text-lg">Links que nunca fallan</p>
+                          <p className="text-green-300/70 text-xs md:text-sm font-medium">Con tu propio dominio pro</p>
                         </div>
                       </motion.div>
 
                       <motion.div 
-                        {...{ className: "flex items-start gap-4" } as any}
+                        {...{ className: "flex items-center justify-center gap-4" } as any}
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.5 }}
                       >
-                        <div className="w-2 h-2 bg-green-500 rounded-full mt-2 animate-pulse"></div>
-                        <div>
-                          <p className="text-white font-bold text-lg">Captions virales en 10s</p>
-                          <p className="text-green-300/70 text-sm font-medium">IA entrenada con +10M posts</p>
+                        <div className="w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <DocumentTextIcon className="h-5 w-5 text-green-400" />
+                        </div>
+                        <div className="text-center">
+                          <p className="text-white font-bold text-base md:text-lg">Captions virales en 10s</p>
+                          <p className="text-green-300/70 text-xs md:text-sm font-medium">IA entrenada con +10M posts</p>
                         </div>
                       </motion.div>
                     </div>
 
                     {/* Separador visual */}
-                    <div className="my-8 relative">
+                    <div className="my-6 relative">
                       <div className="absolute inset-0 flex items-center">
                         <div className="w-full border-t border-green-500/20"></div>
                       </div>
@@ -1758,25 +1766,25 @@ export default function LandingPage() {
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6 }}
                     >
-                      <div className="flex justify-center mb-4">
+                      <div className="flex justify-center mb-3">
                         <motion.div 
-                          {...{ className: "w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center" } as any}
+                          {...{ className: "w-14 h-14 bg-green-500/10 rounded-2xl flex items-center justify-center" } as any}
                           animate={{ 
                             rotate: [0, 5, -5, 0],
                             scale: [1, 1.1, 1]
                           }}
                           transition={{ duration: 4, repeat: Infinity }}
                         >
-                          <svg className="w-8 h-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="w-7 h-7 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                           </svg>
                         </motion.div>
                       </div>
                       <p className="text-sm text-green-400/60 font-medium uppercase tracking-wider mb-2">El resultado</p>
-                      <p className="text-2xl font-black text-white">
+                      <p className="text-xl md:text-2xl font-black text-white">
                         Trabajas menos, ganas más
                       </p>
-                      <p className="text-sm text-green-300/50 mt-2">Y tienes tiempo para lo que realmente importa</p>
+                      <p className="text-xs md:text-sm text-green-300/50 mt-2">Y tienes tiempo para lo que realmente importa</p>
                     </motion.div>
                   </div>
                 </motion.div>
