@@ -187,10 +187,9 @@ function ActivityTicker() {
 
 // 3D iPhone Carousel Component
 function AppCarousel3D() {
-  const [currentIndex, setCurrentIndex] = useState(4); // Start at the middle set (images.length)
+  const [currentIndex, setCurrentIndex] = useState(1); // Start at 1 because we have a clone at position 0
   const [isPaused, setIsPaused] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isJumping, setIsJumping] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(true);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   
   const images = [
@@ -216,58 +215,57 @@ function AppCarousel3D() {
     }
   ];
 
-  // Create extended array with duplicates for smooth infinite scroll
-  const extendedImages = [...images, ...images, ...images]; // Triple the images
-  const centerOffset = images.length; // Start in the middle set
-  
+  // Create array with clones for infinite scroll
+  const extendedImages = [
+    images[images.length - 1], // Clone of last image at the beginning
+    ...images,
+    images[0] // Clone of first image at the end
+  ];
+
+  // Handle infinite loop
+  useEffect(() => {
+    if (!isTransitioning) return;
+
+    if (currentIndex === 0) {
+      // We're at the clone of the last image, jump to the real last image
+      const timer = setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentIndex(images.length); // Jump to the real last image
+        setTimeout(() => setIsTransitioning(true), 50);
+      }, 300);
+      return () => clearTimeout(timer);
+    } else if (currentIndex === extendedImages.length - 1) {
+      // We're at the clone of the first image, jump to the real first image
+      const timer = setTimeout(() => {
+        setIsTransitioning(false);
+        setCurrentIndex(1); // Jump to the real first image
+        setTimeout(() => setIsTransitioning(true), 50);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [currentIndex, images.length, extendedImages.length, isTransitioning]);
+
   // Navigation functions
   const goToNext = () => {
-    setCurrentIndex((prev) => {
-      const next = prev + 1;
-      // If we're at the end of the extended array, schedule a jump to the middle
-      if (next >= extendedImages.length - images.length) {
-        setTimeout(() => {
-          setIsJumping(true);
-          setCurrentIndex(centerOffset + (next % images.length));
-          requestAnimationFrame(() => {
-            setIsJumping(false);
-          });
-        }, 300);
-      }
-      return next;
-    });
+    setCurrentIndex((prev) => prev + 1);
     setIsPaused(true);
   };
 
   const goToPrevious = () => {
-    setCurrentIndex((prev) => {
-      const next = prev - 1;
-      // If we're at the beginning, schedule a jump to the middle
-      if (next < images.length) {
-        setTimeout(() => {
-          setIsJumping(true);
-          setCurrentIndex(centerOffset + images.length + next);
-          requestAnimationFrame(() => {
-            setIsJumping(false);
-          });
-        }, 300);
-      }
-      return next;
-    });
+    setCurrentIndex((prev) => prev - 1);
     setIsPaused(true);
   };
 
   const goToSlide = (index: number) => {
-    // Always go to the middle set
-    setCurrentIndex(centerOffset + index);
+    setCurrentIndex(index + 1); // +1 because of the clone at the beginning
     setIsPaused(true);
   };
 
   // Auto-rotate images
   useEffect(() => {
-    if (!isPaused && !isDragging) {
+    if (!isPaused) {
       intervalRef.current = setInterval(() => {
-        goToNext(); // Use the same function as the arrows
+        goToNext();
       }, 4500);
     }
     
@@ -276,18 +274,18 @@ function AppCarousel3D() {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isPaused, isDragging]);
+  }, [isPaused]);
 
   // Resume auto-rotation after user interaction
   useEffect(() => {
-    if (isPaused && !isDragging) {
+    if (isPaused) {
       const timeout = setTimeout(() => {
         setIsPaused(false);
-      }, 8000); // Resume after 8 seconds of no interaction
+      }, 8000);
       
       return () => clearTimeout(timeout);
     }
-  }, [isPaused, isDragging, currentIndex]);
+  }, [isPaused, currentIndex]);
 
 
   return (
@@ -311,39 +309,63 @@ function AppCarousel3D() {
         {/* iPhone body */}
         <div className="relative w-full h-full bg-black rounded-[3rem] shadow-2xl border-8 border-gray-800">
           {/* Screen container with overflow hidden */}
-          <div className="absolute inset-4 rounded-[2rem] overflow-hidden bg-black group" style={{ touchAction: 'pan-y pinch-zoom' }}>
+          <div className="absolute inset-4 rounded-[2rem] overflow-hidden bg-black group">
+            {/* Touch/Click area for swipe */}
+            <div 
+              className="absolute inset-0 z-20"
+              onMouseDown={(e) => {
+                const startX = e.clientX;
+                const handleMouseMove = (moveEvent: MouseEvent) => {
+                  const deltaX = moveEvent.clientX - startX;
+                  if (Math.abs(deltaX) > 50) {
+                    if (deltaX > 0) {
+                      goToPrevious();
+                    } else {
+                      goToNext();
+                    }
+                    document.removeEventListener('mousemove', handleMouseMove);
+                    document.removeEventListener('mouseup', handleMouseUp);
+                  }
+                };
+                const handleMouseUp = () => {
+                  document.removeEventListener('mousemove', handleMouseMove);
+                  document.removeEventListener('mouseup', handleMouseUp);
+                };
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mouseup', handleMouseUp);
+              }}
+              onTouchStart={(e) => {
+                const startX = e.touches[0].clientX;
+                const handleTouchMove = (moveEvent: TouchEvent) => {
+                  const deltaX = moveEvent.touches[0].clientX - startX;
+                  if (Math.abs(deltaX) > 50) {
+                    if (deltaX > 0) {
+                      goToPrevious();
+                    } else {
+                      goToNext();
+                    }
+                    document.removeEventListener('touchmove', handleTouchMove);
+                    document.removeEventListener('touchend', handleTouchEnd);
+                  }
+                };
+                const handleTouchEnd = () => {
+                  document.removeEventListener('touchmove', handleTouchMove);
+                  document.removeEventListener('touchend', handleTouchEnd);
+                };
+                document.addEventListener('touchmove', handleTouchMove);
+                document.addEventListener('touchend', handleTouchEnd);
+              }}
+            />
+            
             {/* Images container */}
-            <motion.div
-              className="flex h-full cursor-grab active:cursor-grabbing select-none"
-              animate={{ 
-                x: `${-currentIndex * 100}%`
-              }}
-              transition={isDragging || isJumping ? { duration: 0 } : { 
-                type: "spring",
-                stiffness: 300,
-                damping: 30
-              }}
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.2}
-              dragMomentum={false}
-              onDragStart={() => {
-                setIsDragging(true);
-                setIsPaused(true);
-              }}
-              onDragEnd={(e, { offset, velocity }) => {
-                setIsDragging(false);
-                
-                const threshold = 60; // Pixels
-                
-                if (offset.x > threshold || velocity.x > 200) {
-                  goToPrevious();
-                } else if (offset.x < -threshold || velocity.x < -200) {
-                  goToNext();
-                }
+            <div
+              className="flex h-full"
+              style={{ 
+                transform: `translateX(-${currentIndex * 100}%)`,
+                transition: isTransitioning ? 'transform 300ms ease-in-out' : 'none'
               }}
             >
-              {/* All images */}
+              {/* All images including clones */}
               {extendedImages.map((image, index) => (
                 <div
                   key={index}
@@ -353,15 +375,14 @@ function AppCarousel3D() {
                     src={image.src}
                     alt={image.title}
                     fill
-                    className="object-cover pointer-events-none"
-                    priority={index === centerOffset}
-                    loading={index === centerOffset ? "eager" : "lazy"}
-                    draggable={false}
+                    className="object-cover"
+                    priority={index === 1}
+                    loading={index === 1 ? "eager" : "lazy"}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 </div>
               ))}
-            </motion.div>
+            </div>
             
             {/* Navigation arrows - visible on hover */}
             <button
@@ -391,7 +412,7 @@ function AppCarousel3D() {
                   key={index}
                   onClick={() => goToSlide(index)}
                   className={`rounded-full transition-all ${
-                    index === (currentIndex % images.length) 
+                    index === (currentIndex - 1 + images.length) % images.length 
                       ? 'bg-white w-8 h-2' 
                       : 'bg-white/40 w-2 h-2 hover:bg-white/60'
                   }`}
@@ -420,10 +441,10 @@ function AppCarousel3D() {
           transition={{ duration: 0.6, delay: 0.8 }}
         >
           <h4 className="text-white font-semibold text-lg mb-1">
-            {images[currentIndex % images.length].title}
+            {images[(currentIndex - 1 + images.length) % images.length].title}
           </h4>
           <p className="text-gray-400 text-sm">
-            {images[currentIndex % images.length].description}
+            {images[(currentIndex - 1 + images.length) % images.length].description}
           </p>
           
           {/* Progress indicators - Clickable */}
@@ -433,7 +454,7 @@ function AppCarousel3D() {
                 key={index}
                 onClick={() => goToSlide(index)}
                 className={`h-1 rounded-full transition-all ${
-                  index === (currentIndex % images.length) 
+                  index === (currentIndex - 1 + images.length) % images.length 
                     ? 'bg-orange-400 w-6' 
                     : 'bg-white/20 w-2 hover:bg-white/40'
                 }`}
