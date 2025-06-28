@@ -1509,18 +1509,13 @@ export default function LandingPage() {
             {/* Gradient mesh background - ultra difuminado con transición suave */}
             <div className="absolute -top-[600px] left-0 right-0 h-[1200px]">
               {/* Blobs que se extienden mucho más arriba para evitar líneas duras */}
-              <div className={`absolute -top-[200px] left-1/4 w-[1000px] h-[1000px] bg-red-400/50 rounded-full ${isMobile ? 'blur-[150px]' : 'blur-[300px]'} opacity-[0.02]`} style={{ willChange: 'auto' }}></div>
-              <div className={`absolute -top-[200px] right-1/4 w-[1000px] h-[1000px] bg-orange-400/50 rounded-full ${isMobile ? 'blur-[150px]' : 'blur-[300px]'} opacity-[0.02]`} style={{ willChange: 'auto' }}></div>
-              <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[800px] bg-pink-400/50 rounded-full ${isMobile ? 'blur-[150px]' : 'blur-[350px]'} opacity-[0.015]`} style={{ willChange: 'auto' }}></div>
+              <div className={`absolute -top-[200px] left-1/4 w-[1000px] h-[1000px] bg-red-400/50 rounded-full ${isMobile ? 'blur-[150px]' : 'blur-[300px]'} opacity-[0.005]`} style={{ willChange: 'auto' }}></div>
+              <div className={`absolute -top-[200px] right-1/4 w-[1000px] h-[1000px] bg-orange-400/50 rounded-full ${isMobile ? 'blur-[150px]' : 'blur-[300px]'} opacity-[0.005]`} style={{ willChange: 'auto' }}></div>
               
               {/* Capa de transición suave adicional */}
               <div className="absolute -top-[400px] left-0 right-0 h-[600px] bg-gradient-to-b from-transparent via-transparent to-black/[0.01]"></div>
             </div>
             
-            {/* Blob adicional centrado - optimizado para rendimiento */}
-            <div className="absolute inset-0">
-              <div className={`absolute bottom-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-pink-500 rounded-full ${isMobile ? 'blur-xl opacity-3' : 'blur-[120px] opacity-4'}`} style={{ willChange: isMobile ? 'auto' : 'opacity' }}></div>
-            </div>
             
             {/* Grid pattern overlay con fade muy suave */}
             <div className="absolute inset-0 opacity-5"
