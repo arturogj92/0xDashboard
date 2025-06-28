@@ -720,6 +720,138 @@ function ParallaxOrbs() {
           transform: `translateY(${scrollY * 0.6}px)`,
         }}
       />
+      
+      {/* Orbes adicionales para cubrir hasta el final de la página */}
+      
+      {/* Orbe 11 - Sección Features */}
+      <motion.div
+        {...{ className: "absolute w-40 h-40 bg-gradient-to-r from-purple-400/20 to-pink-500/20 rounded-full blur-xl" } as any}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 2.3, delay: 1.2, ease: "easeOut" }}
+        style={{
+          top: '110%',
+          left: '20%',
+          transform: `translateY(${scrollY * 0.3}px)`,
+        }}
+      />
+      
+      {/* Orbe 12 - Sección Features derecha */}
+      <motion.div
+        {...{ className: "absolute w-28 h-28 bg-gradient-to-r from-green-400/15 to-emerald-500/15 rounded-full blur-xl" } as any}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 2.1, delay: 1.4, ease: "easeOut" }}
+        style={{
+          top: '120%',
+          right: '25%',
+          transform: `translateY(${scrollY * 0.4}px)`,
+        }}
+      />
+      
+      {/* Orbe 13 - Mitad inferior */}
+      <motion.div
+        {...{ className: "absolute w-32 h-32 bg-gradient-to-r from-blue-400/20 to-cyan-500/20 rounded-full blur-xl" } as any}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 2.5, delay: 1.6, ease: "easeOut" }}
+        style={{
+          top: '140%',
+          left: '50%',
+          transform: `translateY(${scrollY * 0.2}px)`,
+        }}
+      />
+      
+      {/* Orbe 14 - Zona baja izquierda */}
+      <motion.div
+        {...{ className: "absolute w-24 h-24 bg-gradient-to-r from-orange-400/25 to-red-500/25 rounded-full blur-xl" } as any}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 2.2, delay: 1.8, ease: "easeOut" }}
+        style={{
+          top: '160%',
+          left: '15%',
+          transform: `translateY(${scrollY * 0.5}px)`,
+        }}
+      />
+      
+      {/* Orbe 15 - Zona baja derecha */}
+      <motion.div
+        {...{ className: "absolute w-36 h-36 bg-gradient-to-r from-indigo-400/15 to-purple-500/15 rounded-full blur-xl" } as any}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 2.4, delay: 2.0, ease: "easeOut" }}
+        style={{
+          top: '180%',
+          right: '20%',
+          transform: `translateY(${scrollY * 0.3}px)`,
+        }}
+      />
+      
+      {/* Orbe 16 - Zona muy baja */}
+      <motion.div
+        {...{ className: "absolute w-20 h-20 bg-gradient-to-r from-yellow-400/20 to-amber-500/20 rounded-full blur-xl" } as any}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 2.0, delay: 1.5, ease: "easeOut" }}
+        style={{
+          top: '200%',
+          left: '40%',
+          transform: `translateY(${scrollY * 0.6}px)`,
+        }}
+      />
+      
+      {/* Orbe 17 - Casi al final */}
+      <motion.div
+        {...{ className: "absolute w-28 h-28 bg-gradient-to-r from-teal-400/20 to-green-500/20 rounded-full blur-xl" } as any}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 2.3, delay: 1.7, ease: "easeOut" }}
+        style={{
+          top: '220%',
+          right: '35%',
+          transform: `translateY(${scrollY * 0.4}px)`,
+        }}
+      />
+      
+      {/* Orbe 18 - Zona inferior extrema */}
+      <motion.div
+        {...{ className: "absolute w-32 h-32 bg-gradient-to-r from-pink-400/15 to-rose-500/15 rounded-full blur-xl" } as any}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 2.5, delay: 1.9, ease: "easeOut" }}
+        style={{
+          top: '240%',
+          left: '25%',
+          transform: `translateY(${scrollY * 0.2}px)`,
+        }}
+      />
+      
+      {/* Orbe 19 - Zona final */}
+      <motion.div
+        {...{ className: "absolute w-40 h-40 bg-gradient-to-r from-purple-400/10 to-violet-500/10 rounded-full blur-xl" } as any}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 2.2, delay: 1.6, ease: "easeOut" }}
+        style={{
+          top: '260%',
+          right: '15%',
+          transform: `translateY(${scrollY * 0.5}px)`,
+        }}
+      />
+      
+      {/* Orbe 20 - Último orbe */}
+      <motion.div
+        {...{ className: "absolute w-24 h-24 bg-gradient-to-r from-orange-400/20 to-yellow-500/20 rounded-full blur-xl" } as any}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 2.0, delay: 2.0, ease: "easeOut" }}
+        style={{
+          top: '280%',
+          left: '60%',
+          transform: `translateY(${scrollY * 0.3}px)`,
+        }}
+      />
     </div>
   );
 }
@@ -2083,6 +2215,42 @@ export default function LandingPage() {
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-br from-purple-500/5 to-transparent rounded-full blur-[200px]"></div>
             <div className="absolute bottom-0 right-1/4 w-[800px] h-[800px] bg-gradient-to-br from-orange-500/5 to-transparent rounded-full blur-[200px]"></div>
+            
+            {/* Orbes flotantes para la sección Features */}
+            <motion.div
+              className="absolute top-20 left-[10%] w-32 h-32 bg-gradient-to-r from-purple-400/20 to-pink-500/20 rounded-full blur-xl"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 2.0, delay: 0.5, ease: "easeOut" }}
+            />
+            
+            <motion.div
+              className="absolute top-40 right-[15%] w-24 h-24 bg-gradient-to-r from-orange-400/15 to-red-500/15 rounded-full blur-xl"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 2.2, delay: 0.7, ease: "easeOut" }}
+            />
+            
+            <motion.div
+              className="absolute bottom-32 left-[25%] w-36 h-36 bg-gradient-to-r from-green-400/15 to-emerald-500/15 rounded-full blur-xl"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 2.4, delay: 0.9, ease: "easeOut" }}
+            />
+            
+            <motion.div
+              className="absolute bottom-20 right-[30%] w-28 h-28 bg-gradient-to-r from-blue-400/20 to-cyan-500/20 rounded-full blur-xl"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 2.1, delay: 1.1, ease: "easeOut" }}
+            />
+            
+            <motion.div
+              className="absolute top-[50%] left-[50%] w-20 h-20 bg-gradient-to-r from-yellow-400/20 to-amber-500/20 rounded-full blur-lg"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.8, delay: 1.3, ease: "easeOut" }}
+            />
           </div>
 
           <div className="container mx-auto px-4 relative z-10">
