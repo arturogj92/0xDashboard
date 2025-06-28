@@ -277,15 +277,15 @@ function AppCarousel3D() {
           </div>
           
           {/* iPhone notch */}
-          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-20 h-6 bg-black rounded-full"></div>
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 w-20 h-6 bg-black rounded-full"></div>
           
           {/* Home indicator */}
-          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-white/30 rounded-full"></div>
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/30 rounded-full"></div>
         </div>
         
         {/* App info floating card - Siempre visible */}
         <motion.div
-          {...{ className: "absolute -right-16 top-1/2 transform -translate-y-1/2 bg-black/80 backdrop-blur-sm border border-white/20 rounded-xl p-4 min-w-48" } as any}
+          {...{ className: "absolute -right-16 top-1/2 -translate-y-1/2 bg-black/80 backdrop-blur-sm border border-white/20 rounded-xl p-4 min-w-48" } as any}
           initial={{ opacity: 0, x: -20 }}
           animate={{ 
             opacity: 1,
