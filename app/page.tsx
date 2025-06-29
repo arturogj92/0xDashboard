@@ -1803,16 +1803,16 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <h2 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
+                <h2 className="text-4xl sm:text-5xl md:text-7xl font-black mb-4 sm:mb-6 leading-tight">
                   4 herramientas que <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400">multiplican tus ventas</span>
                 </h2>
-                <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto">
+                <p className="text-xl sm:text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto">
                   Todo integrado, todo automático, todo en una plataforma
                 </p>
               </motion.div>
 
               {/* Grid de features 2x2 */}
-              <div className="grid grid-cols-2 gap-4 md:gap-6 max-w-3xl mx-auto features-grid">
+              <div className="grid grid-cols-2 gap-4 sm:gap-4 md:gap-6 max-w-3xl mx-auto features-grid">
                 
                 {/* Feature 1: DM Automation */}
                 <motion.div
@@ -1822,69 +1822,39 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: 0.1 }}
                 >
-                  <div className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out">
-                    {/* Background gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800" />
-                    
-                    {/* Simple overlay */}
-                    <div className="absolute inset-0 bg-black/25" />
-                    
-                    {/* Epic shine effect on hover */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none overflow-hidden">
-                      <div
-                        className="w-full h-full animate-shine"
-                        style={{
-                          background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)',
-                          transform: 'translateX(-100%)'
-                        }}
-                      />
+                  <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden cursor-pointer hover:scale-110 hover:rotate-1 transition-all duration-500 ease-out bg-gradient-to-br from-purple-600 to-purple-700 shadow-2xl hover:shadow-[0_20px_50px_rgba(147,51,234,0.5)]">
+                    {/* Epic glow effect */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                      <div className="absolute inset-[-20px] bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 blur-3xl opacity-60 animate-pulse" />
                     </div>
                     
-                    {/* Content centrado para formato cuadrado */}
-                    <div className="relative h-full p-4 md:p-6 flex flex-col items-center justify-center text-white z-10 text-center">
-                      {/* Ícono centrado arriba */}
-                      <div className="w-12 h-12 md:w-16 md:h-16 mb-4">
-                        <div className="w-full h-full drop-shadow-lg relative">
-                          <Image 
-                            src="/images/icons/automation-icon.png"
-                            alt="Automation Icon"
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
+                    {/* Animated gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 group-hover:animate-shimmer" />
+                    
+                    {/* Decorative circles with animation */}
+                    <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-purple-500/30 group-hover:scale-150 transition-transform duration-700" />
+                    <div className="absolute bottom-12 left-6 w-10 h-10 rounded-full bg-purple-800/40 group-hover:scale-150 transition-transform duration-700" />
+                    
+                    {/* Content */}
+                    <div className="relative h-full p-4 sm:p-6 flex flex-col text-white z-10">
+                      {/* Icon with glow */}
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 relative mb-4">
+                        <div className="absolute inset-0 bg-yellow-400 blur-2xl opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
+                        <BoltIcon className="w-full h-full text-yellow-400 relative z-10 group-hover:scale-110 transition-transform duration-300" />
                       </div>
                       
-                      {/* Título centrado */}
-                      <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-lg mb-2 leading-tight">Automatizaciones</h3>
-                      
-                      {/* Descripción más compacta */}
-                      <p className="text-base md:text-lg text-white/80 drop-shadow-md leading-snug mb-3">IA que maximiza tus ventas en Instagram</p>
-                      
-                      {/* Features con checks */}
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2 justify-center">
-                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
-                          <span className="text-white/80 text-sm md:text-base">5 palabras clave por post</span>
-                        </div>
-                        <div className="flex items-center gap-2 justify-center">
-                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
-                          <span className="text-white/80 text-sm md:text-base">Respuestas con IA</span>
-                        </div>
-                        <div className="flex items-center gap-2 justify-center">
-                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
-                          <span className="text-white/80 text-sm md:text-base">Botones con enlaces</span>
-                        </div>
+                      {/* Title and description */}
+                      <div className="flex-1 flex flex-col items-center justify-center text-center">
+                        <h3 className="text-lg sm:text-xl font-bold mb-3">Automatizaciones</h3>
+                        <p className="text-sm sm:text-base text-white leading-relaxed font-medium tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                          Respuestas automáticas inteligentes para Instagram
+                        </p>
                       </div>
                     </div>
-                    
-                    {/* Static decorative elements */}
-                    <div className="absolute top-6 right-6 w-6 h-6 rounded-full bg-white/10 z-0" />
-                    <div className="absolute bottom-8 left-6 w-4 h-4 rounded-full bg-white/8 z-0" />
-                    <div className="absolute top-1/3 left-4 w-2 h-2 rounded-full bg-purple-300/20 z-0" />
                   </div>
                 </motion.div>
 
-                {/* Feature 2: Landing Personalizada */}
+                {/* Feature 2: Captions */}
                 <motion.div
                   {...{ className: "relative group feature-card" } as any}
                   initial={{ opacity: 0, y: 40 }}
@@ -1892,60 +1862,35 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: 0.2 }}
                 >
-                  <div className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out">
-                    {/* Background gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-700" />
-                    
-                    {/* Simple overlay */}
-                    <div className="absolute inset-0 bg-black/25" />
-                    
-                    {/* Epic shine effect on hover */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none overflow-hidden">
-                      <div
-                        className="w-full h-full animate-shine"
-                        style={{
-                          background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)',
-                          transform: 'translateX(-100%)'
-                        }}
-                      />
+                  <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden cursor-pointer hover:scale-110 hover:-rotate-1 transition-all duration-500 ease-out bg-gradient-to-br from-teal-600 to-teal-700 shadow-2xl hover:shadow-[0_20px_50px_rgba(20,184,166,0.5)]">
+                    {/* Epic glow effect */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                      <div className="absolute inset-[-20px] bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-600 blur-3xl opacity-60 animate-pulse" />
                     </div>
                     
-                    {/* Content centrado para formato cuadrado */}
-                    <div className="relative h-full p-4 md:p-6 flex flex-col items-center justify-center text-white z-10 text-center">
-                      {/* Ícono centrado arriba */}
-                      <div className="w-12 h-12 md:w-16 md:h-16 mb-4">
-                        <div className="w-full h-full drop-shadow-lg">
-                          <Settings className="w-full h-full text-white" style={{ color: '#d08216' }} />
-                        </div>
+                    {/* Animated gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 group-hover:animate-shimmer" />
+                    
+                    {/* Decorative circles with animation */}
+                    <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-teal-500/30 group-hover:scale-150 transition-transform duration-700" />
+                    <div className="absolute bottom-12 left-6 w-10 h-10 rounded-full bg-teal-800/40 group-hover:scale-150 transition-transform duration-700" />
+                    
+                    {/* Content */}
+                    <div className="relative h-full p-4 sm:p-6 flex flex-col text-white z-10">
+                      {/* Icon with glow */}
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 relative mb-4">
+                        <div className="absolute inset-0 bg-yellow-400 blur-2xl opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
+                        <DocumentTextIcon className="w-full h-full text-yellow-400 relative z-10 group-hover:scale-110 transition-transform duration-300" />
                       </div>
                       
-                      {/* Título centrado */}
-                      <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-lg mb-2 leading-tight">Mi Landing</h3>
-                      
-                      {/* Descripción más compacta */}
-                      <p className="text-base md:text-lg text-white/80 drop-shadow-md leading-snug mb-3">Tu link-in-bio super customizable</p>
-                      
-                      {/* Features con checks */}
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2 justify-center">
-                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
-                          <span className="text-white/80 text-sm md:text-base">Editor visual drag & drop</span>
-                        </div>
-                        <div className="flex items-center gap-2 justify-center">
-                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
-                          <span className="text-white/80 text-sm md:text-base">Analytics integrados</span>
-                        </div>
-                        <div className="flex items-center gap-2 justify-center">
-                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
-                          <span className="text-white/80 text-sm md:text-base">Tu propio dominio</span>
-                        </div>
+                      {/* Title and description */}
+                      <div className="flex-1 flex flex-col items-center justify-center text-center">
+                        <h3 className="text-lg sm:text-xl font-bold mb-3">Captions</h3>
+                        <p className="text-sm sm:text-base text-white leading-relaxed font-medium tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                          Genera las descripciones de tus videos con IA
+                        </p>
                       </div>
                     </div>
-                    
-                    {/* Static decorative elements */}
-                    <div className="absolute top-6 right-6 w-6 h-6 rounded-full bg-white/10 z-0" />
-                    <div className="absolute bottom-8 left-6 w-4 h-4 rounded-full bg-white/8 z-0" />
-                    <div className="absolute top-1/3 left-4 w-2 h-2 rounded-full bg-blue-300/20 z-0" />
                   </div>
                 </motion.div>
 
@@ -1957,64 +1902,39 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: 0.3 }}
                 >
-                  <div className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out">
-                    {/* Background gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-orange-500 via-red-500 to-pink-600" />
-                    
-                    {/* Simple overlay */}
-                    <div className="absolute inset-0 bg-black/25" />
-                    
-                    {/* Epic shine effect on hover */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none overflow-hidden">
-                      <div
-                        className="w-full h-full animate-shine"
-                        style={{
-                          background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)',
-                          transform: 'translateX(-100%)'
-                        }}
-                      />
+                  <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden cursor-pointer hover:scale-110 hover:rotate-1 transition-all duration-500 ease-out bg-gradient-to-br from-orange-600 via-red-600 to-pink-600 shadow-2xl hover:shadow-[0_20px_50px_rgba(251,146,60,0.5)]">
+                    {/* Epic glow effect */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                      <div className="absolute inset-[-20px] bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 blur-3xl opacity-60 animate-pulse" />
                     </div>
                     
-                    {/* Content centrado para formato cuadrado */}
-                    <div className="relative h-full p-4 md:p-6 flex flex-col items-center justify-center text-white z-10 text-center">
-                      {/* Ícono centrado arriba */}
-                      <div className="w-12 h-12 md:w-16 md:h-16 mb-4">
-                        <div className="w-full h-full drop-shadow-lg">
-                          <LinkIcon className="w-full h-full text-white" style={{ color: '#d08216' }} />
-                        </div>
+                    {/* Animated gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 group-hover:animate-shimmer" />
+                    
+                    {/* Decorative circles with animation */}
+                    <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-orange-500/30 group-hover:scale-150 transition-transform duration-700" />
+                    <div className="absolute bottom-12 left-6 w-10 h-10 rounded-full bg-red-800/40 group-hover:scale-150 transition-transform duration-700" />
+                    
+                    {/* Content */}
+                    <div className="relative h-full p-4 sm:p-6 flex flex-col text-white z-10">
+                      {/* Icon with glow */}
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 relative mb-4">
+                        <div className="absolute inset-0 bg-yellow-400 blur-2xl opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
+                        <LinkIcon className="w-full h-full text-yellow-400 relative z-10 group-hover:scale-110 transition-transform duration-300" />
                       </div>
                       
-                      {/* Título centrado */}
-                      <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-lg mb-2 leading-tight">URLs Cortas</h3>
-                      
-                      {/* Descripción más compacta */}
-                      <p className="text-base md:text-lg text-white/80 drop-shadow-md leading-snug mb-3">Facilita que tus seguidores entren a tus enlaces</p>
-                      
-                      {/* Features con checks */}
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2 justify-center">
-                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
-                          <span className="text-white/80 text-sm md:text-base">Tu propio dominio</span>
-                        </div>
-                        <div className="flex items-center gap-2 justify-center">
-                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
-                          <span className="text-white/80 text-sm md:text-base">Analytics en tiempo real</span>
-                        </div>
-                        <div className="flex items-center gap-2 justify-center">
-                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
-                          <span className="text-white/80 text-sm md:text-base">QR codes automáticos</span>
-                        </div>
+                      {/* Title and description */}
+                      <div className="flex-1 flex flex-col items-center justify-center text-center">
+                        <h3 className="text-lg sm:text-xl font-bold mb-3">URLs Cortas</h3>
+                        <p className="text-sm sm:text-base text-white leading-relaxed font-medium tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                          Acorta enlaces y analiza clics en tiempo real
+                        </p>
                       </div>
                     </div>
-                    
-                    {/* Static decorative elements */}
-                    <div className="absolute top-6 right-6 w-6 h-6 rounded-full bg-white/10 z-0" />
-                    <div className="absolute bottom-8 left-6 w-4 h-4 rounded-full bg-white/8 z-0" />
-                    <div className="absolute top-1/3 left-4 w-2 h-2 rounded-full bg-orange-300/20 z-0" />
                   </div>
                 </motion.div>
 
-                {/* Feature 4: Caption Generator */}
+                {/* Feature 4: Mi Landing */}
                 <motion.div
                   {...{ className: "relative group feature-card" } as any}
                   initial={{ opacity: 0, y: 40 }}
@@ -2022,65 +1942,35 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: 0.4 }}
                 >
-                  <div className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out">
-                    {/* Background gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-700" />
-                    
-                    {/* Simple overlay */}
-                    <div className="absolute inset-0 bg-black/25" />
-                    
-                    {/* Epic shine effect on hover */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none overflow-hidden">
-                      <div
-                        className="w-full h-full animate-shine"
-                        style={{
-                          background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)',
-                          transform: 'translateX(-100%)'
-                        }}
-                      />
+                  <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden cursor-pointer hover:scale-110 hover:-rotate-1 transition-all duration-500 ease-out bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 shadow-2xl hover:shadow-[0_20px_50px_rgba(99,102,241,0.5)]">
+                    {/* Epic glow effect */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                      <div className="absolute inset-[-20px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 blur-3xl opacity-60 animate-pulse" />
                     </div>
                     
-                    {/* Content centrado para formato cuadrado */}
-                    <div className="relative h-full p-4 md:p-6 flex flex-col items-center justify-center text-white z-10 text-center">
-                      {/* Ícono centrado arriba */}
-                      <div className="w-12 h-12 md:w-16 md:h-16 mb-4">
-                        <div className="w-full h-full drop-shadow-lg relative">
-                          <Image 
-                            src="/images/icons/caption-generator-icon.png"
-                            alt="Caption Generator Icon"
-                            fill
-                            className="object-contain"
-                          />
-                        </div>
+                    {/* Animated gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 group-hover:animate-shimmer" />
+                    
+                    {/* Decorative circles with animation */}
+                    <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-blue-500/30 group-hover:scale-150 transition-transform duration-700" />
+                    <div className="absolute bottom-12 left-6 w-10 h-10 rounded-full bg-indigo-800/40 group-hover:scale-150 transition-transform duration-700" />
+                    
+                    {/* Content */}
+                    <div className="relative h-full p-4 sm:p-6 flex flex-col text-white z-10">
+                      {/* Icon with glow */}
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 relative mb-4">
+                        <div className="absolute inset-0 bg-yellow-400 blur-2xl opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
+                        <Settings className="w-full h-full text-yellow-400 relative z-10 group-hover:scale-110 transition-transform duration-300" />
                       </div>
                       
-                      {/* Título centrado */}
-                      <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-lg mb-2 leading-tight">AI Captions</h3>
-                      
-                      {/* Descripción más compacta */}
-                      <p className="text-base md:text-lg text-white/80 drop-shadow-md leading-snug mb-3">Genera las descripciones de tus videos con IA</p>
-                      
-                      {/* Features con checks */}
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2 justify-center">
-                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
-                          <span className="text-white/80 text-sm md:text-base">Seleccionador de tamaño</span>
-                        </div>
-                        <div className="flex items-center gap-2 justify-center">
-                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
-                          <span className="text-white/80 text-sm md:text-base">Analiza tu contenido</span>
-                        </div>
-                        <div className="flex items-center gap-2 justify-center">
-                          <CheckIcon className="h-4 w-4 text-green-400 flex-shrink-0" />
-                          <span className="text-white/80 text-sm md:text-base">Genera a tu estilo</span>
-                        </div>
+                      {/* Title and description */}
+                      <div className="flex-1 flex flex-col items-center justify-center text-center">
+                        <h3 className="text-lg sm:text-xl font-bold mb-3">Mi Landing</h3>
+                        <p className="text-sm sm:text-base text-white leading-relaxed font-medium tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                          Crea tu página personal con diseño único
+                        </p>
                       </div>
                     </div>
-                    
-                    {/* Static decorative elements */}
-                    <div className="absolute top-6 right-6 w-6 h-6 rounded-full bg-white/10 z-0" />
-                    <div className="absolute bottom-8 left-6 w-4 h-4 rounded-full bg-white/8 z-0" />
-                    <div className="absolute top-1/3 left-4 w-2 h-2 rounded-full bg-teal-300/20 z-0" />
                   </div>
                 </motion.div>
               </div>
