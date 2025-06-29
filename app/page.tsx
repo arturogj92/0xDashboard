@@ -1021,7 +1021,7 @@ export default function LandingPage() {
               animation: none;
               background-size: 100% 100%;
             }
-            .animate-pulse {
+            . {
               animation: none !important;
             }
             .backdrop-blur-2xl,
@@ -1068,7 +1068,7 @@ export default function LandingPage() {
                   {...{ className: "inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-8" } as any}
                   style={{ borderColor: 'var(--border)' }}
                 >
-                  <div className="w-2 h-2 rounded-full animate-pulse" 
+                  <div className="w-2 h-2 rounded-full " 
                        style={{ backgroundColor: 'var(--secondary)' }} />
                   <span className="text-sm">🔥 +1,200 creadores ya automatizando</span>
                 </motion.div>
@@ -1096,17 +1096,17 @@ export default function LandingPage() {
                       {...{ className: "inline-block relative group" } as any}
                     >
                       {/* Glow effect máximo */}
-                      <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-full blur-md opacity-70 group-hover:opacity-100 transition duration-300 animate-pulse"></div>
+                      <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-full blur-md opacity-70 group-hover:opacity-100 transition duration-300 "></div>
                       <div className="absolute -inset-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full blur-xl opacity-40 group-hover:opacity-60 transition duration-500"></div>
                       
-                      <Button size="lg" className="relative h-16 px-12 text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 transition-all duration-300 shadow-2xl">
+                      <Button size="lg" className="relative h-12 md:h-16 px-6 md:px-12 text-base md:text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 transition-all duration-300 shadow-2xl">
                         Empieza GRATIS
-                        <ArrowRightIcon className="ml-3 h-6 w-6 group-hover:translate-x-2 transition-transform" />
+                        <ArrowRightIcon className="ml-2 md:ml-3 h-4 md:h-6 w-4 md:w-6 group-hover:translate-x-2 transition-transform" />
                       </Button>
                     </motion.div>
                   </Link>
                   <Link href="/pricing">
-                    <Button size="lg" variant="outline" className="h-16 px-12 text-xl font-black border-2 hover:border-white/50 transition-all duration-300">
+                    <Button size="lg" variant="outline" className="h-12 md:h-16 px-6 md:px-12 text-base md:text-xl font-black border-2 hover:border-white/50 transition-all duration-300">
                       Ver precios
                     </Button>
                   </Link>
@@ -1137,8 +1137,8 @@ export default function LandingPage() {
           {!isMobile ? (
             <div className="absolute -top-64 -bottom-96 left-0 right-0 pointer-events-none">
               {/* Animated gradient orbs - Even larger and more diffused */}
-              <div className="absolute top-1/2 left-1/4 w-[800px] h-[800px] bg-gradient-to-br from-orange-500/10 to-transparent rounded-full blur-[150px] animate-pulse" />
-              <div className="absolute top-1/2 right-1/4 w-[800px] h-[800px] bg-gradient-to-bl from-purple-500/10 to-transparent rounded-full blur-[150px] animate-pulse" style={{ animationDelay: '1s' }} />
+              <div className="absolute top-1/2 left-1/4 w-[800px] h-[800px] bg-gradient-to-br from-orange-500/10 to-transparent rounded-full blur-[150px] " />
+              <div className="absolute top-1/2 right-1/4 w-[800px] h-[800px] bg-gradient-to-bl from-purple-500/10 to-transparent rounded-full blur-[150px] " style={{ animationDelay: '1s' }} />
               
               {/* Multiple gradient layers for ultra smooth fade */}
               <div className="absolute -bottom-32 left-0 right-0 h-96 bg-gradient-to-t from-transparent via-transparent to-orange-500/5 blur-[100px]" />
@@ -1503,9 +1503,9 @@ export default function LandingPage() {
                     {/* Floating particles - disabled on mobile */}
                     {!isMobile && (
                       <div className="absolute inset-0 overflow-hidden">
-                        <div className="absolute top-1/4 left-1/4 w-1 h-1 bg-green-400 rounded-full opacity-60 animate-ping"></div>
-                        <div className="absolute top-3/4 right-1/3 w-1 h-1 bg-emerald-400 rounded-full opacity-60 animate-ping" style={{ animationDelay: '1s' }}></div>
-                        <div className="absolute bottom-1/4 left-1/2 w-1 h-1 bg-green-300 rounded-full opacity-60 animate-ping" style={{ animationDelay: '2s' }}></div>
+                        <div className="absolute top-1/4 left-1/4 w-1 h-1 bg-green-400 rounded-full opacity-60 "></div>
+                        <div className="absolute top-3/4 right-1/3 w-1 h-1 bg-emerald-400 rounded-full opacity-60 " style={{ animationDelay: '1s' }}></div>
+                        <div className="absolute bottom-1/4 left-1/2 w-1 h-1 bg-green-300 rounded-full opacity-60 " style={{ animationDelay: '2s' }}></div>
                       </div>
                     )}
                     
@@ -1581,9 +1581,9 @@ export default function LandingPage() {
                     {/* Floating particles - disabled on mobile */}
                     {!isMobile && (
                       <div className="absolute inset-0 overflow-hidden">
-                        <div className="absolute top-1/3 right-1/4 w-1 h-1 bg-yellow-400 rounded-full opacity-60 animate-ping"></div>
-                        <div className="absolute bottom-1/3 left-1/3 w-1 h-1 bg-orange-400 rounded-full opacity-60 animate-ping" style={{ animationDelay: '1s' }}></div>
-                        <div className="absolute top-1/2 right-1/2 w-1 h-1 bg-yellow-300 rounded-full opacity-60 animate-ping" style={{ animationDelay: '2s' }}></div>
+                        <div className="absolute top-1/3 right-1/4 w-1 h-1 bg-yellow-400 rounded-full opacity-60 "></div>
+                        <div className="absolute bottom-1/3 left-1/3 w-1 h-1 bg-orange-400 rounded-full opacity-60 " style={{ animationDelay: '1s' }}></div>
+                        <div className="absolute top-1/2 right-1/2 w-1 h-1 bg-yellow-300 rounded-full opacity-60 " style={{ animationDelay: '2s' }}></div>
                       </div>
                     )}
                     
@@ -1727,8 +1727,8 @@ export default function LandingPage() {
                         <div className="relative">
                           {!isMobile && (
                             <>
-                              <div className="absolute inset-0 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                              <div className="absolute inset-0 w-3 h-3 bg-green-400 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                              <div className="absolute inset-0 w-3 h-3 bg-green-400 rounded-full "></div>
+                              <div className="absolute inset-0 w-3 h-3 bg-green-400 rounded-full " style={{ animationDelay: '0.5s' }}></div>
                             </>
                           )}
                           <div className={`relative w-3 h-3 bg-green-400 rounded-full ${isMobile ? '' : 'shadow-glow-green'}`}></div>
@@ -1822,31 +1822,37 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: 0.1 }}
                 >
-                  <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden cursor-pointer hover:scale-110 hover:rotate-1 transition-all duration-500 ease-out bg-gradient-to-br from-purple-600 to-purple-700 shadow-2xl hover:shadow-[0_20px_50px_rgba(147,51,234,0.5)]">
+                  <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden   bg-gradient-to-br from-black via-purple-950 to-black shadow-2xl  ring-4 ring-purple-500/40  border border-purple-400/20">
                     {/* Epic glow effect */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      <div className="absolute inset-[-20px] bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 blur-3xl opacity-60 animate-pulse" />
+                    <div className="absolute inset-0 opacity-0 ">
+                      <div className="absolute inset-[-20px] bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 blur-3xl opacity-60 " />
                     </div>
                     
                     {/* Animated gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 group-hover:animate-shimmer" />
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 " />
                     
                     {/* Decorative circles with animation */}
-                    <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-purple-500/30 group-hover:scale-150 transition-transform duration-700" />
-                    <div className="absolute bottom-12 left-6 w-10 h-10 rounded-full bg-purple-800/40 group-hover:scale-150 transition-transform duration-700" />
+                    <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-purple-500/30  " />
+                    <div className="absolute bottom-12 left-6 w-10 h-10 rounded-full bg-purple-800/40  " />
+                    <div className="absolute top-1/3 right-1/4 w-3 h-3 rounded-full bg-yellow-400/50 " />
+                    <div className="absolute bottom-1/4 left-1/3 w-2 h-2 rounded-full bg-yellow-400/40  animation-delay-200" />
                     
                     {/* Content */}
-                    <div className="relative h-full p-4 sm:p-6 flex flex-col text-white z-10">
-                      {/* Icon with glow */}
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 relative mb-4">
-                        <div className="absolute inset-0 bg-yellow-400 blur-2xl opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
-                        <BoltIcon className="w-full h-full text-yellow-400 relative z-10 group-hover:scale-110 transition-transform duration-300" />
+                    <div className="relative h-full p-4 sm:p-6 flex flex-col items-center text-white z-10 overflow-hidden">
+                      {/* Background Icon with blur */}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-40  z-0">
+                        <div className="relative">
+                          <div className="absolute inset-0 blur-3xl">
+                            <BoltIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-300" />
+                          </div>
+                          <BoltIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-400 drop-shadow-[0_0_40px_rgba(250,204,21,0.8)] relative z-10 " />
+                        </div>
                       </div>
                       
                       {/* Title and description */}
-                      <div className="flex-1 flex flex-col items-center justify-center text-center">
-                        <h3 className="text-lg sm:text-xl font-bold mb-3">Automatizaciones</h3>
-                        <p className="text-sm sm:text-base text-white leading-relaxed font-medium tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-center z-10 px-4">
+                        <h3 className="text-lg sm:text-xl font-black mb-2 bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(255,255,255,1)] filter brightness-110 tracking-tight">AUTOMATIZACIONES</h3>
+                        <p className="text-sm sm:text-base text-white leading-relaxed font-semibold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
                           Respuestas automáticas inteligentes para Instagram
                         </p>
                       </div>
@@ -1862,31 +1868,37 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: 0.2 }}
                 >
-                  <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden cursor-pointer hover:scale-110 hover:-rotate-1 transition-all duration-500 ease-out bg-gradient-to-br from-teal-600 to-teal-700 shadow-2xl hover:shadow-[0_20px_50px_rgba(20,184,166,0.5)]">
+                  <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden   bg-gradient-to-br from-black via-teal-950 to-black shadow-2xl  ring-4 ring-teal-500/40  border border-teal-400/20">
                     {/* Epic glow effect */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      <div className="absolute inset-[-20px] bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-600 blur-3xl opacity-60 animate-pulse" />
+                    <div className="absolute inset-0 opacity-0 ">
+                      <div className="absolute inset-[-20px] bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-600 blur-3xl opacity-60 " />
                     </div>
                     
                     {/* Animated gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 group-hover:animate-shimmer" />
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 " />
                     
                     {/* Decorative circles with animation */}
-                    <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-teal-500/30 group-hover:scale-150 transition-transform duration-700" />
-                    <div className="absolute bottom-12 left-6 w-10 h-10 rounded-full bg-teal-800/40 group-hover:scale-150 transition-transform duration-700" />
+                    <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-teal-500/30  " />
+                    <div className="absolute bottom-12 left-6 w-10 h-10 rounded-full bg-teal-800/40  " />
+                    <div className="absolute top-1/3 right-1/4 w-3 h-3 rounded-full bg-yellow-400/50 " />
+                    <div className="absolute bottom-1/4 left-1/3 w-2 h-2 rounded-full bg-yellow-400/40  animation-delay-200" />
                     
                     {/* Content */}
-                    <div className="relative h-full p-4 sm:p-6 flex flex-col text-white z-10">
-                      {/* Icon with glow */}
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 relative mb-4">
-                        <div className="absolute inset-0 bg-yellow-400 blur-2xl opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
-                        <DocumentTextIcon className="w-full h-full text-yellow-400 relative z-10 group-hover:scale-110 transition-transform duration-300" />
+                    <div className="relative h-full p-4 sm:p-6 flex flex-col items-center text-white z-10 overflow-hidden">
+                      {/* Background Icon with blur */}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-40  z-0">
+                        <div className="relative">
+                          <div className="absolute inset-0 blur-3xl">
+                            <DocumentTextIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-300" />
+                          </div>
+                          <DocumentTextIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-400 drop-shadow-[0_0_40px_rgba(250,204,21,0.8)] relative z-10 " />
+                        </div>
                       </div>
                       
                       {/* Title and description */}
-                      <div className="flex-1 flex flex-col items-center justify-center text-center">
-                        <h3 className="text-lg sm:text-xl font-bold mb-3">Captions</h3>
-                        <p className="text-sm sm:text-base text-white leading-relaxed font-medium tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-center z-10 px-4">
+                        <h3 className="text-lg sm:text-xl font-black mb-2 bg-gradient-to-r from-white via-teal-200 to-emerald-400 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(255,255,255,1)] filter brightness-110 tracking-tight">AI CAPTIONS</h3>
+                        <p className="text-sm sm:text-base text-white leading-relaxed font-semibold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
                           Genera las descripciones de tus videos con IA
                         </p>
                       </div>
@@ -1902,31 +1914,37 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: 0.3 }}
                 >
-                  <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden cursor-pointer hover:scale-110 hover:rotate-1 transition-all duration-500 ease-out bg-gradient-to-br from-orange-600 via-red-600 to-pink-600 shadow-2xl hover:shadow-[0_20px_50px_rgba(251,146,60,0.5)]">
+                  <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden   bg-gradient-to-br from-black via-red-950 to-black shadow-2xl  ring-4 ring-orange-500/40  border border-orange-400/20">
                     {/* Epic glow effect */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      <div className="absolute inset-[-20px] bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 blur-3xl opacity-60 animate-pulse" />
+                    <div className="absolute inset-0 opacity-0 ">
+                      <div className="absolute inset-[-20px] bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 blur-3xl opacity-60 " />
                     </div>
                     
                     {/* Animated gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 group-hover:animate-shimmer" />
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 " />
                     
                     {/* Decorative circles with animation */}
-                    <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-orange-500/30 group-hover:scale-150 transition-transform duration-700" />
-                    <div className="absolute bottom-12 left-6 w-10 h-10 rounded-full bg-red-800/40 group-hover:scale-150 transition-transform duration-700" />
+                    <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-orange-500/30  " />
+                    <div className="absolute bottom-12 left-6 w-10 h-10 rounded-full bg-red-800/40  " />
+                    <div className="absolute top-1/3 right-1/4 w-3 h-3 rounded-full bg-yellow-400/50 " />
+                    <div className="absolute bottom-1/4 left-1/3 w-2 h-2 rounded-full bg-yellow-400/40  animation-delay-200" />
                     
                     {/* Content */}
-                    <div className="relative h-full p-4 sm:p-6 flex flex-col text-white z-10">
-                      {/* Icon with glow */}
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 relative mb-4">
-                        <div className="absolute inset-0 bg-yellow-400 blur-2xl opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
-                        <LinkIcon className="w-full h-full text-yellow-400 relative z-10 group-hover:scale-110 transition-transform duration-300" />
+                    <div className="relative h-full p-4 sm:p-6 flex flex-col items-center text-white z-10 overflow-hidden">
+                      {/* Background Icon with blur */}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-40  z-0">
+                        <div className="relative">
+                          <div className="absolute inset-0 blur-3xl">
+                            <LinkIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-300" />
+                          </div>
+                          <LinkIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-400 drop-shadow-[0_0_40px_rgba(250,204,21,0.8)] relative z-10 " />
+                        </div>
                       </div>
                       
                       {/* Title and description */}
-                      <div className="flex-1 flex flex-col items-center justify-center text-center">
-                        <h3 className="text-lg sm:text-xl font-bold mb-3">URLs Cortas</h3>
-                        <p className="text-sm sm:text-base text-white leading-relaxed font-medium tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-center z-10 px-4">
+                        <h3 className="text-lg sm:text-xl font-black mb-2 bg-gradient-to-r from-white via-orange-200 to-red-400 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(255,255,255,1)] filter brightness-110 tracking-tight">URLs CORTAS</h3>
+                        <p className="text-sm sm:text-base text-white leading-relaxed font-semibold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
                           Acorta enlaces y analiza clics en tiempo real
                         </p>
                       </div>
@@ -1942,31 +1960,37 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: 0.4 }}
                 >
-                  <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden cursor-pointer hover:scale-110 hover:-rotate-1 transition-all duration-500 ease-out bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 shadow-2xl hover:shadow-[0_20px_50px_rgba(99,102,241,0.5)]">
+                  <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden   bg-gradient-to-br from-black via-indigo-950 to-black shadow-2xl  ring-4 ring-blue-500/40  border border-blue-400/20">
                     {/* Epic glow effect */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      <div className="absolute inset-[-20px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 blur-3xl opacity-60 animate-pulse" />
+                    <div className="absolute inset-0 opacity-0 ">
+                      <div className="absolute inset-[-20px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 blur-3xl opacity-60 " />
                     </div>
                     
                     {/* Animated gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 group-hover:animate-shimmer" />
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 " />
                     
                     {/* Decorative circles with animation */}
-                    <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-blue-500/30 group-hover:scale-150 transition-transform duration-700" />
-                    <div className="absolute bottom-12 left-6 w-10 h-10 rounded-full bg-indigo-800/40 group-hover:scale-150 transition-transform duration-700" />
+                    <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-blue-500/30  " />
+                    <div className="absolute bottom-12 left-6 w-10 h-10 rounded-full bg-indigo-800/40  " />
+                    <div className="absolute top-1/3 right-1/4 w-3 h-3 rounded-full bg-yellow-400/50 " />
+                    <div className="absolute bottom-1/4 left-1/3 w-2 h-2 rounded-full bg-yellow-400/40  animation-delay-200" />
                     
                     {/* Content */}
-                    <div className="relative h-full p-4 sm:p-6 flex flex-col text-white z-10">
-                      {/* Icon with glow */}
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 relative mb-4">
-                        <div className="absolute inset-0 bg-yellow-400 blur-2xl opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
-                        <Settings className="w-full h-full text-yellow-400 relative z-10 group-hover:scale-110 transition-transform duration-300" />
+                    <div className="relative h-full p-4 sm:p-6 flex flex-col items-center text-white z-10 overflow-hidden">
+                      {/* Background Icon with blur */}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-40  z-0">
+                        <div className="relative">
+                          <div className="absolute inset-0 blur-3xl">
+                            <Settings className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-300" />
+                          </div>
+                          <Settings className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-400 drop-shadow-[0_0_40px_rgba(250,204,21,0.8)] relative z-10 " />
+                        </div>
                       </div>
                       
                       {/* Title and description */}
-                      <div className="flex-1 flex flex-col items-center justify-center text-center">
-                        <h3 className="text-lg sm:text-xl font-bold mb-3">Mi Landing</h3>
-                        <p className="text-sm sm:text-base text-white leading-relaxed font-medium tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-center z-10 px-4">
+                        <h3 className="text-lg sm:text-xl font-black mb-2 bg-gradient-to-r from-white via-blue-200 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(255,255,255,1)] filter brightness-110 tracking-tight">MI LANDING</h3>
+                        <p className="text-sm sm:text-base text-white leading-relaxed font-semibold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
                           Crea tu página personal con diseño único
                         </p>
                       </div>
@@ -1990,12 +2014,12 @@ export default function LandingPage() {
                     whileTap={{ scale: 0.95 }}
                   >
                     {/* Glow effect */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-full blur-md opacity-70 group-hover:opacity-100 transition duration-300 animate-pulse"></div>
+                    <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-full blur-md opacity-70 group-hover:opacity-100 transition duration-300 "></div>
                     <div className="absolute -inset-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full blur-xl opacity-40 group-hover:opacity-60 transition duration-500"></div>
                     
-                    <Button size="lg" className="relative h-16 px-12 text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 transition-all duration-300 shadow-2xl">
+                    <Button size="lg" className="relative h-12 md:h-16 px-4 sm:px-6 md:px-12 text-sm sm:text-base md:text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 transition-all duration-300 shadow-2xl">
                       Activa todas las herramientas GRATIS
-                      <ArrowRightIcon className="ml-3 h-6 w-6 group-hover:translate-x-2 transition-transform" />
+                      <ArrowRightIcon className="ml-2 md:ml-3 h-4 md:h-6 w-4 md:w-6 group-hover:translate-x-2 transition-transform" />
                     </Button>
                   </motion.div>
                 </Link>
@@ -2449,12 +2473,12 @@ export default function LandingPage() {
                     {...{ className: "inline-block relative group" } as any}
                   >
                     {/* Glow effect máximo */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-full blur-md opacity-70 group-hover:opacity-100 transition duration-300 animate-pulse"></div>
+                    <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-full blur-md opacity-70 group-hover:opacity-100 transition duration-300 "></div>
                     <div className="absolute -inset-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full blur-xl opacity-40 group-hover:opacity-60 transition duration-500"></div>
                     
-                    <Button size="lg" className="relative h-16 px-12 text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 transition-all duration-300 shadow-2xl">
+                    <Button size="lg" className="relative h-12 md:h-16 px-4 sm:px-6 md:px-12 text-sm sm:text-base md:text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 transition-all duration-300 shadow-2xl">
                       Automatiza AHORA (gratis)
-                      <ArrowRightIcon className="ml-3 h-6 w-6 group-hover:translate-x-2 transition-transform" />
+                      <ArrowRightIcon className="ml-2 md:ml-3 h-4 md:h-6 w-4 md:w-6 group-hover:translate-x-2 transition-transform" />
                     </Button>
                   </motion.div>
                 </Link>
