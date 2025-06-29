@@ -908,7 +908,8 @@ export default function LandingPage() {
         );
       });
 
-      // Feature cards stagger animation
+      // Feature cards stagger animation - DISABLED FOR PERFORMANCE
+      /*
       gsap.fromTo('.feature-card',
         { opacity: 0, y: 30, scale: 0.95 },
         {
@@ -923,6 +924,7 @@ export default function LandingPage() {
           }
         }
       );
+      */
     });
 
     return () => ctx.revert();
@@ -1167,7 +1169,7 @@ export default function LandingPage() {
                   transition={{ duration: 0.8, delay: 0.2 }}
                 >
                   {/* Glow effect behind title */}
-                  <div className="absolute inset-0 blur-2xl md:blur-3xl bg-gradient-to-r from-orange-400/20 to-purple-400/20 md:from-orange-400/40 md:to-purple-400/40 -z-10" />
+                  <div className="absolute inset-0 blur-2xl md:blur-xl bg-gradient-to-r from-orange-400/20 to-purple-400/20 md:from-orange-400/40 md:to-purple-400/40 -z-10" />
                   
                   <h3 className="text-3xl md:text-5xl font-black mb-6 tracking-tight">
                     Mientras tú duermes, <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400">ellos venden</span>
@@ -1204,7 +1206,7 @@ export default function LandingPage() {
                     {/* Blobs layer - reduced on mobile */}
                     {!isMobile && (
                       <div className="absolute inset-0 z-10">
-                        <div className="absolute top-4 right-4 w-40 h-40 bg-gradient-to-br from-orange-400 to-pink-500 rounded-full blur-3xl opacity-30"></div>
+                        <div className="absolute top-4 right-4 w-40 h-40 bg-gradient-to-br from-orange-400 to-pink-500 rounded-full blur-xl opacity-30"></div>
                         <div className="absolute bottom-4 left-4 w-32 h-32 bg-gradient-to-br from-red-400 to-orange-500 rounded-full blur-2xl opacity-25"></div>
                       </div>
                     )}
@@ -1272,7 +1274,7 @@ export default function LandingPage() {
                     {/* Blobs layer - enhanced for purple theme */}
                     {!isMobile && (
                       <div className="absolute inset-0 z-10">
-                        <div className="absolute top-4 right-4 w-40 h-40 bg-gradient-to-br from-purple-400 to-violet-500 rounded-full blur-3xl opacity-30"></div>
+                        <div className="absolute top-4 right-4 w-40 h-40 bg-gradient-to-br from-purple-400 to-violet-500 rounded-full blur-xl opacity-30"></div>
                         <div className="absolute bottom-4 left-4 w-32 h-32 bg-gradient-to-br from-violet-400 to-purple-500 rounded-full blur-2xl opacity-25"></div>
                       </div>
                     )}
@@ -1340,7 +1342,7 @@ export default function LandingPage() {
                     {/* Blobs layer - enhanced for green theme */}
                     {!isMobile && (
                       <div className="absolute inset-0 z-10">
-                        <div className="absolute top-4 right-4 w-40 h-40 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full blur-3xl opacity-30"></div>
+                        <div className="absolute top-4 right-4 w-40 h-40 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full blur-xl opacity-30"></div>
                         <div className="absolute bottom-4 left-4 w-32 h-32 bg-gradient-to-br from-emerald-400 to-green-500 rounded-full blur-2xl opacity-25"></div>
                       </div>
                     )}
@@ -1408,7 +1410,7 @@ export default function LandingPage() {
                     {/* Blobs layer - enhanced for blue theme */}
                     {!isMobile && (
                       <div className="absolute inset-0 z-10">
-                        <div className="absolute top-4 right-4 w-40 h-40 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full blur-3xl opacity-30"></div>
+                        <div className="absolute top-4 right-4 w-40 h-40 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full blur-xl opacity-30"></div>
                         <div className="absolute bottom-4 left-4 w-32 h-32 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full blur-2xl opacity-25"></div>
                       </div>
                     )}
@@ -1487,7 +1489,7 @@ export default function LandingPage() {
                     <>
                       <div className="absolute -inset-1 bg-gradient-to-r from-green-600 to-emerald-600 rounded-3xl blur-md opacity-30 group-hover:opacity-50 transition-opacity duration-500" style={{ willChange: 'auto' }}></div>
                       <div className="absolute -inset-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-3xl blur-2xl opacity-15 group-hover:opacity-30 transition-opacity duration-700" style={{ willChange: 'auto' }}></div>
-                      <div className="absolute -inset-3 bg-gradient-to-r from-green-400 to-emerald-400 rounded-3xl blur-3xl opacity-5 group-hover:opacity-15 transition-opacity duration-900" style={{ willChange: 'auto' }}></div>
+                      <div className="absolute -inset-3 bg-gradient-to-r from-green-400 to-emerald-400 rounded-3xl blur-xl opacity-5 group-hover:opacity-15 transition-opacity duration-900" style={{ willChange: 'auto' }}></div>
                     </>
                   )}
                   
@@ -1565,7 +1567,7 @@ export default function LandingPage() {
                     <>
                       <div className="absolute -inset-1 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-3xl blur-md opacity-30 group-hover:opacity-50 transition-opacity duration-500" style={{ willChange: 'auto' }}></div>
                       <div className="absolute -inset-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-3xl blur-2xl opacity-15 group-hover:opacity-30 transition-opacity duration-700" style={{ willChange: 'auto' }}></div>
-                      <div className="absolute -inset-3 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-3xl blur-3xl opacity-5 group-hover:opacity-15 transition-opacity duration-900" style={{ willChange: 'auto' }}></div>
+                      <div className="absolute -inset-3 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-3xl blur-xl opacity-5 group-hover:opacity-15 transition-opacity duration-900" style={{ willChange: 'auto' }}></div>
                     </>
                   )}
                   
@@ -1655,7 +1657,7 @@ export default function LandingPage() {
                     <>
                       <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-3xl blur-md opacity-30 group-hover:opacity-50 transition-opacity duration-500" style={{ willChange: 'auto' }}></div>
                       <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-3xl blur-2xl opacity-15 group-hover:opacity-30 transition-opacity duration-700" style={{ willChange: 'auto' }}></div>
-                      <div className="absolute -inset-3 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-3xl blur-3xl opacity-5 group-hover:opacity-15 transition-opacity duration-900" style={{ willChange: 'auto' }}></div>
+                      <div className="absolute -inset-3 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-3xl blur-xl opacity-5 group-hover:opacity-15 transition-opacity duration-900" style={{ willChange: 'auto' }}></div>
                     </>
                   )}
                   
@@ -1790,18 +1792,10 @@ export default function LandingPage() {
           <div className="container mx-auto px-4 relative z-10">
             <motion.div 
               {...{ className: "max-w-7xl mx-auto" } as any}
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1 }}
             >
               {/* Header de la sección */}
               <motion.div 
                 {...{ className: "text-center mb-20" } as any}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
               >
                 <h2 className="text-4xl sm:text-5xl md:text-7xl font-black mb-4 sm:mb-6 leading-tight">
                   4 herramientas que <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400">multiplican tus ventas</span>
@@ -1817,15 +1811,11 @@ export default function LandingPage() {
                 {/* Feature 1: DM Automation */}
                 <motion.div
                   {...{ className: "relative group feature-card" } as any}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.1 }}
                 >
                   <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden   bg-gradient-to-br from-black via-purple-950 to-black shadow-2xl  ring-4 ring-purple-500/40  border border-purple-400/20">
                     {/* Epic glow effect */}
                     <div className="absolute inset-0 opacity-0 ">
-                      <div className="absolute inset-[-20px] bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 blur-3xl opacity-60 " />
+                      <div className="absolute inset-[-20px] bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 blur-xl opacity-60 " />
                     </div>
                     
                     {/* Animated gradient overlay */}
@@ -1842,7 +1832,7 @@ export default function LandingPage() {
                       {/* Background Icon with blur */}
                       <div className="absolute inset-0 flex items-center justify-center opacity-40  z-0">
                         <div className="relative">
-                          <div className="absolute inset-0 blur-3xl">
+                          <div className="absolute inset-0 blur-xl">
                             <BoltIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-300" />
                           </div>
                           <BoltIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-400 drop-shadow-[0_0_40px_rgba(250,204,21,0.8)] relative z-10 " />
@@ -1863,15 +1853,11 @@ export default function LandingPage() {
                 {/* Feature 2: Captions */}
                 <motion.div
                   {...{ className: "relative group feature-card" } as any}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
                 >
                   <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden   bg-gradient-to-br from-black via-teal-950 to-black shadow-2xl  ring-4 ring-teal-500/40  border border-teal-400/20">
                     {/* Epic glow effect */}
                     <div className="absolute inset-0 opacity-0 ">
-                      <div className="absolute inset-[-20px] bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-600 blur-3xl opacity-60 " />
+                      <div className="absolute inset-[-20px] bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-600 blur-xl opacity-60 " />
                     </div>
                     
                     {/* Animated gradient overlay */}
@@ -1888,7 +1874,7 @@ export default function LandingPage() {
                       {/* Background Icon with blur */}
                       <div className="absolute inset-0 flex items-center justify-center opacity-40  z-0">
                         <div className="relative">
-                          <div className="absolute inset-0 blur-3xl">
+                          <div className="absolute inset-0 blur-xl">
                             <DocumentTextIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-300" />
                           </div>
                           <DocumentTextIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-400 drop-shadow-[0_0_40px_rgba(250,204,21,0.8)] relative z-10 " />
@@ -1909,15 +1895,11 @@ export default function LandingPage() {
                 {/* Feature 3: URL Shortener */}
                 <motion.div
                   {...{ className: "relative group feature-card" } as any}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.3 }}
                 >
                   <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden   bg-gradient-to-br from-black via-red-950 to-black shadow-2xl  ring-4 ring-orange-500/40  border border-orange-400/20">
                     {/* Epic glow effect */}
                     <div className="absolute inset-0 opacity-0 ">
-                      <div className="absolute inset-[-20px] bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 blur-3xl opacity-60 " />
+                      <div className="absolute inset-[-20px] bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 blur-xl opacity-60 " />
                     </div>
                     
                     {/* Animated gradient overlay */}
@@ -1934,7 +1916,7 @@ export default function LandingPage() {
                       {/* Background Icon with blur */}
                       <div className="absolute inset-0 flex items-center justify-center opacity-40  z-0">
                         <div className="relative">
-                          <div className="absolute inset-0 blur-3xl">
+                          <div className="absolute inset-0 blur-xl">
                             <LinkIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-300" />
                           </div>
                           <LinkIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-400 drop-shadow-[0_0_40px_rgba(250,204,21,0.8)] relative z-10 " />
@@ -1955,15 +1937,11 @@ export default function LandingPage() {
                 {/* Feature 4: Mi Landing */}
                 <motion.div
                   {...{ className: "relative group feature-card" } as any}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
                 >
                   <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden   bg-gradient-to-br from-black via-indigo-950 to-black shadow-2xl  ring-4 ring-blue-500/40  border border-blue-400/20">
                     {/* Epic glow effect */}
                     <div className="absolute inset-0 opacity-0 ">
-                      <div className="absolute inset-[-20px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 blur-3xl opacity-60 " />
+                      <div className="absolute inset-[-20px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 blur-xl opacity-60 " />
                     </div>
                     
                     {/* Animated gradient overlay */}
@@ -1980,7 +1958,7 @@ export default function LandingPage() {
                       {/* Background Icon with blur */}
                       <div className="absolute inset-0 flex items-center justify-center opacity-40  z-0">
                         <div className="relative">
-                          <div className="absolute inset-0 blur-3xl">
+                          <div className="absolute inset-0 blur-xl">
                             <Settings className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-300" />
                           </div>
                           <Settings className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-400 drop-shadow-[0_0_40px_rgba(250,204,21,0.8)] relative z-10 " />
