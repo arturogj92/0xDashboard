@@ -1796,6 +1796,16 @@ export default function LandingPage() {
               {/* Header de la sección */}
               <motion.div 
                 {...{ className: "text-center mb-20" } as any}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ 
+                  once: true,
+                  amount: 0.3 
+                }}
+                transition={{ 
+                  duration: 0.8, 
+                  ease: "easeOut"
+                }}
               >
                 <h2 className="text-4xl sm:text-5xl md:text-7xl font-black mb-4 sm:mb-6 leading-tight">
                   4 herramientas que <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400">multiplican tus ventas</span>
@@ -2038,25 +2048,13 @@ export default function LandingPage() {
           <div className="container mx-auto px-4 relative z-10">
             <motion.div 
               {...{ className: "max-w-6xl mx-auto" } as any}
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1 }}
             >
               {/* Título épico con animación */}
               <motion.div 
                 {...{ className: "text-center mb-20" } as any}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
               >
                 <motion.h2 
                   {...{ className: "text-5xl md:text-7xl font-black mb-6 leading-tight" } as any}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
                 >
                   El 93% de creadores <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">fracasa</span>
                   <br />
@@ -2065,10 +2063,6 @@ export default function LandingPage() {
                 
                 <motion.p 
                   {...{ className: "text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto" } as any}
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
                 >
                   Mientras respondes DMs, tu competencia cierra 5 ventas automáticas
                 </motion.p>
@@ -2100,14 +2094,7 @@ export default function LandingPage() {
                   
                   {/* Efecto de fuego animado */}
                   <div className="absolute inset-0 overflow-hidden rounded-3xl">
-                    <motion.div
-                      {...{ className: "absolute -bottom-10 left-0 right-0 h-40 bg-gradient-to-t from-red-600/20 via-orange-500/10 to-transparent" } as any}
-                      animate={{ 
-                        y: [0, -10, 0],
-                        opacity: [0.5, 0.8, 0.5]
-                      }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    />
+                    <div className="absolute -bottom-10 left-0 right-0 h-40 bg-gradient-to-t from-red-600/20 via-orange-500/10 to-transparent opacity-50" />
                   </div>
                   
                   <div className="relative bg-gradient-to-br from-gray-950 via-red-950/90 to-gray-950 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-red-500/40 overflow-hidden h-full flex flex-col">
@@ -2115,10 +2102,6 @@ export default function LandingPage() {
                     <div className="flex items-center justify-center gap-4 mb-10">
                       <motion.div 
                         {...{ className: "relative w-14 h-14" } as any}
-                        animate={{ 
-                          rotate: [0, 5, -5, 0]
-                        }}
-                        transition={{ duration: 3, repeat: Infinity }}
                       >
                         <div className="absolute inset-0 bg-gradient-to-br from-red-500 to-orange-600 rounded-xl shadow-lg shadow-red-500/50"></div>
                         <div className="absolute inset-0 bg-red-500/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
@@ -2249,41 +2232,8 @@ export default function LandingPage() {
                   
                   {/* Efecto de aurora boreal */}
                   <div className="absolute inset-0 overflow-hidden rounded-3xl">
-                    <motion.div
-                      {...{ className: "absolute -top-10 left-0 right-0 h-40 bg-gradient-to-b from-green-400/20 via-emerald-300/10 to-transparent" } as any}
-                      animate={{ 
-                        y: [0, 10, 0],
-                        opacity: [0.3, 0.6, 0.3]
-                      }}
-                      transition={{ duration: 3, repeat: Infinity }}
-                    />
-                    {/* Partículas de éxito */}
-                    <motion.div
-                      {...{ className: "absolute inset-0" } as any}
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                    >
-                      {[...Array(5)].map((_, i) => (
-                        <motion.div
-                          key={i}
-                          {...{ className: "absolute w-1 h-1 bg-green-400 rounded-full" } as any}
-                          style={{ 
-                            left: `${20 + i * 15}%`,
-                            top: `${10 + i * 10}%`
-                          }}
-                          animate={{ 
-                            y: [-20, -40, -20],
-                            opacity: [0, 1, 0],
-                            scale: [0, 1.5, 0]
-                          }}
-                          transition={{ 
-                            duration: 3,
-                            repeat: Infinity,
-                            delay: i * 0.5
-                          }}
-                        />
-                      ))}
-                    </motion.div>
+                    <div className="absolute -top-10 left-0 right-0 h-40 bg-gradient-to-b from-green-400/20 via-emerald-300/10 to-transparent opacity-30" />
+                    {/* Partículas de éxito - DISABLED FOR PERFORMANCE */}
                   </div>
                   
                   <div className="relative bg-gradient-to-br from-gray-950 via-green-950/90 to-gray-950 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-green-500/40 overflow-hidden h-full flex flex-col">
@@ -2301,17 +2251,7 @@ export default function LandingPage() {
                         <div className="absolute inset-0 bg-green-500/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
                           <CheckIcon className={`h-7 w-7 text-white ${isMobile ? '' : 'drop-shadow-[0_0_10px_rgba(34,197,94,0.8)]'}`} />
                         </div>
-                        {/* Sparkle effect */}
-                        <motion.div
-                          {...{ className: "absolute -top-1 -right-1 w-3 h-3" } as any}
-                          animate={{ 
-                            scale: [0, 1, 0],
-                            opacity: [0, 1, 0]
-                          }}
-                          transition={{ duration: 2, repeat: Infinity }}
-                        >
-                          <SparklesIcon className="w-3 h-3 text-yellow-400" />
-                        </motion.div>
+                        {/* Sparkle effect - DISABLED FOR PERFORMANCE */}
                       </motion.div>
                       <div className="text-left">
                         <div className="flex items-center gap-2 mb-1">
