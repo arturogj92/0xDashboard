@@ -2039,15 +2039,17 @@ export default function LandingPage() {
             </div>
             
             
-            {/* Grid pattern overlay con fade muy suave */}
-            <div className="absolute inset-0 opacity-5"
-                 style={{
-                   backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.5) 1px, transparent 1px)`,
-                   backgroundSize: '50px 50px',
-                   maskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,0.1), transparent 70%)',
-                   WebkitMaskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,0.1), transparent 70%)'
-                 }}
-            />
+            {/* Grid pattern overlay con fade muy suave - DISABLED ON MOBILE */}
+            {!isMobile && (
+              <div className="absolute inset-0 opacity-5"
+                   style={{
+                     backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.5) 1px, transparent 1px)`,
+                     backgroundSize: '50px 50px',
+                     maskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,0.1), transparent 70%)',
+                     WebkitMaskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,0.1), transparent 70%)'
+                   }}
+              />
+            )}
           </div>
 
           <div className="container mx-auto px-4 relative z-10">
@@ -2090,12 +2092,16 @@ export default function LandingPage() {
                   {...{ className: "relative group flex flex-col" } as any}
                   initial={{ opacity: 0, x: -50 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8 }}
-                  whileHover={{ scale: 1.01 }}
+                  transition={{ duration: 0.5 }}
+                  whileHover={isMobile ? {} : { scale: 1.01 }}
                 >
-                  {/* Multi-layer glow effect */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-orange-600 rounded-3xl blur-md opacity-20 group-hover:opacity-30 transition duration-500"></div>
-                  <div className="absolute -inset-2 bg-gradient-to-r from-red-500 to-orange-500 rounded-3xl blur-2xl opacity-10 group-hover:opacity-20 transition duration-700"></div>
+                  {/* Multi-layer glow effect - OPTIMIZED */}
+                  {!isMobile && (
+                    <>
+                      <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-orange-600 rounded-3xl blur-md opacity-20 group-hover:opacity-30 transition duration-500"></div>
+                      <div className="absolute -inset-2 bg-gradient-to-r from-red-500 to-orange-500 rounded-3xl blur-2xl opacity-10 group-hover:opacity-20 transition duration-700"></div>
+                    </>
+                  )}
                   
                   {/* Efecto de fuego animado */}
                   <div className="absolute inset-0 overflow-hidden rounded-3xl">
@@ -2127,9 +2133,9 @@ export default function LandingPage() {
                       <div className="w-full max-w-xs space-y-3 ml-4">
                         <motion.div 
                           {...{ className: "flex items-center gap-4" } as any}
-                          initial={{ opacity: 0, x: -20 }}
+                          initial={{ opacity: 0, x: -10 }}
                           whileInView={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.2 }}
+                          transition={{ delay: 0.1, duration: 0.4 }}
                         >
                           <div className="w-10 h-10 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
                             <ChatBubbleLeftRightIcon className="h-5 w-5 text-red-400" />
@@ -2228,12 +2234,16 @@ export default function LandingPage() {
                   {...{ className: "relative group flex flex-col" } as any}
                   initial={{ opacity: 0, x: 50 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8 }}
-                  whileHover={{ scale: 1.01 }}
+                  transition={{ duration: 0.5 }}
+                  whileHover={isMobile ? {} : { scale: 1.01 }}
                 >
-                  {/* Multi-layer glow effect */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-green-600 to-emerald-600 rounded-3xl blur-md opacity-25 group-hover:opacity-35 transition duration-500"></div>
-                  <div className="absolute -inset-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-3xl blur-2xl opacity-15 group-hover:opacity-25 transition duration-700"></div>
+                  {/* Multi-layer glow effect - OPTIMIZED */}
+                  {!isMobile && (
+                    <>
+                      <div className="absolute -inset-1 bg-gradient-to-r from-green-600 to-emerald-600 rounded-3xl blur-md opacity-25 group-hover:opacity-35 transition duration-500"></div>
+                      <div className="absolute -inset-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-3xl blur-2xl opacity-15 group-hover:opacity-25 transition duration-700"></div>
+                    </>
+                  )}
                   
                   {/* Efecto de aurora boreal */}
                   <div className="absolute inset-0 overflow-hidden rounded-3xl">
@@ -2246,11 +2256,11 @@ export default function LandingPage() {
                     <div className="flex items-center justify-center gap-4 mb-10">
                       <motion.div 
                         {...{ className: "relative w-14 h-14" } as any}
-                        animate={{ 
+                        animate={isMobile ? {} : { 
                           rotate: [0, -5, 5, 0],
                           scale: [1, 1.1, 1]
                         }}
-                        transition={{ duration: 4, repeat: Infinity }}
+                        transition={isMobile ? {} : { duration: 4, repeat: Infinity }}
                       >
                         <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg shadow-green-500/50"></div>
                         <div className="absolute inset-0 bg-green-500/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
@@ -2272,9 +2282,9 @@ export default function LandingPage() {
                       <div className="w-full max-w-xs space-y-3 ml-4">
                         <motion.div 
                           {...{ className: "flex items-center gap-4" } as any}
-                          initial={{ opacity: 0, x: 20 }}
+                          initial={{ opacity: 0, x: 10 }}
                           whileInView={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.2 }}
+                          transition={{ delay: 0.1, duration: 0.4 }}
                         >
                           <div className="w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
                             <ChatBubbleLeftRightIcon className="h-5 w-5 text-green-400" />
@@ -2349,11 +2359,11 @@ export default function LandingPage() {
                       <div className="flex items-center gap-4">
                         <motion.div 
                           {...{ className: "w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center flex-shrink-0" } as any}
-                          animate={{ 
+                          animate={isMobile ? {} : { 
                             rotate: [0, 5, -5, 0],
                             scale: [1, 1.1, 1]
                           }}
-                          transition={{ duration: 4, repeat: Infinity }}
+                          transition={isMobile ? {} : { duration: 4, repeat: Infinity }}
                         >
                           <svg className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
