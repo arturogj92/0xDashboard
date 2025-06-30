@@ -945,7 +945,7 @@ export default function LandingPage() {
         <meta name="keywords" content="automatizar DMs Instagram, alternativa ManyChat barata, link in bio gratis, acortador URL propio, generador captions IA" />
       </head>
 
-      <div className="min-h-screen bg-grid-background text-white overflow-x-hidden"
+      <div className="bg-grid-background text-white overflow-x-hidden"
            style={{ backgroundColor: 'var(--background)' }}>
         
         {/* Global smooth gradient overlay - ultra diffused */}

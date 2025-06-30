@@ -31,7 +31,7 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
   }
   
   return (
-    <div className="min-h-screen bg-transparent flex flex-col">
+    <div className={`${pathname === '/' ? '' : 'min-h-screen'} bg-transparent flex flex-col`}>
       {/* Main Navigation */}
       <nav className={`${pathname === '/' ? 'mt-0 pt-2' : 'mt-2'} bg-navbar shadow-sm relative z-50`}>
         {/* Desktop & Mobile Header */}
@@ -305,7 +305,7 @@ export default function RootLayoutInner({ children }: { children: React.ReactNod
           </div>
         </div>
       </nav>
-      <main className={`flex-grow w-full ${pathname === '/' ? 'py-0' : 'py-6'} sm:px-6 lg:px-8`}>
+      <main className={`${pathname === '/' ? '' : 'flex-grow'} w-full ${pathname === '/' ? 'py-0' : 'py-6'} sm:px-6 lg:px-8`}>
         {children}
       </main>
       <Footer />
