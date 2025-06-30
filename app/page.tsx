@@ -290,15 +290,19 @@ function AppCarousel3D() {
 
 
   return (
-    <div className="relative">
-      {/* iPhone Frame - Simplified 3D */}
-      <motion.div
-        {...{ className: "relative" } as any}
-        style={{ 
-          width: '300px', 
-          height: '600px',
-        }}
-      >
+    <>
+      <style jsx>{`
+        @media (min-width: 1200px) and (max-width: 1350px) {
+          .iphone-carousel-wrapper {
+            margin-top: 0 !important;
+          }
+        }
+      `}</style>
+      <div className="relative iphone-carousel-wrapper -mt-4 md:-mt-6 lg:-mt-8 xl:-mt-6 2xl:-mt-8">
+        {/* iPhone Frame - Simplified 3D */}
+        <motion.div
+          {...{ className: "relative w-[280px] h-[560px] xl:w-[340px] xl:h-[680px] 2xl:w-[380px] 2xl:h-[760px]" } as any}
+        >
         {/* iPhone shadow - Static and simple */}
         <div
           className="absolute inset-0 bg-black/30 rounded-[3rem] blur-2xl"
@@ -308,9 +312,9 @@ function AppCarousel3D() {
         />
         
         {/* iPhone body */}
-        <div className="relative w-full h-full bg-black rounded-[3rem] shadow-2xl border-8 border-gray-800">
+        <div className="relative w-full h-full bg-black rounded-[3rem] xl:rounded-[3.5rem] 2xl:rounded-[4rem] shadow-2xl border-8 xl:border-10 2xl:border-12 border-gray-800">
           {/* Screen container with overflow hidden */}
-          <div className="absolute inset-4 rounded-[2rem] overflow-hidden bg-black group">
+          <div className="absolute inset-4 xl:inset-5 2xl:inset-6 rounded-[2rem] xl:rounded-[2.5rem] 2xl:rounded-[3rem] overflow-hidden bg-black group">
             {/* Touch/Click area for swipe */}
             <div 
               className="absolute inset-0 z-20"
@@ -388,34 +392,34 @@ function AppCarousel3D() {
             {/* Navigation arrows - visible on hover */}
             <button
               onClick={goToPrevious}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+              className="absolute left-4 xl:left-6 2xl:left-8 top-1/2 -translate-y-1/2 w-8 h-8 xl:w-10 xl:h-10 2xl:w-12 2xl:h-12 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
               aria-label="Previous image"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-4 h-4 xl:w-5 xl:h-5 2xl:w-6 2xl:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
             
             <button
               onClick={goToNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+              className="absolute right-4 xl:right-6 2xl:right-8 top-1/2 -translate-y-1/2 w-8 h-8 xl:w-10 xl:h-10 2xl:w-12 2xl:h-12 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
               aria-label="Next image"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-4 h-4 xl:w-5 xl:h-5 2xl:w-6 2xl:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
             
             {/* Dots indicator inside the screen */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+            <div className="absolute bottom-4 xl:bottom-6 2xl:bottom-8 left-1/2 -translate-x-1/2 flex gap-1.5 xl:gap-2 2xl:gap-2.5">
               {images.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => goToSlide(index)}
                   className={`rounded-full transition-all ${
                     index === (currentIndex - 1 + images.length) % images.length 
-                      ? 'bg-white w-8 h-2' 
-                      : 'bg-white/40 w-2 h-2 hover:bg-white/60'
+                      ? 'bg-white w-8 xl:w-10 2xl:w-12 h-2 xl:h-2.5 2xl:h-3' 
+                      : 'bg-white/40 w-2 xl:w-2.5 2xl:w-3 h-2 xl:h-2.5 2xl:h-3 hover:bg-white/60'
                   }`}
                   aria-label={`Go to slide ${index + 1}`}
                 />
@@ -424,15 +428,15 @@ function AppCarousel3D() {
           </div>
           
           {/* iPhone notch */}
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 w-20 h-6 bg-black rounded-full"></div>
+          <div className="absolute top-4 xl:top-5 2xl:top-6 left-1/2 -translate-x-1/2 w-20 xl:w-24 2xl:w-28 h-6 xl:h-7 2xl:h-8 bg-black rounded-full"></div>
           
           {/* Home indicator */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/30 rounded-full"></div>
+          <div className="absolute bottom-2 xl:bottom-3 2xl:bottom-4 left-1/2 -translate-x-1/2 w-32 xl:w-40 2xl:w-48 h-1 xl:h-1.5 2xl:h-2 bg-white/30 rounded-full"></div>
         </div>
         
         {/* App info floating card - Siempre visible */}
         <motion.div
-          {...{ className: "absolute -right-16 top-1/2 -translate-y-1/2 bg-black/80 backdrop-blur-sm border border-white/20 rounded-xl p-4 min-w-48" } as any}
+          {...{ className: "absolute -right-16 xl:-right-20 2xl:-right-24 top-1/2 -translate-y-1/2 bg-black/80 backdrop-blur-sm border border-white/20 rounded-xl xl:rounded-2xl p-4 xl:p-6 2xl:p-8 min-w-48 xl:min-w-64 2xl:min-w-80" } as any}
           initial={{ opacity: 0, x: -20 }}
           animate={{ 
             opacity: 1,
@@ -441,23 +445,23 @@ function AppCarousel3D() {
           }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          <h4 className="text-white font-semibold text-lg mb-1">
+          <h4 className="text-white font-semibold text-lg xl:text-xl 2xl:text-2xl mb-1 xl:mb-2">
             {images[(currentIndex - 1 + images.length) % images.length].title}
           </h4>
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-400 text-sm xl:text-base 2xl:text-lg">
             {images[(currentIndex - 1 + images.length) % images.length].description}
           </p>
           
           {/* Progress indicators - Clickable */}
-          <div className="flex gap-1 mt-3">
+          <div className="flex gap-1 xl:gap-1.5 2xl:gap-2 mt-3 xl:mt-4 2xl:mt-5">
             {images.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`h-1 rounded-full transition-all ${
+                className={`h-1 xl:h-1.5 2xl:h-2 rounded-full transition-all ${
                   index === (currentIndex - 1 + images.length) % images.length 
-                    ? 'bg-orange-400 w-6' 
-                    : 'bg-white/20 w-2 hover:bg-white/40'
+                    ? 'bg-orange-400 w-6 xl:w-8 2xl:w-10' 
+                    : 'bg-white/20 w-2 xl:w-3 2xl:w-4 hover:bg-white/40'
                 }`}
               />
             ))}
@@ -520,6 +524,7 @@ function AppCarousel3D() {
       </motion.div>
       
     </div>
+    </>
   );
 }
 
@@ -1043,17 +1048,17 @@ export default function LandingPage() {
         <ParallaxOrbs />
         
         {/* Hero Section */}
-        <section className="hero-section relative min-h-screen flex items-center justify-center py-20">
+        <section className="hero-section relative flex items-start justify-center pt-4 md:pt-6 xl:pt-8 2xl:pt-10 pb-20 md:pb-24 xl:pb-32 2xl:pb-40">
           <div className="hero-bg absolute inset-0 z-0">
           </div>
 
-          <div className="container mx-auto px-4 z-10">
-            <div className="grid lg:grid-cols-2 gap-8 items-center max-w-6xl mx-auto">
+          <div className="container mx-auto px-4 xl:px-8 2xl:px-16 z-10">
+            <div className="grid lg:grid-cols-2 gap-8 xl:gap-16 2xl:gap-32 items-center max-w-6xl xl:max-w-7xl 2xl:max-w-[110rem] mx-auto">
               
               {/* Text Content - Izquierda */}
-              <div className="text-center lg:text-left">
+              <div className="text-center lg:text-left pt-8 md:pt-12 lg:pt-16">
                 <motion.h1
-                  {...{ className: "text-3xl md:text-4xl lg:text-5xl font-bold font-manrope mb-6 leading-tight" } as any}
+                  {...{ className: "text-3xl md:text-4xl lg:text-5xl xl:text-7xl 2xl:text-8xl font-bold font-manrope mb-6 xl:mb-10 2xl:mb-14 leading-tight" } as any}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
@@ -1067,16 +1072,16 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.3 }}
-                  {...{ className: "inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-8" } as any}
+                  {...{ className: "inline-flex items-center gap-3 bg-black/40 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 xl:px-8 xl:py-4 2xl:px-10 2xl:py-5 mb-8 xl:mb-12 2xl:mb-14" } as any}
                   style={{ borderColor: 'var(--border)' }}
                 >
-                  <div className="w-2 h-2 rounded-full " 
+                  <div className="w-2 h-2 xl:w-3 xl:h-3 rounded-full " 
                        style={{ backgroundColor: 'var(--secondary)' }} />
-                  <span className="text-sm">🔥 +1,200 creadores ya automatizando</span>
+                  <span className="text-sm xl:text-lg 2xl:text-xl">🔥 +1,200 creadores ya automatizando</span>
                 </motion.div>
 
                 <motion.p
-                  {...{ className: "text-lg md:text-xl text-gray-300 mb-10 max-w-2xl lg:max-w-none" } as any}
+                  {...{ className: "text-lg md:text-xl xl:text-3xl 2xl:text-4xl text-gray-300 mb-10 xl:mb-16 2xl:mb-20 max-w-2xl lg:max-w-none" } as any}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
@@ -1101,14 +1106,14 @@ export default function LandingPage() {
                       <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-full blur-md opacity-70 group-hover:opacity-100 transition duration-300 "></div>
                       <div className="absolute -inset-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full blur-xl opacity-40 group-hover:opacity-60 transition duration-500"></div>
                       
-                      <Button size="lg" className="relative h-12 md:h-16 px-6 md:px-12 text-base md:text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 transition-all duration-300 shadow-2xl">
+                      <Button size="lg" className="relative h-12 md:h-14 xl:h-16 2xl:h-20 px-6 md:px-10 xl:px-14 2xl:px-18 text-base md:text-lg xl:text-xl 2xl:text-2xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 transition-all duration-300 shadow-2xl">
                         Empieza GRATIS
-                        <ArrowRightIcon className="ml-2 md:ml-3 h-4 md:h-6 w-4 md:w-6 group-hover:translate-x-2 transition-transform" />
+                        <ArrowRightIcon className="ml-2 md:ml-3 xl:ml-4 h-4 md:h-5 xl:h-6 2xl:h-7 w-4 md:w-5 xl:w-6 2xl:w-7 group-hover:translate-x-2 transition-transform" />
                       </Button>
                     </motion.div>
                   </Link>
                   <Link href="/pricing">
-                    <Button size="lg" variant="outline" className="h-12 md:h-16 px-6 md:px-12 text-base md:text-xl font-black border-2 hover:border-white/50 transition-all duration-300">
+                    <Button size="lg" variant="outline" className="h-12 md:h-14 xl:h-16 2xl:h-20 px-6 md:px-10 xl:px-14 2xl:px-18 text-base md:text-lg xl:text-xl 2xl:text-2xl font-black border-2 hover:border-white/50 transition-all duration-300">
                       Ver precios
                     </Button>
                   </Link>
@@ -1116,12 +1121,12 @@ export default function LandingPage() {
               </div>
 
               {/* 3D iPhone Carousel - Derecha */}
-              <div className="flex justify-center lg:justify-end">
+              <div className="flex justify-center lg:justify-end mt-8 lg:mt-0">
                 <motion.div
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 1, delay: 0.8 }}
-                  {...{ className: "relative carousel-container" } as any}
+                  {...{ className: "relative carousel-container xl:scale-100 2xl:scale-110" } as any}
                   style={{ perspective: '1000px' }}
                 >
                   <AppCarousel3D />
@@ -1134,7 +1139,7 @@ export default function LandingPage() {
         </section>
 
         {/* Social Proof Bar - Section 2 - GLOW UP VERSION */}
-        <section className="relative py-20">
+        <section className="relative py-12 md:py-16">
           {/* Epic background effects - Optimized for mobile */}
           {!isMobile ? (
             <div className="absolute -top-64 -bottom-96 left-0 right-0 pointer-events-none">
