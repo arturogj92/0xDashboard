@@ -298,7 +298,7 @@ function AppCarousel3D() {
           }
         }
       `}</style>
-      <div className="relative iphone-carousel-wrapper -mt-4 md:-mt-6 lg:-mt-8 xl:-mt-6 2xl:-mt-8">
+      <div className="relative iphone-carousel-wrapper">
         {/* iPhone Frame - Simplified 3D */}
         <motion.div
           {...{ className: "relative w-[280px] h-[560px] xl:w-[340px] xl:h-[680px] 2xl:w-[380px] 2xl:h-[760px]" } as any}
@@ -410,25 +410,8 @@ function AppCarousel3D() {
               </svg>
             </button>
             
-            {/* Dots indicator inside the screen */}
-            <div className="absolute bottom-4 xl:bottom-6 2xl:bottom-8 left-1/2 -translate-x-1/2 flex gap-1.5 xl:gap-2 2xl:gap-2.5">
-              {images.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className={`rounded-full transition-all ${
-                    index === (currentIndex - 1 + images.length) % images.length 
-                      ? 'bg-white w-8 xl:w-10 2xl:w-12 h-2 xl:h-2.5 2xl:h-3' 
-                      : 'bg-white/40 w-2 xl:w-2.5 2xl:w-3 h-2 xl:h-2.5 2xl:h-3 hover:bg-white/60'
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
-            </div>
           </div>
           
-          {/* iPhone notch */}
-          <div className="absolute top-4 xl:top-5 2xl:top-6 left-1/2 -translate-x-1/2 w-20 xl:w-24 2xl:w-28 h-6 xl:h-7 2xl:h-8 bg-black rounded-full"></div>
           
           {/* Home indicator */}
           <div className="absolute bottom-2 xl:bottom-3 2xl:bottom-4 left-1/2 -translate-x-1/2 w-32 xl:w-40 2xl:w-48 h-1 xl:h-1.5 2xl:h-2 bg-white/30 rounded-full"></div>
@@ -1053,7 +1036,7 @@ export default function LandingPage() {
           </div>
 
           <div className="container mx-auto px-4 xl:px-8 2xl:px-16 z-10">
-            <div className="grid lg:grid-cols-2 gap-8 xl:gap-16 2xl:gap-32 items-center max-w-6xl xl:max-w-7xl 2xl:max-w-[110rem] mx-auto">
+            <div className="grid lg:grid-cols-2 gap-8 xl:gap-16 2xl:gap-32 items-start max-w-6xl xl:max-w-7xl 2xl:max-w-[110rem] mx-auto">
               
               {/* Text Content - Izquierda */}
               <div className="text-center lg:text-left pt-8 md:pt-12 lg:pt-16">
@@ -1121,7 +1104,7 @@ export default function LandingPage() {
               </div>
 
               {/* 3D iPhone Carousel - Derecha */}
-              <div className="flex justify-center lg:justify-end mt-8 lg:mt-0">
+              <div className="flex justify-center lg:justify-end mt-8 lg:mt-0 lg:pt-16">
                 <motion.div
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -2430,9 +2413,922 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* Testimonials Section */}
+        <section className="relative py-32 overflow-hidden">
+          {/* Background decoration */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />
+          </div>
 
-        <footer className="border-t border-white/10 py-12">
-        
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              {...{ className: "text-center mb-20" } as any}
+            >
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                Lo que dicen los <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">creadores exitosos</span>
+              </h2>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                Miles de creadores ya están automatizando su Instagram y multiplicando sus ventas
+              </p>
+            </motion.div>
+
+            {/* Testimonials Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              {/* Testimonial 1 - Chef */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                {...{ className: "relative" } as any}
+              >
+                <div className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full hover:border-white/20 transition-all duration-300">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-orange-400">
+                      <Image
+                        src="/images/testimonials/influ1_chef.png"
+                        alt="Chef García"
+                        width={64}
+                        height={64}
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg">@chef.garcia92</h4>
+                      <p className="text-gray-400 text-sm">Chef & Food Creator</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <StarIcon key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <p className="text-gray-300 leading-relaxed mb-6">
+                    "Al principio era escéptico, pero después de 3 meses usando Creator0x... madre mía. Antes perdía ventas por no responder rápido los DMs. Ahora todo está automatizado y personalizado. Lo mejor: más tiempo para crear contenido de calidad."
+                  </p>
+                  <div className="pt-6 border-t border-white/10">
+                    <p className="text-sm text-gray-400">
+                      <span className="text-green-400 font-semibold">De 8 a 31</span> alumnos en mis cursos mensuales
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Testimonial 2 - Fitness Trainer */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                {...{ className: "relative" } as any}
+              >
+                <div className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full hover:border-white/20 transition-all duration-300">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400">
+                      <Image
+                        src="/images/testimonials/influ2_train.png"
+                        alt="Coach Martín"
+                        width={64}
+                        height={64}
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg">@martinfit_pro</h4>
+                      <p className="text-gray-400 text-sm">Personal Trainer</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <StarIcon key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <p className="text-gray-300 leading-relaxed mb-6">
+                    "Llevo 6 meses con Creator0x. Los DMs automáticos filtran quien realmente quiere entrenar. La landing con mis planes y horarios funciona 24/7. Y los shortlinks me dicen qué contenido convierte mejor. Herramienta imprescindible si vas en serio con esto."
+                  </p>
+                  <div className="pt-6 border-t border-white/10">
+                    <p className="text-sm text-gray-400">
+                      <span className="text-green-400 font-semibold">87%</span> menos tiempo perdido con consultas básicas
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Testimonial 3 - Mom Influencer */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                {...{ className: "relative md:col-span-2 lg:col-span-1" } as any}
+              >
+                <div className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full hover:border-white/20 transition-all duration-300">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-green-400">
+                      <Image
+                        src="/images/testimonials/influ3_mom.png"
+                        alt="Sofia Lifestyle"
+                        width={64}
+                        height={64}
+                        className="object-cover object-center"
+                        style={{ objectPosition: '50% 30%' }}
+                      />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg">@sofi_vidasana</h4>
+                      <p className="text-gray-400 text-sm">Mom Blogger</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <StarIcon key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <p className="text-gray-300 leading-relaxed mb-6">
+                    "Tengo 2 peques y mi tiempo es súper limitado. Creator0x me salva la vida literal. Los captions con IA mantienen mi feed activo, los DMs se responden solos (y bien!) y mi landing tiene todos mis links de afiliados organizados. Ojalá lo hubiera descubierto antes."
+                  </p>
+                  <div className="pt-6 border-t border-white/10">
+                    <p className="text-sm text-gray-400">
+                      <span className="text-green-400 font-semibold">3h diarias</span> que ahora dedico a mi familia
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing Section - EPIC DESIGN */}
+        <section className="relative py-32 overflow-hidden">
+          {/* Epic background */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/10 to-transparent" />
+          
+          {/* Animated orbs */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-20 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+          </div>
+
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              {...{ className: "text-center mb-20" } as any}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                {...{ className: "inline-block mb-6" } as any}
+              >
+                <span className="text-sm font-medium text-purple-400 bg-purple-400/10 px-4 py-2 rounded-full">
+                  💎 PRICING SIMPLE Y TRANSPARENTE
+                </span>
+              </motion.div>
+              
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                Elige tu plan y <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">escala sin límites</span>
+              </h2>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                Empieza gratis y crece a tu ritmo. Sin permanencia, cancela cuando quieras.
+              </p>
+            </motion.div>
+
+            {/* Pricing Cards */}
+            <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+              
+              {/* Free Plan */}
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                {...{ className: "relative" } as any}
+              >
+                <div className="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full hover:border-white/20 transition-all duration-300">
+                  {/* Popular badge */}
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <span className="bg-gradient-to-r from-green-400 to-teal-400 text-black text-sm font-bold px-4 py-1 rounded-full">
+                      EMPIEZA AQUÍ
+                    </span>
+                  </div>
+                  
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl font-bold mb-2">Starter</h3>
+                    <p className="text-gray-400 mb-6">Perfecto para empezar y probar</p>
+                    <div className="flex items-baseline justify-center gap-2">
+                      <span className="text-5xl font-bold">€0</span>
+                      <span className="text-gray-400">/mes</span>
+                    </div>
+                  </div>
+
+                  <ul className="space-y-4 mb-8">
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>50 DMs</strong> automáticos/mes</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>1 Landing page</strong> personalizada</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>5 Shortlinks</strong> con analytics</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>10 Captions</strong> con IA/mes</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300">Soporte por email</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <XMarkIcon className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-500 line-through">Automatizaciones avanzadas</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <XMarkIcon className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-500 line-through">Múltiples cuentas</span>
+                    </li>
+                  </ul>
+
+                  <Link href="/register">
+                    <Button 
+                      className="w-full h-12 text-base font-bold bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/30 transition-all duration-300"
+                    >
+                      Empieza gratis ahora
+                    </Button>
+                  </Link>
+                </div>
+              </motion.div>
+
+              {/* Pro Plan */}
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                {...{ className: "relative" } as any}
+              >
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-purple-500/20 blur-xl" />
+                
+                <div className="relative bg-gradient-to-br from-purple-900/40 to-orange-900/40 backdrop-blur-sm border-2 border-transparent bg-clip-padding rounded-3xl p-8 h-full"
+                     style={{ 
+                       backgroundImage: `
+                         linear-gradient(to bottom right, rgba(147, 51, 234, 0.2), rgba(249, 115, 22, 0.2)),
+                         linear-gradient(to bottom right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8))
+                       `,
+                       backgroundOrigin: 'border-box',
+                       backgroundClip: 'padding-box, border-box',
+                       borderImage: 'linear-gradient(to bottom right, #f97316, #a855f7) 1'
+                     }}>
+                  
+                  {/* Best value badge */}
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <span className="bg-gradient-to-r from-orange-500 to-purple-500 text-white text-sm font-bold px-4 py-1 rounded-full animate-pulse">
+                      🚀 MÁS POPULAR
+                    </span>
+                  </div>
+                  
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">
+                      Creator Pro
+                    </h3>
+                    <p className="text-gray-300 mb-6">Para creadores que van en serio</p>
+                    <div className="flex items-baseline justify-center gap-2">
+                      <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">
+                        €29
+                      </span>
+                      <span className="text-gray-400">/mes</span>
+                    </div>
+                    <p className="text-sm text-green-400 mt-2">Ahorra €120/año pagando anual</p>
+                  </div>
+
+                  <ul className="space-y-4 mb-8">
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>DMs ilimitados</strong> con IA avanzada</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>Landing pages ilimitadas</strong></span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>Shortlinks ilimitados</strong> + analytics pro</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>Captions ilimitados</strong> con IA</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>Automatizaciones avanzadas</strong></span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>3 cuentas</strong> de Instagram</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>Soporte prioritario</strong> 24/7</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <SparklesIcon className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>Early access</strong> a nuevas features</span>
+                    </li>
+                  </ul>
+
+                  <Link href="/register">
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Button 
+                        className="w-full h-12 text-base font-bold bg-gradient-to-r from-orange-500 to-purple-500 hover:from-orange-400 hover:to-purple-400 text-white shadow-lg hover:shadow-purple-500/25 transition-all duration-300"
+                      >
+                        Empieza prueba de 14 días
+                        <ArrowRightIcon className="ml-2 h-5 w-5" />
+                      </Button>
+                    </motion.div>
+                  </Link>
+                </div>
+              </motion.div>
+
+              {/* Business Plan */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                {...{ className: "relative" } as any}
+              >
+                <div className="relative bg-black/60 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full hover:border-white/20 transition-all duration-300">
+                  {/* Enterprise badge */}
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <span className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white text-sm font-bold px-4 py-1 rounded-full">
+                      🏢 PARA AGENCIAS
+                    </span>
+                  </div>
+                  
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl font-bold mb-2">Business</h3>
+                    <p className="text-gray-400 mb-6">Para agencias y equipos</p>
+                    <div className="flex items-baseline justify-center gap-2">
+                      <span className="text-5xl font-bold">€79</span>
+                      <span className="text-gray-400">/mes</span>
+                    </div>
+                    <p className="text-sm text-green-400 mt-2">Ahorra €350/año pagando anual</p>
+                  </div>
+
+                  <ul className="space-y-4 mb-8">
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>Todo del plan Pro</strong></span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>10 cuentas</strong> de Instagram</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>Team collaboration</strong></span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>API access</strong></span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>White label</strong> disponible</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>Account manager</strong> dedicado</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>Training</strong> personalizado</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <StarIcon className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-300"><strong>Custom integrations</strong></span>
+                    </li>
+                  </ul>
+
+                  <Link href="/contact">
+                    <Button 
+                      className="w-full h-12 text-base font-bold bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white transition-all duration-300"
+                    >
+                      Contactar ventas
+                      <ArrowRightIcon className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Trust badges */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              {...{ className: "flex flex-wrap items-center justify-center gap-8 mt-16 text-sm text-gray-400" } as any}
+            >
+              <div className="flex items-center gap-2">
+                <CheckIcon className="w-4 h-4 text-green-400" />
+                <span>Sin permanencia</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckIcon className="w-4 h-4 text-green-400" />
+                <span>Cancela cuando quieras</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckIcon className="w-4 h-4 text-green-400" />
+                <span>Pago 100% seguro</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckIcon className="w-4 h-4 text-green-400" />
+                <span>Factura disponible</span>
+              </div>
+            </motion.div>
+
+            {/* Enterprise CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              {...{ className: "text-center mt-16 p-8 bg-black/20 rounded-2xl border border-white/10" } as any}
+            >
+              <h3 className="text-2xl font-bold mb-2">¿Necesitas más?</h3>
+              <p className="text-gray-400 mb-4">
+                Planes personalizados para agencias y equipos grandes con necesidades especiales
+              </p>
+              <Link href="/contact">
+                <Button variant="outline" className="border-white/20 hover:border-white/40">
+                  Contacta con ventas
+                  <ArrowRightIcon className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* How it Works Section */}
+        <section className="relative py-32 overflow-hidden bg-gradient-to-b from-transparent via-purple-500/5 to-transparent">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              {...{ className: "text-center mb-20" } as any}
+            >
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                Empieza en <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">3 simples pasos</span>
+              </h2>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                Configura tu automatización en minutos y empieza a vender mientras duermes
+              </p>
+            </motion.div>
+
+            {/* Steps */}
+            <div className="max-w-5xl mx-auto">
+              <div className="space-y-24">
+                {/* Step 1 */}
+                <motion.div
+                  initial={{ opacity: 0, x: -50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                  {...{ className: "grid md:grid-cols-2 gap-8 items-center" } as any}
+                >
+                  <div className="order-2 md:order-1">
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-orange-400 to-purple-400 text-white font-bold text-xl mb-6">
+                      1
+                    </div>
+                    <h3 className="text-3xl font-bold mb-4">Conecta tu Instagram</h3>
+                    <p className="text-gray-300 text-lg leading-relaxed mb-6">
+                      Conecta tu cuenta Business de Instagram en un click. Totalmente seguro con la API oficial de Meta. Sin contraseñas ni accesos extraños.
+                    </p>
+                    <ul className="space-y-3">
+                      <li className="flex items-center gap-3">
+                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-gray-300">Conexión segura con OAuth</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-gray-300">Compatible con cuentas Business y Creator</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-gray-300">Desconecta cuando quieras</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="order-1 md:order-2">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-purple-400/20 blur-3xl" />
+                      <div className="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+                        <div className="aspect-video bg-gradient-to-br from-purple-900/20 to-orange-900/20 rounded-xl flex items-center justify-center">
+                          <div className="text-6xl">🔗</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Step 2 */}
+                <motion.div
+                  initial={{ opacity: 0, x: 50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                  {...{ className: "grid md:grid-cols-2 gap-8 items-center" } as any}
+                >
+                  <div className="order-2">
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-orange-400 to-purple-400 text-white font-bold text-xl mb-6">
+                      2
+                    </div>
+                    <h3 className="text-3xl font-bold mb-4">Configura tus automatizaciones</h3>
+                    <p className="text-gray-300 text-lg leading-relaxed mb-6">
+                      Crea flujos de respuesta personalizados. Define palabras clave, respuestas automáticas y acciones. Tu IA aprende de tu estilo.
+                    </p>
+                    <ul className="space-y-3">
+                      <li className="flex items-center gap-3">
+                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-gray-300">Editor visual drag & drop</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-gray-300">Plantillas prediseñadas</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-gray-300">IA que aprende tu tono</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="order-1">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-r from-purple-400/20 to-orange-400/20 blur-3xl" />
+                      <div className="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+                        <div className="aspect-video bg-gradient-to-br from-orange-900/20 to-purple-900/20 rounded-xl flex items-center justify-center">
+                          <div className="text-6xl">⚡</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Step 3 */}
+                <motion.div
+                  initial={{ opacity: 0, x: -50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                  {...{ className: "grid md:grid-cols-2 gap-8 items-center" } as any}
+                >
+                  <div className="order-2 md:order-1">
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-orange-400 to-purple-400 text-white font-bold text-xl mb-6">
+                      3
+                    </div>
+                    <h3 className="text-3xl font-bold mb-4">Relájate y vende más</h3>
+                    <p className="text-gray-300 text-lg leading-relaxed mb-6">
+                      Tu asistente IA trabaja 24/7 respondiendo DMs, calificando leads y cerrando ventas. Tú solo enfócate en crear contenido increíble.
+                    </p>
+                    <ul className="space-y-3">
+                      <li className="flex items-center gap-3">
+                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-gray-300">Respuestas instantáneas 24/7</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-gray-300">Analytics en tiempo real</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        <span className="text-gray-300">Notificaciones de ventas</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="order-1 md:order-2">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-teal-400/20 blur-3xl" />
+                      <div className="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+                        <div className="aspect-video bg-gradient-to-br from-green-900/20 to-teal-900/20 rounded-xl flex items-center justify-center">
+                          <div className="text-6xl">🚀</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* CTA */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                {...{ className: "text-center mt-20" } as any}
+              >
+                <Link href="/register">
+                  <Button 
+                    size="lg" 
+                    className="h-14 px-8 text-lg bg-gradient-to-r from-orange-500 to-purple-500 hover:from-orange-400 hover:to-purple-400 text-white font-bold shadow-2xl hover:shadow-purple-500/25 transition-all duration-300"
+                  >
+                    Empieza ahora - Es GRATIS
+                    <ArrowRightIcon className="ml-3 h-6 w-6" />
+                  </Button>
+                </Link>
+                <p className="text-gray-400 text-sm mt-4">No necesitas tarjeta de crédito</p>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="relative py-32 overflow-hidden">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              {...{ className: "text-center mb-20" } as any}
+            >
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                Preguntas <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">frecuentes</span>
+              </h2>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                Todo lo que necesitas saber para empezar a automatizar tu Instagram
+              </p>
+            </motion.div>
+
+            {/* FAQ Items */}
+            <div className="max-w-4xl mx-auto space-y-4">
+              {[
+                {
+                  question: "¿Cómo funciona la automatización de DMs?",
+                  answer: "Nuestra IA analiza los mensajes que recibes y responde automáticamente basándose en tus configuraciones personalizadas. Puedes crear flujos de respuesta, palabras clave y respuestas predefinidas. Todo 100% seguro y sin violar las políticas de Instagram."
+                },
+                {
+                  question: "¿Es seguro para mi cuenta de Instagram?",
+                  answer: "Totalmente seguro. Usamos la API oficial de Instagram Business y cumplimos todas sus políticas. No hacemos spam ni acciones masivas. Tu cuenta está protegida y mantienes el control total sobre todas las automatizaciones."
+                },
+                {
+                  question: "¿Puedo personalizar mi landing page?",
+                  answer: "¡Por supuesto! Tienes control total sobre el diseño, colores, contenido y estructura. Añade tus links, productos, servicios, testimonios y más. Es tu espacio digital 100% personalizable sin necesidad de saber programar."
+                },
+                {
+                  question: "¿Qué incluye el plan gratuito?",
+                  answer: "El plan gratuito incluye: automatización básica de DMs (hasta 50/mes), 1 landing page personalizada, 5 shortlinks con analytics básico y acceso al generador de captions con IA (10/mes). Perfecto para empezar y probar la plataforma."
+                },
+                {
+                  question: "¿Cómo funcionan los shortlinks?",
+                  answer: "Crea enlaces cortos personalizados para trackear todos tus clicks. Obtén analytics detallados: ubicación, dispositivo, hora, fuente de tráfico y más. Perfecto para medir el ROI de tus campañas y optimizar tu estrategia."
+                },
+                {
+                  question: "¿Puedo cancelar en cualquier momento?",
+                  answer: "Sí, sin compromisos ni permanencia. Puedes cancelar tu suscripción cuando quieras desde tu panel de control. Si cancelas, mantienes el acceso hasta el final del período pagado."
+                }
+              ].map((faq, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <button
+                    onClick={() => setActiveFAQ(activeFAQ === index ? null : index)}
+                    className="w-full text-left bg-black/40 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-white/20 transition-all duration-300"
+                  >
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg md:text-xl font-semibold pr-4">{faq.question}</h3>
+                      <ChevronDownIcon 
+                        className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
+                          activeFAQ === index ? 'rotate-180' : ''
+                        }`} 
+                      />
+                    </div>
+                    <AnimatePresence>
+                      {activeFAQ === index && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="overflow-hidden"
+                        >
+                          <p className="text-gray-300 mt-4 leading-relaxed">
+                            {faq.answer}
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </button>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* CTA after FAQ */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              {...{ className: "text-center mt-16" } as any}
+            >
+              <p className="text-gray-300 mb-6">¿Tienes más preguntas?</p>
+              <Link href="/register">
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-purple-600 to-orange-600 hover:from-purple-500 hover:to-orange-500 text-white font-bold"
+                >
+                  Prueba gratis y descubre más
+                  <ArrowRightIcon className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Final CTA Section */}
+        <section className="relative py-32 overflow-hidden">
+          {/* Epic background gradient */}
+          <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-orange-900/20 to-purple-900/20" />
+          
+          {/* Animated background effects */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+          </div>
+
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              {...{ className: "text-center max-w-4xl mx-auto" } as any}
+            >
+              {/* Main CTA Content */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <h2 className="text-4xl md:text-5xl lg:text-7xl font-bold mb-8">
+                  ¿Listo para <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400">multiplicar tus ventas</span>?
+                </h2>
+                <p className="text-xl md:text-2xl text-gray-300 mb-12 leading-relaxed">
+                  Únete a miles de creadores que ya están automatizando su Instagram y 
+                  vendiendo mientras duermen. Empieza gratis hoy.
+                </p>
+              </motion.div>
+
+              {/* Stats */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                {...{ className: "grid grid-cols-3 gap-8 mb-12" } as any}
+              >
+                <div>
+                  <div className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-teal-400">
+                    1,200+
+                  </div>
+                  <div className="text-gray-400 mt-2">Creadores activos</div>
+                </div>
+                <div>
+                  <div className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                    500K+
+                  </div>
+                  <div className="text-gray-400 mt-2">DMs respondidos</div>
+                </div>
+                <div>
+                  <div className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400">
+                    98%
+                  </div>
+                  <div className="text-gray-400 mt-2">Satisfacción</div>
+                </div>
+              </motion.div>
+
+              {/* CTA Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                {...{ className: "space-y-6" } as any}
+              >
+                <Link href="/register">
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="inline-block"
+                  >
+                    <Button 
+                      size="lg" 
+                      className="h-16 px-12 text-xl bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 hover:from-orange-400 hover:via-pink-400 hover:to-purple-400 text-white font-bold shadow-2xl hover:shadow-purple-500/50 transition-all duration-300"
+                    >
+                      Empieza GRATIS ahora
+                      <ArrowRightIcon className="ml-3 h-6 w-6" />
+                    </Button>
+                  </motion.div>
+                </Link>
+                
+                <div className="flex items-center justify-center gap-6 text-sm text-gray-400">
+                  <div className="flex items-center gap-2">
+                    <CheckIcon className="w-4 h-4 text-green-400" />
+                    <span>Sin tarjeta de crédito</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckIcon className="w-4 h-4 text-green-400" />
+                    <span>Cancela cuando quieras</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckIcon className="w-4 h-4 text-green-400" />
+                    <span>Soporte 24/7</span>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+
+
+        <footer className="border-t border-white/10 py-12 bg-black/50">
+          <div className="container mx-auto px-4">
+            <div className="grid md:grid-cols-4 gap-8 mb-8">
+              {/* Logo and description */}
+              <div className="md:col-span-1">
+                <h3 className="text-2xl font-bold mb-4">Creator0x</h3>
+                <p className="text-gray-400 text-sm">
+                  La plataforma todo-en-uno para creadores de contenido que quieren automatizar y escalar.
+                </p>
+              </div>
+              
+              {/* Product Links */}
+              <div>
+                <h4 className="font-semibold mb-4 text-gray-300">Producto</h4>
+                <ul className="space-y-2 text-sm">
+                  <li><Link href="/features" className="text-gray-400 hover:text-white transition-colors">Características</Link></li>
+                  <li><Link href="/pricing" className="text-gray-400 hover:text-white transition-colors">Precios</Link></li>
+                  <li><Link href="/blog" className="text-gray-400 hover:text-white transition-colors">Blog</Link></li>
+                  <li><Link href="/changelog" className="text-gray-400 hover:text-white transition-colors">Changelog</Link></li>
+                </ul>
+              </div>
+              
+              {/* Support Links */}
+              <div>
+                <h4 className="font-semibold mb-4 text-gray-300">Soporte</h4>
+                <ul className="space-y-2 text-sm">
+                  <li><Link href="/help" className="text-gray-400 hover:text-white transition-colors">Centro de ayuda</Link></li>
+                  <li><Link href="/contact" className="text-gray-400 hover:text-white transition-colors">Contacto</Link></li>
+                  <li><Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">Privacidad</Link></li>
+                  <li><Link href="/terms" className="text-gray-400 hover:text-white transition-colors">Términos</Link></li>
+                </ul>
+              </div>
+              
+              {/* Social Links */}
+              <div>
+                <h4 className="font-semibold mb-4 text-gray-300">Síguenos</h4>
+                <div className="flex gap-4">
+                  <a href="https://instagram.com/creator0x" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                    <span className="text-2xl">📸</span>
+                  </a>
+                  <a href="https://twitter.com/creator0x" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                    <span className="text-2xl">🐦</span>
+                  </a>
+                  <a href="https://youtube.com/@creator0x" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                    <span className="text-2xl">📺</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+            
+            {/* Copyright */}
+            <div className="border-t border-white/10 pt-8 text-center text-sm text-gray-400">
+              <p>© 2024 Creator0x. Todos los derechos reservados.</p>
+            </div>
+          </div>
         </footer>
       </div>
     </>

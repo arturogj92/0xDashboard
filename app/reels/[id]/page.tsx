@@ -557,7 +557,7 @@ export default function EditReel() {
                                     <div className="relative w-[200px] h-[398px] mx-auto mt-6">
                                         {/* Marco del iPhone */}
                                         <img
-                                            src="/images/iphone16-frame.png"
+                                            src="/images/iphone16-frame_no_island.png"
                                             alt="iPhone frame"
                                             className="absolute w-full h-full z-20 pointer-events-none"
                                         />

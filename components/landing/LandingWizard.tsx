@@ -194,7 +194,7 @@ export default function LandingWizard() {
           <div className="relative mx-auto" style={{ width: '200px', height: '400px' }}>
             {/* iPhone Frame */}
             <img
-              src="/images/iphone16-frame.png"
+              src="/images/iphone16-frame_no_island.png"
               alt="iPhone frame"
               className="absolute inset-0 w-full h-full z-10 pointer-events-none"
             />
