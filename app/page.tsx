@@ -311,10 +311,19 @@ function AppCarousel3D() {
           }}
         />
         
-        {/* iPhone body */}
-        <div className="relative w-full h-full bg-black rounded-[3rem] xl:rounded-[3.5rem] 2xl:rounded-[4rem] shadow-2xl border-8 xl:border-10 2xl:border-12 border-gray-800">
-          {/* Screen container with overflow hidden */}
-          <div className="absolute inset-4 xl:inset-5 2xl:inset-6 rounded-[2rem] xl:rounded-[2.5rem] 2xl:rounded-[3rem] overflow-hidden bg-black group">
+        {/* iPhone body with PNG frame */}
+        <div className="relative w-full h-full">
+          {/* iPhone frame image */}
+          <Image
+            src="/images/iphone16-frame_no_island.png"
+            alt="iPhone Frame"
+            fill
+            className="object-contain pointer-events-none"
+            priority
+          />
+          
+          {/* Screen container with overflow hidden - adjusted for PNG frame */}
+          <div className="absolute top-[7%] bottom-[7%] left-[6.5%] right-[6.5%] rounded-[10%] overflow-hidden bg-black group">
             {/* Touch/Click area for swipe */}
             <div 
               className="absolute inset-0 z-20"
@@ -412,14 +421,11 @@ function AppCarousel3D() {
             
           </div>
           
-          
-          {/* Home indicator */}
-          <div className="absolute bottom-2 xl:bottom-3 2xl:bottom-4 left-1/2 -translate-x-1/2 w-32 xl:w-40 2xl:w-48 h-1 xl:h-1.5 2xl:h-2 bg-white/30 rounded-full"></div>
         </div>
         
         {/* App info floating card - Siempre visible */}
         <motion.div
-          {...{ className: "absolute -right-16 xl:-right-20 2xl:-right-24 top-1/2 -translate-y-1/2 bg-black/80 backdrop-blur-sm border border-white/20 rounded-xl xl:rounded-2xl p-4 xl:p-6 2xl:p-8 min-w-48 xl:min-w-64 2xl:min-w-80" } as any}
+          {...{ className: "absolute -right-16 xl:-right-20 2xl:-right-24 top-1/2 -translate-y-1/2 bg-black/80 backdrop-blur-sm border border-white/20 rounded-xl xl:rounded-2xl p-4 xl:p-6 2xl:p-8 min-w-48 xl:min-w-64 2xl:min-w-80 z-20" } as any}
           initial={{ opacity: 0, x: -20 }}
           animate={{ 
             opacity: 1,

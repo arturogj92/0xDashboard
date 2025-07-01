@@ -73,7 +73,7 @@ function FeatureCard({
   return (
     <Link href={href}>
       <div 
-        className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out"
+        className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out min-h-[160px] sm:min-h-[180px] lg:min-h-[200px] xl:min-h-[250px]"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -103,19 +103,19 @@ function FeatureCard({
         </div>
         
         {/* Content centrado para formato cuadrado */}
-        <div className="relative h-full p-4 flex flex-col items-center justify-center text-white z-10 text-center">
+        <div className="relative h-full p-4 sm:p-5 lg:p-6 xl:p-8 flex flex-col items-center justify-center text-white z-10 text-center">
           {/* Ícono centrado arriba */}
-          <div className="w-12 h-12 mb-2">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 xl:w-20 xl:h-20 mb-2 lg:mb-3">
             <div className="w-full h-full drop-shadow-lg">
               {icon}
             </div>
           </div>
           
           {/* Título centrado */}
-          <h3 className="text-base md:text-lg font-bold text-white drop-shadow-lg mb-2 leading-tight">{title}</h3>
+          <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold text-white drop-shadow-lg mb-2 lg:mb-3 leading-tight">{title}</h3>
           
           {/* Descripción más compacta */}
-          <p className="text-xs text-white/80 drop-shadow-md leading-snug">{description}</p>
+          <p className="text-xs sm:text-sm lg:text-sm xl:text-base text-white/80 drop-shadow-md leading-snug px-1 lg:px-2">{description}</p>
         </div>
         
         {/* Static decorative elements */}
@@ -240,34 +240,34 @@ export default function HomePage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen py-8 bg-gradient-to-br from-slate-950/50 via-slate-900/30 to-slate-950/50">
+      <div className="min-h-screen flex items-center justify-center">
         <motion.div 
           variants={pageVariants}
           initial="hidden"
           animate="visible"
         >
-        <div className="mb-16 relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-visible">
+        <div className="relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-visible">
         <motion.div 
           variants={containerVariants}
         >
-          <div className="relative w-full max-w-5xl rounded-2xl border border-white/20 bg-black/40 shadow-[0_0_40px_rgba(139,92,246,0.25)] p-6 sm:p-8 lg:p-10 before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-r before:from-purple-500/5 before:via-pink-500/5 before:to-blue-500/5">
+          <div className="relative w-[90vw] lg:w-[85vw] xl:w-[80vw] rounded-2xl border border-white/20 bg-black/40 shadow-[0_0_40px_rgba(0,0,0,0.5)] p-4 sm:p-6 lg:p-8">
           <motion.div 
             variants={containerVariants}
           >
             {/* Layout de 2 columnas */}
-            <div className="grid lg:grid-cols-[1fr,auto] gap-8 lg:gap-12 items-center">
+            <div className="grid lg:grid-cols-1 xl:grid-cols-[1fr,auto] gap-6 lg:gap-8 xl:gap-12 items-center justify-items-center xl:justify-items-stretch">
               
               {/* Columna izquierda: Título y explicación con glow-up */}
-              <div className="text-center lg:text-left flex flex-col justify-center relative lg:pl-10">
+              <div className="text-center xl:text-left flex flex-col justify-center items-center xl:items-start relative xl:pl-10 max-w-2xl">
               <motion.div 
                 variants={textVariants}
               >
                 {/* Elementos decorativos de fondo */}
-                <div className="absolute -top-8 -left-8 w-32 h-32 bg-gradient-to-br from-purple-500/15 to-pink-500/15 rounded-full"></div>
+                <div className="absolute -top-8 -left-8 w-32 h-32 bg-gradient-to-br from-gray-500/10 to-gray-600/10 rounded-full"></div>
                 <div className="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-full"></div>
                 
 
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent mb-4 leading-tight">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent mb-4 lg:mb-6 leading-tight">
                 <motion.h2 
                   variants={textVariants}
                   style={{ display: 'inline' }}
@@ -290,7 +290,7 @@ export default function HomePage() {
                 </p>
 
                 {/* Stats decorativos */}
-                <div className="flex gap-6 mb-6 lg:justify-start justify-center">
+                <div className="flex gap-6 mb-6 justify-center xl:justify-start">
                 <motion.div 
                   variants={textVariants}
                 >
@@ -309,7 +309,7 @@ export default function HomePage() {
                 </motion.div>
                 </div>
 
-                <div className="h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 rounded-full lg:mx-0 mx-auto relative overflow-hidden">
+                <div className="h-1 bg-gradient-to-r from-gray-500 via-gray-400 to-gray-500 rounded-full mx-auto xl:mx-0 relative overflow-hidden w-32 xl:w-auto">
                 <motion.div 
                   initial={{ width: 0, opacity: 0 }}
                   animate={{ width: 120, opacity: 1 }}
@@ -327,11 +327,11 @@ export default function HomePage() {
               </div>
 
               {/* Columna derecha: Grid de funciones */}
-              <div className="flex justify-center lg:justify-end">
+              <div className="flex justify-center">
               <motion.div 
                 variants={gridVariants}
               >
-                <div className="grid grid-cols-2 gap-3 md:gap-4 w-full max-w-sm lg:max-w-md">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-5 w-full max-w-md lg:max-w-lg xl:max-w-2xl">
                   {features.map((feature, index) => (
                     <FeatureCard
                       key={feature.title}
@@ -348,11 +348,7 @@ export default function HomePage() {
           </motion.div>
           </div>
 
-          {/* Sombra radial principal más grande (oculta en móvil) */}
-          <div className="hidden sm:block absolute -inset-24 bg-[radial-gradient(circle,_rgba(88,28,135,0.3)_0%,_rgba(17,24,39,0)_80%)] pointer-events-none"></div>
-
-          {/* Radiales hacia afuera (bordes, ocultos en móvil) */}
-          <div className="hidden sm:block absolute -inset-32 bg-[radial-gradient(circle,_rgba(17,24,39,0)_60%,_rgba(88,28,135,0.25)_100%)] opacity-50 pointer-events-none"></div>
+          {/* Removido: sombras radiales moradas */}
         </motion.div>
         </div>
       </motion.div>
