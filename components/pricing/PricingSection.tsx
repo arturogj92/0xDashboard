@@ -112,8 +112,7 @@ export default function PricingSection() {
                   <h3 className="text-2xl font-bold mb-2">Starter</h3>
                   <p className="text-gray-400 mb-6">Perfecto para empezar y probar</p>
                   <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-5xl font-bold">€0</span>
-                    <span className="text-gray-400">/mes</span>
+                    <span className="text-5xl font-bold">GRATIS</span>
                   </div>
                 </div>
 

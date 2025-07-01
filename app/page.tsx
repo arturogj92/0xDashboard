@@ -2651,11 +2651,18 @@ export default function LandingPage() {
                 {...{ className: "relative" } as any}
               >
                 <div className="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full hover:border-white/20 hover:shadow-lg hover:shadow-white/5 transition-all duration-300 flex flex-col group">
-                  {/* Popular badge */}
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="bg-gradient-to-r from-green-400 to-teal-400 text-black text-sm font-bold px-4 py-1 rounded-full">
-                      EMPIEZA AQUÍ
-                    </span>
+                  {/* Popular badge - CENTERED */}
+                  <div className="absolute -top-4 left-0 right-0 z-10 flex justify-center">
+                    <motion.div
+                      initial={{ scale: 0, rotate: -12 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                      className="relative inline-block"
+                    >
+                      <div className="bg-gradient-to-r from-green-400 to-teal-400 text-black text-sm font-black px-6 py-2 rounded-full shadow-lg">
+                        <span className="uppercase tracking-wider whitespace-nowrap">EMPIEZA AQUÍ</span>
+                      </div>
+                    </motion.div>
                   </div>
                   
                   <div className="text-center mb-8">
@@ -2671,8 +2678,7 @@ export default function LandingPage() {
                     <h3 className="text-3xl font-black mb-2 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Starter</h3>
                     <p className="text-gray-400 mb-6 font-medium">Perfecto para empezar</p>
                     <div className="flex items-baseline justify-center gap-2">
-                      <span className="text-6xl font-black bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent">€0</span>
-                      <span className="text-gray-400 text-xl">/mes</span>
+                      <span className="text-6xl font-black bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent">GRATIS</span>
                     </div>
                   </div>
 
@@ -2744,30 +2750,60 @@ export default function LandingPage() {
                 <motion.div 
                   className="absolute -inset-4 bg-gradient-to-r from-orange-600 via-pink-600 to-purple-600 rounded-3xl blur-2xl opacity-30"
                   animate={{ 
-                    opacity: [0.3, 0.6, 0.3],
-                    scale: [1, 1.05, 1]
+                    opacity: [0.3, 0.45, 0.3],
+                    scale: [1, 1.02, 1]
                   }}
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 />
                 
                 <div 
-                  className="relative bg-gradient-to-br from-purple-900/40 to-orange-900/40 backdrop-blur-sm border-2 border-transparent bg-clip-padding rounded-3xl p-8 h-full flex flex-col group shadow-xl hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-300"
-                  style={{
-                    backgroundImage: `
-                      linear-gradient(to bottom right, rgba(147, 51, 234, 0.3), rgba(249, 115, 22, 0.3)),
-                      linear-gradient(to bottom right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9))
-                    `,
-                    backgroundOrigin: 'border-box',
-                    backgroundClip: 'padding-box, border-box',
-                    borderImage: 'linear-gradient(to bottom right, #f97316, #a855f7) 1'
-                  }}
+                  className="relative bg-gradient-to-br from-purple-900/40 to-orange-900/40 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full flex flex-col group shadow-xl hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-300"
                 >
                   
-                  {/* Best value badge */}
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="bg-gradient-to-r from-orange-500 to-purple-500 text-white text-sm font-bold px-4 py-1 rounded-full">
-                      🚀 MÁS POPULAR
-                    </span>
+                  {/* Best value badge - CENTERED WITH EFFECTS */}
+                  <div className="absolute -top-4 left-0 right-0 z-20 flex justify-center">
+                    <motion.div
+                      initial={{ scale: 0, y: -20 }}
+                      animate={{ scale: 1, y: 0 }}
+                      transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                      className="relative inline-block"
+                    >
+                      {/* Subtle glow */}
+                      <div className="absolute -inset-2">
+                        <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-purple-500 blur-md opacity-40 animate-pulse" />
+                      </div>
+                      
+                      {/* Compact orbiting particles */}
+                      <div className="absolute -inset-6 pointer-events-none">
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                          className="w-full h-full"
+                        >
+                          <div className="absolute top-0 left-1/2 w-1.5 h-1.5 bg-orange-400 rounded-full opacity-80" />
+                          <div className="absolute bottom-0 left-1/2 w-1.5 h-1.5 bg-purple-400 rounded-full opacity-80" />
+                          <div className="absolute left-0 top-1/2 w-1.5 h-1.5 bg-pink-400 rounded-full opacity-80" />
+                          <div className="absolute right-0 top-1/2 w-1.5 h-1.5 bg-orange-400 rounded-full opacity-80" />
+                        </motion.div>
+                      </div>
+                      
+                      {/* Main badge with border */}
+                      <div className="relative bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 p-[1px] rounded-full shadow-lg transform hover:scale-105 transition-transform duration-200">
+                        <div className="bg-black/90 rounded-full px-4 py-1.5 relative overflow-hidden">
+                          {/* Shimmer effect */}
+                          <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+                            animate={{ x: [-200, 200] }}
+                            transition={{ duration: 3, repeat: Infinity, repeatDelay: 1 }}
+                          />
+                          
+                          <span className="relative font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 uppercase tracking-wider text-sm whitespace-nowrap">
+                            MÁS POPULAR
+                          </span>
+                        </div>
+                      </div>
+                      
+                    </motion.div>
                   </div>
                   
                   <div className="text-center mb-8">
@@ -2864,7 +2900,7 @@ export default function LandingPage() {
                       <Button 
                         className="w-full h-14 text-lg font-black bg-gradient-to-r from-orange-500 to-purple-500 hover:from-orange-400 hover:to-purple-400 text-white shadow-xl hover:shadow-purple-500/40 transition-all duration-300 transform hover:scale-[1.02] hover:-translate-y-0.5"
                       >
-                        Empieza HOY - Sin compromiso
+                        Comenzar ahora
                         <ArrowRightIcon className="ml-2 h-5 w-5" />
                       </Button>
                     </motion.div>
@@ -2881,11 +2917,33 @@ export default function LandingPage() {
                 {...{ className: "relative transform-gpu" } as any}
               >
                 <div className="relative bg-black/60 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 flex flex-col group">
-                  {/* Enterprise badge */}
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white text-sm font-bold px-4 py-1 rounded-full">
-                      🏢 PARA AGENCIAS
-                    </span>
+                  {/* Enterprise badge - CENTERED */}
+                  <div className="absolute -top-4 left-0 right-0 z-10 flex justify-center">
+                    <motion.div
+                      initial={{ scale: 0, rotate: 8 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ type: "spring", stiffness: 240, damping: 18 }}
+                      className="relative inline-block"
+                    >
+                      <div className="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-full shadow-xl">
+                        <div className="relative overflow-hidden rounded-full">
+                          {/* Metallic shine effect */}
+                          <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                            animate={{ x: [-100, 100] }}
+                            transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+                          />
+                          
+                          <div className="relative px-6 py-2.5">
+                            <span className="font-black text-white uppercase tracking-wider text-sm whitespace-nowrap"
+                              style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}
+                            >
+                              PARA AGENCIAS
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
                   </div>
                   
                   <div className="text-center mb-8">
@@ -3053,8 +3111,16 @@ export default function LandingPage() {
                     </div>
                     <h3 className="text-3xl font-bold mb-4">Conecta tu Instagram</h3>
                     <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                      Conecta tu cuenta Business de Instagram en un click. Totalmente seguro con la API oficial de Meta. Sin contraseñas ni accesos extraños.
+                      Conecta tu cuenta Business de Instagram en un click. Totalmente seguro con la API oficial de Meta.
                     </p>
+                    <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-6">
+                      <p className="text-sm text-blue-300 mb-2">
+                        <strong>Nota:</strong> Para automatizaciones necesitas Facebook vinculado a Instagram.
+                      </p>
+                      <p className="text-sm text-gray-400">
+                        Sin automatizaciones, igualmente podrás usar: AI Captions, URL Shorts y tu Landing Page personalizada.
+                      </p>
+                    </div>
                     <ul className="space-y-3">
                       <li className="flex items-center gap-3">
                         <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
