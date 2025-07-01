@@ -933,13 +933,6 @@ export default function LandingPage() {
 
   return (
     <>
-      {/* SEO Meta Tags */}
-      <head>
-        <title>Creator0x – Automatiza Instagram y gestiona tu contenido por €10/mes</title>
-        <meta name="description" content="Auto-DM, link-in-bio, shortlinks y captions IA unidos en una sola plataforma. Empieza gratis con Creator0x." />
-        <meta name="keywords" content="automatizar DMs Instagram, alternativa ManyChat barata, link in bio gratis, acortador URL propio, generador captions IA" />
-      </head>
-
       <div className="bg-grid-background text-white overflow-x-hidden"
            style={{ backgroundColor: 'var(--background)' }}>
         
@@ -991,6 +984,21 @@ export default function LandingPage() {
           .animate-gradient {
             background-size: 200% 200%;
             animation: gradient-shift 3s ease infinite;
+          }
+          @keyframes gradient-x {
+            0%, 100% {
+              background-position: 0% 50%;
+            }
+            50% {
+              background-position: 100% 50%;
+            }
+          }
+          .animate-gradient-x {
+            animation: gradient-x 4s ease infinite;
+            background-size: 200% 200%;
+          }
+          .perspective-1000 {
+            perspective: 1000px;
           }
           .perspective-1000 {
             perspective: 1000px;
@@ -2575,12 +2583,10 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Pricing Section - EPIC DESIGN */}
-        <section className="relative py-32 overflow-hidden">
-          {/* Epic background */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/10 to-transparent" />
+        {/* Pricing Section - CLEAN & PROFESSIONAL */}
+        <section className="relative py-32 overflow-hidden" id="pricing">
           
-          {/* Animated orbs */}
+          {/* Subtle animated orbs */}
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-20 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
             <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
@@ -2606,16 +2612,35 @@ export default function LandingPage() {
                 </span>
               </motion.div>
               
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-                Elige tu plan y <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">escala sin límites</span>
+              <h2 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight">
+                Elige tu plan y 
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 mt-2">
+                  multiplica tus ventas
+                </span>
               </h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
                 Empieza gratis y crece a tu ritmo. Sin permanencia, cancela cuando quieras.
               </p>
             </motion.div>
 
-            {/* Pricing Cards */}
-            <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {/* Limited time offer banner */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="max-w-4xl mx-auto mb-12"
+            >
+              <div className="bg-gradient-to-r from-orange-500/10 to-purple-500/10 border border-orange-500/20 rounded-2xl p-4 text-center">
+                <p className="text-lg font-medium">
+                  ☀️ <span className="text-orange-400 font-bold">Summer Sale</span> - 
+                  <span className="text-white font-bold"> 50% de descuento</span> en Creator Pro
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Pricing Cards - 3D EFFECT */}
+            <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto perspective-1000">
               
               {/* Free Plan */}
               <motion.div
@@ -2625,7 +2650,7 @@ export default function LandingPage() {
                 transition={{ duration: 0.8 }}
                 {...{ className: "relative" } as any}
               >
-                <div className="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full hover:border-white/20 transition-all duration-300 flex flex-col">
+                <div className="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full hover:border-white/20 hover:shadow-lg hover:shadow-white/5 transition-all duration-300 flex flex-col group">
                   {/* Popular badge */}
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                     <span className="bg-gradient-to-r from-green-400 to-teal-400 text-black text-sm font-bold px-4 py-1 rounded-full">
@@ -2634,76 +2659,109 @@ export default function LandingPage() {
                   </div>
                   
                   <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bold mb-2">Starter</h3>
-                    <p className="text-gray-400 mb-6">Perfecto para empezar y probar</p>
+                    <div className="mb-4 opacity-60">
+                      <Image
+                        src="/images/logo-block.png"
+                        alt="Creator0x"
+                        width={48}
+                        height={48}
+                        className="mx-auto"
+                      />
+                    </div>
+                    <h3 className="text-3xl font-black mb-2 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Starter</h3>
+                    <p className="text-gray-400 mb-6 font-medium">Perfecto para empezar</p>
                     <div className="flex items-baseline justify-center gap-2">
-                      <span className="text-5xl font-bold">€0</span>
-                      <span className="text-gray-400">/mes</span>
+                      <span className="text-6xl font-black bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent">€0</span>
+                      <span className="text-gray-400 text-xl">/mes</span>
                     </div>
                   </div>
 
                   <ul className="space-y-4 mb-8 flex-grow">
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>50 DMs</strong> automáticos/mes</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>1 Landing page</strong> personalizada</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>5 Shortlinks</strong> con analytics</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>10 Captions</strong> con IA/mes</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300">Soporte por email</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <XMarkIcon className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 opacity-50">
+                      <div className="w-5 h-5 rounded-full bg-gray-800 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <XMarkIcon className="w-3 h-3 text-gray-600" />
+                      </div>
                       <span className="text-gray-500 line-through">Automatizaciones avanzadas</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <XMarkIcon className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 opacity-50">
+                      <div className="w-5 h-5 rounded-full bg-gray-800 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <XMarkIcon className="w-3 h-3 text-gray-600" />
+                      </div>
                       <span className="text-gray-500 line-through">Múltiples cuentas</span>
                     </li>
                   </ul>
 
                   <Link href="/register">
                     <Button 
-                      className="w-full h-12 text-base font-bold bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/30 transition-all duration-300"
+                      className="w-full h-14 text-lg font-bold bg-white/10 hover:bg-green-500/20 border-2 border-white/20 hover:border-green-500/50 transition-all duration-300 group relative overflow-hidden"
                     >
-                      Empieza gratis ahora
+                      <span className="relative z-10">Empieza GRATIS ahora</span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/0 via-green-500/20 to-green-500/0 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                     </Button>
                   </Link>
                 </div>
               </motion.div>
 
-              {/* Pro Plan */}
+              {/* Pro Plan - MOST EPIC */}
               <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                {...{ className: "relative" } as any}
+                transition={{ duration: 0.8, type: "spring" }}
+                {...{ className: "relative transform-gpu" } as any}
               >
-                {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-purple-500/20 blur-xl" />
+                {/* Insane glow effect - matching card shape */}
+                <motion.div 
+                  className="absolute -inset-4 bg-gradient-to-r from-orange-600 via-pink-600 to-purple-600 rounded-3xl blur-2xl opacity-30"
+                  animate={{ 
+                    opacity: [0.3, 0.6, 0.3],
+                    scale: [1, 1.05, 1]
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                />
                 
-                <div className="relative bg-gradient-to-br from-purple-900/40 to-orange-900/40 backdrop-blur-sm border-2 border-transparent bg-clip-padding rounded-3xl p-8 h-full"
-                     style={{ 
-                       backgroundImage: `
-                         linear-gradient(to bottom right, rgba(147, 51, 234, 0.2), rgba(249, 115, 22, 0.2)),
-                         linear-gradient(to bottom right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8))
-                       `,
-                       backgroundOrigin: 'border-box',
-                       backgroundClip: 'padding-box, border-box',
-                       borderImage: 'linear-gradient(to bottom right, #f97316, #a855f7) 1'
-                     }}>
+                <div 
+                  className="relative bg-gradient-to-br from-purple-900/40 to-orange-900/40 backdrop-blur-sm border-2 border-transparent bg-clip-padding rounded-3xl p-8 h-full flex flex-col group shadow-xl hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-300"
+                  style={{
+                    backgroundImage: `
+                      linear-gradient(to bottom right, rgba(147, 51, 234, 0.3), rgba(249, 115, 22, 0.3)),
+                      linear-gradient(to bottom right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9))
+                    `,
+                    backgroundOrigin: 'border-box',
+                    backgroundClip: 'padding-box, border-box',
+                    borderImage: 'linear-gradient(to bottom right, #f97316, #a855f7) 1'
+                  }}
+                >
                   
                   {/* Best value badge */}
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
@@ -2713,50 +2771,87 @@ export default function LandingPage() {
                   </div>
                   
                   <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">
+                    <div className="mb-4">
+                      <motion.div
+                        animate={{ scale: [1, 1.05, 1] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                      >
+                        <Image
+                          src="/images/logo-block.png"
+                          alt="Creator0x"
+                          width={56}
+                          height={56}
+                          className="mx-auto drop-shadow-[0_0_20px_rgba(251,146,60,0.5)]"
+                        />
+                      </motion.div>
+                    </div>
+                    <h3 className="text-4xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400">
                       Creator Pro
                     </h3>
-                    <p className="text-gray-300 mb-6">Para creadores que van en serio</p>
+                    <p className="text-gray-200 mb-6 font-medium text-lg">Escala tu contenido sin límites</p>
                     <div className="flex items-baseline justify-center gap-2">
-                      <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">
-                        €29
+                      <span className="text-4xl font-medium text-gray-500 line-through">€30</span>
+                      <span className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">
+                        €15
                       </span>
-                      <span className="text-gray-400">/mes</span>
+                      <span className="text-gray-300 text-xl">/mes</span>
                     </div>
-                    <p className="text-sm text-green-400 mt-2">Ahorra €120/año pagando anual</p>
+                    <motion.p 
+                      className="text-sm text-green-400 mt-2 font-semibold"
+                      animate={{ opacity: [0.6, 1, 0.6] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      🔥 OFERTA LIMITADA - Ahorra €180/año
+                    </motion.p>
                   </div>
 
-                  <ul className="space-y-4 mb-8">
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                  <ul className="space-y-4 mb-8 flex-grow">
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>DMs ilimitados</strong> con IA avanzada</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>Landing pages ilimitadas</strong></span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>Shortlinks ilimitados</strong> + analytics pro</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>Captions ilimitados</strong> con IA</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>Automatizaciones avanzadas</strong></span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>3 cuentas</strong> de Instagram</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>Soporte prioritario</strong> 24/7</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <SparklesIcon className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-yellow-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-yellow-500/30 transition-colors">
+                        <SparklesIcon className="w-3 h-3 text-yellow-400" />
+                      </div>
                       <span className="text-gray-300"><strong>Early access</strong> a nuevas features</span>
                     </li>
                   </ul>
@@ -2767,9 +2862,9 @@ export default function LandingPage() {
                       whileTap={{ scale: 0.98 }}
                     >
                       <Button 
-                        className="w-full h-12 text-base font-bold bg-gradient-to-r from-orange-500 to-purple-500 hover:from-orange-400 hover:to-purple-400 text-white shadow-lg hover:shadow-purple-500/25 transition-all duration-300"
+                        className="w-full h-14 text-lg font-black bg-gradient-to-r from-orange-500 to-purple-500 hover:from-orange-400 hover:to-purple-400 text-white shadow-xl hover:shadow-purple-500/40 transition-all duration-300 transform hover:scale-[1.02] hover:-translate-y-0.5"
                       >
-                        Empieza prueba de 14 días
+                        Empieza HOY - Sin compromiso
                         <ArrowRightIcon className="ml-2 h-5 w-5" />
                       </Button>
                     </motion.div>
@@ -2777,15 +2872,15 @@ export default function LandingPage() {
                 </div>
               </motion.div>
 
-              {/* Business Plan */}
+              {/* Business Plan - PREMIUM VIBES */}
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, x: 50, scale: 0.9 }}
+                whileInView={{ opacity: 1, x: 0, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                {...{ className: "relative" } as any}
+                transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
+                {...{ className: "relative transform-gpu" } as any}
               >
-                <div className="relative bg-black/60 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full hover:border-white/20 transition-all duration-300 flex flex-col">
+                <div className="relative bg-black/60 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 flex flex-col group">
                   {/* Enterprise badge */}
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                     <span className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white text-sm font-bold px-4 py-1 rounded-full">
@@ -2794,53 +2889,78 @@ export default function LandingPage() {
                   </div>
                   
                   <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bold mb-2">Business</h3>
-                    <p className="text-gray-400 mb-6">Para agencias y equipos</p>
-                    <div className="flex items-baseline justify-center gap-2">
-                      <span className="text-5xl font-bold">€79</span>
-                      <span className="text-gray-400">/mes</span>
+                    <div className="mb-4 opacity-70">
+                      <Image
+                        src="/images/logo-block.png"
+                        alt="Creator0x"
+                        width={48}
+                        height={48}
+                        className="mx-auto"
+                      />
                     </div>
-                    <p className="text-sm text-green-400 mt-2">Ahorra €350/año pagando anual</p>
+                    <h3 className="text-3xl font-black mb-2 bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent">Business</h3>
+                    <p className="text-gray-300 mb-6 font-medium">Para equipos ambiciosos</p>
+                    <div className="flex items-baseline justify-center gap-2">
+                      <span className="text-6xl font-black bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent">€30</span>
+                      <span className="text-gray-400 text-xl">/mes</span>
+                    </div>
+                    <p className="text-sm text-green-400 mt-2 font-medium">Ahorra €350/año pagando anual</p>
                   </div>
 
                   <ul className="space-y-4 mb-8 flex-grow">
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>Todo del plan Pro</strong></span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>10 cuentas</strong> de Instagram</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>Team collaboration</strong></span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>API access</strong></span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>White label</strong> disponible</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>Account manager</strong> dedicado</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
+                        <CheckIcon className="w-3 h-3 text-green-400" />
+                      </div>
                       <span className="text-gray-300"><strong>Training</strong> personalizado</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <StarIcon className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+                    <li className="flex items-start gap-3 group/item">
+                      <div className="w-5 h-5 rounded-full bg-yellow-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-yellow-500/30 transition-colors">
+                        <StarIcon className="w-3 h-3 text-yellow-400" />
+                      </div>
                       <span className="text-gray-300"><strong>Custom integrations</strong></span>
                     </li>
                   </ul>
 
                   <Link href="/contact">
                     <Button 
-                      className="w-full h-12 text-base font-bold bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white transition-all duration-300"
+                      className="w-full h-14 text-lg font-bold bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 border-2 border-transparent hover:border-indigo-400/50"
                     >
                       Contactar ventas
                       <ArrowRightIcon className="ml-2 h-5 w-5" />

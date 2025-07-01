@@ -73,7 +73,7 @@ function FeatureCard({
   return (
     <Link href={href}>
       <div 
-        className="group relative aspect-square rounded-3xl overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out min-h-[160px] sm:min-h-[180px] lg:min-h-[200px] xl:min-h-[250px]"
+        className="group relative aspect-square rounded-lg overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out min-h-[80px] sm:min-h-[95px] md:min-h-[110px] lg:min-h-[130px] xl:min-h-[160px]"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -103,19 +103,19 @@ function FeatureCard({
         </div>
         
         {/* Content centrado para formato cuadrado */}
-        <div className="relative h-full p-4 sm:p-5 lg:p-6 xl:p-8 flex flex-col items-center justify-center text-white z-10 text-center">
+        <div className="relative h-full p-2 sm:p-3 md:p-4 lg:p-5 xl:p-6 flex flex-col items-center justify-center text-white z-10 text-center">
           {/* Ícono centrado arriba */}
-          <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 xl:w-20 xl:h-20 mb-2 lg:mb-3">
+          <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 mb-0.5 sm:mb-1 md:mb-1.5 lg:mb-2">
             <div className="w-full h-full drop-shadow-lg">
               {icon}
             </div>
           </div>
           
           {/* Título centrado */}
-          <h3 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold text-white drop-shadow-lg mb-2 lg:mb-3 leading-tight">{title}</h3>
+          <h3 className="text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-semibold text-white drop-shadow-lg mb-0.5 sm:mb-1 lg:mb-1.5 leading-none">{title}</h3>
           
           {/* Descripción más compacta */}
-          <p className="text-xs sm:text-sm lg:text-sm xl:text-base text-white/80 drop-shadow-md leading-snug px-1 lg:px-2">{description}</p>
+          <p className="text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs xl:text-sm text-white/80 drop-shadow-md leading-none px-0.5 sm:px-1">{description}</p>
         </div>
         
         {/* Static decorative elements */}
@@ -240,25 +240,25 @@ export default function HomePage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-start justify-center pt-2 sm:pt-3 md:pt-4 lg:pt-6">
         <motion.div 
           variants={pageVariants}
           initial="hidden"
           animate="visible"
         >
-        <div className="relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-visible">
+        <div className="relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-visible mt-1 sm:mt-2 md:mt-3">
         <motion.div 
           variants={containerVariants}
         >
-          <div className="relative w-[90vw] lg:w-[85vw] xl:w-[80vw] rounded-2xl border border-white/20 bg-black/40 shadow-[0_0_40px_rgba(0,0,0,0.5)] p-4 sm:p-6 lg:p-8">
+          <div className="relative w-[88vw] md:w-[80vw] lg:w-[72vw] xl:w-[68vw] max-w-[1000px] rounded-lg border border-white/20 bg-black/40 shadow-[0_0_40px_rgba(0,0,0,0.5)] p-1.5 sm:p-2 md:p-2.5 lg:p-4 xl:p-5">
           <motion.div 
             variants={containerVariants}
           >
             {/* Layout de 2 columnas */}
-            <div className="grid lg:grid-cols-1 xl:grid-cols-[1fr,auto] gap-6 lg:gap-8 xl:gap-12 items-center justify-items-center xl:justify-items-stretch">
+            <div className="grid lg:grid-cols-1 xl:grid-cols-[1fr,auto] gap-3 sm:gap-4 lg:gap-6 xl:gap-8 items-center justify-items-center xl:justify-items-stretch">
               
               {/* Columna izquierda: Título y explicación con glow-up */}
-              <div className="text-center xl:text-left flex flex-col justify-center items-center xl:items-start relative xl:pl-10 max-w-2xl">
+              <div className="text-center xl:text-left flex flex-col justify-center items-center xl:items-start relative xl:pl-4 max-w-md">
               <motion.div 
                 variants={textVariants}
               >
@@ -267,7 +267,7 @@ export default function HomePage() {
                 <div className="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-full"></div>
                 
 
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent mb-4 lg:mb-6 leading-tight">
+                <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent mb-1.5 sm:mb-2 lg:mb-3 leading-none">
                 <motion.h2 
                   variants={textVariants}
                   style={{ display: 'inline' }}
@@ -279,7 +279,7 @@ export default function HomePage() {
                 </motion.h2>
                 </h2>
                 
-                <p className="text-base md:text-lg text-gray-300 leading-relaxed mb-8 max-w-md relative z-10">
+                <p className="text-[10px] sm:text-xs md:text-sm lg:text-base text-gray-300 leading-snug mb-2 sm:mb-3 lg:mb-4 max-w-xs md:max-w-sm relative z-10">
                 <motion.p 
                   variants={textVariants}
                   style={{ display: 'inline' }}
@@ -290,21 +290,21 @@ export default function HomePage() {
                 </p>
 
                 {/* Stats decorativos */}
-                <div className="flex gap-6 mb-6 justify-center xl:justify-start">
+                <div className="flex gap-3 sm:gap-4 mb-3 sm:mb-4 justify-center xl:justify-start">
                 <motion.div 
                   variants={textVariants}
                 >
                   <div className="text-center">
-                    <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">4+</div>
-                    <div className="text-xs text-gray-400">Herramientas</div>
+                    <div className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">4+</div>
+                    <div className="text-[10px] sm:text-xs text-gray-400">Herramientas</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">∞</div>
-                    <div className="text-xs text-gray-400">Posibilidades</div>
+                    <div className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">∞</div>
+                    <div className="text-[10px] sm:text-xs text-gray-400">Posibilidades</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">24/7</div>
-                    <div className="text-xs text-gray-400">Disponible</div>
+                    <div className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">24/7</div>
+                    <div className="text-[10px] sm:text-xs text-gray-400">Disponible</div>
                   </div>
                 </motion.div>
                 </div>
@@ -331,7 +331,7 @@ export default function HomePage() {
               <motion.div 
                 variants={gridVariants}
               >
-                <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-5 w-full max-w-md lg:max-w-lg xl:max-w-2xl">
+                <div className="grid grid-cols-2 gap-0.5 sm:gap-1 md:gap-1.5 lg:gap-2.5 w-full max-w-[260px] sm:max-w-[300px] md:max-w-[340px] lg:max-w-[400px] xl:max-w-[480px]">
                   {features.map((feature, index) => (
                     <FeatureCard
                       key={feature.title}
@@ -456,6 +456,41 @@ export default function HomePage() {
 
         .animate-spin-slow {
           animation: spin-slow 3s linear infinite;
+        }
+
+        /* Media query específica para MacBook 13" (1440x900) */
+        @media (max-width: 1440px) and (max-height: 900px) {
+          .text-lg { font-size: 1rem !important; }
+          .text-xl { font-size: 1.125rem !important; }
+          .text-2xl { font-size: 1.25rem !important; }
+          .text-3xl { font-size: 1.5rem !important; }
+          .text-4xl { font-size: 1.875rem !important; }
+          .text-5xl { font-size: 2.25rem !important; }
+          
+          /* Reducir aún más los elementos decorativos */
+          .w-32 { width: 5rem !important; }
+          .h-32 { height: 5rem !important; }
+          .w-24 { width: 4rem !important; }
+          .h-24 { height: 4rem !important; }
+        }
+
+        /* Ajustes adicionales para pantallas pequeñas */
+        @media (max-width: 1280px) {
+          .min-h-screen {
+            padding-top: 2rem;
+            padding-bottom: 1rem;
+          }
+        }
+        
+        /* Ajuste de posición vertical para MacBook 13" */
+        @media (max-width: 1440px) and (max-height: 900px) {
+          .pt-2 { padding-top: 0.25rem !important; }
+          .pt-3 { padding-top: 0.5rem !important; }
+          .pt-4 { padding-top: 0.75rem !important; }
+          .pt-6 { padding-top: 1rem !important; }
+          .mt-1 { margin-top: 0.125rem !important; }
+          .mt-2 { margin-top: 0.25rem !important; }
+          .mt-3 { margin-top: 0.5rem !important; }
         }
 
       `}</style>

@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   ArrowRightIcon, 
   CheckIcon,
@@ -64,14 +65,50 @@ export default function PricingSection() {
           >
             <div className="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-3xl p-8 pb-24 hover:border-white/20 transition-all duration-300 min-h-[700px]">
               {/* Popular badge */}
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <span className="bg-gradient-to-r from-green-400 to-teal-400 text-black text-sm font-bold px-4 py-1 rounded-full">
-                  EMPIEZA AQUÍ
-                </span>
+              <div className="absolute -top-5 left-1/2 -translate-x-1/2 z-10">
+                <motion.div
+                  initial={{ scale: 0, rotate: -12 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ 
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 20,
+                    delay: 0.1 
+                  }}
+                  className="relative"
+                >
+                  {/* Glow effect */}
+                  <div className="absolute inset-0 bg-green-400 blur-xl opacity-50 rounded-full" />
+                  
+                  {/* Badge */}
+                  <div className="relative bg-gradient-to-r from-green-400 to-teal-400 text-black text-sm font-black px-6 py-2 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-200">
+                    <div className="flex items-center gap-1">
+                      <span className="text-lg">👉</span>
+                      <span className="uppercase tracking-wider">EMPIEZA AQUÍ</span>
+                    </div>
+                  </div>
+                  
+                  {/* Sparkles */}
+                  <div className="absolute -top-1 -right-1">
+                    <SparklesIcon className="w-4 h-4 text-yellow-300 animate-pulse" />
+                  </div>
+                </motion.div>
               </div>
               
               <div>
                 <div className="text-center mb-8">
+                  {/* Logo */}
+                  <div className="mb-4 flex justify-center">
+                    <div className="relative w-16 h-16">
+                      <Image 
+                        src="/images/logo-block.png" 
+                        alt="0x" 
+                        fill
+                        className="object-contain opacity-60"
+                        sizes="64px"
+                      />
+                    </div>
+                  </div>
                   <h3 className="text-2xl font-bold mb-2">Starter</h3>
                   <p className="text-gray-400 mb-6">Perfecto para empezar y probar</p>
                   <div className="flex items-baseline justify-center gap-2">
@@ -144,7 +181,7 @@ export default function PricingSection() {
             {/* Glow effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-purple-500/20 blur-xl" />
             
-            <div className="relative bg-gradient-to-br from-purple-900/40 to-orange-900/40 backdrop-blur-sm border-2 border-transparent bg-clip-padding rounded-3xl p-8 pb-24 min-h-[700px]"
+            <div className="relative bg-gradient-to-br from-purple-900/40 to-orange-900/40 backdrop-blur-sm border-2 border-transparent bg-clip-padding rounded-3xl p-8 pb-24 min-h-[700px] overflow-hidden"
                  style={{ 
                    backgroundImage: `
                      linear-gradient(to bottom right, rgba(147, 51, 234, 0.2), rgba(249, 115, 22, 0.2)),
@@ -155,26 +192,131 @@ export default function PricingSection() {
                    borderImage: 'linear-gradient(to bottom right, #f97316, #a855f7) 1'
                  }}>
               
+              {/* Card glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-purple-500/10 blur-2xl rounded-3xl" />
+              
               {/* Best value badge */}
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <span className="bg-gradient-to-r from-orange-500 to-purple-500 text-white text-sm font-bold px-4 py-1 rounded-full">
-                  🚀 MÁS POPULAR
-                </span>
+              <div className="absolute -top-5 left-1/2 -translate-x-1/2 z-10">
+                <motion.div
+                  initial={{ scale: 0, rotate: 12 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ 
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 20,
+                    delay: 0.15 
+                  }}
+                  className="relative"
+                >
+                  {/* Glow effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-purple-500 blur-xl opacity-60 rounded-full animate-pulse" />
+                  
+                  {/* Badge */}
+                  <div className="relative bg-gradient-to-r from-orange-500 to-purple-500 text-white text-sm font-black px-6 py-2.5 rounded-full shadow-2xl transform hover:scale-105 transition-transform duration-200 border border-white/20">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl animate-bounce" style={{ animationDelay: '0.1s' }}>🚀</span>
+                      <span className="uppercase tracking-wider">MÁS POPULAR</span>
+                      <span className="text-xl animate-bounce" style={{ animationDelay: '0.2s' }}>⭐</span>
+                    </div>
+                  </div>
+                  
+                  {/* Extra sparkles */}
+                  <div className="absolute -top-2 -left-2">
+                    <SparklesIcon className="w-5 h-5 text-yellow-300 animate-pulse" />
+                  </div>
+                  <div className="absolute -bottom-1 -right-2">
+                    <SparklesIcon className="w-4 h-4 text-orange-300 animate-pulse" style={{ animationDelay: '0.5s' }} />
+                  </div>
+                </motion.div>
               </div>
               
               <div>
                 <div className="text-center mb-8">
+                  {/* Logo */}
+                  <div className="mb-4 flex justify-center">
+                    <div className="relative w-20 h-20">
+                      <Image 
+                        src="/images/logo-block.png" 
+                        alt="0x" 
+                        fill
+                        className="object-contain drop-shadow-2xl"
+                        sizes="80px"
+                        priority
+                      />
+                    </div>
+                  </div>
                   <h3 className="text-2xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">
                     Creator Pro
                   </h3>
-                  <p className="text-gray-300 mb-6">Para creadores que van en serio</p>
-                  <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">
-                      €15
-                    </span>
-                    <span className="text-gray-400">/mes</span>
+                  <p className="text-gray-300 mb-2">Para creadores que van en serio</p>
+                  
+                  {/* Summer Sale text */}
+                  <p className="text-lg font-medium mb-4">
+                    ☀️ <span className="text-orange-400 font-bold">Summer Sale</span> - 
+                    <span className="text-white font-bold"> 50% de descuento</span> en Creator Pro
+                  </p>
+                  
+                  {/* Clean Price Display */}
+                  <div className="relative mb-8">
+                    {/* Subtle glow effect */}
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.5 }}
+                      className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-purple-400/20 blur-3xl rounded-full"
+                    />
+                    
+                    <div className="relative">
+                      {/* Price comparison container - Clean Style */}
+                      <motion.div 
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.5, type: "spring" }}
+                        className="flex items-baseline justify-center gap-8"
+                      >
+                        {/* Original price */}
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.7 }}
+                          className="relative"
+                        >
+                          <span className="text-6xl font-bold text-gray-500 line-through decoration-2">
+                            €30
+                          </span>
+                        </motion.div>
+                        
+                        {/* New price with gradient */}
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.5 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 1, type: "spring", stiffness: 200 }}
+                          className="relative"
+                        >
+                          <span className="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400">
+                            €15
+                          </span>
+                          <span className="text-2xl text-gray-300 font-medium ml-2">/mes</span>
+                        </motion.div>
+                      </motion.div>
+                      
+                      {/* Savings info */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.3 }}
+                        className="text-center mt-6"
+                      >
+                        <div className="inline-flex items-center gap-2 text-lg">
+                          <span className="text-2xl">🔥</span>
+                          <span className="text-orange-400 font-bold">OFERTA LIMITADA</span>
+                          <span className="text-gray-400">-</span>
+                          <span className="text-green-400 font-bold">Ahorra €180/año</span>
+                        </div>
+                      </motion.div>
+                      
+                    </div>
                   </div>
-                  <p className="text-sm text-green-400 mt-2">Ahorra €120/año pagando anual</p>
                 </div>
 
                 <ul className="space-y-4">
@@ -241,14 +383,51 @@ export default function PricingSection() {
           >
             <div className="relative bg-black/60 backdrop-blur-sm border border-white/10 rounded-3xl p-8 pb-24 hover:border-white/20 transition-all duration-300 min-h-[700px]">
               {/* Enterprise badge */}
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <span className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white text-sm font-bold px-4 py-1 rounded-full">
-                  🏢 PARA AGENCIAS
-                </span>
+              <div className="absolute -top-5 left-1/2 -translate-x-1/2 z-10">
+                <motion.div
+                  initial={{ scale: 0, rotate: -8 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ 
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 20,
+                    delay: 0.2 
+                  }}
+                  className="relative"
+                >
+                  {/* Glow effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-blue-500 blur-xl opacity-50 rounded-full" />
+                  
+                  {/* Badge */}
+                  <div className="relative bg-gradient-to-r from-indigo-500 to-blue-500 text-white text-sm font-black px-6 py-2 rounded-full shadow-xl transform hover:scale-105 transition-transform duration-200 border border-white/10">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">🏢</span>
+                      <span className="uppercase tracking-wider">PARA AGENCIAS</span>
+                      <span className="text-lg">💼</span>
+                    </div>
+                  </div>
+                  
+                  {/* Professional touch */}
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2">
+                    <div className="w-1 h-3 bg-gradient-to-b from-indigo-400 to-transparent opacity-60" />
+                  </div>
+                </motion.div>
               </div>
               
               <div>
                 <div className="text-center mb-8">
+                  {/* Logo */}
+                  <div className="mb-4 flex justify-center">
+                    <div className="relative w-16 h-16">
+                      <Image 
+                        src="/images/logo-block.png" 
+                        alt="0x" 
+                        fill
+                        className="object-contain opacity-80"
+                        sizes="64px"
+                      />
+                    </div>
+                  </div>
                   <h3 className="text-2xl font-bold mb-2">Business</h3>
                   <p className="text-gray-400 mb-6">Para agencias y equipos</p>
                   <div className="flex items-baseline justify-center gap-2">

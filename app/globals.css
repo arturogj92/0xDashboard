@@ -27,6 +27,60 @@
 html, body {
   overflow-x: hidden;
   width: 100%;
+  max-width: 100vw;
+}
+
+/* Prevenir desbordamiento en contenedores principales */
+* {
+  box-sizing: border-box;
+}
+
+/* Ajustes específicos para MacBook 13" */
+@media (max-width: 1440px) and (max-height: 900px) {
+  body {
+    font-size: 12px;
+  }
+  
+  /* Reducir padding global en pantallas más pequeñas */
+  .p-8 {
+    padding: 1rem !important;
+  }
+  
+  .p-6 {
+    padding: 0.75rem !important;
+  }
+  
+  .p-4 {
+    padding: 0.5rem !important;
+  }
+  
+  .p-2 {
+    padding: 0.375rem !important;
+  }
+  
+  /* Reducir gaps */
+  .gap-8 {
+    gap: 1rem !important;
+  }
+  
+  .gap-6 {
+    gap: 0.75rem !important;
+  }
+  
+  .gap-4 {
+    gap: 0.5rem !important;
+  }
+  
+  /* Ajustes específicos para el home */
+  .min-h-screen {
+    min-height: calc(100vh - 6rem);
+  }
+  
+  /* Centrar contenido más arriba */
+  .items-start {
+    align-items: flex-start !important;
+    padding-top: 0.5rem !important;
+  }
 }
 
 /* Custom scrollbar styles for URL shortener table */
