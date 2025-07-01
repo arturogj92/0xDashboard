@@ -117,37 +117,37 @@ export default function PricingSection() {
                 </div>
 
                 <ul className="space-y-4">
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>50 DMs</strong> automáticos/mes</span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>50 DMs</strong> automáticos/mes</span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>1 Landing page</strong> personalizada</span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>1 Landing page</strong> personalizada</span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>5 Shortlinks</strong> con analytics</span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>5 Shortlinks</strong> con analytics</span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>10 Captions</strong> con IA/mes</span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>10 Captions</strong> con IA/mes</span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300">Soporte por email</span>
+                  <span className="text-gray-300 text-center md:text-left">Soporte por email</span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <XMarkIcon className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-500 line-through">Automatizaciones avanzadas</span>
+                  <span className="text-gray-500 line-through text-center md:text-left">Automatizaciones avanzadas</span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <XMarkIcon className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-500 line-through">Múltiples cuentas</span>
+                  <span className="text-gray-500 line-through text-center md:text-left">Múltiples cuentas</span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <XMarkIcon className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-500 line-through">Soporte prioritario</span>
+                  <span className="text-gray-500 line-through text-center md:text-left">Soporte prioritario</span>
                 </li>
                 </ul>
               </div>
@@ -319,37 +319,37 @@ export default function PricingSection() {
                 </div>
 
                 <ul className="space-y-4">
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>DMs ilimitados</strong> con IA avanzada</span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>DMs ilimitados</strong> con IA avanzada</span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>Landing pages ilimitadas</strong></span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>Landing pages ilimitadas</strong></span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>Shortlinks ilimitados</strong> + analytics pro</span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>Shortlinks ilimitados</strong> + analytics pro</span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>Captions ilimitados</strong> con IA</span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>Captions ilimitados</strong> con IA</span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>Automatizaciones avanzadas</strong></span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>Automatizaciones avanzadas</strong></span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>3 cuentas</strong> de Instagram</span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>3 cuentas</strong> de Instagram</span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>Soporte prioritario</strong> 24/7</span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>Soporte prioritario</strong> 24/7</span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <SparklesIcon className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>Early access</strong> a nuevas features</span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>Early access</strong> a nuevas features</span>
                 </li>
                 </ul>
               </div>
@@ -437,37 +437,37 @@ export default function PricingSection() {
                 </div>
 
                 <ul className="space-y-4">
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>Todo del plan Pro</strong></span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>Todo del plan Pro</strong></span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>10 cuentas</strong> de Instagram</span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>10 cuentas</strong> de Instagram</span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>Team collaboration</strong></span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>Team collaboration</strong></span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>API access</strong></span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>API access</strong></span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>White label</strong> disponible</span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>White label</strong> disponible</span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>Account manager</strong> dedicado</span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>Account manager</strong> dedicado</span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>Training</strong> personalizado</span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>Training</strong> personalizado</span>
                 </li>
-                <li className="flex items-start gap-3">
+                <li className="flex items-start gap-3 justify-center md:justify-start">
                   <StarIcon className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300"><strong>Custom integrations</strong></span>
+                  <span className="text-gray-300 text-center md:text-left"><strong>Custom integrations</strong></span>
                 </li>
                 </ul>
               </div>

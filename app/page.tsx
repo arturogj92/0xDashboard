@@ -3466,8 +3466,6 @@ export default function LandingPage() {
 
         {/* Final CTA Section */}
         <section className="relative py-32 overflow-hidden">
-          {/* Epic background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-orange-900/20 to-purple-900/20" />
           
           {/* Animated background effects */}
           <div className="absolute inset-0 pointer-events-none">
