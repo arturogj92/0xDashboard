@@ -10,10 +10,12 @@ import StyleCustomizationAccordion from "@/components/editor/StyleCustomizationA
 import CustomDomainConfiguration from "@/components/editor/CustomDomainConfiguration";
 import { useParams, useRouter } from 'next/navigation';
 import { PencilSquareIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
-import { Globe, Lock } from 'lucide-react';
+import { Globe, Lock, Settings } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/AuthContext';
 import { getThemeById } from '@/lib/themes';
+import { PageHeader } from '@/components/ui/PageHeader';
+import Image from 'next/image';
 
 export default function AdminPage() {
   const t = useTranslations('editor');
@@ -899,7 +901,17 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen relative">
+    <>
+      <PageHeader
+        icon={
+          <Settings className="w-14 h-14" />
+        }
+        title={t('pageTitle')}
+        description={t('pageDescription')}
+        imageSrc="/images/icons/caption-icon.png"
+        imageAlt={t('pageTitle')}
+      />
+      <div className="flex flex-col md:flex-row min-h-screen relative">
       <div className="hidden md:block fixed left-0 top-0 bottom-0 w-1/2 overflow-hidden pointer-events-none">
         <div className="absolute left-1/4 -top-24 -bottom-24 right-1/4 bg-[radial-gradient(circle,_rgba(88,28,135,0.45)_0%,_rgba(17,24,39,0)_80%)] blur-[250px] pointer-events-none"></div>
         <div className="absolute left-1/4 -top-32 -bottom-32 right-1/4 bg-[radial-gradient(circle,_rgba(17,24,39,0)_60%,_rgba(88,28,135,0.35)_100%)] blur-[300px] opacity-50 pointer-events-none"></div>
@@ -1163,5 +1175,6 @@ export default function AdminPage() {
         }
       `}</style>
     </div>
+    </>
   );
 }

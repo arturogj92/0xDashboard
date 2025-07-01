@@ -157,7 +157,7 @@ export default function PricingSection() {
               
               {/* Best value badge */}
               <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <span className="bg-gradient-to-r from-orange-500 to-purple-500 text-white text-sm font-bold px-4 py-1 rounded-full animate-pulse">
+                <span className="bg-gradient-to-r from-orange-500 to-purple-500 text-white text-sm font-bold px-4 py-1 rounded-full">
                   🚀 MÁS POPULAR
                 </span>
               </div>

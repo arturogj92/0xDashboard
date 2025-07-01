@@ -2547,8 +2547,8 @@ export default function LandingPage() {
                         alt="Sofia Lifestyle"
                         width={64}
                         height={64}
-                        className="object-cover object-center"
-                        style={{ objectPosition: '50% 30%' }}
+                        className="object-cover scale-125"
+                        style={{ objectPosition: '50% 25%' }}
                       />
                     </div>
                     <div>
@@ -2625,7 +2625,7 @@ export default function LandingPage() {
                 transition={{ duration: 0.8 }}
                 {...{ className: "relative" } as any}
               >
-                <div className="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full hover:border-white/20 transition-all duration-300">
+                <div className="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full hover:border-white/20 transition-all duration-300 flex flex-col">
                   {/* Popular badge */}
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                     <span className="bg-gradient-to-r from-green-400 to-teal-400 text-black text-sm font-bold px-4 py-1 rounded-full">
@@ -2642,7 +2642,7 @@ export default function LandingPage() {
                     </div>
                   </div>
 
-                  <ul className="space-y-4 mb-8">
+                  <ul className="space-y-4 mb-8 flex-grow">
                     <li className="flex items-start gap-3">
                       <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
                       <span className="text-gray-300"><strong>50 DMs</strong> automáticos/mes</span>
@@ -2707,7 +2707,7 @@ export default function LandingPage() {
                   
                   {/* Best value badge */}
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="bg-gradient-to-r from-orange-500 to-purple-500 text-white text-sm font-bold px-4 py-1 rounded-full animate-pulse">
+                    <span className="bg-gradient-to-r from-orange-500 to-purple-500 text-white text-sm font-bold px-4 py-1 rounded-full">
                       🚀 MÁS POPULAR
                     </span>
                   </div>
@@ -2785,7 +2785,7 @@ export default function LandingPage() {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 {...{ className: "relative" } as any}
               >
-                <div className="relative bg-black/60 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full hover:border-white/20 transition-all duration-300">
+                <div className="relative bg-black/60 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full hover:border-white/20 transition-all duration-300 flex flex-col">
                   {/* Enterprise badge */}
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                     <span className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white text-sm font-bold px-4 py-1 rounded-full">
@@ -2803,7 +2803,7 @@ export default function LandingPage() {
                     <p className="text-sm text-green-400 mt-2">Ahorra €350/año pagando anual</p>
                   </div>
 
-                  <ul className="space-y-4 mb-8">
+                  <ul className="space-y-4 mb-8 flex-grow">
                     <li className="flex items-start gap-3">
                       <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
                       <span className="text-gray-300"><strong>Todo del plan Pro</strong></span>
@@ -3287,60 +3287,7 @@ export default function LandingPage() {
 
 
         <footer className="border-t border-white/10 py-12 bg-black/50">
-          <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-4 gap-8 mb-8">
-              {/* Logo and description */}
-              <div className="md:col-span-1">
-                <h3 className="text-2xl font-bold mb-4">Creator0x</h3>
-                <p className="text-gray-400 text-sm">
-                  La plataforma todo-en-uno para creadores de contenido que quieren automatizar y escalar.
-                </p>
-              </div>
-              
-              {/* Product Links */}
-              <div>
-                <h4 className="font-semibold mb-4 text-gray-300">Producto</h4>
-                <ul className="space-y-2 text-sm">
-                  <li><Link href="/features" className="text-gray-400 hover:text-white transition-colors">Características</Link></li>
-                  <li><Link href="/pricing" className="text-gray-400 hover:text-white transition-colors">Precios</Link></li>
-                  <li><Link href="/blog" className="text-gray-400 hover:text-white transition-colors">Blog</Link></li>
-                  <li><Link href="/changelog" className="text-gray-400 hover:text-white transition-colors">Changelog</Link></li>
-                </ul>
-              </div>
-              
-              {/* Support Links */}
-              <div>
-                <h4 className="font-semibold mb-4 text-gray-300">Soporte</h4>
-                <ul className="space-y-2 text-sm">
-                  <li><Link href="/help" className="text-gray-400 hover:text-white transition-colors">Centro de ayuda</Link></li>
-                  <li><Link href="/contact" className="text-gray-400 hover:text-white transition-colors">Contacto</Link></li>
-                  <li><Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">Privacidad</Link></li>
-                  <li><Link href="/terms" className="text-gray-400 hover:text-white transition-colors">Términos</Link></li>
-                </ul>
-              </div>
-              
-              {/* Social Links */}
-              <div>
-                <h4 className="font-semibold mb-4 text-gray-300">Síguenos</h4>
-                <div className="flex gap-4">
-                  <a href="https://instagram.com/creator0x" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                    <span className="text-2xl">📸</span>
-                  </a>
-                  <a href="https://twitter.com/creator0x" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                    <span className="text-2xl">🐦</span>
-                  </a>
-                  <a href="https://youtube.com/@creator0x" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                    <span className="text-2xl">📺</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-            
-            {/* Copyright */}
-            <div className="border-t border-white/10 pt-8 text-center text-sm text-gray-400">
-              <p>© 2024 Creator0x. Todos los derechos reservados.</p>
-            </div>
-          </div>
+         
         </footer>
       </div>
     </>
