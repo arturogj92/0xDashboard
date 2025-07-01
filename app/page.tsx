@@ -1285,7 +1285,7 @@ export default function LandingPage() {
                 >
                   <div className="w-2 h-2 xl:w-3 xl:h-3 rounded-full " 
                        style={{ backgroundColor: 'var(--secondary)' }} />
-                  <span className="text-sm xl:text-lg 2xl:text-xl">🔥 +1,200 creadores ya automatizando</span>
+                  <span className="text-sm xl:text-lg 2xl:text-xl">🔥 +1,200 creadores creciendo con nosotros</span>
                 </motion.div>
 
                 <motion.p
@@ -1294,8 +1294,8 @@ export default function LandingPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
                 >
-                  La única plataforma que automatiza DMs de Instagram, crea tu landing y link-in-bio totalmente personalizada, 
-                  acorta URLs con analytics y genera captions perfectos con IA.
+                  La plataforma todo-en-uno para gestionar tus redes: responde DMs más rápido, crea tu landing profesional, 
+                  analiza tus enlaces y genera captions que conectan con tu audiencia.
                 </motion.p>
 
                 <motion.div
@@ -1385,7 +1385,7 @@ export default function LandingPage() {
                   <div className="absolute inset-0 blur-2xl md:blur-xl bg-gradient-to-r from-orange-400/20 to-purple-400/20 md:from-orange-400/40 md:to-purple-400/40 -z-10" />
                   
                   <h3 className="text-3xl md:text-5xl font-black mb-6 tracking-tight">
-                    Mientras tú duermes, <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400">ellos venden</span>
+                    Creadores que <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400">triplicaron sus ventas</span>
                   </h3>
                 </motion.div>
                 
@@ -1395,7 +1395,7 @@ export default function LandingPage() {
                   whileInView={{ opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.3 }}
                 >
-                  Números reales de creadores que tomaron acción (y ahora viven de Instagram)
+                  Números reales de creadores que usan nuestras herramientas para crecer
                 </motion.p>
               </div>
               
@@ -1959,7 +1959,7 @@ export default function LandingPage() {
         </section>
 
         {/* Features Section - Las 4 herramientas principales */}
-        <section className="relative py-32 overflow-hidden">
+        <section className="relative py-8 md:py-32 overflow-hidden">
           <div className="container mx-auto px-4 relative z-10">
             {/* Section Title */}
             <motion.div
@@ -1967,7 +1967,7 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="text-center mb-20"
+              className="text-center mb-8 md:mb-20"
             >
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
                 4 herramientas que{' '}
@@ -1975,8 +1975,8 @@ export default function LandingPage() {
                   multiplican tus ventas
                 </span>
               </h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-12">
-                Todo integrado, todo automático, todo en{' '}
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-6 md:mb-12">
+                Todo integrado y optimizado en{' '}
                 <span className="text-purple-300 font-medium">una plataforma</span>.
               </p>
 
@@ -2120,15 +2120,15 @@ export default function LandingPage() {
                 <motion.h2 
                   {...{ className: "text-5xl md:text-7xl font-black mb-6 leading-tight" } as any}
                 >
-                  El 93% de creadores <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">fracasa</span>
+                  El 93% de creadores <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">puede crecer más</span>
                   <br />
-                  <span className="text-3xl md:text-5xl text-gray-400">por hacer TODO manual</span>
+                  <span className="text-3xl md:text-5xl text-gray-400">con las herramientas correctas</span>
                 </motion.h2>
                 
                 <motion.p 
                   {...{ className: "text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto" } as any}
                 >
-                  Mientras respondes DMs, tu competencia cierra 5 ventas automáticas
+                  Descubre cómo optimizar tu tiempo y multiplicar tus resultados
                 </motion.p>
               </motion.div>
 
@@ -2181,7 +2181,7 @@ export default function LandingPage() {
                           <h3 className={`text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400 ${isMobile ? '' : 'drop-shadow-[0_0_20px_rgba(239,68,68,0.5)]'}`}>Sin</h3>
                           <Image src="/images/logo.png" alt="Creator0x" width={140} height={40} className="h-8 w-auto" />
                         </div>
-                        <p className="text-xs text-red-400/80 font-medium uppercase tracking-wider">El camino al fracaso</p>
+                        <p className="text-xs text-red-400/80 font-medium uppercase tracking-wider">Cómo trabajas ahora</p>
                       </div>
                     </div>
 
@@ -2277,9 +2277,9 @@ export default function LandingPage() {
                         <div className="text-left flex-1">
                           <p className="text-xs text-red-400/60 font-medium uppercase tracking-wider mb-1">El resultado</p>
                           <p className="text-lg md:text-xl font-black text-white">
-                            Trabajas más, ganas menos
+                            Mucho tiempo, pocos resultados
                           </p>
-                          <p className="text-xs md:text-sm text-red-300/50 mt-1">Y tu competencia te supera cada día</p>
+                          <p className="text-xs md:text-sm text-red-300/50 mt-1">Podrías estar haciendo mucho más</p>
                         </div>
                       </div>
                     </motion.div>
@@ -2347,8 +2347,8 @@ export default function LandingPage() {
                             <ChatBubbleLeftRightIcon className="h-5 w-5 text-green-400" />
                           </div>
                           <div className="text-left">
-                            <p className="text-white font-bold text-base md:text-lg">DMs 100% automáticos</p>
-                            <p className="text-green-300/70 text-xs md:text-sm font-medium">Vendes mientras duermes</p>
+                            <p className="text-white font-bold text-base md:text-lg">Respuestas más rápidas</p>
+                            <p className="text-green-300/70 text-xs md:text-sm font-medium">Convierte más seguidores</p>
                           </div>
                         </motion.div>
 
@@ -2429,9 +2429,9 @@ export default function LandingPage() {
                         <div className="text-left flex-1">
                           <p className="text-xs text-green-400/60 font-medium uppercase tracking-wider mb-1">El resultado</p>
                           <p className="text-lg md:text-xl font-black text-white">
-                            Trabajas menos, ganas más
+                            Optimizas tu tiempo al máximo
                           </p>
-                          <p className="text-xs md:text-sm text-green-300/50 mt-1">Y tienes tiempo para lo que realmente importa</p>
+                          <p className="text-xs md:text-sm text-green-300/50 mt-1">Y creces de forma sostenible</p>
                         </div>
                       </div>
                     </motion.div>
@@ -2451,9 +2451,7 @@ export default function LandingPage() {
                   animate={{ scale: [1, 1.02, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400">¿Qué prefieres?</span>
-                  <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400">¿Seguir perdiendo o empezar a ganar?</span>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400">¿Listo para hacer crecer tu marca?</span>
                 </motion.p>
                 
                 <Link href="/register">
@@ -2491,8 +2489,8 @@ export default function LandingPage() {
         <section className="relative py-32 overflow-hidden">
           {/* Background decoration */}
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />
+            <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-2xl" />
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-orange-500/5 rounded-full blur-2xl" />
           </div>
 
           <div className="container mx-auto px-4 relative z-10">
@@ -2583,7 +2581,7 @@ export default function LandingPage() {
                     ))}
                   </div>
                   <p className="text-gray-300 leading-relaxed mb-6">
-                    "Llevo 6 meses con Creator0x. Los DMs automáticos filtran quien realmente quiere entrenar. La landing con mis planes y horarios funciona 24/7. Y los shortlinks me dicen qué contenido convierte mejor. Herramienta imprescindible si vas en serio con esto."
+                    "Llevo 6 meses con Creator0x. Los DMs me ayudan a responder más rápido y mejor. La landing muestra todos mis servicios de forma profesional. Y los shortlinks me dicen qué contenido funciona mejor. Herramienta imprescindible para crecer."
                   </p>
                   <div className="pt-6 border-t border-white/10">
                     <p className="text-sm text-gray-400">
@@ -2640,61 +2638,87 @@ export default function LandingPage() {
         {/* Pricing Section - CLEAN & PROFESSIONAL */}
         <section className="relative py-32 overflow-hidden" id="pricing">
           
-          {/* Subtle animated orbs */}
+          {/* Background */}
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-20 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+            <div className="absolute top-20 left-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-xl" />
+            <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-orange-500/5 rounded-full blur-xl" />
           </div>
 
           <div className="container mx-auto px-4 relative z-10">
+            {/* Social Proof Ticker */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="max-w-4xl mx-auto mb-16"
+            >
+              <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-2xl p-4 text-center">
+                <p className="text-lg font-medium flex items-center justify-center gap-3">
+                  <span className="text-2xl">🚀</span>
+                  <span className="text-green-400 font-bold">+2,347 creadores</span> ya están vendiendo en automático con Creator0x
+                  <span className="text-2xl">💰</span>
+                </p>
+              </div>
+            </motion.div>
+
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              {...{ className: "text-center mb-20" } as any}
+              {...{ className: "text-center mb-16" } as any}
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                {...{ className: "inline-block mb-6" } as any}
+                {...{ className: "inline-block mb-8" } as any}
               >
-                <span className="text-sm font-medium text-purple-400 bg-purple-400/10 px-4 py-2 rounded-full">
-                  💎 PRICING SIMPLE Y TRANSPARENTE
+                <span className="text-sm font-medium text-purple-400 bg-purple-400/10 px-4 py-2 rounded-full uppercase tracking-wider">
+                  💎 Pricing transparente • Sin letra pequeña
                 </span>
               </motion.div>
               
-              <h2 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight">
-                Elige tu plan y 
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 mt-2">
-                  multiplica tus ventas
+              <h2 className="text-5xl md:text-6xl lg:text-7xl font-black mb-8 leading-tight">
+                <span className="block text-white mb-2">Invierte en tu crecimiento</span>
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400">
+                  y multiplica x10 tus ingresos
                 </span>
               </h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                Empieza gratis y crece a tu ritmo. Sin permanencia, cancela cuando quieras.
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-12">
+                Empieza gratis. Escala cuando quieras. Cancela sin preguntas.
               </p>
+              
             </motion.div>
 
-            {/* Limited time offer banner */}
+            {/* Limited time offer banner - IMPROVED */}
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="max-w-4xl mx-auto mb-12"
+              transition={{ duration: 0.6, delay: 0.3, type: "spring" }}
+              className="max-w-5xl mx-auto mb-12"
             >
-              <div className="bg-gradient-to-r from-orange-500/10 to-purple-500/10 border border-orange-500/20 rounded-2xl p-4 text-center">
-                <p className="text-lg font-medium">
-                  ☀️ <span className="text-orange-400 font-bold">Summer Sale</span> - 
-                  <span className="text-white font-bold"> 50% de descuento</span> en Creator Pro
-                </p>
+              <div className="relative overflow-hidden bg-gradient-to-r from-orange-500/20 via-pink-500/20 to-purple-500/20 border border-orange-500/30 rounded-2xl p-6">
+                
+                <div className="relative flex flex-col md:flex-row items-center justify-center gap-4">
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl">🎉</span>
+                    <div>
+                      <p className="text-2xl font-black text-white">
+                        <span className="text-orange-400">50% DESCUENTO</span> en Creator Pro
+                      </p>
+                      <p className="text-sm text-gray-300">Oferta limitada • Termina en 48 horas</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </motion.div>
 
-            {/* Pricing Cards - 3D EFFECT */}
-            <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto perspective-1000">
+            {/* Pricing Cards */}
+            <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
               
               {/* Free Plan */}
               <motion.div
@@ -2704,19 +2728,16 @@ export default function LandingPage() {
                 transition={{ duration: 0.8 }}
                 {...{ className: "relative" } as any}
               >
-                <div className="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full hover:border-white/20 hover:shadow-lg hover:shadow-white/5 transition-all duration-300 flex flex-col group">
+                <div className="relative bg-black/60 border border-white/10 rounded-3xl p-8 h-full hover:border-white/20 hover:shadow-lg hover:shadow-white/5 transition-all duration-300 flex flex-col group">
                   {/* Popular badge - CENTERED */}
                   <div className="absolute -top-4 left-0 right-0 z-10 flex justify-center">
-                    <motion.div
-                      initial={{ scale: 0, rotate: -12 }}
-                      animate={{ scale: 1, rotate: 0 }}
-                      transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                    <div
                       className="relative inline-block"
                     >
                       <div className="bg-gradient-to-r from-green-400 to-teal-400 text-black text-sm font-black px-6 py-2 rounded-full shadow-lg">
                         <span className="uppercase tracking-wider whitespace-nowrap">EMPIEZA AQUÍ</span>
                       </div>
-                    </motion.div>
+                    </div>
                   </div>
                   
                   <div className="text-center mb-8">
@@ -2729,8 +2750,9 @@ export default function LandingPage() {
                         className="mx-auto"
                       />
                     </div>
-                    <h3 className="text-3xl font-black mb-2 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Starter</h3>
-                    <p className="text-gray-400 mb-6 font-medium">Perfecto para empezar</p>
+                    <h3 className="text-3xl font-black mb-3 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Starter</h3>
+                    <p className="text-gray-400 mb-2 font-medium">Perfecto para empezar</p>
+                    <p className="text-sm text-green-400 font-semibold mb-6">✅ No requiere tarjeta</p>
                     <div className="flex items-baseline justify-center gap-2">
                       <span className="text-6xl font-black bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent">GRATIS</span>
                     </div>
@@ -2783,10 +2805,9 @@ export default function LandingPage() {
 
                   <Link href="/register">
                     <Button 
-                      className="w-full h-14 text-lg font-bold bg-white/10 hover:bg-green-500/20 border-2 border-white/20 hover:border-green-500/50 transition-all duration-300 group relative overflow-hidden"
+                      className="w-full h-14 text-lg font-bold bg-white/10 hover:bg-green-500/20 border-2 border-white/20 hover:border-green-500/50 transition-colors duration-200"
                     >
                       <span className="relative z-10">Empieza GRATIS ahora</span>
-                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/0 via-green-500/20 to-green-500/0 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                     </Button>
                   </Link>
                 </div>
@@ -2794,62 +2815,29 @@ export default function LandingPage() {
 
               {/* Pro Plan - MOST EPIC */}
               <motion.div
-                initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8, type: "spring" }}
-                {...{ className: "relative transform-gpu" } as any}
+                transition={{ duration: 0.8 }}
+                {...{ className: "relative" } as any}
               >
-                {/* Insane glow effect - matching card shape */}
-                <motion.div 
-                  className="absolute -inset-4 bg-gradient-to-r from-orange-600 via-pink-600 to-purple-600 rounded-3xl blur-2xl opacity-30"
-                  animate={{ 
-                    opacity: [0.3, 0.45, 0.3],
-                    scale: [1, 1.02, 1]
-                  }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                {/* Subtle glow effect */}
+                <div 
+                  className="absolute -inset-2 bg-gradient-to-r from-orange-600/20 via-pink-600/20 to-purple-600/20 rounded-3xl blur-lg opacity-50"
                 />
                 
                 <div 
-                  className="relative bg-gradient-to-br from-purple-900/40 to-orange-900/40 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full flex flex-col group shadow-xl hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-300"
+                  className="relative bg-gradient-to-br from-purple-900/60 to-orange-900/60 border border-white/10 rounded-3xl p-8 h-full flex flex-col group shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   
                   {/* Best value badge - CENTERED WITH EFFECTS */}
                   <div className="absolute -top-4 left-0 right-0 z-20 flex justify-center">
-                    <motion.div
-                      initial={{ scale: 0, y: -20 }}
-                      animate={{ scale: 1, y: 0 }}
-                      transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                    <div
                       className="relative inline-block"
                     >
-                      {/* Subtle glow */}
-                      <div className="absolute -inset-2">
-                        <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-purple-500 blur-md opacity-40 animate-pulse" />
-                      </div>
-                      
-                      {/* Compact orbiting particles */}
-                      <div className="absolute -inset-6 pointer-events-none">
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-                          className="w-full h-full"
-                        >
-                          <div className="absolute top-0 left-1/2 w-1.5 h-1.5 bg-orange-400 rounded-full opacity-80" />
-                          <div className="absolute bottom-0 left-1/2 w-1.5 h-1.5 bg-purple-400 rounded-full opacity-80" />
-                          <div className="absolute left-0 top-1/2 w-1.5 h-1.5 bg-pink-400 rounded-full opacity-80" />
-                          <div className="absolute right-0 top-1/2 w-1.5 h-1.5 bg-orange-400 rounded-full opacity-80" />
-                        </motion.div>
-                      </div>
-                      
                       {/* Main badge with border */}
-                      <div className="relative bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 p-[1px] rounded-full shadow-lg transform hover:scale-105 transition-transform duration-200">
+                      <div className="relative bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 p-[1px] rounded-full shadow-lg">
                         <div className="bg-black/90 rounded-full px-4 py-1.5 relative overflow-hidden">
-                          {/* Shimmer effect */}
-                          <motion.div
-                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-                            animate={{ x: [-200, 200] }}
-                            transition={{ duration: 3, repeat: Infinity, repeatDelay: 1 }}
-                          />
                           
                           <span className="relative font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 uppercase tracking-wider text-sm whitespace-nowrap">
                             MÁS POPULAR
@@ -2857,28 +2845,31 @@ export default function LandingPage() {
                         </div>
                       </div>
                       
-                    </motion.div>
+                    </div>
                   </div>
                   
                   <div className="text-center mb-8">
                     <div className="mb-4">
-                      <motion.div
-                        animate={{ scale: [1, 1.05, 1] }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                      >
-                        <Image
-                          src="/images/logo-block.png"
-                          alt="Creator0x"
-                          width={56}
-                          height={56}
-                          className="mx-auto drop-shadow-[0_0_20px_rgba(251,146,60,0.5)]"
-                        />
-                      </motion.div>
+                      <Image
+                        src="/images/logo-block.png"
+                        alt="Creator0x"
+                        width={56}
+                        height={56}
+                        className="mx-auto"
+                      />
                     </div>
-                    <h3 className="text-4xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400">
+                    <h3 className="text-4xl font-black mb-3 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400">
                       Creator Pro
                     </h3>
-                    <p className="text-gray-200 mb-6 font-medium text-lg">Escala tu contenido sin límites</p>
+                    <p className="text-gray-200 mb-2 font-medium text-lg">Para creadores que van en serio</p>
+                    <div className="flex items-center justify-center gap-2 mb-6">
+                      <StarIcon className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <StarIcon className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <StarIcon className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <StarIcon className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <StarIcon className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <span className="text-sm text-gray-300 ml-1">(4.9/5 - 847 reviews)</span>
+                    </div>
                     <div className="flex items-baseline justify-center gap-2">
                       <span className="text-4xl font-medium text-gray-500 line-through">€30</span>
                       <span className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">
@@ -2886,13 +2877,9 @@ export default function LandingPage() {
                       </span>
                       <span className="text-gray-300 text-xl">/mes</span>
                     </div>
-                    <motion.p 
-                      className="text-sm text-green-400 mt-2 font-semibold"
-                      animate={{ opacity: [0.6, 1, 0.6] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    >
+                    <p className="text-sm text-green-400 mt-2 font-semibold">
                       🔥 OFERTA LIMITADA - Ahorra €180/año
-                    </motion.p>
+                    </p>
                   </div>
 
                   <ul className="space-y-4 mb-8 flex-grow">
@@ -2936,7 +2923,7 @@ export default function LandingPage() {
                       <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-green-500/30 transition-colors">
                         <CheckIcon className="w-3 h-3 text-green-400" />
                       </div>
-                      <span className="text-gray-300"><strong>Soporte prioritario</strong> 24/7</span>
+                      <span className="text-gray-300"><strong>Soporte prioritario</strong> cuando lo necesites</span>
                     </li>
                     <li className="flex items-start gap-3 group/item">
                       <div className="w-5 h-5 rounded-full bg-yellow-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover/item:bg-yellow-500/30 transition-colors">
@@ -2947,46 +2934,34 @@ export default function LandingPage() {
                   </ul>
 
                   <Link href="/register">
-                    <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                    <Button 
+                      className="w-full h-16 text-lg font-black bg-gradient-to-r from-orange-500 to-purple-500 hover:from-orange-400 hover:to-purple-400 text-white shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
                     >
-                      <Button 
-                        className="w-full h-14 text-lg font-black bg-gradient-to-r from-orange-500 to-purple-500 hover:from-orange-400 hover:to-purple-400 text-white shadow-xl hover:shadow-purple-500/40 transition-all duration-300 transform hover:scale-[1.02] hover:-translate-y-0.5"
-                      >
-                        Comenzar ahora
-                        <ArrowRightIcon className="ml-2 h-5 w-5" />
-                      </Button>
-                    </motion.div>
+                      <span className="relative z-10">
+                        Empezar a vender en automático
+                        <ArrowRightIcon className="inline-block ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                      </span>
+                    </Button>
                   </Link>
                 </div>
               </motion.div>
 
               {/* Business Plan - PREMIUM VIBES */}
               <motion.div
-                initial={{ opacity: 0, x: 50, scale: 0.9 }}
-                whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
-                {...{ className: "relative transform-gpu" } as any}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                {...{ className: "relative" } as any}
               >
-                <div className="relative bg-black/60 backdrop-blur-sm border border-white/10 rounded-3xl p-8 h-full hover:border-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 flex flex-col group">
+                <div className="relative bg-black/70 border border-white/10 rounded-3xl p-8 h-full hover:border-indigo-500/30 hover:shadow-lg transition-all duration-300 flex flex-col group">
                   {/* Enterprise badge - CENTERED */}
                   <div className="absolute -top-4 left-0 right-0 z-10 flex justify-center">
-                    <motion.div
-                      initial={{ scale: 0, rotate: 8 }}
-                      animate={{ scale: 1, rotate: 0 }}
-                      transition={{ type: "spring", stiffness: 240, damping: 18 }}
+                    <div
                       className="relative inline-block"
                     >
                       <div className="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-full shadow-xl">
                         <div className="relative overflow-hidden rounded-full">
-                          {/* Metallic shine effect */}
-                          <motion.div
-                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                            animate={{ x: [-100, 100] }}
-                            transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
-                          />
                           
                           <div className="relative px-6 py-2.5">
                             <span className="font-black text-white uppercase tracking-wider text-sm whitespace-nowrap"
@@ -2997,7 +2972,7 @@ export default function LandingPage() {
                           </div>
                         </div>
                       </div>
-                    </motion.div>
+                    </div>
                   </div>
                   
                   <div className="text-center mb-8">
@@ -3010,8 +2985,9 @@ export default function LandingPage() {
                         className="mx-auto"
                       />
                     </div>
-                    <h3 className="text-3xl font-black mb-2 bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent">Creator Ultra</h3>
-                    <p className="text-gray-300 mb-6 font-medium">Para equipos ambiciosos</p>
+                    <h3 className="text-3xl font-black mb-3 bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent">Creator Ultra</h3>
+                    <p className="text-gray-300 mb-2 font-medium">Para agencias y equipos</p>
+                    <p className="text-sm text-indigo-400 font-semibold mb-6">🏢 Gestión multi-cuenta</p>
                     <div className="flex items-baseline justify-center gap-2">
                       <span className="text-6xl font-black bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent">€40</span>
                       <span className="text-gray-400 text-xl">/mes</span>
@@ -3072,7 +3048,7 @@ export default function LandingPage() {
 
                   <Link href="/register">
                     <Button 
-                      className="w-full h-14 text-lg font-bold bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 border-2 border-transparent hover:border-indigo-400/50"
+                      className="w-full h-14 text-lg font-bold bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white shadow-lg transition-all duration-300"
                     >
                       Empezar ahora
                       <ArrowRightIcon className="ml-2 h-5 w-5" />
@@ -3082,29 +3058,50 @@ export default function LandingPage() {
               </motion.div>
             </div>
 
-            {/* Trust badges */}
+            {/* Trust badges with payment methods */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              {...{ className: "flex flex-wrap items-center justify-center gap-8 mt-16 text-sm text-gray-400" } as any}
+              className="mt-16"
             >
-              <div className="flex items-center gap-2">
-                <CheckIcon className="w-4 h-4 text-green-400" />
-                <span>Sin permanencia</span>
+              <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-gray-400 mb-8">
+                <div className="flex items-center gap-2">
+                  <CheckIcon className="w-4 h-4 text-green-400" />
+                  <span>Sin permanencia</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckIcon className="w-4 h-4 text-green-400" />
+                  <span>Cancela cuando quieras</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckIcon className="w-4 h-4 text-green-400" />
+                  <span>Pago 100% seguro</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckIcon className="w-4 h-4 text-green-400" />
+                  <span>Factura disponible</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckIcon className="w-4 h-4 text-green-400" />
-                <span>Cancela cuando quieras</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckIcon className="w-4 h-4 text-green-400" />
-                <span>Pago 100% seguro</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckIcon className="w-4 h-4 text-green-400" />
-                <span>Factura disponible</span>
+              
+              {/* Payment methods */}
+              <div className="flex items-center justify-center gap-4 opacity-50">
+                <p className="text-xs text-gray-500">Pagos seguros con:</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-8 bg-white/10 rounded flex items-center justify-center">
+                    <span className="text-xs font-bold">VISA</span>
+                  </div>
+                  <div className="w-12 h-8 bg-white/10 rounded flex items-center justify-center">
+                    <span className="text-xs font-bold">MC</span>
+                  </div>
+                  <div className="w-16 h-8 bg-white/10 rounded flex items-center justify-center">
+                    <span className="text-xs font-bold">PayPal</span>
+                  </div>
+                  <div className="w-16 h-8 bg-white/10 rounded flex items-center justify-center">
+                    <span className="text-xs font-bold">Stripe</span>
+                  </div>
+                </div>
               </div>
             </motion.div>
 
@@ -3167,13 +3164,13 @@ export default function LandingPage() {
                           <div className="text-orange-400 font-bold mb-2 flex items-center gap-2">
                             <span className="text-2xl">2️⃣</span> Relájate
                           </div>
-                          <p className="text-sm text-gray-300">La IA analiza y responde 24/7 automáticamente</p>
+                          <p className="text-sm text-gray-300">La IA te ayuda a responder de forma inteligente</p>
                         </div>
                         <div className="bg-gradient-to-r from-green-500/10 to-transparent p-4 rounded-xl border border-green-500/20">
                           <div className="text-green-400 font-bold mb-2 flex items-center gap-2">
                             <span className="text-2xl">3️⃣</span> Convierte
                           </div>
-                          <p className="text-sm text-gray-300">Transforma seguidores en clientes mientras duermes</p>
+                          <p className="text-sm text-gray-300">Transforma seguidores en clientes con respuestas personalizadas</p>
                         </div>
                       </div>
                       <div className="flex flex-wrap gap-3">
@@ -3628,11 +3625,6 @@ export default function LandingPage() {
             </motion.div>
           </div>
         </section>
-
-
-        <footer className="border-t border-white/10 py-12 bg-black/50">
-         
-        </footer>
       </div>
     </>
   );
