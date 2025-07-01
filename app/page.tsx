@@ -323,10 +323,16 @@ function AppCarousel3D() {
           />
           
           {/* Screen container with overflow hidden - adjusted for PNG frame */}
-          <div className="absolute top-[7%] bottom-[7%] left-[6.5%] right-[6.5%] rounded-[10%] overflow-hidden bg-black group">
+          <div className="absolute top-[7%] bottom-[7%] left-[6.5%] right-[6.5%] rounded-[10%] overflow-hidden bg-black group select-none">
             {/* Touch/Click area for swipe */}
             <div 
               className="absolute inset-0 z-20"
+              style={{ 
+                WebkitUserSelect: 'none',
+                MozUserSelect: 'none',
+                msUserSelect: 'none',
+                userSelect: 'none'
+              }}
               onMouseDown={(e) => {
                 const startX = e.clientX;
                 const handleMouseMove = (moveEvent: MouseEvent) => {
@@ -401,7 +407,7 @@ function AppCarousel3D() {
             {/* Navigation arrows - visible on hover */}
             <button
               onClick={goToPrevious}
-              className="absolute left-4 xl:left-6 2xl:left-8 top-1/2 -translate-y-1/2 w-8 h-8 xl:w-10 xl:h-10 2xl:w-12 2xl:h-12 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+              className="absolute left-4 xl:left-6 2xl:left-8 top-1/2 -translate-y-1/2 w-8 h-8 xl:w-10 xl:h-10 2xl:w-12 2xl:h-12 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-30"
               aria-label="Previous image"
             >
               <svg className="w-4 h-4 xl:w-5 xl:h-5 2xl:w-6 2xl:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -411,7 +417,7 @@ function AppCarousel3D() {
             
             <button
               onClick={goToNext}
-              className="absolute right-4 xl:right-6 2xl:right-8 top-1/2 -translate-y-1/2 w-8 h-8 xl:w-10 xl:h-10 2xl:w-12 2xl:h-12 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+              className="absolute right-4 xl:right-6 2xl:right-8 top-1/2 -translate-y-1/2 w-8 h-8 xl:w-10 xl:h-10 2xl:w-12 2xl:h-12 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-30"
               aria-label="Next image"
             >
               <svg className="w-4 h-4 xl:w-5 xl:h-5 2xl:w-6 2xl:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
