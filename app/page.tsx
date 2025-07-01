@@ -857,10 +857,215 @@ function ParallaxOrbs() {
   );
 }
 
+// Componente para cada card con animación
+function FeatureCard({ 
+  title, 
+  description, 
+  icon, 
+  href, 
+  gradient,
+  index = 0,
+  onFAQClick
+}: {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  href: string;
+  gradient: string;
+  index?: number;
+  onFAQClick?: (faqIndex: number) => void;
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleClick = (e: React.MouseEvent) => {
+    // If it's a hash link to FAQ, handle it specially
+    if (href.startsWith('#faq-')) {
+      e.preventDefault();
+      
+      const faqMap: { [key: string]: number } = {
+        '#faq-automations': 0,
+        '#faq-landing': 1,
+        '#faq-shortlinks': 2,
+        '#faq-captions': 3
+      };
+      
+      const faqIndex = faqMap[href];
+      if (faqIndex !== undefined && onFAQClick) {
+        onFAQClick(faqIndex);
+        
+        // Update URL hash
+        window.history.pushState(null, '', href);
+        
+        // Scroll to FAQ
+        setTimeout(() => {
+          const element = document.querySelector(href);
+          if (element) {
+            const yOffset = -100;
+            const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+          }
+        }, 100);
+      }
+    }
+  };
+
+  // Variantes de animación para las cards
+  const cardVariants = {
+    hidden: {
+      opacity: 0,
+      x: index % 2 === 0 ? -100 : 100,
+      y: 50,
+      scale: 0.8,
+      rotate: index % 2 === 0 ? -10 : 10,
+      filter: "blur(10px)"
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      y: 0,
+      scale: 1,
+      rotate: 0,
+      filter: "blur(0px)",
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 20,
+        delay: index * 0.2,
+        duration: 0.8
+      }
+    },
+    hover: {
+      scale: 1.08,
+      y: -20,
+      rotate: 3,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 20,
+        duration: 0.6
+      }
+    }
+  };
+
+  return (
+    <Link href={href} onClick={handleClick}>
+      <div 
+        className="group relative aspect-square rounded-lg overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out min-h-[80px] sm:min-h-[95px] md:min-h-[110px] lg:min-h-[130px] xl:min-h-[160px]"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <motion.div 
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          style={{ width: '100%', height: '100%' }}
+        >
+        {/* Background gradient */}
+        <div className={`absolute inset-0 ${gradient}`} />
+        
+        {/* Simple overlay */}
+        <div className="absolute inset-0 bg-black/25" />
+        
+        {/* Epic shine effect on hover */}
+        <div 
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none overflow-hidden"
+        >
+          <div
+            className={`w-full h-full ${isHovered ? 'animate-shine' : ''}`}
+            style={{
+              background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%)',
+              transform: 'translateX(-100%)'
+            }}
+          />
+        </div>
+        
+        {/* Content centrado para formato cuadrado */}
+        <div className="relative h-full p-2 sm:p-3 md:p-4 lg:p-5 xl:p-6 flex flex-col items-center justify-center text-white z-10 text-center">
+          {/* Ícono centrado arriba */}
+          <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 mb-0.5 sm:mb-1 md:mb-1.5 lg:mb-2">
+            <div className="w-full h-full drop-shadow-lg">
+              {icon}
+            </div>
+          </div>
+          
+          {/* Título centrado */}
+          <h3 className="text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-semibold text-white drop-shadow-lg mb-0.5 sm:mb-1 lg:mb-1.5 leading-none">{title}</h3>
+          
+          {/* Descripción más compacta */}
+          <p className="text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs xl:text-sm text-white/80 drop-shadow-md leading-none px-0.5 sm:px-1">{description}</p>
+        </div>
+        
+        {/* Static decorative elements */}
+        <div className="absolute top-6 right-6 w-6 h-6 rounded-full bg-white/10 z-0" />
+        <div className="absolute bottom-8 left-6 w-4 h-4 rounded-full bg-white/8 z-0" />
+        <div className="absolute top-1/3 left-4 w-2 h-2 rounded-full bg-purple-300/20 z-0" />
+        
+        </motion.div>
+      </div>
+    </Link>
+  );
+}
+
 export default function LandingPage() {
   const { user } = useAuth();
   const [activeFAQs, setActiveFAQs] = useState<number[]>([]);
   const isMobile = useIsMobile();
+
+  // Handler for FAQ clicks from feature cards
+  const handleFAQClick = (faqIndex: number) => {
+    setActiveFAQs(prev => {
+      if (!prev.includes(faqIndex)) {
+        return [...prev, faqIndex];
+      }
+      return prev;
+    });
+  };
+
+  // Handle hash changes to open FAQ items
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      const faqMap: { [key: string]: number } = {
+        '#faq-automations': 0,
+        '#faq-landing': 1,
+        '#faq-shortlinks': 2,
+        '#faq-captions': 3
+      };
+
+      if (hash && faqMap[hash] !== undefined) {
+        const faqIndex = faqMap[hash];
+        
+        // Add the FAQ index to activeFAQs if not already there
+        setActiveFAQs(prev => {
+          if (!prev.includes(faqIndex)) {
+            return [...prev, faqIndex];
+          }
+          return prev;
+        });
+
+        // Smooth scroll to the FAQ item with a longer delay to ensure DOM is ready
+        setTimeout(() => {
+          const element = document.querySelector(hash);
+          if (element) {
+            // Scroll into view with offset for better visibility
+            const yOffset = -100; // Negative value to scroll above the element
+            const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+          }
+        }, 300);
+      }
+    };
+
+    // Check hash on mount and after a delay to ensure React has rendered
+    setTimeout(handleHashChange, 100);
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+    
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
 
   // Optimización para el carousel durante el scroll
   useEffect(() => {
@@ -1755,275 +1960,124 @@ export default function LandingPage() {
 
         {/* Features Section - Las 4 herramientas principales */}
         <section className="relative py-32 overflow-hidden">
-          {/* Fondo con gradient mesh sutil */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-gradient-to-br from-purple-500/5 to-transparent rounded-full blur-[200px]"></div>
-            <div className="absolute bottom-0 right-1/4 w-[800px] h-[800px] bg-gradient-to-br from-orange-500/5 to-transparent rounded-full blur-[200px]"></div>
-            
-            {/* Orbes flotantes para la sección Features */}
-            <motion.div
-              {...{ className: "absolute top-20 left-[10%] w-32 h-32 bg-gradient-to-r from-purple-400/20 to-pink-500/20 rounded-full blur-xl" } as any}
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 2.0, delay: 0.5, ease: "easeOut" }}
-            />
-            
-            <motion.div
-              {...{ className: "absolute top-40 right-[15%] w-24 h-24 bg-gradient-to-r from-orange-400/15 to-red-500/15 rounded-full blur-xl" } as any}
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 2.2, delay: 0.7, ease: "easeOut" }}
-            />
-            
-            <motion.div
-              {...{ className: "absolute bottom-32 left-[25%] w-36 h-36 bg-gradient-to-r from-green-400/15 to-emerald-500/15 rounded-full blur-xl" } as any}
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 2.4, delay: 0.9, ease: "easeOut" }}
-            />
-            
-            <motion.div
-              {...{ className: "absolute bottom-20 right-[30%] w-28 h-28 bg-gradient-to-r from-blue-400/20 to-cyan-500/20 rounded-full blur-xl" } as any}
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 2.1, delay: 1.1, ease: "easeOut" }}
-            />
-            
-            <motion.div
-              {...{ className: "absolute top-[50%] left-[50%] w-20 h-20 bg-gradient-to-r from-yellow-400/20 to-amber-500/20 rounded-full blur-lg" } as any}
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.8, delay: 1.3, ease: "easeOut" }}
-            />
-          </div>
-
           <div className="container mx-auto px-4 relative z-10">
-            <motion.div 
-              {...{ className: "max-w-7xl mx-auto" } as any}
+            {/* Section Title */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-20"
             >
-              {/* Header de la sección */}
-              <motion.div 
-                {...{ className: "text-center mb-20" } as any}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ 
-                  once: true,
-                  amount: 0.3 
-                }}
-                transition={{ 
-                  duration: 0.8, 
-                  ease: "easeOut"
-                }}
-              >
-                <h2 className="text-4xl sm:text-5xl md:text-7xl font-black mb-4 sm:mb-6 leading-tight">
-                  4 herramientas que <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400">multiplican tus ventas</span>
-                </h2>
-                <p className="text-xl sm:text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto">
-                  Todo integrado, todo automático, todo en una plataforma
-                </p>
-              </motion.div>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                4 herramientas que{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                  multiplican tus ventas
+                </span>
+              </h2>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-12">
+                Todo integrado, todo automático, todo en{' '}
+                <span className="text-purple-300 font-medium">una plataforma</span>.
+              </p>
 
-              {/* Grid de features 2x2 */}
-              <div className="grid grid-cols-2 gap-4 sm:gap-4 md:gap-6 max-w-3xl mx-auto features-grid">
-                
-                {/* Feature 1: DM Automation */}
-                <motion.div
-                  {...{ className: "relative group feature-card" } as any}
+              {/* Stats */}
+              <div className="flex gap-8 md:gap-16 justify-center">
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="text-center"
                 >
-                  <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden   bg-gradient-to-br from-black via-purple-950 to-black shadow-2xl  ring-4 ring-purple-500/40  border border-purple-400/20">
-                    {/* Epic glow effect */}
-                    <div className="absolute inset-0 opacity-0 ">
-                      <div className="absolute inset-[-20px] bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 blur-xl opacity-60 " />
-                    </div>
-                    
-                    {/* Animated gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 " />
-                    
-                    {/* Decorative circles with animation */}
-                    <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-purple-500/30  " />
-                    <div className="absolute bottom-12 left-6 w-10 h-10 rounded-full bg-purple-800/40  " />
-                    <div className="absolute top-1/3 right-1/4 w-3 h-3 rounded-full bg-yellow-400/50 " />
-                    <div className="absolute bottom-1/4 left-1/3 w-2 h-2 rounded-full bg-yellow-400/40  animation-delay-200" />
-                    
-                    {/* Content */}
-                    <div className="relative h-full p-4 sm:p-6 flex flex-col items-center text-white z-10 overflow-hidden">
-                      {/* Background Icon with blur */}
-                      <div className="absolute inset-0 flex items-center justify-center opacity-40  z-0">
-                        <div className="relative">
-                          <div className="absolute inset-0 blur-xl">
-                            <BoltIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-300" />
-                          </div>
-                          <BoltIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-400 drop-shadow-[0_0_40px_rgba(250,204,21,0.8)] relative z-10 " />
-                        </div>
-                      </div>
-                      
-                      {/* Title and description */}
-                      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-center z-10 px-4">
-                        <h3 className="text-lg sm:text-xl font-black mb-2 bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(255,255,255,1)] filter brightness-110 tracking-tight">AUTOMATIZACIONES</h3>
-                        <p className="text-sm sm:text-base text-white leading-relaxed font-semibold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
-                          Respuestas automáticas inteligentes para Instagram
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">4+</div>
+                  <div className="text-sm text-gray-400">Herramientas</div>
                 </motion.div>
-
-                {/* Feature 2: Captions */}
-                <motion.div
-                  {...{ className: "relative group feature-card" } as any}
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  className="text-center"
                 >
-                  <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden   bg-gradient-to-br from-black via-teal-950 to-black shadow-2xl  ring-4 ring-teal-500/40  border border-teal-400/20">
-                    {/* Epic glow effect */}
-                    <div className="absolute inset-0 opacity-0 ">
-                      <div className="absolute inset-[-20px] bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-600 blur-xl opacity-60 " />
-                    </div>
-                    
-                    {/* Animated gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 " />
-                    
-                    {/* Decorative circles with animation */}
-                    <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-teal-500/30  " />
-                    <div className="absolute bottom-12 left-6 w-10 h-10 rounded-full bg-teal-800/40  " />
-                    <div className="absolute top-1/3 right-1/4 w-3 h-3 rounded-full bg-yellow-400/50 " />
-                    <div className="absolute bottom-1/4 left-1/3 w-2 h-2 rounded-full bg-yellow-400/40  animation-delay-200" />
-                    
-                    {/* Content */}
-                    <div className="relative h-full p-4 sm:p-6 flex flex-col items-center text-white z-10 overflow-hidden">
-                      {/* Background Icon with blur */}
-                      <div className="absolute inset-0 flex items-center justify-center opacity-40  z-0">
-                        <div className="relative">
-                          <div className="absolute inset-0 blur-xl">
-                            <DocumentTextIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-300" />
-                          </div>
-                          <DocumentTextIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-400 drop-shadow-[0_0_40px_rgba(250,204,21,0.8)] relative z-10 " />
-                        </div>
-                      </div>
-                      
-                      {/* Title and description */}
-                      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-center z-10 px-4">
-                        <h3 className="text-lg sm:text-xl font-black mb-2 bg-gradient-to-r from-white via-teal-200 to-emerald-400 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(255,255,255,1)] filter brightness-110 tracking-tight">AI CAPTIONS</h3>
-                        <p className="text-sm sm:text-base text-white leading-relaxed font-semibold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
-                          Genera las descripciones de tus videos con IA
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">∞</div>
+                  <div className="text-sm text-gray-400">Posibilidades</div>
                 </motion.div>
-
-                {/* Feature 3: URL Shortener */}
-                <motion.div
-                  {...{ className: "relative group feature-card" } as any}
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="text-center"
                 >
-                  <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden   bg-gradient-to-br from-black via-red-950 to-black shadow-2xl  ring-4 ring-orange-500/40  border border-orange-400/20">
-                    {/* Epic glow effect */}
-                    <div className="absolute inset-0 opacity-0 ">
-                      <div className="absolute inset-[-20px] bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 blur-xl opacity-60 " />
-                    </div>
-                    
-                    {/* Animated gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 " />
-                    
-                    {/* Decorative circles with animation */}
-                    <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-orange-500/30  " />
-                    <div className="absolute bottom-12 left-6 w-10 h-10 rounded-full bg-red-800/40  " />
-                    <div className="absolute top-1/3 right-1/4 w-3 h-3 rounded-full bg-yellow-400/50 " />
-                    <div className="absolute bottom-1/4 left-1/3 w-2 h-2 rounded-full bg-yellow-400/40  animation-delay-200" />
-                    
-                    {/* Content */}
-                    <div className="relative h-full p-4 sm:p-6 flex flex-col items-center text-white z-10 overflow-hidden">
-                      {/* Background Icon with blur */}
-                      <div className="absolute inset-0 flex items-center justify-center opacity-40  z-0">
-                        <div className="relative">
-                          <div className="absolute inset-0 blur-xl">
-                            <LinkIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-300" />
-                          </div>
-                          <LinkIcon className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-400 drop-shadow-[0_0_40px_rgba(250,204,21,0.8)] relative z-10 " />
-                        </div>
-                      </div>
-                      
-                      {/* Title and description */}
-                      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-center z-10 px-4">
-                        <h3 className="text-lg sm:text-xl font-black mb-2 bg-gradient-to-r from-white via-orange-200 to-red-400 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(255,255,255,1)] filter brightness-110 tracking-tight">URLs CORTAS</h3>
-                        <p className="text-sm sm:text-base text-white leading-relaxed font-semibold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
-                          Acorta enlaces y analiza clics en tiempo real
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Feature 4: Mi Landing */}
-                <motion.div
-                  {...{ className: "relative group feature-card" } as any}
-                >
-                  <div className="group relative aspect-square rounded-[2.5rem] overflow-hidden   bg-gradient-to-br from-black via-indigo-950 to-black shadow-2xl  ring-4 ring-blue-500/40  border border-blue-400/20">
-                    {/* Epic glow effect */}
-                    <div className="absolute inset-0 opacity-0 ">
-                      <div className="absolute inset-[-20px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 blur-xl opacity-60 " />
-                    </div>
-                    
-                    {/* Animated gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 " />
-                    
-                    {/* Decorative circles with animation */}
-                    <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-blue-500/30  " />
-                    <div className="absolute bottom-12 left-6 w-10 h-10 rounded-full bg-indigo-800/40  " />
-                    <div className="absolute top-1/3 right-1/4 w-3 h-3 rounded-full bg-yellow-400/50 " />
-                    <div className="absolute bottom-1/4 left-1/3 w-2 h-2 rounded-full bg-yellow-400/40  animation-delay-200" />
-                    
-                    {/* Content */}
-                    <div className="relative h-full p-4 sm:p-6 flex flex-col items-center text-white z-10 overflow-hidden">
-                      {/* Background Icon with blur */}
-                      <div className="absolute inset-0 flex items-center justify-center opacity-40  z-0">
-                        <div className="relative">
-                          <div className="absolute inset-0 blur-xl">
-                            <Settings className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-300" />
-                          </div>
-                          <Settings className="w-32 h-32 sm:w-40 sm:h-40 text-yellow-400 drop-shadow-[0_0_40px_rgba(250,204,21,0.8)] relative z-10 " />
-                        </div>
-                      </div>
-                      
-                      {/* Title and description */}
-                      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center text-center z-10 px-4">
-                        <h3 className="text-lg sm:text-xl font-black mb-2 bg-gradient-to-r from-white via-blue-200 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(255,255,255,1)] filter brightness-110 tracking-tight">MI LANDING</h3>
-                        <p className="text-sm sm:text-base text-white leading-relaxed font-semibold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
-                          Crea tu página personal con diseño único
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">24/7</div>
+                  <div className="text-sm text-gray-400">Disponible</div>
                 </motion.div>
               </div>
+            </motion.div>
 
-              {/* CTA al final de features */}
-              <motion.div 
-                {...{ className: "text-center mt-20" } as any}
-                initial={{ opacity: 0, y: 30 }}
+            {/* Feature Cards Grid */}
+            <div className="flex justify-center">
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.6 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
               >
-                <Link href="/register">
-                  <motion.div
-                    {...{ className: "inline-block relative group" } as any}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {/* Glow effect */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 rounded-full blur-md opacity-70 group-hover:opacity-100 transition duration-300 "></div>
-                    <div className="absolute -inset-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-full blur-xl opacity-40 group-hover:opacity-60 transition duration-500"></div>
-                    
-                    <Button size="lg" className="relative h-12 md:h-16 px-4 sm:px-6 md:px-12 text-sm sm:text-base md:text-xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 hover:from-purple-500 hover:via-pink-500 hover:to-orange-500 transition-all duration-300 shadow-2xl">
-                      Activa todas las herramientas GRATIS
-                      <ArrowRightIcon className="ml-2 md:ml-3 h-4 md:h-6 w-4 md:w-6 group-hover:translate-x-2 transition-transform" />
-                    </Button>
-                  </motion.div>
-                </Link>
-                <p className="text-sm text-gray-400 mt-4">
-                  Sin tarjeta de crédito • Cancela cuando quieras
-                </p>
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-6 lg:gap-8 w-full max-w-[320px] sm:max-w-[400px] md:max-w-[600px] lg:max-w-[800px]">
+                  {[
+                    {
+                      title: 'Automatizaciones',
+                      description: 'Respuestas automáticas inteligentes para Instagram',
+                      icon: (
+                        <Image 
+                          src="/images/icons/automation-icon.png"
+                          alt="Automation Icon"
+                          fill
+                          className="object-contain"
+                        />
+                      ),
+                      href: "#faq-automations",
+                      gradient: "bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800"
+                    },
+                    {
+                      title: 'Captions',
+                      description: 'Genera las descripciones de tus videos con IA',
+                      icon: (
+                        <Image 
+                          src="/images/icons/caption-generator-icon.png"
+                          alt="Caption Generator Icon"
+                          fill
+                          className="object-contain"
+                        />
+                      ),
+                      href: "#faq-captions", 
+                      gradient: "bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-700"
+                    },
+                    {
+                      title: 'URLs Cortas',
+                      description: 'Acorta enlaces y analiza clics en tiempo real',
+                      icon: <LinkIcon className="w-full h-full text-white" style={{ color: '#d08216' }} />,
+                      href: "#faq-shortlinks",
+                      gradient: "bg-gradient-to-br from-orange-500 via-red-500 to-pink-600"
+                    },
+                    {
+                      title: 'Mi Landing',
+                      description: 'Crea tu página personal con diseño único',
+                      icon: <Settings className="w-full h-full text-white" style={{ color: '#d08216' }} />,
+                      href: "#faq-landing",
+                      gradient: "bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-700"
+                    }
+                  ].map((feature, index) => (
+                    <FeatureCard
+                      key={feature.title}
+                      {...feature}
+                      index={index}
+                      onFAQClick={handleFAQClick}
+                    />
+                  ))}
+                </div>
               </motion.div>
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -3397,6 +3451,13 @@ export default function LandingPage() {
               ].map((faq, index) => (
                 <motion.div
                   key={index}
+                  id={
+                    index === 0 ? 'faq-automations' :
+                    index === 1 ? 'faq-landing' :
+                    index === 2 ? 'faq-shortlinks' :
+                    index === 3 ? 'faq-captions' :
+                    undefined
+                  }
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
