@@ -130,7 +130,26 @@ export default function ProfilePage() {
               <div>
                 <h3 className="text-lg font-medium text-white mb-3">{t('instagram')}</h3>
                 {(!user?.isInstagramLinked || !user?.isInstagramTokenValid) ? (
-                  <InstagramConnect reconnect={Boolean(user?.isInstagramLinked && !user?.isInstagramTokenValid)} />
+                  <div className="mt-4 border border-indigo-900/50 rounded-lg p-4 bg-[#1B132E]">
+                    <InstagramConnect reconnect={Boolean(user?.isInstagramLinked && !user?.isInstagramTokenValid)} />
+                    {user?.isInstagramLinked && !user?.isInstagramTokenValid && user?.instagram_username && (
+                      <div className="flex items-center justify-center gap-3 mt-4">
+                        <FaInstagram className="text-pink-500 w-6 h-6" />
+                        {user.instagram_profile_pic_url && (
+                          <img
+                            src={user.instagram_profile_pic_url}
+                            alt={user.instagram_username}
+                            className="w-10 h-10 rounded-full object-cover border-2 border-pink-500"
+                            onError={(e) => {
+                              // Si la imagen falla, simplemente ocultarla
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        )}
+                        <span className="text-white font-medium">{user.instagram_username}</span>
+                      </div>
+                    )}
+                  </div>
                 ) : (
                   user.instagram_username && (
                     <div className="mt-4 border border-indigo-900/50 rounded-lg p-4 bg-[#1c1033]">
@@ -142,6 +161,10 @@ export default function ProfilePage() {
                             src={user.instagram_profile_pic_url}
                             alt={user.instagram_username}
                             className="w-8 h-8 rounded-full object-cover border border-pink-500"
+                            onError={(e) => {
+                              // Si la imagen falla, simplemente ocultarla
+                              e.currentTarget.style.display = 'none';
+                            }}
                           />
                         )}
                         <span className="text-white font-medium">{user.instagram_username}</span>

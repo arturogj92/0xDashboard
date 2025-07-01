@@ -859,7 +859,7 @@ function ParallaxOrbs() {
 
 export default function LandingPage() {
   const { user } = useAuth();
-  const [activeFAQ, setActiveFAQ] = useState<number | null>(null);
+  const [activeFAQs, setActiveFAQs] = useState<number[]>([]);
   const isMobile = useIsMobile();
 
   // Optimización para el carousel durante el scroll
@@ -2956,13 +2956,13 @@ export default function LandingPage() {
                         className="mx-auto"
                       />
                     </div>
-                    <h3 className="text-3xl font-black mb-2 bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent">Business</h3>
+                    <h3 className="text-3xl font-black mb-2 bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent">Creator Ultra</h3>
                     <p className="text-gray-300 mb-6 font-medium">Para equipos ambiciosos</p>
                     <div className="flex items-baseline justify-center gap-2">
-                      <span className="text-6xl font-black bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent">€30</span>
+                      <span className="text-6xl font-black bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent">€40</span>
                       <span className="text-gray-400 text-xl">/mes</span>
                     </div>
-                    <p className="text-sm text-green-400 mt-2 font-medium">Ahorra €350/año pagando anual</p>
+                    <p className="text-sm text-green-400 mt-2 font-medium">Ahorra €480/año pagando anual</p>
                   </div>
 
                   <ul className="space-y-4 mb-8 flex-grow">
@@ -3016,11 +3016,11 @@ export default function LandingPage() {
                     </li>
                   </ul>
 
-                  <Link href="/contact">
+                  <Link href="/register">
                     <Button 
                       className="w-full h-14 text-lg font-bold bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 border-2 border-transparent hover:border-indigo-400/50"
                     >
-                      Contactar ventas
+                      Empezar ahora
                       <ArrowRightIcon className="ml-2 h-5 w-5" />
                     </Button>
                   </Link>
@@ -3076,190 +3076,9 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* How it Works Section */}
-        <section className="relative py-32 overflow-hidden bg-gradient-to-b from-transparent via-purple-500/5 to-transparent">
-          <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              {...{ className: "text-center mb-20" } as any}
-            >
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-                Empieza en <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">3 simples pasos</span>
-              </h2>
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                Configura tu automatización en minutos y empieza a vender mientras duermes
-              </p>
-            </motion.div>
-
-            {/* Steps */}
-            <div className="max-w-5xl mx-auto">
-              <div className="space-y-24">
-                {/* Step 1 */}
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8 }}
-                  {...{ className: "grid md:grid-cols-2 gap-8 items-center" } as any}
-                >
-                  <div className="order-2 md:order-1">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-orange-400 to-purple-400 text-white font-bold text-xl mb-6">
-                      1
-                    </div>
-                    <h3 className="text-3xl font-bold mb-4">Conecta tu Instagram</h3>
-                    <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                      Conecta tu cuenta Business de Instagram en un click. Totalmente seguro con la API oficial de Meta.
-                    </p>
-                    <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-6">
-                      <p className="text-sm text-blue-300 mb-2">
-                        <strong>Nota:</strong> Para automatizaciones necesitas Facebook vinculado a Instagram.
-                      </p>
-                      <p className="text-sm text-gray-400">
-                        Sin automatizaciones, igualmente podrás usar: AI Captions, URL Shorts y tu Landing Page personalizada.
-                      </p>
-                    </div>
-                    <ul className="space-y-3">
-                      <li className="flex items-center gap-3">
-                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
-                        <span className="text-gray-300">Conexión segura con OAuth</span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
-                        <span className="text-gray-300">Compatible con cuentas Business y Creator</span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
-                        <span className="text-gray-300">Desconecta cuando quieras</span>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="order-1 md:order-2">
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-purple-400/20 blur-3xl" />
-                      <div className="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-                        <div className="aspect-video bg-gradient-to-br from-purple-900/20 to-orange-900/20 rounded-xl flex items-center justify-center">
-                          <div className="text-6xl">🔗</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Step 2 */}
-                <motion.div
-                  initial={{ opacity: 0, x: 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8 }}
-                  {...{ className: "grid md:grid-cols-2 gap-8 items-center" } as any}
-                >
-                  <div className="order-2">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-orange-400 to-purple-400 text-white font-bold text-xl mb-6">
-                      2
-                    </div>
-                    <h3 className="text-3xl font-bold mb-4">Configura tus automatizaciones</h3>
-                    <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                      Crea flujos de respuesta personalizados. Define palabras clave, respuestas automáticas y acciones. Tu IA aprende de tu estilo.
-                    </p>
-                    <ul className="space-y-3">
-                      <li className="flex items-center gap-3">
-                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
-                        <span className="text-gray-300">Editor visual drag & drop</span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
-                        <span className="text-gray-300">Plantillas prediseñadas</span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
-                        <span className="text-gray-300">IA que aprende tu tono</span>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="order-1">
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-r from-purple-400/20 to-orange-400/20 blur-3xl" />
-                      <div className="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-                        <div className="aspect-video bg-gradient-to-br from-orange-900/20 to-purple-900/20 rounded-xl flex items-center justify-center">
-                          <div className="text-6xl">⚡</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Step 3 */}
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8 }}
-                  {...{ className: "grid md:grid-cols-2 gap-8 items-center" } as any}
-                >
-                  <div className="order-2 md:order-1">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-orange-400 to-purple-400 text-white font-bold text-xl mb-6">
-                      3
-                    </div>
-                    <h3 className="text-3xl font-bold mb-4">Relájate y vende más</h3>
-                    <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                      Tu asistente IA trabaja 24/7 respondiendo DMs, calificando leads y cerrando ventas. Tú solo enfócate en crear contenido increíble.
-                    </p>
-                    <ul className="space-y-3">
-                      <li className="flex items-center gap-3">
-                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
-                        <span className="text-gray-300">Respuestas instantáneas 24/7</span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
-                        <span className="text-gray-300">Analytics en tiempo real</span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <CheckIcon className="w-5 h-5 text-green-400 flex-shrink-0" />
-                        <span className="text-gray-300">Notificaciones de ventas</span>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="order-1 md:order-2">
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-teal-400/20 blur-3xl" />
-                      <div className="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-                        <div className="aspect-video bg-gradient-to-br from-green-900/20 to-teal-900/20 rounded-xl flex items-center justify-center">
-                          <div className="text-6xl">🚀</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-
-              {/* CTA */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                {...{ className: "text-center mt-20" } as any}
-              >
-                <Link href="/register">
-                  <Button 
-                    size="lg" 
-                    className="h-14 px-8 text-lg bg-gradient-to-r from-orange-500 to-purple-500 hover:from-orange-400 hover:to-purple-400 text-white font-bold shadow-2xl hover:shadow-purple-500/25 transition-all duration-300"
-                  >
-                    Empieza ahora - Es GRATIS
-                    <ArrowRightIcon className="ml-3 h-6 w-6" />
-                  </Button>
-                </Link>
-                <p className="text-gray-400 text-sm mt-4">No necesitas tarjeta de crédito</p>
-              </motion.div>
-            </div>
-          </div>
-        </section>
 
         {/* FAQ Section */}
-        <section className="relative py-32 overflow-hidden">
+        <section className="relative py-8 overflow-hidden">
           <div className="container mx-auto px-4">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -3281,27 +3100,299 @@ export default function LandingPage() {
               {[
                 {
                   question: "¿Cómo funciona la automatización de DMs?",
-                  answer: "Nuestra IA analiza los mensajes que recibes y responde automáticamente basándose en tus configuraciones personalizadas. Puedes crear flujos de respuesta, palabras clave y respuestas predefinidas. Todo 100% seguro y sin violar las políticas de Instagram."
+                  answer: (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div className="bg-gradient-to-r from-purple-500/10 to-transparent p-4 rounded-xl border border-purple-500/20">
+                          <div className="text-purple-400 font-bold mb-2 flex items-center gap-2">
+                            <span className="text-2xl">1️⃣</span> Configura
+                          </div>
+                          <p className="text-sm text-gray-300">Define palabras clave y respuestas personalizadas</p>
+                        </div>
+                        <div className="bg-gradient-to-r from-orange-500/10 to-transparent p-4 rounded-xl border border-orange-500/20">
+                          <div className="text-orange-400 font-bold mb-2 flex items-center gap-2">
+                            <span className="text-2xl">2️⃣</span> Relájate
+                          </div>
+                          <p className="text-sm text-gray-300">La IA analiza y responde 24/7 automáticamente</p>
+                        </div>
+                        <div className="bg-gradient-to-r from-green-500/10 to-transparent p-4 rounded-xl border border-green-500/20">
+                          <div className="text-green-400 font-bold mb-2 flex items-center gap-2">
+                            <span className="text-2xl">3️⃣</span> Convierte
+                          </div>
+                          <p className="text-sm text-gray-300">Transforma seguidores en clientes mientras duermes</p>
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-3">
+                        <span className="inline-flex items-center gap-2 text-sm bg-green-500/10 text-green-400 px-3 py-1 rounded-full">
+                          <CheckIcon className="w-3 h-3" /> 100% seguro
+                        </span>
+                        <span className="inline-flex items-center gap-2 text-sm bg-green-500/10 text-green-400 px-3 py-1 rounded-full">
+                          <CheckIcon className="w-3 h-3" /> API oficial
+                        </span>
+                        <span className="inline-flex items-center gap-2 text-sm bg-green-500/10 text-green-400 px-3 py-1 rounded-full">
+                          <CheckIcon className="w-3 h-3" /> Sin spam
+                        </span>
+                      </div>
+                    </div>
+                  )
                 },
                 {
-                  question: "¿Es seguro para mi cuenta de Instagram?",
-                  answer: "Totalmente seguro. Usamos la API oficial de Instagram Business y cumplimos todas sus políticas. No hacemos spam ni acciones masivas. Tu cuenta está protegida y mantienes el control total sobre todas las automatizaciones."
-                },
-                {
-                  question: "¿Puedo personalizar mi landing page?",
-                  answer: "¡Por supuesto! Tienes control total sobre el diseño, colores, contenido y estructura. Añade tus links, productos, servicios, testimonios y más. Es tu espacio digital 100% personalizable sin necesidad de saber programar."
-                },
-                {
-                  question: "¿Qué incluye el plan gratuito?",
-                  answer: "El plan gratuito incluye: automatización básica de DMs (hasta 50/mes), 1 landing page personalizada, 5 shortlinks con analytics básico y acceso al generador de captions con IA (10/mes). Perfecto para empezar y probar la plataforma."
+                  question: "¿Cómo funciona tu landing page?",
+                  answer: (
+                    <div className="space-y-4">
+                      <p className="text-gray-300 mb-4">Tu hub central profesional en minutos:</p>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="flex items-start gap-3 bg-gradient-to-r from-purple-500/5 to-transparent p-3 rounded-lg">
+                          <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+                            <CheckIcon className="w-4 h-4 text-purple-400" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-white">Diseño Pro</p>
+                            <p className="text-sm text-gray-400">Templates premium personalizables</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 bg-gradient-to-r from-orange-500/5 to-transparent p-3 rounded-lg">
+                          <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center flex-shrink-0">
+                            <CheckIcon className="w-4 h-4 text-orange-400" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-white">Multi-links</p>
+                            <p className="text-sm text-gray-400">Todos tus enlaces en un lugar</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 bg-gradient-to-r from-green-500/5 to-transparent p-3 rounded-lg">
+                          <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                            <CheckIcon className="w-4 h-4 text-green-400" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-white">Analytics</p>
+                            <p className="text-sm text-gray-400">Mide visitas y conversiones</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 bg-gradient-to-r from-pink-500/5 to-transparent p-3 rounded-lg">
+                          <div className="w-8 h-8 rounded-full bg-pink-500/20 flex items-center justify-center flex-shrink-0">
+                            <CheckIcon className="w-4 h-4 text-pink-400" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-white">Tiempo real</p>
+                            <p className="text-sm text-gray-400">Cambios instantáneos</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-4 space-y-3">
+                        <div className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 p-4 rounded-xl border border-blue-500/20">
+                          <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                              <LinkIcon className="w-4 h-4 text-blue-400" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-white mb-1">Dominio personalizado</p>
+                              <p className="text-sm text-gray-400">Conecta tu propio dominio (tuweb.com) para potenciar tu marca personal</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex gap-3">
+                          <div className="flex-1 bg-gradient-to-r from-yellow-500/5 to-transparent p-3 rounded-lg">
+                            <p className="text-sm font-medium text-yellow-400 mb-1">+50 temas</p>
+                            <p className="text-xs text-gray-400">Configurables al 100%</p>
+                          </div>
+                          <div className="flex-1 bg-gradient-to-r from-cyan-500/5 to-transparent p-3 rounded-lg">
+                            <p className="text-sm font-medium text-cyan-400 mb-1">Editor visual</p>
+                            <p className="text-xs text-gray-400">Drag & drop potente</p>
+                          </div>
+                          <div className="flex-1 bg-gradient-to-r from-emerald-500/5 to-transparent p-3 rounded-lg">
+                            <p className="text-sm font-medium text-emerald-400 mb-1">SEO optimizado</p>
+                            <p className="text-xs text-gray-400">Ranking en Google</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-gradient-to-r from-purple-500/10 to-orange-500/10 p-4 rounded-xl border border-white/10">
+                        <p className="text-sm text-gray-300">
+                          <span className="text-white font-bold">💡 Pro tip:</span> Actualiza tu bio de Instagram con tu link personalizado y observa cómo se multiplican tus conversiones
+                        </p>
+                      </div>
+                    </div>
+                  )
                 },
                 {
                   question: "¿Cómo funcionan los shortlinks?",
-                  answer: "Crea enlaces cortos personalizados para trackear todos tus clicks. Obtén analytics detallados: ubicación, dispositivo, hora, fuente de tráfico y más. Perfecto para medir el ROI de tus campañas y optimizar tu estrategia."
+                  answer: (
+                    <div className="space-y-4">
+                      <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 p-6 rounded-xl border border-white/10">
+                        <div className="flex items-center justify-between mb-4">
+                          <div>
+                            <p className="text-sm text-gray-400">Link original:</p>
+                            <p className="text-xs text-gray-500 font-mono">https://misitio.com/productos/oferta-especial-2024</p>
+                          </div>
+                          <ArrowRightIcon className="w-6 h-6 text-purple-400" />
+                          <div>
+                            <p className="text-sm text-green-400">Tu shortlink:</p>
+                            <p className="text-lg font-bold text-white font-mono">0x.link/oferta</p>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-gray-300 font-medium mb-3">Analytics en tiempo real:</p>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="text-center p-3 bg-black/40 rounded-lg border border-white/10">
+                          <p className="text-2xl font-bold text-orange-400">1.2K</p>
+                          <p className="text-xs text-gray-400">Clicks totales</p>
+                        </div>
+                        <div className="text-center p-3 bg-black/40 rounded-lg border border-white/10">
+                          <p className="text-2xl font-bold text-purple-400">23%</p>
+                          <p className="text-xs text-gray-400">CTR</p>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                },
+                {
+                  question: "¿Cómo funcionan los AI Captions?",
+                  answer: (
+                    <div className="space-y-4">
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-orange-500/20 blur-2xl" />
+                        <div className="relative bg-black/40 backdrop-blur-sm border border-white/10 rounded-xl p-6">
+                          <div className="flex items-start gap-4 mb-4">
+                            <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-500 to-orange-500 flex items-center justify-center">
+                              <SparklesIcon className="w-6 h-6 text-white" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium text-white mb-1">IA entrenada con millones de posts virales</p>
+                              <p className="text-sm text-gray-400">Genera captions que enganchan y convierten</p>
+                            </div>
+                          </div>
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center">
+                                <CheckIcon className="w-3 h-3 text-green-400" />
+                              </div>
+                              <p className="text-sm text-gray-300">Analiza tu estilo y tono únicos</p>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center">
+                                <CheckIcon className="w-3 h-3 text-green-400" />
+                              </div>
+                              <p className="text-sm text-gray-300">Sugiere hashtags trending relevantes</p>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center">
+                                <CheckIcon className="w-3 h-3 text-green-400" />
+                              </div>
+                              <p className="text-sm text-gray-300">Optimiza para máximo engagement</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 text-center">
+                        <div className="bg-gradient-to-r from-orange-500/10 to-transparent p-3 rounded-lg">
+                          <p className="text-2xl font-bold text-orange-400">3</p>
+                          <p className="text-xs text-gray-400">Plataformas</p>
+                        </div>
+                        <div className="bg-gradient-to-r from-purple-500/10 to-transparent p-3 rounded-lg">
+                          <p className="text-2xl font-bold text-purple-400">200MB</p>
+                          <p className="text-xs text-gray-400">Máx. video</p>
+                        </div>
+                        <div className="bg-gradient-to-r from-green-500/10 to-transparent p-3 rounded-lg">
+                          <p className="text-2xl font-bold text-green-400">100%</p>
+                          <p className="text-xs text-gray-400">Tu estilo</p>
+                        </div>
+                      </div>
+                      <div className="mt-4 p-4 bg-gradient-to-r from-indigo-500/10 to-blue-500/10 rounded-xl border border-indigo-500/20">
+                        <p className="text-sm font-medium text-indigo-400 mb-2">Funciones avanzadas:</p>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div className="flex items-center gap-2">
+                            <CheckIcon className="w-3 h-3 text-green-400" />
+                            <span className="text-gray-300">Transcripción automática de videos</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <CheckIcon className="w-3 h-3 text-green-400" />
+                            <span className="text-gray-300">Múltiples longitudes de texto</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <CheckIcon className="w-3 h-3 text-green-400" />
+                            <span className="text-gray-300">Threads de Twitter optimizados</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <CheckIcon className="w-3 h-3 text-green-400" />
+                            <span className="text-gray-300">Añade links y menciones</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                },
+                {
+                  question: "¿Es seguro para mi cuenta de Instagram?",
+                  answer: (
+                    <div className="space-y-4">
+                      <div className="bg-gradient-to-r from-green-500/10 to-green-600/10 p-6 rounded-xl border border-green-500/20">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
+                            <CheckIcon className="w-6 h-6 text-green-400" />
+                          </div>
+                          <div>
+                            <p className="text-lg font-bold text-white">100% Seguro y Legal</p>
+                            <p className="text-sm text-gray-400">Certificado por Meta Business Partners</p>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div className="flex items-start gap-2">
+                            <CheckIcon className="w-4 h-4 text-green-400 mt-0.5" />
+                            <div>
+                              <p className="text-sm font-medium text-white">API Oficial de Instagram</p>
+                              <p className="text-xs text-gray-400">Sin bots ni scripts dudosos</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <CheckIcon className="w-4 h-4 text-green-400 mt-0.5" />
+                            <div>
+                              <p className="text-sm font-medium text-white">Encriptación SSL</p>
+                              <p className="text-xs text-gray-400">Tus datos siempre protegidos</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <CheckIcon className="w-4 h-4 text-green-400 mt-0.5" />
+                            <div>
+                              <p className="text-sm font-medium text-white">GDPR Compliant</p>
+                              <p className="text-xs text-gray-400">Cumplimos normativas EU</p>
+                            </div>
+                          </div>
+                          <div className="flex items-start gap-2">
+                            <CheckIcon className="w-4 h-4 text-green-400 mt-0.5" />
+                            <div>
+                              <p className="text-sm font-medium text-white">Sin acceso a contraseña</p>
+                              <p className="text-xs text-gray-400">OAuth seguro de Instagram</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-400 italic text-center">
+                        Más de 50,000 creators confían en nosotros cada día
+                      </p>
+                    </div>
+                  )
                 },
                 {
                   question: "¿Puedo cancelar en cualquier momento?",
-                  answer: "Sí, sin compromisos ni permanencia. Puedes cancelar tu suscripción cuando quieras desde tu panel de control. Si cancelas, mantienes el acceso hasta el final del período pagado."
+                  answer: (
+                    <div className="space-y-4">
+                      <div className="text-center p-6 bg-gradient-to-r from-green-500/10 to-transparent rounded-xl border border-green-500/20">
+                        <p className="text-4xl mb-3">🎯</p>
+                        <p className="text-xl font-bold text-white mb-2">Sin compromisos ni letra pequeña</p>
+                        <p className="text-gray-400">Cancela cuando quieras con 1 click</p>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+                        <div className="p-6 bg-black/40 rounded-lg border border-white/10">
+                          <p className="font-bold text-white text-lg mb-2">Sin penalizaciones</p>
+                          <p className="text-sm text-gray-400">0€ por cancelar</p>
+                        </div>
+                        <div className="p-6 bg-black/40 rounded-lg border border-white/10">
+                          <p className="font-bold text-white text-lg mb-2">Acceso garantizado</p>
+                          <p className="text-sm text-gray-400">Hasta fin del período</p>
+                        </div>
+                      </div>
+                    </div>
+                  )
                 }
               ].map((faq, index) => (
                 <motion.div
@@ -3312,19 +3403,23 @@ export default function LandingPage() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
                   <button
-                    onClick={() => setActiveFAQ(activeFAQ === index ? null : index)}
+                    onClick={() => setActiveFAQs(prev => 
+                      prev.includes(index) 
+                        ? prev.filter(i => i !== index)
+                        : [...prev, index]
+                    )}
                     className="w-full text-left bg-black/40 backdrop-blur-sm border border-white/10 rounded-xl p-6 hover:border-white/20 transition-all duration-300"
                   >
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg md:text-xl font-semibold pr-4">{faq.question}</h3>
                       <ChevronDownIcon 
                         className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
-                          activeFAQ === index ? 'rotate-180' : ''
+                          activeFAQs.includes(index) ? 'rotate-180' : ''
                         }`} 
                       />
                     </div>
                     <AnimatePresence>
-                      {activeFAQ === index && (
+                      {activeFAQs.includes(index) && (
                         <motion.div
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
@@ -3332,9 +3427,13 @@ export default function LandingPage() {
                           transition={{ duration: 0.3 }}
                           className="overflow-hidden"
                         >
-                          <p className="text-gray-300 mt-4 leading-relaxed">
-                            {faq.answer}
-                          </p>
+                          <div className="mt-4">
+                            {typeof faq.answer === 'string' ? (
+                              <p className="text-gray-300 leading-relaxed">{faq.answer}</p>
+                            ) : (
+                              faq.answer
+                            )}
+                          </div>
                         </motion.div>
                       )}
                     </AnimatePresence>

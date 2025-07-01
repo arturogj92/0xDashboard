@@ -427,13 +427,13 @@ export default function PricingSection() {
                       />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-bold mb-2">Business</h3>
+                  <h3 className="text-2xl font-bold mb-2">Creator Ultra</h3>
                   <p className="text-gray-400 mb-6">Para agencias y equipos</p>
                   <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-5xl font-bold">€30</span>
+                    <span className="text-5xl font-bold">€40</span>
                     <span className="text-gray-400">/mes</span>
                   </div>
-                  <p className="text-sm text-green-400 mt-2">Ahorra €350/año pagando anual</p>
+                  <p className="text-sm text-green-400 mt-2">Ahorra €480/año pagando anual</p>
                 </div>
 
                 <ul className="space-y-4">
@@ -473,7 +473,7 @@ export default function PricingSection() {
               </div>
 
               <div className="absolute bottom-8 left-8 right-8">
-                <Link href="/contact">
+                <Link href="/register">
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -481,7 +481,7 @@ export default function PricingSection() {
                     <Button 
                       className="w-full h-12 text-base font-bold bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white transition-all duration-300"
                     >
-                      Contactar ventas
+                      Empezar ahora
                       <ArrowRightIcon className="ml-2 h-5 w-5" />
                     </Button>
                   </motion.div>

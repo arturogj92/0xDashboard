@@ -1,0 +1,100 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#0a0a0a"/>
+  
+  <!-- Left side - Sin Creator0x -->
+  <g id="left-side">
+    <!-- Background gradient -->
+    <defs>
+      <linearGradient id="chaosGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#1a1a1a;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#0f0f0f;stop-opacity:1" />
+      </linearGradient>
+      <linearGradient id="successGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#1a0f2e;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#0f1a2e;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    
+    <rect x="0" y="0" width="400" height="600" fill="url(#chaosGradient)"/>
+    
+    <!-- Title -->
+    <text x="200" y="60" text-anchor="middle" fill="#ff4444" font-family="Arial Black" font-size="28" font-weight="bold">SIN Creator0x</text>
+    
+    <!-- Phone mockup -->
+    <rect x="100" y="100" width="200" height="400" rx="20" fill="#222" stroke="#333" stroke-width="2"/>
+    <rect x="110" y="130" width="180" height="350" rx="10" fill="#111"/>
+    
+    <!-- Instagram UI -->
+    <rect x="110" y="130" width="180" height="50" fill="#222"/>
+    <text x="200" y="160" text-anchor="middle" fill="#fff" font-family="Arial" font-size="14">Instagram</text>
+    
+    <!-- Chaos messages -->
+    <circle cx="130" cy="210" r="5" fill="#ff4444" opacity="0.8"/>
+    <rect x="145" y="205" width="130" height="10" rx="5" fill="#333"/>
+    
+    <circle cx="130" cy="235" r="5" fill="#ff4444" opacity="0.8"/>
+    <rect x="145" y="230" width="110" height="10" rx="5" fill="#333"/>
+    
+    <circle cx="130" cy="260" r="5" fill="#ff4444" opacity="0.8"/>
+    <rect x="145" y="255" width="140" height="10" rx="5" fill="#333"/>
+    
+    <circle cx="130" cy="285" r="5" fill="#ff4444" opacity="0.8"/>
+    <rect x="145" y="280" width="100" height="10" rx="5" fill="#333"/>
+    
+    <!-- Warning icons -->
+    <text x="200" y="340" text-anchor="middle" fill="#ff4444" font-size="40">⚠️</text>
+    
+    <!-- Problems list -->
+    <text x="200" y="380" text-anchor="middle" fill="#999" font-family="Arial" font-size="12">Mensajes sin responder</text>
+    <text x="200" y="400" text-anchor="middle" fill="#999" font-family="Arial" font-size="12">Pérdida de clientes</text>
+    <text x="200" y="420" text-anchor="middle" fill="#999" font-family="Arial" font-size="12">Sin automatización</text>
+    <text x="200" y="440" text-anchor="middle" fill="#999" font-family="Arial" font-size="12">Caos total 24/7</text>
+  </g>
+  
+  <!-- Center divider -->
+  <line x1="400" y1="0" x2="400" y2="600" stroke="#333" stroke-width="2"/>
+  
+  <!-- Right side - Con Creator0x -->
+  <g id="right-side">
+    <rect x="400" y="0" width="400" height="600" fill="url(#successGradient)"/>
+    
+    <!-- Title -->
+    <text x="600" y="60" text-anchor="middle" fill="#00ff88" font-family="Arial Black" font-size="28" font-weight="bold">CON Creator0x</text>
+    
+    <!-- Phone mockup -->
+    <rect x="500" y="100" width="200" height="400" rx="20" fill="#1a2332" stroke="#2a3342" stroke-width="2"/>
+    <rect x="510" y="130" width="180" height="350" rx="10" fill="#0f1419"/>
+    
+    <!-- Instagram UI -->
+    <rect x="510" y="130" width="180" height="50" fill="#1a2332"/>
+    <text x="600" y="160" text-anchor="middle" fill="#fff" font-family="Arial" font-size="14">Instagram + Creator0x</text>
+    
+    <!-- Organized messages -->
+    <circle cx="530" cy="210" r="5" fill="#00ff88" opacity="0.8"/>
+    <rect x="545" y="205" width="130" height="10" rx="5" fill="#2a3342"/>
+    <text x="610" y="213" text-anchor="middle" fill="#00ff88" font-family="Arial" font-size="8">✓ Auto respondido</text>
+    
+    <circle cx="530" cy="235" r="5" fill="#00ff88" opacity="0.8"/>
+    <rect x="545" y="230" width="110" height="10" rx="5" fill="#2a3342"/>
+    <text x="600" y="238" text-anchor="middle" fill="#00ff88" font-family="Arial" font-size="8">✓ Auto respondido</text>
+    
+    <circle cx="530" cy="260" r="5" fill="#00ff88" opacity="0.8"/>
+    <rect x="545" y="255" width="140" height="10" rx="5" fill="#2a3342"/>
+    <text x="615" y="263" text-anchor="middle" fill="#00ff88" font-family="Arial" font-size="8">✓ Auto respondido</text>
+    
+    <!-- Success icon -->
+    <circle cx="600" cy="330" r="30" fill="none" stroke="#00ff88" stroke-width="3"/>
+    <path d="M580 330 L595 345 L620 315" fill="none" stroke="#00ff88" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Benefits list -->
+    <text x="600" y="380" text-anchor="middle" fill="#00ff88" font-family="Arial" font-size="12">100% automatizado</text>
+    <text x="600" y="400" text-anchor="middle" fill="#00ff88" font-family="Arial" font-size="12">Respuestas instantáneas</text>
+    <text x="600" y="420" text-anchor="middle" fill="#00ff88" font-family="Arial" font-size="12">Más ventas</text>
+    <text x="600" y="440" text-anchor="middle" fill="#00ff88" font-family="Arial" font-size="12">Tiempo libre para ti</text>
+  </g>
+  
+  <!-- VS indicator -->
+  <circle cx="400" cy="300" r="40" fill="#ff6b00" stroke="#ff8c00" stroke-width="3"/>
+  <text x="400" y="310" text-anchor="middle" fill="#fff" font-family="Arial Black" font-size="24" font-weight="bold">VS</text>
+</svg>
