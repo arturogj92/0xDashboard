@@ -75,7 +75,7 @@ export default function PricingSection() {
                     damping: 20,
                     delay: 0.1 
                   }}
-                  className="relative"
+                  {...{ className: "relative" } as any}
                 >
                   {/* Glow effect */}
                   <div className="absolute inset-0 bg-green-400 blur-xl opacity-50 rounded-full" />
@@ -205,7 +205,7 @@ export default function PricingSection() {
                     damping: 20,
                     delay: 0.15 
                   }}
-                  className="relative"
+                  {...{ className: "relative" } as any}
                 >
                   {/* Glow effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-purple-500 blur-xl opacity-60 rounded-full animate-pulse" />
@@ -262,7 +262,7 @@ export default function PricingSection() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.5 }}
-                      className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-purple-400/20 blur-3xl rounded-full"
+                      {...{ className: "absolute inset-0 bg-gradient-to-r from-orange-400/20 to-purple-400/20 blur-3xl rounded-full" } as any}
                     />
                     
                     <div className="relative">
@@ -271,14 +271,14 @@ export default function PricingSection() {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.5, type: "spring" }}
-                        className="flex items-baseline justify-center gap-8"
+                        {...{ className: "flex items-baseline justify-center gap-8" } as any}
                       >
                         {/* Original price */}
                         <motion.div
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 0.7 }}
-                          className="relative"
+                          {...{ className: "relative" } as any}
                         >
                           <span className="text-6xl font-bold text-gray-500 line-through decoration-2">
                             €30
@@ -290,7 +290,7 @@ export default function PricingSection() {
                           initial={{ opacity: 0, scale: 0.5 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: 1, type: "spring", stiffness: 200 }}
-                          className="relative"
+                          {...{ className: "relative" } as any}
                         >
                           <span className="text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400">
                             €15
@@ -304,7 +304,7 @@ export default function PricingSection() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 1.3 }}
-                        className="text-center mt-6"
+                        {...{ className: "text-center mt-6" } as any}
                       >
                         <div className="inline-flex items-center gap-2 text-lg">
                           <span className="text-2xl">🔥</span>
@@ -392,7 +392,7 @@ export default function PricingSection() {
                     damping: 20,
                     delay: 0.2 
                   }}
-                  className="relative"
+                  {...{ className: "relative" } as any}
                 >
                   {/* Glow effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-blue-500 blur-xl opacity-50 rounded-full" />

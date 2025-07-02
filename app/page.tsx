@@ -1967,7 +1967,7 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="text-center mb-8 md:mb-20"
+              {...{ className: "text-center mb-8 md:mb-20" } as any}
             >
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
                 4 herramientas que{' '}
@@ -1987,7 +1987,7 @@ export default function LandingPage() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.2 }}
-                  className="text-center"
+                  {...{ className: "text-center" } as any}
                 >
                   <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">4+</div>
                   <div className="text-sm text-gray-400">Herramientas</div>
@@ -1997,7 +1997,7 @@ export default function LandingPage() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.3 }}
-                  className="text-center"
+                  {...{ className: "text-center" } as any}
                 >
                   <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">∞</div>
                   <div className="text-sm text-gray-400">Posibilidades</div>
@@ -2007,7 +2007,7 @@ export default function LandingPage() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.4 }}
-                  className="text-center"
+                  {...{ className: "text-center" } as any}
                 >
                   <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">24/7</div>
                   <div className="text-sm text-gray-400">Disponible</div>
@@ -2541,7 +2541,7 @@ export default function LandingPage() {
                     ))}
                   </div>
                   <p className="text-gray-300 leading-relaxed mb-6">
-                    "Al principio era escéptico, pero después de 3 meses usando Creator0x... madre mía. Antes perdía ventas por no responder rápido los DMs. Ahora todo está automatizado y personalizado. Lo mejor: más tiempo para crear contenido de calidad."
+                    &ldquo;Al principio era escéptico, pero después de 3 meses usando Creator0x... madre mía. Antes perdía ventas por no responder rápido los DMs. Ahora todo está automatizado y personalizado. Lo mejor: más tiempo para crear contenido de calidad.&rdquo;
                   </p>
                   <div className="pt-6 border-t border-white/10">
                     <p className="text-sm text-gray-400">
@@ -2581,7 +2581,7 @@ export default function LandingPage() {
                     ))}
                   </div>
                   <p className="text-gray-300 leading-relaxed mb-6">
-                    "Llevo 6 meses con Creator0x. Los DMs me ayudan a responder más rápido y mejor. La landing muestra todos mis servicios de forma profesional. Y los shortlinks me dicen qué contenido funciona mejor. Herramienta imprescindible para crecer."
+                    &ldquo;Llevo 6 meses con Creator0x. Los DMs me ayudan a responder más rápido y mejor. La landing muestra todos mis servicios de forma profesional. Y los shortlinks me dicen qué contenido funciona mejor. Herramienta imprescindible para crecer.&rdquo;
                   </p>
                   <div className="pt-6 border-t border-white/10">
                     <p className="text-sm text-gray-400">
@@ -2622,7 +2622,7 @@ export default function LandingPage() {
                     ))}
                   </div>
                   <p className="text-gray-300 leading-relaxed mb-6">
-                    "Tengo 2 peques y mi tiempo es súper limitado. Creator0x me salva la vida literal. Los captions con IA mantienen mi feed activo, los DMs se responden solos (y bien!) y mi landing tiene todos mis links de afiliados organizados. Ojalá lo hubiera descubierto antes."
+                    &ldquo;Tengo 2 peques y mi tiempo es súper limitado. Creator0x me salva la vida literal. Los captions con IA mantienen mi feed activo, los DMs se responden solos (y bien!) y mi landing tiene todos mis links de afiliados organizados. Ojalá lo hubiera descubierto antes.&rdquo;
                   </p>
                   <div className="pt-6 border-t border-white/10">
                     <p className="text-sm text-gray-400">
@@ -2651,7 +2651,7 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="max-w-4xl mx-auto mb-16"
+              {...{ className: "max-w-4xl mx-auto mb-16" } as any}
             >
               <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-2xl p-4 text-center">
                 <p className="text-lg font-medium flex items-center justify-center gap-3">
@@ -2699,7 +2699,7 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3, type: "spring" }}
-              className="max-w-5xl mx-auto mb-12"
+              {...{ className: "max-w-5xl mx-auto mb-12" } as any}
             >
               <div className="relative overflow-hidden bg-gradient-to-r from-orange-500/20 via-pink-500/20 to-purple-500/20 border border-orange-500/30 rounded-2xl p-6">
                 
@@ -3064,7 +3064,7 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="mt-16"
+              {...{ className: "mt-16" } as any}
             >
               <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-gray-400 mb-8">
                 <div className="flex items-center gap-2">
@@ -3448,13 +3448,13 @@ export default function LandingPage() {
               ].map((faq, index) => (
                 <motion.div
                   key={index}
-                  id={
-                    index === 0 ? 'faq-automations' :
-                    index === 1 ? 'faq-landing' :
-                    index === 2 ? 'faq-shortlinks' :
-                    index === 3 ? 'faq-captions' :
-                    undefined
-                  }
+                  {...{ 
+                    id: index === 0 ? 'faq-automations' :
+                        index === 1 ? 'faq-landing' :
+                        index === 2 ? 'faq-shortlinks' :
+                        index === 3 ? 'faq-captions' :
+                        undefined
+                  } as any}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -3483,7 +3483,7 @@ export default function LandingPage() {
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
                           transition={{ duration: 0.3 }}
-                          className="overflow-hidden"
+                          {...{ className: "overflow-hidden" } as any}
                         >
                           <div className="mt-4">
                             {typeof faq.answer === 'string' ? (
@@ -3595,7 +3595,7 @@ export default function LandingPage() {
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="inline-block"
+                    {...{ className: "inline-block" } as any}
                   >
                     <Button 
                       size="lg" 

@@ -115,8 +115,18 @@ server {
 
     location / {
         proxy_pass http://localhost:${LANDING_PORT};
-        proxy_set_header Host \$host;
+        proxy_set_header Host localhost;
         proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-Host \$host;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        
+        # Timeouts y buffer sizes
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+        proxy_buffer_size 4k;
+        proxy_buffers 8 4k;
     }
 }
 EOF
