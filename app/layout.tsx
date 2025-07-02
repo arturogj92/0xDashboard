@@ -7,7 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import Image from "next/image";
 import Link from "next/link";
 import { AuthProvider } from "@/contexts/AuthContext";
-import RootLayoutInner from "@/components/layout/RootLayoutInner";
+import RootLayoutServer from "@/components/layout/RootLayoutServer";
 import Footer from './components/Footer';
 import { cn } from "@/lib/utils";
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -54,9 +54,9 @@ export default function RootLayout({
           <GoogleOAuthProvider clientId={googleClientId}>
             <AuthProvider>
               <I18nProvider>
-              <RootLayoutInner>
+              <RootLayoutServer>
                 {children}
-              </RootLayoutInner>
+              </RootLayoutServer>
               <Toaster 
                 position="top-right"
                 toastOptions={{

@@ -451,7 +451,8 @@
     "moveItemNotification": "Para mover elementos entre secciones, usa el botón de mover (⇄) en el elemento. Arrastrar y soltar solo funciona dentro de la misma sección.",
     "verifyingAccess": "Verificando acceso...",
     "verifyingPermissions": "Verificando permisos...",
-    "invalidLandingId": "Error: ID de landing inválido"
+    "invalidLandingId": "Error: ID de landing inválido",
+    "preview": "VISTA PREVIA"
   },
   "social": {
     "title": "Redes Sociales",

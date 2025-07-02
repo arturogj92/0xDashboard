@@ -5,7 +5,9 @@ import type { NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
   // Si no estamos en el VPS, no hacer nada
   if (process.env.NEXT_PUBLIC_IS_VPS !== 'true') {
-    return NextResponse.next();
+    const response = NextResponse.next();
+    response.headers.set('x-pathname', request.nextUrl.pathname);
+    return response;
   }
 
   // Get hostname, prefer X-Forwarded-Host for reverse proxy setups
@@ -25,6 +27,7 @@ export async function middleware(request: NextRequest) {
     if (url.pathname.startsWith('/landing/')) {
       const passThroughResponse = NextResponse.next();
       passThroughResponse.headers.set('x-middleware-debug', 'subdomain-passthrough');
+      passThroughResponse.headers.set('x-pathname', url.pathname);
       return passThroughResponse;
     }
     
@@ -79,6 +82,8 @@ export async function middleware(request: NextRequest) {
     console.log(`[VPS Middleware] Subdominio ${subdomain} → ${url.pathname}`);
     const subdomainResponse = NextResponse.rewrite(url);
     subdomainResponse.headers.set('x-middleware-debug', 'subdomain-rewrite');
+    subdomainResponse.headers.set('x-is-public-landing', 'true');
+    subdomainResponse.headers.set('x-pathname', url.pathname);
     return subdomainResponse;
   }
   
@@ -148,6 +153,8 @@ export async function middleware(request: NextRequest) {
             const rewriteResponse = NextResponse.rewrite(url);
             rewriteResponse.headers.set('x-middleware-debug', 'custom-domain-rewrite');
             rewriteResponse.headers.set('x-resolved-slug', data.slug);
+            rewriteResponse.headers.set('x-is-public-landing', 'true');
+            rewriteResponse.headers.set('x-pathname', url.pathname);
             return rewriteResponse;
           }
         } else {
@@ -158,12 +165,14 @@ export async function middleware(request: NextRequest) {
         console.warn(`[VPS Middleware] No se encontró landing activa para ${hostname}`);
         const notFoundResponse = NextResponse.next();
         notFoundResponse.headers.set('x-middleware-debug', 'custom-domain-not-found');
+        notFoundResponse.headers.set('x-pathname', request.nextUrl.pathname);
         return notFoundResponse;
         
       } catch (error) {
         console.error(`[VPS Middleware] Error consultando dominio ${hostname}:`, error);
         const errorResponse = NextResponse.next();
         errorResponse.headers.set('x-middleware-debug', 'custom-domain-error');
+        errorResponse.headers.set('x-pathname', request.nextUrl.pathname);
         return errorResponse;
       }
     }
@@ -174,6 +183,7 @@ export async function middleware(request: NextRequest) {
   console.warn(`[VPS Middleware] No se pudo procesar: ${hostname}`);
   const unprocessedResponse = NextResponse.next();
   unprocessedResponse.headers.set('x-middleware-debug', 'unprocessed');
+  unprocessedResponse.headers.set('x-pathname', request.nextUrl.pathname);
   return unprocessedResponse;
 }
 
