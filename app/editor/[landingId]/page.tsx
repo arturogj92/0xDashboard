@@ -908,8 +908,6 @@ export default function AdminPage() {
         }
         title={t('pageTitle')}
         description={t('pageDescription')}
-        imageSrc="/images/icons/caption-icon.png"
-        imageAlt={t('pageTitle')}
       />
       <div className="flex flex-col md:flex-row min-h-screen relative">
       <div className="hidden md:block fixed left-0 top-0 bottom-0 w-1/2 overflow-hidden pointer-events-none">
@@ -928,9 +926,6 @@ export default function AdminPage() {
           transform: 'translateY(-100px)',
         } : {}}
       >
-        <div className="text-white mb-2 w-full text-center">
-          <p className="font-medium text-xs sm:text-sm md:text-base opacity-70">VISTA PREVIA</p>
-        </div>
         <div 
           className="relative w-[50vw] sm:w-[40vw] md:w-[30vw] lg:w-[300px] max-w-[300px] aspect-[9/19.5]"
           data-editor-container="true"
@@ -985,7 +980,12 @@ export default function AdminPage() {
             </div>
           </div>
         </div>
-        
+        <div className="w-full text-center mt-0.5">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold tracking-wider uppercase bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-white/90 border border-purple-500/30 backdrop-blur-sm shadow-lg">
+            <span className="mr-1.5 w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
+            {t('preview')}
+          </span>
+        </div>
       </div>
       
       <div className="relative w-full md:w-1/2 order-last md:order-first rounded-xl border border-white/10 bg-[#0e0b15]/70 backdrop-blur-xl shadow-2xl p-4 sm:p-6 overflow-y-auto overflow-x-hidden flex flex-col items-center">
