@@ -927,7 +927,7 @@ export default function AdminPage() {
         } : {}}
       >
         <div 
-          className="relative w-[50vw] sm:w-[40vw] md:w-[30vw] lg:w-[300px] max-w-[300px] aspect-[9/19.5]"
+          className="relative w-[50vw] sm:w-[40vw] md:w-[35vw] lg:w-[350px] xl:w-[400px] 2xl:w-[450px] max-w-[450px] aspect-[9/19.5]"
           data-editor-container="true"
         >
           <img
@@ -935,7 +935,7 @@ export default function AdminPage() {
             alt="iPhone frame"
             className="absolute w-full h-full z-20 pointer-events-none object-contain"
           />
-          <div className="absolute inset-[4%] z-10 rounded-[20px] md:rounded-[24px] lg:rounded-[28px] xl:rounded-[32px] overflow-hidden">
+          <div className="absolute inset-[4%] z-10 rounded-[20px] md:rounded-[24px] lg:rounded-[30px] xl:rounded-[36px] 2xl:rounded-[40px] overflow-hidden">
             {/* URL Bar - Aparece en la parte inferior */}
             {landing.slug && (
               <div 
@@ -947,7 +947,7 @@ export default function AdminPage() {
                   href={activeDomain ? `https://${activeDomain}` : `https://${landing.slug}.creator0x.com`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="pb-4 block w-full flex items-center justify-center gap-1 bg-slate-800/95 hover:bg-slate-700/95 backdrop-blur-sm px-3 py-2 rounded-b-[20px] md:rounded-b-[24px] lg:rounded-b-[28px] xl:rounded-b-[32px] shadow-sm transition-colors duration-200 border-t border-slate-600/50"
+                  className="pb-4 block w-full flex items-center justify-center gap-1 bg-slate-800/95 hover:bg-slate-700/95 backdrop-blur-sm px-3 py-2 rounded-b-[20px] md:rounded-b-[24px] lg:rounded-b-[30px] xl:rounded-b-[36px] 2xl:rounded-b-[40px] shadow-sm transition-colors duration-200 border-t border-slate-600/50"
                 >
                   <Lock className="h-2.5 w-2.5 text-green-400 flex-shrink-0" />
                   <span className="text-[10px] font-medium text-slate-400 flex-shrink-0">https://</span>

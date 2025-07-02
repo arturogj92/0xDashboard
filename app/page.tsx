@@ -1271,9 +1271,9 @@ export default function LandingPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
                 >
-                  Automatiza tu Instagram y otras RR.SS y 
+                  Automatiza tu Instagram 
                   <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">convierte seguidores en clientes</span>
+                  y otras RR.SS y <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-purple-400">convierte seguidores en clientes</span>
                 </motion.h1>
 
                 <motion.div
