@@ -8,12 +8,14 @@ import { FileText } from 'lucide-react';
 import LandingWizard from '@/components/landing/LandingWizard';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/contexts/AuthContext';
+import { PageSkeleton } from '@/components/ui/skeleton';
 
-export default function LandingPage() {
+function LandingPageContent() {
   const t = useTranslations('landing');
   const router = useRouter();
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
     const checkUserLanding = async () => {
@@ -31,9 +33,12 @@ export default function LandingPage() {
         if (response.ok) {
           const data = await response.json();
           if (data.landings && data.landings.length > 0) {
-            // Si tiene una landing, redirigir al editor
+            // Si tiene una landing, marcar como redirigiendo antes de navegar
             const firstLanding = data.landings[0];
+            setIsRedirecting(true);
             router.push(`/editor/${firstLanding.id}`);
+            // No cambiar loading a false para mantener el estado actual
+            return;
           } else {
             // No tiene landings, mostrar el wizard
             setLoading(false);
@@ -50,18 +55,17 @@ export default function LandingPage() {
     checkUserLanding();
   }, [user, router]);
 
+  // Si está redirigiendo, no mostrar nada para evitar el flash del skeleton
+  if (isRedirecting) {
+    return null;
+  }
+
   if (loading) {
-    return (
-      <ProtectedRoute>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-pulse text-white">Cargando...</div>
-        </div>
-      </ProtectedRoute>
-    );
+    return <PageSkeleton />;
   }
 
   return (
-    <ProtectedRoute>
+    <>
       <PageHeader
         icon={<FileText className="w-8 h-8" />}
         title={t('configuratorTitle')}
@@ -81,6 +85,14 @@ export default function LandingPage() {
         {/* Radiales de borde visibles en todas las resoluciones */}
         <div className="block absolute -inset-32 bg-[radial-gradient(circle,_rgba(17,24,39,0)_60%,_rgba(88,28,135,0.35)_100%)] blur-[300px] opacity-50 pointer-events-none"></div>
       </div>
+    </>
+  );
+}
+
+export default function LandingPage() {
+  return (
+    <ProtectedRoute>
+      <LandingPageContent />
     </ProtectedRoute>
   );
 } 
