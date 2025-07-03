@@ -73,7 +73,7 @@ function FeatureCard({
   return (
     <Link href={href}>
       <div 
-        className="group relative aspect-square rounded-lg overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out min-h-[80px] sm:min-h-[95px] md:min-h-[110px] lg:min-h-[130px] xl:min-h-[160px]"
+        className="group relative aspect-square rounded-lg overflow-hidden cursor-pointer border border-white/10 bg-black/20 shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-out min-h-[80px] sm:min-h-[95px] md:min-h-[110px] lg:min-h-[130px] xl:min-h-[160px] 2xl:min-h-[240px]"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -105,17 +105,17 @@ function FeatureCard({
         {/* Content centrado para formato cuadrado */}
         <div className="relative h-full p-2 sm:p-3 md:p-4 lg:p-5 xl:p-6 flex flex-col items-center justify-center text-white z-10 text-center">
           {/* Ícono centrado arriba */}
-          <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 mb-0.5 sm:mb-1 md:mb-1.5 lg:mb-2">
+          <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 2xl:w-20 2xl:h-20 mb-0.5 sm:mb-1 md:mb-1.5 lg:mb-2 2xl:mb-4">
             <div className="w-full h-full drop-shadow-lg">
               {icon}
             </div>
           </div>
           
           {/* Título centrado */}
-          <h3 className="text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg font-semibold text-white drop-shadow-lg mb-0.5 sm:mb-1 lg:mb-1.5 leading-none">{title}</h3>
+          <h3 className="text-[10px] sm:text-xs md:text-sm lg:text-base xl:text-lg 2xl:text-2xl font-semibold text-white drop-shadow-lg mb-0.5 sm:mb-1 lg:mb-1.5 2xl:mb-3 leading-none">{title}</h3>
           
           {/* Descripción más compacta */}
-          <p className="text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs xl:text-sm text-white/80 drop-shadow-md leading-none px-0.5 sm:px-1">{description}</p>
+          <p className="text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs xl:text-sm 2xl:text-base text-white/80 drop-shadow-md leading-none px-0.5 sm:px-1 2xl:px-2">{description}</p>
         </div>
         
         {/* Static decorative elements */}
@@ -240,17 +240,17 @@ export default function HomePage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen flex items-start justify-center pt-2 sm:pt-3 md:pt-4 lg:pt-6">
+      <div className="h-screen flex items-center justify-center -mt-12">
         <motion.div 
           variants={pageVariants}
           initial="hidden"
           animate="visible"
         >
-        <div className="relative mx-2 sm:mx-4 md:mx-6 flex flex-col items-center overflow-visible mt-1 sm:mt-2 md:mt-3">
+        <div className="relative flex flex-col items-center overflow-visible">
         <motion.div 
           variants={containerVariants}
         >
-          <div className="relative w-[88vw] md:w-[80vw] lg:w-[72vw] xl:w-[68vw] max-w-[1000px] rounded-lg border border-white/20 bg-black/40 shadow-[0_0_40px_rgba(0,0,0,0.5)] p-1.5 sm:p-2 md:p-2.5 lg:p-4 xl:p-5">
+          <div className="relative w-[88vw] md:w-[80vw] lg:w-[72vw] xl:w-[68vw] 2xl:w-[60vw] max-w-[1000px] 2xl:max-w-[1400px] rounded-lg border border-white/20 bg-black/40 shadow-[0_0_40px_rgba(0,0,0,0.5)] p-1.5 sm:p-2 md:p-2.5 lg:p-4 xl:p-5 2xl:p-8">
           <motion.div 
             variants={containerVariants}
           >
@@ -267,7 +267,7 @@ export default function HomePage() {
                 <div className="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-full"></div>
                 
 
-                <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent mb-1.5 sm:mb-2 lg:mb-3 leading-none">
+                <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-6xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent mb-1.5 sm:mb-2 lg:mb-3 2xl:mb-6 leading-none">
                 <motion.h2 
                   variants={textVariants}
                   style={{ display: 'inline' }}
@@ -279,7 +279,7 @@ export default function HomePage() {
                 </motion.h2>
                 </h2>
                 
-                <p className="text-[10px] sm:text-xs md:text-sm lg:text-base text-gray-300 leading-snug mb-2 sm:mb-3 lg:mb-4 max-w-xs md:max-w-sm relative z-10">
+                <p className="text-[10px] sm:text-xs md:text-sm lg:text-base 2xl:text-xl text-gray-300 leading-snug mb-2 sm:mb-3 lg:mb-4 2xl:mb-8 max-w-xs md:max-w-sm 2xl:max-w-2xl relative z-10">
                 <motion.p 
                   variants={textVariants}
                   style={{ display: 'inline' }}
@@ -290,21 +290,21 @@ export default function HomePage() {
                 </p>
 
                 {/* Stats decorativos */}
-                <div className="flex gap-3 sm:gap-4 mb-3 sm:mb-4 justify-center xl:justify-start">
+                <div className="flex gap-3 sm:gap-4 2xl:gap-8 mb-3 sm:mb-4 2xl:mb-8 justify-center xl:justify-start">
                 <motion.div 
                   variants={textVariants}
                 >
                   <div className="text-center">
-                    <div className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">4+</div>
-                    <div className="text-[10px] sm:text-xs text-gray-400">Herramientas</div>
+                    <div className="text-lg sm:text-xl md:text-2xl 2xl:text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">4+</div>
+                    <div className="text-[10px] sm:text-xs 2xl:text-base text-gray-400">Herramientas</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">∞</div>
-                    <div className="text-[10px] sm:text-xs text-gray-400">Posibilidades</div>
+                    <div className="text-lg sm:text-xl md:text-2xl 2xl:text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">∞</div>
+                    <div className="text-[10px] sm:text-xs 2xl:text-base text-gray-400">Posibilidades</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">24/7</div>
-                    <div className="text-[10px] sm:text-xs text-gray-400">Disponible</div>
+                    <div className="text-lg sm:text-xl md:text-2xl 2xl:text-4xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">24/7</div>
+                    <div className="text-[10px] sm:text-xs 2xl:text-base text-gray-400">Disponible</div>
                   </div>
                 </motion.div>
                 </div>
@@ -331,7 +331,7 @@ export default function HomePage() {
               <motion.div 
                 variants={gridVariants}
               >
-                <div className="grid grid-cols-2 gap-0.5 sm:gap-1 md:gap-1.5 lg:gap-2.5 w-full max-w-[260px] sm:max-w-[300px] md:max-w-[340px] lg:max-w-[400px] xl:max-w-[480px]">
+                <div className="grid grid-cols-2 gap-0.5 sm:gap-1 md:gap-1.5 lg:gap-2.5 2xl:gap-4 w-full max-w-[260px] sm:max-w-[300px] md:max-w-[340px] lg:max-w-[400px] xl:max-w-[480px] 2xl:max-w-[700px]">
                   {features.map((feature, index) => (
                     <FeatureCard
                       key={feature.title}
