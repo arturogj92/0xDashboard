@@ -16,6 +16,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getThemeById } from '@/lib/themes';
 import { PageHeader } from '@/components/ui/PageHeader';
 import Image from 'next/image';
+import { EditorSkeleton } from '@/components/ui/skeleton';
 
 export default function AdminPage() {
   const t = useTranslations('editor');
@@ -33,6 +34,7 @@ export default function AdminPage() {
   const [isCustomDomainOpen, setIsCustomDomainOpen] = useState(false);
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
   const [showUrlBar, setShowUrlBar] = useState(true);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
   const previewContentRef = useRef<HTMLDivElement>(null);
 
@@ -44,6 +46,10 @@ export default function AdminPage() {
       router.push('/login');
       return;
     }
+    
+    // Reset states when landingId changes
+    setIsOwnershipVerified(false);
+    setIsDataLoaded(false);
     
     const lid = params.landingId;
     if (lid && !Array.isArray(lid)) {
@@ -156,8 +162,13 @@ export default function AdminPage() {
             if (Array.isArray(sectionsData)) setSections(sectionsData);
             if (Array.isArray(linksData)) setLinks(linksData);
             if (Array.isArray(socialLinksData)) setSocialLinks(socialLinksData);
+            
+            // Marcar que todos los datos han sido cargados
+            setIsDataLoaded(true);
           } catch (err) {
             console.error('Error cargando datos relacionados:', err);
+            // Incluso si hay error, marcamos como cargado para mostrar la UI
+            setIsDataLoaded(true);
           }
         })
         .catch(err => {
@@ -543,29 +554,15 @@ export default function AdminPage() {
 
   // Protección de acceso
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-900 flex items-center justify-center">
-        <div className="text-white text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p>{t('verifyingAccess')}</p>
-        </div>
-      </div>
-    );
+    return <EditorSkeleton />;
   }
 
   if (!isAuthenticated) {
     return null; // El useEffect ya redirigió
   }
 
-  if (!isOwnershipVerified) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-900 flex items-center justify-center">
-        <div className="text-white text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p>{t('verifyingPermissions')}</p>
-        </div>
-      </div>
-    );
+  if (!isOwnershipVerified || !isDataLoaded) {
+    return <EditorSkeleton />;
   }
 
   if (!params.landingId || Array.isArray(params.landingId)) {
